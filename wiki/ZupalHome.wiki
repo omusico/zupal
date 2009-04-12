@@ -37,7 +37,7 @@ Zupal_Member would be a Zupal_Modle designed to handle the login, authorization,
 
 Zupal_View would handle all the visual elements of a page. They would generally be composites of views; they take in a Zupal_Node (which may itself be the head of a collection of nodes) and be able to return a block of markeup.
 
-Zupal_Nodes would be the atomic unit of information in the system. They relate to other nodes via links and have identity, content (in the properties aggregate) and association with a particular module.
+[ZupalModel Zupal_Nodes] would be the atomic unit of information in the system. They relate to other nodes via links and have identity, content (in the properties aggregate) and association with a particular module.
 
 Any real utility for a given node comes from the combination of its descendent methods, its views, and its interaction with any aggregate code contained within the module class.
 Zend's MVC and Zupal
