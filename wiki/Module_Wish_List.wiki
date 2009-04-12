@@ -1,0 +1,28 @@
+#summary A "Wish list" of components
+
+= Introduction =
+
+These are the moules we want (or need!) to make Zupal work
+
+== Core == 
+
+  * Zupal_Admin - the back end 
+  * Zupal_Module - the module manager
+  * Zupal_Member - the user management system
+  * Zupal_Scaffolding - the basic form, list, and detail view mechanism
+  * Zupal_CMS - Creating content is not the same thing as managing it. If an organization has a chain of control for content, wants to delay publication, publish for a given time period, or do anything else related to control and management of information, this module should provide that functionality. 
+  * Zupal_Metafield - the Drupal ability to control input formats, editing widgets like FCKeditor, and wiki filters is great and should be a rev 1 demand. 
+  * Zupal_ModuleMaker - an analog of the Drupal CCK, you should be able to create a module through interface. The ability to "bake" a MM module into a PHP shell for further customization would be swell too. There should be no perceptable difference between a MM module and a custom one.
+
+== Content == 
+
+  * Zupal_Pages - the model for module developers and the default content creation system
+  * Zupal_Friends - The social networking system. Should subsume a local social network and things like Facebook and Myspace. 
+  * Zupal_Porn - The image module
+  * Zupal_Contacts - A basic CRM; also the model for storing information about people who are not members. 
+  * Zupal_Map - An API into Google Maps for Zupal
+  * Zupal_Share - an RSS interchange, member notification
+  * Zupal_Groups - A complement to the Friends, Zupal Groups should include event management, memberhsiip, and everything else meetup-like. 
+  * Zupal_Store - The shopping mechanism. Every node shoud be able to be sold. An inventory mecahnism would be a bonus too. 
+  * Zupal_Search - the basic thing; an "advanced search" API should be an optional part of every module. Advanced features such as semantic searches, search cloaking, etc. would be great too. 
+  * Zupal_Phone -- the aiblity to create a phone version of a Zupal site would be a great win. 
