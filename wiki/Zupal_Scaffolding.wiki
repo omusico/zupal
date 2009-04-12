@@ -1,0 +1,44 @@
+#summary Default Views and generic functionality
+#labels view,Phase-Requirements
+
+= Introduction =
+
+Every module should have a default set of functionality based on its model as defined in the Zupal_Model section
+
+= Details =
+
+Every node should be:
+  * Viewable in three levels:
+    # List (aggregate)
+    # Block (home page or margin)
+    # Detail (full/page view)
+
+== Annotation == 
+
+The world is a lot more granular than that. The ability to alter your data's view according to contexts such as these would be wonderful. 
+
+  * HomePage block item
+  * HomePage list item 
+  * Block list item
+  * Block Detail
+  * Search List
+  * Feed Block
+  * Feed Detail (press release?)
+  * Commerce Block
+  * Search Detail
+  * Detail
+  * List 
+  * Admin List
+  * Menu List
+
+These terms are not coincidental. Every piece of content should have a list and detail view, but both the module and the user (in that order) should be able to customize the view based on context. 
+
+For instance, 
+
+  * You might want to create a very short title for an items' homepage block list view
+  * You might want the search detail to be much more keword-y
+  * You might want to again make the teaser on the home page to be much more loaded with search words than the detail you provide on a section subpages' block view of a featured item. 
+
+Annotation is an optional add on. Everything past the three minimum views should be an annotation -- as in, "If this item appears on the home page its title should be 'this'". Annotations should be weighted and updating content should force a review of the annotations. 
+
+The annotations can potentially confilct and therefore need to be ordered and reorderable. They should "Cascade" -- if you have a specific annotation that is the exact set of parameter tags that a context requires than use that one -- otherwise use the best matches in descending order. 
