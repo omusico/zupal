@@ -1,5 +1,7 @@
 #summary The genesis and guide to Zupal
 
+"What would the wheel look like if it had been invented by the Japanese?"
+
 = Components =
 
   * [ZupalModel The Zupal Model] --  the data interchange system -- Dave
@@ -20,6 +22,8 @@ However you lose the ability within the coding context to take advantage of the 
 In many customer facing applications this is a nonissue. However if your application has complex interactions that require complex codebase, having those conventions built into the core can be an asset.
 
 = So what will Zupal look like? = 
+
+http://wonderlandlabs.com/wll_drupal/sites/default/files/Zupal_Node.gif
 
 The hierarchy lines here are not that meaningful as these components would interact in a pretty open-ended way.
 
