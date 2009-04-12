@@ -38,6 +38,6 @@ The Zupal Node and Zupal_Node_Links are based on a simple table with basic title
 
 Unlike Drupal, where the custom tables refer to the Node table, Zupal doesn't rely on referential fields existing in the meta table. The node table takes responsibility for referring to the meta table, not the other way around.
 
-Relationships are also in an independant link table; while you could conceivably "bake" relationships into meta tables' foreign keys and override the link mechanisms in special circumstances to simplify the SQL, abstracting linkage gives the ability to create a consistent link model and not have to be concerned with enabling relationship mechanics with each custom node implementation.
+Relationships are also in an independent link table; while you could conceivably "bake" relationships into meta tables' foreign keys and override the link mechanisms in special circumstances to simplify the SQL, abstracting linkage gives the ability to create a consistent link model and not have to be concerned with enabling relationship mechanics with each custom node implementation.
 
 Also, using property get/setters means that we can abstract the actual field names inside properties of the domain object, again making it fairly easy to adapt a module over an existing data source.
