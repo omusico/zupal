@@ -22,3 +22,7 @@ Modules will be heavily bound to the user components. The ability to put securit
 == Admin and Logging ==
 
 Modules will be managed -- all action at the module level will be governed through the admin. Logging system changes (a "Blame Engine") to who did what is also important. 
+
+= An Internal Community: Zupal_Zoom =
+
+The module library and community should be internal to a Zupal site. 
