@@ -9,7 +9,7 @@ A Zupal module will be a superset of the Zend module. However it will be a manag
   * *Downloadable and Self Installing*: You should be able to pull a module in from SVN and have it autocreate its table(s), include itself into the admin system, and begin working. 
   * *Dependency Aware*: It will be aware of any dependant modules and be able to pull THEM in from SVN upon install. The dependency should be version sensitive -- as modules are developed, you should be aware of what version of a module the parent module was developed under. (what to "do about it" should be left to the admin)
    * *disable-able and removable* Modules will be able to be turned on or off, or even removed, through an interface. This process should lock up to prevent dependent modules to be removed, both through interface and code. 
-   *Upgradeable and downgradable* You should be able to move backwards and forwards through time, and in so doing, alter your database. Actual removal of fields should be optional -- in general unused fields are usually safe to leave around. 
+   * *Upgradeable and downgradable* You should be able to move backwards and forwards through time, and in so doing, alter your database. Actual removal of fields should be optional -- in general unused fields are usually safe to leave around. 
 
 Note -- reversibility is a pretty big demand, and probably not a rev 1 (or even 2) priority; however considering that we may want future reversibility should be a consideration as we go forward. 
 
