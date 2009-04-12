@@ -7,7 +7,10 @@ There are several goals for a node based domain system. The Zupal node and domai
 
     * Ensure the nodes link well to each other and can retrieve and CRUD their linkages
     * Couple content to a data source for custom data -- potentially, even one that already exists
-    * To cloak data interchange inside the domain system
+    * cloak data interchange inside the domain system
+    * establish a homogenous relationship model between nodes that goes beyond parent/child
+    * Uses a domain layer to remap field names to more easily adapt itself to an existing data source
+    * 
 
 This system will be accomplished with a series of role based classes.
 
