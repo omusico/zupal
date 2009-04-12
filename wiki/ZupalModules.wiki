@@ -1,0 +1,24 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+A Zupal module will be a superset of the Zend module. However it will be a managed include and be able to cooperate with the Zupal_Module module. 
+
+= Features =
+
+  * *Downloadable and Self Installing*: You should be able to pull a module in from SVN and have it autocreate its table(s), include itself into the admin system, and begin working. 
+  * *Dependency Aware*: It will be aware of any dependant modules and be able to pull THEM in from SVN upon install. The dependency should be version sensitive -- as modules are developed, you should be aware of what version of a module the parent module was developed under. (what to "do about it" should be left to the admin)
+   * *disable-able and removable* Modules will be able to be turned on or off, or even removed, through an interface. This process should lock up to prevent dependent modules to be removed, both through interface and code. 
+   *Upgradeable and downgradable* You should be able to move backwards and forwards through time, and in so doing, alter your database. Actual removal of fields should be optional -- in general unused fields are usually safe to leave around. 
+
+Note -- reversibility is a pretty big demand, and probably not a rev 1 (or even 2) priority; however considering that we may want future reversibility should be a consideration as we go forward. 
+
+= Interactions = 
+
+== User and Role ==
+
+Modules will be heavily bound to the user components. The ability to put security filters on actions throughout the module should be optional, but a fairly universal "see, Edit, delete" set of privileges for each module's core content is standard. Breaking that functionality down to the field level would be nice too but not a rev 1 priority. 
+
+== Admin and Logging ==
+
+Modules will be managed -- all action at the module level will be governed through the admin. Logging system changes (a "Blame Engine") to who did what is also important. 
