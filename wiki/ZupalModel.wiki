@@ -10,13 +10,14 @@ There are several goals for a node based domain system. The Zupal node and domai
     * To cloak data interchange inside the domain system
 
 This system will be accomplished with a series of role based classes.
-ActiveRecord classes with Zupal interface
 
-These will handle the atomic exchange of data; in the begining Zupal will be bound to the Zend_DB component but some room should be made for allowance of other ActiveRecord systems into the fold. The status() method will be an important "real time" heartbeat detector to validate the status of the data in the underlying mechanism. Down the road, the interface could be wrapped around any number of data sources, from web applications to text based data or XML files.
+= Table and Row Data Gateway classes with Zupal interface =
+
+These will handle the atomic exchange of data; in the begining Zupal will be bound to the Zend_DB component but some room should be made for allowance of other data transport systems into the fold. The status() method will be an important "real time" heartbeat detector to validate the status of the data in the underlying mechanism. Down the road, the interface could be wrapped around any number of data sources, from web applications to text based data or XML files.
 
 = Domain Class =
 
-To homogenize identity and containment, the domain class sits over and contains an activeRecord. All fields are accessed thorugh getters and setters, though magic methods should handle most of these exchanges by default. This means that you could re-map field names inside the domain system, again, to adapt to existing data. You might even redirect a property back to the node table.
+To homogenize identity and containment, the domain class governs all IO. All fields are accessed thorugh getters and setters, though magic methods should handle most of these exchanges by default. This means that you could re-map field names inside the domain system, again, to adapt to existing data. You might even redirect a property back to the node table.
 
 A domain object could potentially represent an aggregate of records uniquely bound into a single representative domain. For instance, an article in a large scale publication could be broken into several tables or a serial network of content that different individuals are working on together (perhaps even a series of paragraphs as records) but from the Domains point of view, the story is a node because it is atomic as far as the audience is concerned.
 
