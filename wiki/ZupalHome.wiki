@@ -23,7 +23,7 @@ In many customer facing applications this is a nonissue. However if your applica
 
 = So what will Zupal look like? = 
 
-http://wonderlandlabs.com/wll_drupal/sites/default/files/Zupal_Node.gif
+http://wonderlandlabs.com/wll_drupal/sites/default/files/Components.gif
 
 The hierarchy lines here are not that meaningful as these components would interact in a pretty open-ended way.
 
