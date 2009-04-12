@@ -10,9 +10,8 @@ There are several goals for a node based domain system. The Zupal node and domai
     * cloak data interchange inside the domain system
     * establish a homogenous relationship model between nodes that goes beyond parent/child
     * Uses a domain layer to remap field names to more easily adapt itself to an existing data source
-    * 
 
-This system will be accomplished with a series of role based classes.
+This system will be accomplished with a series of role based classes. Note that the class and method structure below is an API spec -- it does *NOT* imply anything about the SQL(or other) structure that is used to satisfy the API. 
 
 = Table and Row Data Gateway classes with Zupal interface =
 
