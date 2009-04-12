@@ -4,7 +4,7 @@
 
 You shouldn't have to go to a web page to download a Zupal module, FTP it to your site, review it or submit a bug: all those functions should be an internal feature of every Zupal project. The Zupal Module Marketplace (Zoom) should be completely transparent, like the App store on an iPhone.
 
- You should be able to read on a module version's description, click on an install link, and get the upgrade. Similarly, every time a module throws an error, a message goes back to Zoom and is up for grabs for a patch or at least, a comment. 
+You should be able to read on a module version's description, click on an install link, and get the upgrade. Similarly, every time a module throws an error, a message goes back to Zoom and is up for grabs for a patch or at least, a comment. 
 
 So if one of your user gets a trappable error, the admin should get a mail and perhaps a series of mails as Zupal module developers note, comment on, and patch the problem. You could even turn on "auto fix" for a module to allow for authorized fixes from module owners to be automatically included to your site.
 
