@@ -13,5 +13,5 @@ Add your content here.  Format your content with:
 
 = Components =
 
-  * ZupalDomainsAndNodes --  the data interchange system -- Dave
+  * [ZupalModel The Zupal Model] --  the data interchange system -- Dave
   * ZupalModules -- The module management system -- Fred
