@@ -1,4 +1,5 @@
 #summary A "Wish list" of components
+#labels Phase-Requirements,modules
 
 = Introduction =
 
