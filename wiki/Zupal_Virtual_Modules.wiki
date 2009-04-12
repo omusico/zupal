@@ -1,0 +1,12 @@
+#summary Modules should be constructable as an admin action
+#labels modules,Phase-Requirements
+
+= Introduction =
+
+One of Drupal's greatest successes was the content construction kit: the ability to create custom data types without touching the code, through an admin interface. Using arbitrary fieldsets, you can create a book review, project, or whatever with an interface. 
+
+= Details =
+
+whether "virtual modules" and "Custom Node Types" are identical is something to work out. You might not need a virtual module if you have virtual node types. However you should have the ability to create an expanding list of field definitions that maps to an identity and is identical to the node types you define in hand coded modules. 
+
+You should in fact be able to create a table in SQL and just register it as a content type. Even better you should be able to take a content type and genrate ("bake") it into a custom module that you can later extend. 
