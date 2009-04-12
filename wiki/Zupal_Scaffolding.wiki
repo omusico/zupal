@@ -8,10 +8,16 @@ Every module should have a default set of functionality based on its model as de
 = Details =
 
 Every node should be:
-  * Viewable in three levels:
+  * Publicly Viewable in three levels:
     # List (aggregate) 
     # Block (home page or margin) -- the Drupal "Teaser"
     # Detail (full/page view) -- the default
+  * Administratively accessible:
+    # List (even "deleted" content can be seen)
+    # Add  or Edit form
+    # Annotation editor (see below)
+
+This means that by simply creating a node-based module (with or without a metadata annotation) you gain the ability to add, edit and view a content item. 
 
 == Annotation == 
 
