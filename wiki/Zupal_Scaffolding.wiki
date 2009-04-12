@@ -9,9 +9,9 @@ Every module should have a default set of functionality based on its model as de
 
 Every node should be:
   * Viewable in three levels:
-    # List (aggregate)
-    # Block (home page or margin)
-    # Detail (full/page view)
+    # List (aggregate) 
+    # Block (home page or margin) -- the Drupal "Teaser"
+    # Detail (full/page view) -- the default
 
 == Annotation == 
 
