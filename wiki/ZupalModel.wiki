@@ -1,4 +1,5 @@
 #summary The Model of Zupal
+#labels Phase-Requirements,model
 
 http://wonderlandlabs.com/wll_drupal/sites/default/files/domain.png
 
