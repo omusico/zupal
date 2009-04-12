@@ -1,0 +1,42 @@
+#summary The Model of Zupal
+
+http://wonderlandlabs.com/wll_drupal/sites/default/files/domain.png
+
+There are several goals for a node based domain system. The Zupal node and domain system should:
+
+    * Ensure the nodes link well to each other and can retrieve and CRUD their linkages
+    * Couple content to a data source for custom data -- potentially, even one that already exists
+    * To cloak data interchange inside the domain system
+
+This system will be accomplished with a series of role based classes.
+ActiveRecord classes with Zupal interface
+
+These will handle the atomic exchange of data; in the begining Zupal will be bound to the Zend_DB component but some room should be made for allowance of other ActiveRecord systems into the fold. The status() method will be an important "real time" heartbeat detector to validate the status of the data in the underlying mechanism. Down the road, the interface could be wrapped around any number of data sources, from web applications to text based data or XML files.
+
+= Domain Class =
+
+To homogenize identity and containment, the domain class sits over and contains an activeRecord. All fields are accessed thorugh getters and setters, though magic methods should handle most of these exchanges by default. This means that you could re-map field names inside the domain system, again, to adapt to existing data. You might even redirect a property back to the node table.
+
+A domain object could potentially represent an aggregate of records uniquely bound into a single representative domain. For instance, an article in a large scale publication could be broken into several tables or a serial network of content that different individuals are working on together (perhaps even a series of paragraphs as records) but from the Domains point of view, the story is a node because it is atomic as far as the audience is concerned.
+
+= Node Class =
+
+The Node Class is mainly about data relationships. It has an identity, a metadata refreence, and methods for CRUDing relationships. It also has a few basic universal fields for the basics like title and text. It is the mechanism that allows you to refer to an element without having to know about that elements' type.
+
+= NodeLink Class =
+
+A node link implements a "Universal HABTM" table that links pieces of information to each other. There is no presumption of uniqueness or directionality in the table itself, but each relationship has a named type that qualifies the relationship. I.e., classic parent child relationships are stored with the type "parent". child relationships are stored through inverting the orientation of the parent data. Networks are stored without orientation. Visits are stored in the HABTM table with metadata references for timestamps etc.
+
+Custom HABTM tables might be needed for efficiency for an operation of scale, in which case some magic with a custom link implementation would be required. Also, not all dependant tables will need node implementation; a straight join to a dependant domain governed table might be fine for local property relationships and other self-contained data relationships
+
+= MetaData Class =
+
+MetaData classes are the responsibility class for a modules custom implementation. They are at the core of what makes a module unique.
+
+The Zupal Node and Zupal_Node_Links are based on a simple table with basic title/text fields and identity over the data it connects to. Though functionally, the node table is an index table, it has basic content fields that allow it to be self sufficient; a simple blog post could be accomplished without additional metadata.
+
+Unlike Drupal, where the custom tables refer to the Node table, Zupal doesn't rely on referential fields existing in the meta table. The node table takes responsibility for referring to the meta table, not the other way around.
+
+Relationships are also in an independant link table; while you could conceivably "bake" relationships into meta tables' foreign keys and override the link mechanisms in special circumstances to simplify the SQL, abstracting linkage gives the ability to create a consistent link model and not have to be concerned with enabling relationship mechanics with each custom node implementation.
+
+Also, using property get/setters means that we can abstract the actual field names inside properties of the domain object, again making it fairly easy to adapt a module over an existing data source.
