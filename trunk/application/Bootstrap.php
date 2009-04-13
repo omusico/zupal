@@ -6,7 +6,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Base
     public function setupView()
     {
         // Initialise Zend_Layout's MVC helpers
-        Zend_Layout::startMvc(array('layoutPath' => APP_DIR . "/layouts"));
+        Zend_Layout::startMvc(array('layoutPath' => APPLICATION_PATH . "/layouts"));
         // TODO: add plugin for custom layout choosing
         
         // VIEW SETUP - Initialize properties of the view object
