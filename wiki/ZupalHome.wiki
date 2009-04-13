@@ -1,5 +1,5 @@
 #summary The genesis and guide to Zupal
-#labels Home
+#labels Home,Featured
 
 "What would the wheel look like if it had been invented by the Japanese?"
 
