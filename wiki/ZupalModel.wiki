@@ -47,14 +47,14 @@ Also, using property get/setters means that we can abstract the actual field nam
 
 = Why so Many Classes? = 
 
-This system clearly seperates each node item into three tiers:
+This system clearly separates each node item into three tiers:
 
    # The transport layer takes care of all the I/O, but it is simple and does not have any responsibility towards modeling complex relationships. 
    # The metadata layer takes care of mapping properties to fields. This means that you can encase any data source with this mapping, without having to concern yourself with the literal field names of the data source. 
-  # The relationship layer (the node) is independent of the transport mechanism and the metadata table. This means it can be mapped over any data source you wish and is not wed to a particular convention of a data transport mechanism. 
+   # The relationship layer (the node) is independent of the transport mechanism and the metadata table. This means it can be mapped over any data source you wish and is not wed to a particular convention of a data transport mechanism. 
 
 I believe this will give developer immense freedom and consistency in creating a system that can be both immensely customizable where it needs to be yet consistent when it comes to mapping relationships. 
 
 Where there is a relationship key in the metadata, for instance, a hook can be created in the metadata class that the get_linked() method can recognize and reflect. It might be more practical for instance to put a parent field in the Zupal_Node table and not store hierarchical relationships in the Zupal_link table (as with http://www.sitepoint.com/article/hierarchical-data-database/2/). 
 
-In any event, wherever the actual data that defines a node clusters' relationship is stored, the _responsibility_ for managing the relationships is accessed (even if it is not fulfilled) in the node class. 
+In any event, wherever the actual data that defines a node clusters' relationship is stored, the _responsibility_ for managing the relationships is accessed (even if it is not stored) in the node and link classes. 
