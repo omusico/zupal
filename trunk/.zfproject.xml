@@ -13,7 +13,7 @@
         </controllerFile>
         <controllerFile controllerName="error"/>
       </controllersDirectory>
-      <layoutsDirectory enabled="false"/>
+      <layoutsDirectory enabled="true"/>
       <modelsDirectory/>
       <modulesDirectory/>
       <viewsDirectory>
@@ -30,21 +30,21 @@
       </viewsDirectory>
       <bootstrapFile/>
     </applicationDirectory>
-    <dataDirectory enabled="false">
-      <cacheDirectory enabled="false"/>
-      <searchIndexesDirectory enabled="false"/>
-      <localesDirectory enabled="false"/>
-      <logsDirectory enabled="false"/>
-      <sessionsDirectory enabled="false"/>
-      <uploadsDirectory enabled="false"/>
+    <dataDirectory enabled="true">
+      <cacheDirectory enabled="true"/>
+      <searchIndexesDirectory enabled="true"/>
+      <localesDirectory enabled="true"/>
+      <logsDirectory enabled="true"/>
+      <sessionsDirectory enabled="true"/>
+      <uploadsDirectory enabled="true"/>
     </dataDirectory>
     <libraryDirectory>
-      <zfStandardLibraryDirectory enabled="false"/>
+      <zfStandardLibraryDirectory enabled="true"/>
     </libraryDirectory>
     <publicDirectory>
-      <publicStylesheetsDirectory enabled="false"/>
-      <publicScriptsDirectory enabled="false"/>
-      <publicImagesDirectory enabled="false"/>
+      <publicStylesheetsDirectory enabled="true"/>
+      <publicScriptsDirectory enabled="true"/>
+      <publicImagesDirectory enabled="true"/>
       <publicIndexFile/>
       <htaccessFile/>
     </publicDirectory>
