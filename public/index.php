@@ -3,7 +3,7 @@
 defined('PS') 
 	|| define('PS', PATH_SEPARATOR);
 
-defined('DS')) 
+defined('DS')
 	|| define('DS', DIRECTORY_SEPARATOR);
 
 defined('ROOT_DIR')  
@@ -15,9 +15,9 @@ defined('APPLICATION_PATH')
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 
-if(!defined('LIBRARY_PATH')) {
+defined('LIBRARY_PATH') || 
 	define('LIBRARY_PATH', ROOT_DIR . DS . 'library');
-}
+
 
 /** setup include path **/
 set_include_path(
