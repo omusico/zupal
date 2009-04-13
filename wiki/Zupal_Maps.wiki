@@ -1,0 +1,27 @@
+#summary The Long Road Forward
+#labels Phase-Requirements,roadmap
+
+= So Much To Do... =
+
+So Little Time
+
+= Things To Do =
+== Model ==
+
+  * Establish node and link functionality
+  * Link in and parameterize metadata
+  * Basic list/block/detail view for nodes
+  * Interface for records, tables; extend table/record classes from Zend_Db
+
+== Module ==
+
+  * Establish self-registering modules
+  * Create admin module that loads SR modules and unloads them
+  * Incorporate model into modules
+
+== View and Form ==
+
+  * Establish basic form interface to Model to create, edit Model. 
+  * Establish scaffolding default views for actions that have no view file
+  * Establish block mechanism with hooks into custom module partials, query based node lists
+  * Establish a basic home page with a core list of node teasers, one or more home page relevatnt blocks of content links
