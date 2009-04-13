@@ -5,17 +5,22 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <?php echo $this->headTitle() ?>
-    <?php echo $this->headScript() ?>
+    <?php echo $this->headLink()->appendStylesheet('/css/styles.css');  ?>
+    <?php echo $this->headScript()?>
     <?php echo $this->headStyle() ?>
 </head>
 <body>
-	<h1>Zupal</h1>
-    <?php //echo $this->render('header.phtml') ?>
-
-    <div id="nav"><?php //echo $this->placeholder('nav') ?></div>
-
-    <div id="content"><?php echo $this->layout()->content ?></div>
-
-    <?php //echo $this->render('footer.phtml') ?>
+	<div id="container">
+		<div id="header">
+			<h1>Zupal</h1>
+		</div>
+	  
+	    <div id="nav"><?php //echo $this->placeholder('nav') ?></div>
+	
+	    <div id="content">
+	    	<?php echo $this->layout()->content ?>
+	    </div>
+	    
+    </div>
 </body>
 </html>
