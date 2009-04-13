@@ -1,0 +1,18 @@
+#summary Using Zend_Layout for modular templates
+#labels Phase-Requirements,templates,view
+
+= Introduction =
+
+Of course you need a switchable layout system for a modular CMS. The layout system of Zend is a good start but a little more functionality is necesary for a self contained templateing system. 
+
+This spec is much more speculative than the rest of the spec as there has been much less contemplation put into it. 
+
+= Alternatives = 
+
+a tempates/mytemplate/main.phtml file and associated resources (in the mytemplate folder) is the basis for a working template system. It must however be publicly accessible.
+
+The simplest path forward to this is to put the template folder in the public directory. 
+
+Its also worth considering an .htaccess based system that maps the resources to the public directory in Apache. 
+
+Activating a given template should be a matter of setting the template folder name in a global resource, wither a database, ini file or define() element. An optional directive for the admin template would be useful, as would the ability to override the template within a controller or action. 
