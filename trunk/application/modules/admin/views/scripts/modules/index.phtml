@@ -1,2 +1,30 @@
 <h2>Modules</h2>
 
+<table>
+<thead>
+	<tr>
+		<th>Enabled</th>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Package</th>
+		<th>Version</th>
+		<th>Core</th>
+		<th>Actions</th>
+	</tr>
+</thead>
+<tbody>		
+<?php foreach($this->moduleConfigs as $key => $config): ?>
+	<tr>
+		<td><input type="checkbox" name='modules[$key]'/></td>
+		<td><?php echo $config['name']; ?></td>
+		<td><?php echo $config['description'];?></td>
+		<td><?php echo $config['package']; ?></td>
+		<td><?php echo $config['version']; ?></td>
+		<td><?php echo $config['core']; ?></td>
+		<td>
+			<a href="/admin/modules/uninstall/moduleName/<?php echo $key ?>">Uninstall</a>
+		</td>
+	</tr>
+<?php endforeach; ?>
+</tbody>
+</table>

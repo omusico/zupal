@@ -1,0 +1,14 @@
+<module>
+	<name>blog</name>
+	<description>This blogging module is le pwn. Ok not really.</description>
+	<package>Core</package>
+	<required>false</required>
+	<version>VERSION</version>
+	<core>0.1</core>
+	
+	<packaging>
+		<version>0.1</version>
+		<project>zupal</project>
+		<datestamp>1234567890</datestamp>
+	</packaging>
+</module>
