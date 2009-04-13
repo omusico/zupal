@@ -27,6 +27,12 @@ A domain object could potentially represent an aggregate of records uniquely bou
 
 The Node Class is mainly about data relationships. It has an identity, a metadata refreence, and methods for CRUDing relationships. It also has a few basic universal fields for the basics like title and text. It is the mechanism that allows you to refer to an element without having to know about that elements' type.
 
+*Important note:* the Node class (although not marked so in the diagram above* is *abstract*. This is to allow link retrieval methods to be handled by the concrete class designed to digest a specific metaData element. 
+
+This means that developers are not bound to any pattern of association. They can keep parent ids in the metaData table, use the parent ID of the Zupal_node table, or use the Zupal_Link HABTM table. A concrete class for Zupal_Node will be created with Zupal-centric association patterns but the developer will be able to use whatever pattern of association fits their context best. 
+
+In fact if the user generated keys (see Sugar CRM) they could do without the node table entirely, wrapping an entire component around a metadata table 
+
 = NodeLink Class =
 
 A node link implements a "Universal HABTM" table that links pieces of information to each other. There is no presumption of uniqueness or directionality in the table itself, but each relationship has a named type that qualifies the relationship. I.e., classic parent child relationships are stored with the type "parent". child relationships are stored through inverting the orientation of the parent data. Networks are stored without orientation. Visits are stored in the HABTM table with metadata references for timestamps etc.
@@ -49,9 +55,9 @@ Also, using property get/setters means that we can abstract the actual field nam
 
 This system clearly separates each node item into three tiers:
 
-   # The transport layer takes care of all the I/O, but it is simple and does not have any responsibility towards modeling complex relationships. 
-   # The metadata layer takes care of mapping properties to fields. This means that you can encase any data source with this mapping, without having to concern yourself with the literal field names of the data source. 
-   # The relationship layer (the node) is independent of the transport mechanism and the metadata table. This means it can be mapped over any data source you wish and is not wed to a particular convention of a data transport mechanism. 
+   # *The transport layer* takes care of all the I/O, but it is simple and does not have any responsibility towards modeling complex relationships. 
+   # *The metadata layer* takes care of mapping properties to fields. This means that you can encase any data source with this mapping, without having to concern yourself with the literal field names of the data source. 
+   # *The relationship layer* (the node) is independent of the transport mechanism and the metadata table. This means it can be mapped over any data source you wish and is not wed to a particular convention of a data transport mechanism. 
 
 I believe this will give developer immense freedom and consistency in creating a system that can be both immensely customizable where it needs to be yet consistent when it comes to mapping relationships. 
 
