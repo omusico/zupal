@@ -32,3 +32,17 @@ here you get the behaviors you want -- however they are within the scope of a si
 http://zupal.googlecode.com/files/Behaviors_2.2.png
 
 Here you get all possible behaviors for noded content -- however, you don't have the option of applying behaviors selectively on a context by context basis which is kind of the point of behaviors in the first place. All you are doing is saving a little time in implementation. 
+
+The question is not "will this work"; option two WILL work, no quetions asked. The issue is will it produce optimal query-once SQL or will ii make every node based query a two stage process. 
+
+My impulse is that the latter is true: we would query once to get a set of nodes, then for each type(table) present in the result set we would run a seperate query (SELECT * FROM my_table WHERE nid IN (found_keys) GROUP BY nid ORDER BY vid DESC. If that doesn't work or prove optimal we are back to picking out custom records one by one based on the nid/vid pair returned by the first query, and the table. 
+
+So the fundamental issue is not can a node based system be made -- obviously it CAN (Drupal works). it is, can a node based system be made to run without creating the maximum number of queries possible. 
+
+The third option is of course turning to a caching system for optimization. First run the query to find the node ids, then pull the stdClass data out of memcache. This obligates clients to our optimization system if they want truly optimal code, but they can always put up with a slower billion query implementation if they choose not to implement a cache system (or cannot as they are in a shared system). 
+
+So the questions are: 
+
+  # Does the design pattern of the node sabotoge the true utility of behaviors by forcing them to be applied to the node table and thus all node content universally?
+  # Can noded content be retrieved efficiently without a caching system?
+  # Can behaviors be applied to a custom table at all if the custom table is also using the node behavior?
