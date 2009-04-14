@@ -1,4 +1,5 @@
 #summary An exploration of using behaviors in Zupal
+#labels model,doctrine,Phase-Design,Featured
 
 = Introduction =
 
@@ -28,6 +29,6 @@ here you get the behaviors you want -- however they are within the scope of a si
 
 == Option Two: Node centric behaviors == 
 
-http://zupal.googlecode.com/files/Behaviors_2.png
+http://zupal.googlecode.com/files/Behaviors_2.2.png
 
 Here you get all possible behaviors for noded content -- however, you don't have the option of applying behaviors selectively on a context by context basis which is kind of the point of behaviors in the first place. All you are doing is saving a little time in implementation. 
