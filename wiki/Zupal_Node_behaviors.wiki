@@ -1,0 +1,23 @@
+#summary An exploration of using behaviors in Zupal
+
+= Introduction =
+
+There are sevaral objectives in the Zupal data model. 
+
+  * Being able to link/refer to an element without knowledge/concern of its actual type/table. 
+  * Being able to organize node content in useful patterns (trees, sets)
+  * Being able to do so with computationally efficient queries
+
+= Using Doctrine Behaviors =
+
+Each of these systems can be modeled _individualy_ with behaviors. The question is can they be usefully modeled in combination. 
+
+== The combination paradox == 
+
+Every Doctrine behavior is table centric. fields and references are field centric. The tree behavior works because the tree is included within a single table. 
+
+However once you bring nodes into the picture, the left and right references start spanning tables. The obvious fix is then to embed the behavior into the node table but then you really aren't getting as much value from the behaviors - and you are presuming ALL noded content is tree based with will not always be the case. 
+
+=== Option One === 
+
+Applying behaviors to the custom tables. 
