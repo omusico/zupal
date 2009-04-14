@@ -18,6 +18,16 @@ Every Doctrine behavior is table centric. fields and references are field centri
 
 However once you bring nodes into the picture, the left and right references start spanning tables. The obvious fix is then to embed the behavior into the node table but then you really aren't getting as much value from the behaviors - and you are presuming ALL noded content is tree based with will not always be the case. 
 
-=== Option One === 
+=== Option One: Custom Table Centric Behaviors === 
 
 Applying behaviors to the custom tables. 
+
+http://zupal.googlecode.com/files/Behaviors_1.png
+
+here you get the behaviors you want -- however they are within the scope of a single table. 
+
+== Option Two: Node centric behaviors == 
+
+http://zupal.googlecode.com/files/Behaviors_2.png
+
+Here you get all possible behaviors for noded content -- however, you don't have the option of applying behaviors selectively on a context by context basis which is kind of the point of behaviors in the first place. All you are doing is saving a little time in implementation. 
