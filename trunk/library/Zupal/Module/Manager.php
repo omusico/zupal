@@ -6,19 +6,28 @@ class Zupal_Module_Manager {
 	
 	public function __construct() 
 	{
-			$this->_moduleDir = 
-				dirname(Zend_Controller_Front::getInstance()->getModuleDirectory());	
+		$this->_moduleDir = dirname(
+			Zend_Controller_Front::getInstance()->getModuleDirectory()
+			);	
 	}
 	
-	public function getModuleConfig($moduleName) 
+
+	public function getModuleInfo($moduleName) 
 	{
-		$configFile = $this->_moduleDir . DS . $moduleName . DS . 'configuration.xml';
+		$configFile = $this->_moduleDir . DS . $moduleName . DS . 'info.xml';
+		
+		if(!file_exists($configFile)) 
+		{
+			throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $moduleName));
+		}
+		
 		return new Zend_Config_Xml($configFile);				 		
 	}
 	
+	
 	public function getModuleNames() 
 	{
-		$ignoreFiles = array(".svn","admin");
+		$ignoreFiles = array('.svn','default','admin');
 		
 		$moduleNames = array();
 	

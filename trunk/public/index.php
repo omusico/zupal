@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set("display_errors", "On");
+
 // set some shortcuts
 defined('PS') 
 	|| define('PS', PATH_SEPARATOR);
@@ -13,7 +16,7 @@ defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', ROOT_DIR . DS . 'application');
 
 defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 
 defined('LIBRARY_PATH') || 
 	define('LIBRARY_PATH', ROOT_DIR . DS . 'library');
@@ -31,4 +34,9 @@ set_include_path(
 );
 
 require_once 'Zupal/Bootstrap.php';
-Zupal_Bootstrap::runMVC();
+try {
+	Zupal_Bootstrap::runMVC();
+} catch(Exception $ex) {
+	Zend_Debug::dump($ex->getMessage(), "Exception:");
+	Zend_Debug::dump($ex->getTrace(), "Stack Trace:");
+}

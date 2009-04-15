@@ -41,6 +41,16 @@ UserRole:
   relations:
     Role:
     User:
+
+Module:
+  columns:
+    id:
+      type: integer(11)
+      autoincrement: true
+      primary: true  
+    name: string(255)
+    enabled: boolean
+    
     
 Term:
   actAs: [NestedSet]
