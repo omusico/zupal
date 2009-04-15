@@ -11,7 +11,7 @@ class Admin_ModulesController extends Zend_Controller_Action
 		
 		foreach($manager->getModuleNames() as $moduleName) 
 		{
-			$config = $manager->getModuleConfig($moduleName);
+			$config = $manager->getModuleInfo($moduleName);
 			$moduleConfigs[$moduleName] = $config->toArray();	
 		}	
 		
@@ -23,7 +23,8 @@ class Admin_ModulesController extends Zend_Controller_Action
 	public function uninstallAction() 
 	{
 		$request = $this->getRequest();
-		if($request->getParam('moduleName',null) != null) {
+		if($request->getParam('moduleName',null) != null) 
+		{
 			$moduleName = $request->getParam('moduleName');
 			$message = sprintf("Module: %s uninstalled.", $moduleName);
 			Zend_Debug::dump($message, "Uninstall Message:");

@@ -26,13 +26,7 @@ class Zupal_Bootstrap
     
     public static function setupEnvironment()
     {
-    	if(APPLICATION_ENV != 'development') 
-    	{ 
-        	error_reporting(E_ALL);
-        	ini_set("display_errors", "On");
-        }
-        date_default_timezone_set('America/Los_Angeles');
-        
+        date_default_timezone_set('America/Los_Angeles');   
         require_once('Zend/Loader.php');
         Zend_Loader::registerAutoload();
     }
@@ -73,10 +67,10 @@ class Zupal_Bootstrap
     {
     	//Zend_Controller_Action_HelperBroker::addPrefix('Zupal_Controller_Action_Helper');
         self::$frontController = Zend_Controller_Front::getInstance();
-        self::$frontController->throwExceptions(false);
+        self::$frontController->throwExceptions(true);
         self::$frontController->returnResponse(true);
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
-        self::$frontController->addModuleDirectory(APPLICATION_PATH . "/modules/");
+        self::$frontController->addModuleDirectory(APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
     }
 
@@ -107,7 +101,7 @@ class Zupal_Bootstrap
 
     public static function setupConfiguration()
     {
-        $config = new Zend_Config_Xml(APPLICATION_PATH . '/config/configuration.xml',APPLICATION_ENV, true);
+        $config = new Zend_Config_Xml(APPLICATION_PATH . '/config/configuration.xml', APPLICATION_ENV, true);
         self::$registry->configuration = $config;
     }
 
