@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration>
+    <production>
+        <webhost>www.zupal.com</webhost>
+        <database>
+            <params>
+                <host>localhost</host>
+                <username>zupal</username>
+                <password>zupal</password>
+                <dbname>zupal</dbname>
+            </params>
+        </database>
+        <cache>
+            <lifetime>7200</lifetime>
+        </cache>
+    </production>
+    
+    <development extends="production">
+        <webhost>www.zupal.local</webhost>
+        <database>
+            <params>
+                <host>localhost</host>
+                <username>root</username>
+                <password></password>
+                <dbname>zupal</dbname>
+            </params>
+        </database>
+    </development>
+</configuration>

@@ -1,0 +1,62 @@
+User:
+  actAs: [Timestampable]
+  columns:
+    id:
+      type: integer(11)
+      autoincrement: true
+      primary: true
+    username: string
+    password: string
+    first_name: string
+    last_name: string
+    display_name: string
+  relations:
+    Roles:
+      foreignAlias: Roles
+      class: Role
+      refClass: UserRole
+
+Role:
+  columns:
+    id:
+      type: integer(11)
+      autoincrement: true
+      primary: true
+    name:
+      type: string(255)
+  relations:
+    Users:
+      foreignAlias: Roles
+      class: User
+      refClass: UserRole
+
+UserRole:
+  columns:
+    role_id:
+      type: integer(11)
+      primary: true
+    user_id:
+      type: integer(11)
+      primary: true
+  relations:
+    Role:
+    User:
+    
+Term:
+  actAs: [NestedSet]
+  columns:
+    id:
+      type: integer(11)
+      autoincrement: true
+      primary: true
+    name: string(255)
+
+Node:
+  columns:
+    id:
+      type: integer(11)
+      autoincrement: true
+      primary: true
+    content_type_id: integer(11)
+    content_type_class: string(255)
+    
