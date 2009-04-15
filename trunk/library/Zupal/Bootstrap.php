@@ -145,6 +145,6 @@ class Zupal_Bootstrap
 			'yaml_schema_path'    =>  APPLICATION_PATH.'/doctrine/schema'
 		);  
 				
-		Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		//Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES, true);
     }
 }
