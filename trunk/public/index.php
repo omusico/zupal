@@ -22,19 +22,13 @@ defined('LIBRARY_PATH') ||
 /** setup include path **/
 set_include_path(
       LIBRARY_PATH . PS
+	. LIBRARY_PATH . DS . 'doctrine' . PS
     . APPLICATION_PATH . PS
-    . APPLICATION_PATH . DS . "models" . PS
-    . APPLICATION_PATH . DS . "forms" . PS
+    . APPLICATION_PATH . DS . 'models' . PS
+    . APPLICATION_PATH . DS . 'models' . DS . 'generated' . PS
+    . APPLICATION_PATH . DS . 'forms' . PS
     . get_include_path()
 );
 
-require_once 'Zend/Loader.php';
-Zend_Loader::registerAutoload();
-
-// Create application, bootstrap, and run
-$application = new Zend_Application(
-    APPLICATION_ENV, 
-    APPLICATION_PATH . '/configs/application.ini'
-);
-$application->bootstrap();
-$application->run();
+require_once 'Zupal/Bootstrap.php';
+Zupal_Bootstrap::runMVC();
