@@ -1,9 +1,9 @@
 <module>
-	<name>blog</name>
-	<description>This blogging module is le pwn. Ok not really.</description>
+	<name>content</name>
+	<description>This default article/blog/content core module.</description>
 	<package>Core</package>
-	<required>false</required>
-	<version>VERSION</version>
+	<required>true</required>
+	<version>1.0</version>
 	<core>0.1</core>
 	
 	<packaging>
