@@ -8,8 +8,7 @@
  *
  * @author daveedelhart
  */
-interface Zupal_Interface_Node {
-    //put your code here
+interface Zupal_Node_INode {
 	/**
 	 * @return int
 	 */

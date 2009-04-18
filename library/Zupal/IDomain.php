@@ -6,9 +6,7 @@
  * Compatible (mostly) with Doctrine and Zend_Db
  * @author daveedelhart
  */
-interface Zupal_Content_IDomain {
-    //put your code here
-
+interface Zupal_IDomain {
 
 	public function save();
 	
@@ -16,7 +14,6 @@ interface Zupal_Content_IDomain {
 	 * A test to determine if the identity of this record is in the databsae.
 	 * True in two cases: the record has not been saved, or it has been deleted.
 	 */
-	public function is_saved();
 
 	public function delete();
 
@@ -29,13 +26,18 @@ interface Zupal_Content_IDomain {
 	 * if the optional sort field is absent,
 	 * the results are returned in arbitrary order.
 	 *
+	 * Compound criteria intersect ("AND").
+	 *
+	 * This method is intentionally limited to single table
+	 * intersect based simple field based retrieval.
+	 * More advanced queries are not a part of this interface.
+	 *
 	 * @param scalar[] $searchCrit
 	 * @param string $sort
 	 * @return Zupal_Content_IDomain[]
 	 */
 
 	public function find(array $searchCrit, $sort = NULL);
-
 
 	/**
 	 * returns a single record matching the search crit. 
@@ -45,5 +47,5 @@ interface Zupal_Content_IDomain {
 	 * @param string $sort 
 	 * @return Zupal_Content_IDomain
 	 */
-	public function find_one(array $searchCrit, $sort = NULL);
+	public function findOne(array $searchCrit, $sort = NULL);
 }
