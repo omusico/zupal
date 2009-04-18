@@ -20,8 +20,7 @@ abstract class BaseNode extends Doctrine_Record
     {
         $this->setTableName('node');
         $this->hasColumn('id', 'integer', 11, array('type' => 'integer', 'autoincrement' => true, 'primary' => true, 'length' => '11'));
-        $this->hasColumn('content_type_id', 'integer', 11, array('type' => 'integer', 'length' => '11'));
-        $this->hasColumn('content_type_class', 'string', 255, array('type' => 'string', 'length' => '255'));
+        $this->hasColumn('type_id', 'integer', 11, array('type' => 'integer', 'length' => '11'));
     }
 
 }
