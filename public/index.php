@@ -21,6 +21,8 @@ defined('APPLICATION_ENV')
 defined('LIBRARY_PATH') || 
 	define('LIBRARY_PATH', ROOT_DIR . DS . 'library');
 
+ 
+
 
 /** setup include path **/
 set_include_path(

@@ -24,6 +24,11 @@ class Zupal_Module_Manager {
 		return new Zend_Config_Xml($configFile);				 		
 	}
 	
+	public function getInstalledModules() {
+		$installedModules = Doctrine::getTable('Module')->findAll(Doctrine::HYDRATE_ARRAY);
+		
+		
+	}
 	
 	public function getModuleNames() 
 	{

@@ -26,7 +26,7 @@ class Zupal_Bootstrap
     
     public static function setupEnvironment()
     {
-        date_default_timezone_set('America/Los_Angeles');   
+        date_default_timezone_set('America/Los_Angeles');	   
         require_once('Zend/Loader.php');
         Zend_Loader::registerAutoload();
     }
@@ -105,16 +105,17 @@ class Zupal_Bootstrap
         self::$registry->configuration = $config;
     }
 
-    public static function setupAuth() { 
+    public static function setupAuth() 
+    { 
 
         // Configure the instance with constructor parameters...
         $authAdapter = new ZendX_Doctrine_Auth_Adapter(
-            Doctrine::getConnectionByTableName('User'),
-            'user',
-            'username',
-            'password',
-            'MD5(?)'
-        );
+            	Doctrine::getConnectionByTableName('User'),
+	            'user',
+	            'username',
+	            'password',
+	            'MD5(?)'
+	        	);
         self::$registry->authAdapter = $authAdapter;
                 
     }
