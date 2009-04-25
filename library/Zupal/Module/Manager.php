@@ -25,8 +25,7 @@ class Zupal_Module_Manager {
 	}
 	
 	public function getInstalledModules() {
-		$installedModules = Doctrine::getTable('Module')->findAll(Doctrine::HYDRATE_ARRAY);
-		
+		@TODO;
 		
 	}
 	
@@ -50,5 +49,22 @@ class Zupal_Module_Manager {
 		}
 		return $moduleNames;
 	}
-	
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private static $_instance;
+
+	/**
+	 * A singleton accessor
+	 * @return Zupal_Module_Manager
+	 */
+	public static function getInstance()
+	{
+		if (is_null(self::$_instance))
+		{
+			self::$_instance = new Zupal_Module_Manager();
+		}
+
+		return self::$_instance;
+	}
 }
