@@ -17,8 +17,9 @@ class Zupal_Bootstrap
             'automatic_serialization' => true
         );
 
-        $backendOptions = array('cache_dir' => ROOT_DIR . DS . 'cache');
-
+        $backendOptions = array('cache_dir' => ZUPAL_ROOT_DIR . DS . 'cache');
+	//	print_r($backendOptions);
+		
         // getting a Zend_Cache_Core object
         $cache = Zend_Cache::factory('Core','File',$frontendOptions,$backendOptions);
         self::$registry->cache = $cache;
@@ -38,7 +39,7 @@ class Zupal_Bootstrap
         self::setupConfiguration();
         self::setupCache();
         self::setupDatabase();
-        self::setupProfiler();
+    //    self::setupProfiler();
         self::setupSession();
         self::setupAuth();
         self::setupFrontController();
@@ -50,7 +51,7 @@ class Zupal_Bootstrap
         self::setupRegistry();
         self::setupConfiguration();
         self::setupDatabase();
-        self::setupProfiler();
+    //    self::setupProfiler();
     }
 
     public static function setupProfiler() {
@@ -107,39 +108,12 @@ class Zupal_Bootstrap
 
     public static function setupAuth() 
     { 
-
-        // Configure the instance with constructor parameters...
-        $authAdapter = new ZendX_Doctrine_Auth_Adapter(
-            	Doctrine::getConnectionByTableName('User'),
-	            'user',
-	            'username',
-	            'password',
-	            'MD5(?)'
-	        	);
-        self::$registry->authAdapter = $authAdapter;
+		//@TODO;
                 
     }
 
     public static function setupDatabase()
     {
-    	$db = self::$registry->configuration->database->params;
-
-    	$connectionString = sprintf("mysql://%s:%s@%s/%s", 
-    								$db->username, 
-    								$db->password, 
-    								$db->host, 
-    								$db->dbname);
-    								
-		Doctrine_Manager::connection($connectionString, 'default');
-		
-		self::$registry->doctrine_config = array(
-			'data_fixtures_path'  =>  APPLICATION_PATH.'/doctrine/data/fixtures',
-			'models_path'         =>  APPLICATION_PATH.'/models',
-			'migrations_path'     =>  APPLICATION_PATH.'/doctrine/migrations',
-			'sql_path'            =>  APPLICATION_PATH.'/doctrine/data/sql',
-			'yaml_schema_path'    =>  APPLICATION_PATH.'/doctrine/schema'
-		);  
-				
-		//Doctrine_Manager::getInstance()->setAttribute(Doctrine::ATTR_AUTOLOAD_TABLE_CLASSES, true);
+		Zupal_Database_Initializer::init();
     }
 }
