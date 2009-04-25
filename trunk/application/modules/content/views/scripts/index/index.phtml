@@ -1,6 +1,7 @@
-<h1>Blogs</h1>
+<h1>Content</h1>
+
 <ol>
-<? foreach($this->blogs as $blog): ?>
-<li><?= $blog->title() ?></li>
-<? endforeach; ?>
+	<? foreach($this->content as $content): ?>
+	<li><?= $content->link() ?></li>
+	<? endforeach; ?>
 </ol>
