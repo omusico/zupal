@@ -5,8 +5,28 @@
  */
 
 class Zupal_Content extends Zupal_Node_Abstract
-implements Zupal_Content_IContent
+// implements Zupal_Content_IContent
 {
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pID
+	* @return <type>
+	*/
+	public function get ($pID)
+	{
+		return new Zupal_Content($pID);
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tableClass @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	* @return string
+	*/
+	public function tableClass ()
+	{
+		return preg_replace('~^Zupal_~', 'Zupal_Table_', get_class($this));
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@ CONTENT INTERFACE @@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -111,4 +131,42 @@ implements Zupal_Content_IContent
 		return $this->is_public;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return string
+	*/
+
+	const LINK_TEMPLATE = '<a href="%s">%s</a>';
+
+	public function link ()
+	{
+		$url = DS . Zend_Controller_Front::getInstance()->getBaseUrl() . join(DS,
+			array('content', 'item', 'view', 'node', $this->nodeId())
+		);
+		return sprintf(self::LINK_TEMPLATE, $url, $this->title());
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_by_node @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pNode_id
+	* @return <type>
+	*/
+	public function get_by_node ($pNode_id)
+	{
+		return $this->findOne(array('node_id' => $pNode_id));
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private static $_instance = NULL;
+	public static function getInstance($pReload = FALSE)
+	{
+		if ($pReload || is_null(self::$_instance)){
+		// process
+			self::$_instance = new Zupal_Content();
+		}
+		return self::$_instance ;
+	}
 }

@@ -1,0 +1,11 @@
+<?
+	$this->placeholder('page_title')->set($this->content->title());
+	$breadcrumb = $this->placeholder('breadcrumb');
+	$breadcrumb = $breadcrumb[0];
+	$breadcrumb->set_item($this->content->title());
+	$this->placeholder('breadcrumb')->set($breadcrumb);
+?>
+
+<p>
+	<?= $this->content->text() ?>
+</p>

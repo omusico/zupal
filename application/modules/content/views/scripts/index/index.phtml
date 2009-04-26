@@ -5,3 +5,11 @@
 	<li><?= $content->link() ?></li>
 	<? endforeach; ?>
 </ol>
+
+<h2>Add Content</h2>
+
+<?
+$form = new Zupal_Content_Form();
+
+echo $form->render();
+?>
