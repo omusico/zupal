@@ -13,11 +13,17 @@
 	<div id="container">
 		<div id="header">
 			<h1>Zupal</h1>
+			<? if ($this->placeholder('breadcrumb')): ?>
+			<div id="breadcrumb"><?= $this->placeholder('breadcrumb') ?></div>
+			<? endif; ?>
 		</div>
 	  
 	    <div id="nav"><?php echo $this->placeholder('nav') ?></div>
 	
 	    <div id="content">
+		<? if ($this->placeholder('page_title')): ?>
+		<h1><?= $this->placeholder('page_title') ?></h1>
+		<? endif; ?>
 	    	<?php echo $this->layout()->content ?>
 	    </div>
 	    
