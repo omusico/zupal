@@ -9,28 +9,27 @@ defined('PS')
 defined('DS')
 	|| define('DS', DIRECTORY_SEPARATOR);
 
-defined('ROOT_DIR')  
-	|| define('ROOT_DIR', dirname(dirname(__FILE__)));
+defined('ZUPAL_ROOT_DIR')
+	|| define('ZUPAL_ROOT_DIR', dirname(dirname(__FILE__)));
 
 defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', ROOT_DIR . DS . 'application');
+    || define('APPLICATION_PATH', ZUPAL_ROOT_DIR . DS . 'application');
 
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 
 defined('LIBRARY_PATH') || 
-	define('LIBRARY_PATH', ROOT_DIR . DS . 'library');
+	define('LIBRARY_PATH', ZUPAL_ROOT_DIR . DS . 'library');
 
- 
+defined('LAYOUT_PATH') ||
+	define('LAYOUT_PATH', APPLICATION_PATH . DS . 'layouts');
 
 
 /** setup include path **/
 set_include_path(
       LIBRARY_PATH . PS
-	. LIBRARY_PATH . DS . 'doctrine' . PS
     . APPLICATION_PATH . PS
     . APPLICATION_PATH . DS . 'models' . PS
-    . APPLICATION_PATH . DS . 'models' . DS . 'generated' . PS
     . APPLICATION_PATH . DS . 'forms' . PS
     . get_include_path()
 );

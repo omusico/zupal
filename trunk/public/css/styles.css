@@ -21,6 +21,57 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
+#breadcrumb div
+{
+	background-color: transparent;
+}
+
+#breadcrumb li
+{
+	display: inline-block;
+	white-space: nowrap;
+}
+
+#breadcrumb a:link,
+#breadcrumb a:visited,
+#breadcrumb a:hover
+{
+	color: yellow;
+	text-decoration: none;
+}
+
+#breadcrumb a:hover { text-decoration: underline }
+
+.menu
+{
+	width: 200px;
+	background-color: white;
+	padding: 7px;
+	font-size: 100%;
+}
+
+.menu h1,
+.menu h2,
+.menu h3,
+.menu h4,
+.menu h5,
+.menu h6
+{
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	color: #999;
+	margin-bottom: 7px;
+}
+
+.menu li
+{
+	list-style: none;
+    text-align: left;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 100%;
+}
+
+
 * {
 	margin:0;
 	padding:0;
@@ -85,6 +136,8 @@ ul, li {
 
 #header{
 	padding: 20px 20px;
+	color: black;
+	width: 900px;
 }
 #header h1 {
 	background: #333 url('../img/cake.icon.gif') no-repeat left;
@@ -102,16 +155,26 @@ ul, li {
 }
 #content{
 	background: #fff;
-	clear: both;
+	clear: right;
 	color: #333;
 	padding: 10px 50px 40px 50px;
 	overflow: auto;
+	float: left;
+	width: 800px;
+	margin-left: 10px;
+	
 }
 #footer {
 	clear: both;
 	padding: 6px 10px;
 	text-align: right;
 
+}
+
+#nav {
+	float: left;
+	width: 200px;
+	margin-right: 10px;
 }
 
 /* Tables */
