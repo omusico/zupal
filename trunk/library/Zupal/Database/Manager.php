@@ -1,11 +1,15 @@
 <?
 
-class Zupal_Database_Initializer
+class Zupal_Database_Manager
 {
 	private static $_adapter = NULL;
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_adapter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
+/**
+ *
+ * @param boolean $pScrub
+ * @return Zend_Db_Adapter_Abstract
+ */
 	public static function get_adapter($pScrub = FALSE)
 	{
 		if (is_null(self::$_adapter) || $pScrub):

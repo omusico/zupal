@@ -5,7 +5,7 @@
  */
 
 class Zupal_Content extends Zupal_Node_Abstract
-// implements Zupal_Content_IContent
+implements Zupal_Content_IContent
 {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -44,7 +44,7 @@ class Zupal_Content extends Zupal_Node_Abstract
 	 */
 	public function shortTitle()
 	{
-		return $this->short_title;
+		return $this->title();
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Zupal_Content extends Zupal_Node_Abstract
 	 */
 	public function shortText()
 	{
-		return $this->short_text;
+		return $this->text();
 	}
 
 	/**
@@ -147,17 +147,6 @@ class Zupal_Content extends Zupal_Node_Abstract
 		return sprintf(self::LINK_TEMPLATE, $url, $this->title());
 	}
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_by_node @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-	/**
-	*
-	* @param <type> $pNode_id
-	* @return <type>
-	*/
-	public function get_by_node ($pNode_id)
-	{
-		return $this->findOne(array('node_id' => $pNode_id));
-	}
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_instance = NULL;
@@ -165,8 +154,19 @@ class Zupal_Content extends Zupal_Node_Abstract
 	{
 		if ($pReload || is_null(self::$_instance)){
 		// process
-			self::$_instance = new Zupal_Content();
+			self::$_instance = new Zupal_Content(Zupal_Domain_Abstract::STUB);
 		}
 		return self::$_instance ;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ select @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pParam
+	* @return <type>
+	*/
+	public function select ($pParam, $pSort = NULL)
+	{
+		return $out;
 	}
 }

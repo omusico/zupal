@@ -5,8 +5,8 @@
  *
  * @author daveedelhart
  */
-class Zupal_Domain_Abstract
-implements Zupal_IDomain
+abstract class Zupal_Domain_Abstract
+implements Zupal_Domain_IDomain
 {
 
 	const STUB = '_asStub_';
@@ -20,7 +20,7 @@ implements Zupal_IDomain
 	 */
 	public function __construct ($pID = NULL)
 	{
-		if ($pID instanceof Zend_Db_Table_Row):
+		if (is_object($pID)):
 			$this->_row = $pID;
 		elseif (!strcasecmp($pID, self::STUB)):
 			$this->asStub();
@@ -35,11 +35,7 @@ implements Zupal_IDomain
 
 	protected function newRow()
 	{
-		if (! strcasecmp(Zupal_Config::get_env(), 'test')):
-			$this->_row = new stdClass();
-		else:
-			$this->_row = $this->table()->fetchNew();
-		endif;
+		$this->_row = $this->table()->fetchNew();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -159,30 +155,19 @@ implements Zupal_IDomain
 	 * Find returns an array or rowset of
 	 * all the matching results (even if there is one or no results.)
 	 * findOne on the other hand returns only one (the first) match.
+	 *
+	 * NOTE: cannot handle joins -- use find_from_sql with table = false for join based results.
 	 */
-	public function find($pParams, $pSort = NULL)
+	
+	public function find(array $pParams = NULL, $pSort = NULL)
 	{
 		$rows = array();
 		if (is_numeric($pParams)):
 			$rows = $this->get($pParams);
-		 elseif (Zupal_Config::testing()):
-			$rows = $this->mock_find_filtered($pParams, $pSort);
 		 else:
-			$select = $this->table()->select();
-		 	if (is_array($pParams) && count($pParams)):
-				foreach($pParams as $field => $value):
-					if (is_array($value)):
-						list($value, $operator) = $value;
-					else:
-						$operator = '=';
-					endif;
-					$select->where("$field $operator ?", $value);
-				endforeach;
-			endif;
-			$select->order($pSort);
+			$select = $this->_select($pParams, $pSort);
 
 			$table_rows = $this->table()->fetchAll($select);
-			//error_log(__METHOD__ . ': finding ' . $select->assemble());
 			foreach($table_rows as $row):
 				$rows[] = $this->get($row);
 			endforeach;
@@ -194,44 +179,44 @@ implements Zupal_IDomain
 
 	public function findAll ($pSort = NULL)
 	{
-		if (Zupal_Config::testing()):
-			$out = array();
-
-			$id_array = $this->table()->get_all_rows($pSort, TRUE);
-			foreach ($id_array as $id)
-			{
-				$out[] = $this->get($id);
-			}
-			return $out;
-		 else:
-			return $this->find(NULL, $pSort);
-		endif;
+		return $this->find(NULL, $pSort);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findOne @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
-	 * @return Zupal_Domain
+	 * @return Zupal_Domain_Abstract
 	 */
-	public function findOne($pParams, $pSort = NULL)
+	public function findOne(array $pParams = NULL, $pSort = NULL)
 	{
-		if (Zupal_Config::testing()):
-			return array_pop($this->mock_find_filtered($pParams, $pSort));
-		else:
-			$select = $this->table()->select();
-		 	if (is_array($pParams) && count($pParams)):
-				foreach($pParams as $field => $value):
-					if (is_array($value)):
-						list($value, $operator) = $value;
-					else:
-						$operator = '=';
-					endif;
-					$select->where("$field $operator ?", $value);
-				endforeach;
-			endif;
-			$row = $this->table()->fetchRow($select, $pSort);
-			return $row ? $this->get($row) : NULL;
+		$select = $this->_select($pParams, $pSort);
+		$row = $this->table()->fetchRow($select);
+		return $row ? $this->get($row) : NULL;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _select @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pParams
+	* @return Zend_Db_Table_Select
+	*/
+	protected function _select ($pParams, $pSort = NULL)
+	{		
+		$select = $this->table()->select();
+		if (is_array($pParams) && count($pParams)):
+			foreach($pParams as $field => $value):
+				if (is_array($value)):
+					list($value, $operator) = $value;
+				else:
+					$operator = '=';
+				endif;
+				$select->where("$field $operator ?", $value);
+			endforeach;
 		endif;
+		if ($pSort):
+			$select->order($pSort);
+		endif;
+		return $select;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -244,14 +229,14 @@ implements Zupal_IDomain
 	 * Note that while this method is not particularly useful (has no advantages over $n = new Class($id),
 	 * it is used internally.
 	 *
-	 * @return Zupal_Domain
+	 * @return Zupal_Domain_IDomain
 	 */
 	public abstract function get ($pID);
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
-	 * This is a "Magic Method" passthrough to the row object.
+	 * This is a "Magic Method" passthrough to the row object/array
 	 */
 	public function __get ($pField)
 	{
@@ -282,6 +267,7 @@ implements Zupal_IDomain
 
 	public function __set($pField, $pValue)
 	{
+		//@NOTE: __get accepts array data but this method presumes row object. One or the other direction needs to be solid. 
 		$this->_row->$pField = $pValue;
 	}
 
@@ -289,17 +275,11 @@ implements Zupal_IDomain
 
 	public function save()
 	{
+		//@NOTE: __get accepts array data but this method presumes row object. One or the other direction needs to be solid.
 		if ($this->_asStub):
 			throw new Exception('Attempt to save a stub of ' . get_class($this));
 		elseif ($this->_row):
-			if (!strcasecmp(Zupal_Config::get_env(), 'test')):
-				if (property_exists($this->_row, Zupal_Table_Abstract::DELETED_FIELD)):
-					throw new Exception(__METHOD__ . ': attempt to save a deleted row ' . print_r($this->_row, 1));
-				endif;
-				$this->table()->add_mock_row($this->_row);
-			else:
-				$this->_row->save();
-			endif;
+			$this->_row->save();
 		else:
 			throw new Exception(__METHOD__ . ': Cannot save empty row');
 		endif;
@@ -342,15 +322,27 @@ implements Zupal_IDomain
 
 	/**
 	 * This method takes on faith that the SQL has been constructed
-	 * to return an array of (at least) identities, and that they have not been mismapped or renamed.
+	 * to return an array of (at least) identities,
+	 * and that they have not been mismapped or renamed.
 	 *
 	 * @TODO: validate this!
-	 * @return Zupal_Domain[];
+	 * @return Zupal_Domain_Abstract[];
 	 */
 
-	public function find_from_sql($pSQL)
+	public function find_from_sql($pSQL, $pTable = TRUE)
 	{
-		$rowset = $this->table()->getAdapter()->fetchAll($pSQL);
+		if ($pTable):
+			$base = $this->table();
+		else:
+			$base = $this->table->getAdapter();
+		endif;
+
+		if (is_array($pSql)):
+			$rowset = call_user_func_array(array($base, 'fetchAll'), $pSQL);
+		else:
+			$rowset = $base->fetchAll($pSQL);
+		endif;
+
 		$rows = array();
 		$id = $data[$this->table()->idField()];
 
@@ -363,17 +355,20 @@ implements Zupal_IDomain
 
 	/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	const LINK_TEMPLATE = '<a href="%s">%s</a>';
+	const LINK_TEMPLATE = '<a href="%s" %s>%s</a>';
 
 	/**
 	 * returns a markup link to this item
 	 *
 	 * @param String $pURL
+	 * @param String $pClass
 	 * @return String
 	 */
-	public function link ($pURL)
+	public function link ($pURL, $pClass = NULL)
 	{
-		return sprintf(self::LINK_TEMPLATE, $pURL, $this);
+		$class = $pClass ? sprintf(' class="%s" ', $pClass) : '';
+
+		return sprintf(self::LINK_TEMPLATE, $pURL, $class, $this);
 	}
 
 }

@@ -38,11 +38,11 @@ class Zupal_Bootstrap
         self::setupRegistry();
         self::setupConfiguration();
         self::setupCache();
-        self::setupDatabase();
     //    self::setupProfiler();
         self::setupSession();
         self::setupAuth();
         self::setupFrontController();
+        self::setupModel();
         self::setupView();
     }
     
@@ -50,7 +50,7 @@ class Zupal_Bootstrap
         self::setupEnvironment();
         self::setupRegistry();
         self::setupConfiguration();
-        self::setupDatabase();
+        self::setupModel();
     //    self::setupProfiler();
     }
 
@@ -112,8 +112,14 @@ class Zupal_Bootstrap
                 
     }
 
-    public static function setupDatabase()
+    public static function setupModel()
     {
-		Zupal_Database_Initializer::init();
+		Zupal_Database_Manager::init();
+
+		Zupal_Module_Manager::getInstance()->load_all();
+		foreach(Zupal_Module_Manager::getInstance()->get_all() as $item)
+		{
+			$item->add_paths();
+		}
     }
 }

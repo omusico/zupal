@@ -30,4 +30,21 @@ class Zupal_Nodes Extends Zupal_Domain_Abstract
 	{
 		return new Zupal_Nodes($pID);
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private static $_Instance = NULL;
+	/**
+	 *
+	 * @param boolean $pReload
+	 * @return Zupal_Nodes
+	 */
+	static function getInstance($pReload = FALSE)
+	{
+		if ($pReload || is_null(self::$_Instance)):
+		// process
+		self::$_Instance = new Zupal_Nodes(Zupal_Domain_Abstract::STUB);
+		endif;
+		return self::$_Instance;
+	}
 }
