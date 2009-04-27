@@ -30,7 +30,7 @@ class Zupal_Menu_Item
 
 	public function __toString()
 	{
-		$url = DS  . ltrim(DS, Zend_Controller_Front::getInstance()->getBaseUrl());
+		$url = ltrim(DS, Zend_Controller_Front::getInstance()->getBaseUrl());
 		if (($this->module == '') || ($this->module == 'default'))
 		{
 			$path = array($this->controller, $this->action);
@@ -46,7 +46,7 @@ class Zupal_Menu_Item
 			$path[] = (string) htmlentities($v);
 		}
 
-		$url = join(DS, $path);
+		$url .= join(DS, $path);
 
 		return sprintf(self::LINK, $url, $this->label);
 

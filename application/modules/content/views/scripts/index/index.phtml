@@ -1,10 +1,9 @@
-<h1>Content</h1>
-
-<ol>
-	<? foreach($this->content as $content): ?>
-	<li><?= $content->link() ?></li>
-	<? endforeach; ?>
-</ol>
+<?= $this->partial('Zupal/Content/list.phtml',
+	array(
+		'content' => $this->content,
+		'title' => 'Content'
+	)
+) ?>
 
 <h2>Add Content</h2>
 

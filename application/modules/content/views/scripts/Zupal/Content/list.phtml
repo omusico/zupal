@@ -1,0 +1,24 @@
+<div class="list">
+	<h2><?= $this->title ? $this->title : 'Content' ?></h2>
+	<table>
+	<thead>
+
+		<tr>
+			<th>Node</th>
+			<th>Title</th>
+			<th>Summary</th>
+			<th>Date</th>
+		</tr>
+		<thead>
+		<tbody>
+	<? foreach ($this->content as $content): ?>
+		<tr>
+			<th><?= $content->nodeId() ?></th>
+			<td><?= $content->link() ?></td>
+			<td><?= $content->shortText() ?></td>
+			<td><?= $content->made() ?></td>
+		</tr>
+	<? endforeach; ?>
+	</tbody>
+	</table>
+</div>

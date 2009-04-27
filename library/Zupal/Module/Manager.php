@@ -6,22 +6,7 @@ class Zupal_Module_Manager {
 	
 	public function __construct() 
 	{
-		$this->_moduleDir = dirname(
-			Zend_Controller_Front::getInstance()->getModuleDirectory()
-			);	
-	}
-	
-
-	public function getModuleInfo($moduleName) 
-	{
-		$configFile = $this->_moduleDir . DS . $moduleName . DS . 'info.xml';
-		
-		if(!file_exists($configFile)) 
-		{
-			throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $moduleName));
-		}
-		
-		return new Zend_Config_Xml($configFile);				 		
+		$this->_moduleDir = APPLICATION_PATH . DS . 'modules';
 	}
 	
 	public function getInstalledModules() {
@@ -66,5 +51,44 @@ class Zupal_Module_Manager {
 		}
 
 		return self::$_instance;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ manager @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_modules = array();
+
+	public function get_all()
+	{
+		return $this->_modules;
+	}
+
+	public function get($pManager)
+	{
+		load($pManager);
+		return $this->_modules[$pManager];
+	}
+
+	public function load($pManager)
+	{
+		$pManager = strtolower(trim($pManager));
+
+		if((!$pManager) || array_key_exists($pManager, $this->_modules))
+		{
+			return;
+		}
+
+		$item = new Zupal_Module_Manager_item($pManager);
+		$this->_modules[$pManager] = $item;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_all @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return Zupal_Manager_item[]
+	*/
+
+	public function load_all ()
+	{
+		foreach($this->getModuleNames() as $module) $this->load($module);
 	}
 }

@@ -30,6 +30,7 @@
 {
 	display: inline-block;
 	white-space: nowrap;
+	color: white;
 }
 
 #breadcrumb a:link,
@@ -84,6 +85,7 @@ body {
 	font-family:verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
+	color: white;
 }
 a {
 	color: #003d4c;
@@ -191,6 +193,10 @@ th {
 	color: #333;
 	text-align: center;
 	border-bottom: 1px solid #333;
+}
+tbody th {
+	border-bottom: none;
+	text-align: left;
 }
 th a {
 

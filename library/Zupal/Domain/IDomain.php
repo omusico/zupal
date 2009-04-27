@@ -6,7 +6,7 @@
  * Compatible (mostly) with Doctrine and Zend_Db
  * @author daveedelhart
  */
-interface Zupal_IDomain {
+interface Zupal_Domain_IDomain {
 
 	public function save();
 	
@@ -37,7 +37,7 @@ interface Zupal_IDomain {
 	 * @return Zupal_Content_IDomain[]
 	 */
 
-	public function find(array $searchCrit, $sort = NULL);
+	public function find(array $searchCrit = NULL, $sort = NULL);
 
 	/**
 	 * returns a single record matching the search crit. 
@@ -47,5 +47,7 @@ interface Zupal_IDomain {
 	 * @param string $sort 
 	 * @return Zupal_Content_IDomain
 	 */
-	public function findOne(array $searchCrit, $sort = NULL);
+	public function findOne(array $searchCrit = NULL, $sort = NULL);
+
+	public function findAll($pSort = NULL);
 }
