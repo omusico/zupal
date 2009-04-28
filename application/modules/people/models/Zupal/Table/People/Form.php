@@ -1,6 +1,6 @@
 <?php
 
-class Zupal_Content_Form
+class Zupal_People_Form
 extends Zupal_Nodes_Form
 {
 	public function __construct(Zupal_Content $pContent = NULL)

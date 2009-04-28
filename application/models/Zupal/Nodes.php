@@ -47,4 +47,70 @@ class Zupal_Nodes Extends Zupal_Domain_Abstract
 		endif;
 		return self::$_Instance;
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private static $STATUSES = array(Zupal_Node_INode::STATUS_ARCHIVED,
+		Zupal_Node_INode::STATUS_DELETED,
+		Zupal_Node_INode::STATUS_FLAGGED,
+		Zupal_Node_INode::STATUS_HOMEPAGE,
+		Zupal_Node_INode::STATUS_LIVE,
+		Zupal_Node_INode::STATUS_BANNED
+	);
+
+	public static $STATUS_PHRASES =  array(Zupal_Node_INode::STATUS_ARCHIVED => 'Archived',
+		Zupal_Node_INode::STATUS_DELETED => 'Deleted',
+		Zupal_Node_INode::STATUS_FLAGGED => 'Flagged',
+		Zupal_Node_INode::STATUS_HOMEPAGE => 'Homepage',
+		Zupal_Node_INode::STATUS_LIVE => 'Live',
+		Zupal_Node_INode::STATUS_BANNED => 'Banned'
+	);
+	/**
+	*
+	* @param boolean $pAs_array
+	* @return boolean | array
+	*/
+	public function status ($pOverride_if_deleted = TRUE)
+	{
+		$status = (int) $this->status;
+		$out = array();
+
+		foreach(self::$STATUS_PHRASES as $s => $phrase):
+			if ($s & $status) $out[$s] = $phrase;
+		endforeach;
+		// apply deleted overrides
+		if ($pOverride_if_deleted):
+			if (Zupal_Node_INode::STATUS_DELETED & $status):
+				unset($out[Zupal_Node_INode::STATUS_LIVE]);
+				unset($out[Zupal_Node_INode::STATUS_HOMEPAGE]);
+			endif;
+		endif;
+		return $out;
+	}
+
+	public function is($pStatus, $pOverride_if_deleted = TRUE)
+	{
+		if ($pOverride_if_deleted && (Zupal_Node_INode::STATUS_DELETED & $pStatus)
+			&& (($pStatus == Zupal_Node_INode::STATUS_HOMEPAGE) || ($pStatus == Zupal_Node_INode::STATUS_LIVE))):
+			return FALSE;
+		endif;
+
+		return $pStatus & $this->status;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_status @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param array|int $pStatus
+	* @return int;
+	*/
+	public function set_status ( $pStatus)
+	{
+		if (is_array($pStatus)):
+			$this->status = array_sum($pStatus);
+		else:
+			$this->status = intval($pStatus);
+		endif;
+		return $this->status;
+	}
 }
