@@ -64,7 +64,7 @@ class Zupal_Module_Manager {
 
 	public function get($pManager)
 	{
-		load($pManager);
+		$this->load($pManager);
 		return $this->_modules[$pManager];
 	}
 

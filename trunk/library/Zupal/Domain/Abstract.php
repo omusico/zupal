@@ -329,7 +329,7 @@ implements Zupal_Domain_IDomain
 	 * @return Zupal_Domain_Abstract[];
 	 */
 
-	public function find_from_sql($pSQL, $pTable = TRUE)
+	public function find_from_sql($pSQL, $pTable = TRUE, $pBy_ID = TRUE)
 	{
 		if ($pTable):
 			$base = $this->table();
@@ -344,11 +344,17 @@ implements Zupal_Domain_IDomain
 		endif;
 
 		$rows = array();
-		$id = $data[$this->table()->idField()];
 
-		foreach ($rowset as $data):
-			$rows[] = $this->get($id);
-		endforeach;
+		if ($pBy_ID):
+			$id_field = $this->table()->idField();
+			foreach ($rowset as $data):
+				$rows[] = $this->get($data[$id_field]);
+			endforeach;
+		else:
+			foreach ($rowset as $data):
+				$rows[] = $this->get($data);
+			endforeach;
+		endif;
 
 		return $rows;
 	}
