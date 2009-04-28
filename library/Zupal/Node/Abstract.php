@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This class represents a domain object that utilizes a node.
+ * Note tha tthe node object itself is a domain object that is a compositional part of this one.
+ */
 abstract class Zupal_Node_Abstract
 extends Zupal_Domain_Abstract
 implements Zupal_Node_INode,
@@ -7,13 +10,19 @@ implements Zupal_Node_INode,
 {
 
 	public function save()
-	{
-		$this->node();
-		parent::save();
-		if ($this->_is_versioned):
-			$this->node()->version = $this->identity();
-			$this->node()->save();
+	{		
+		$node = $this->node();
+
+		if (!$this->{$this->node_field()}):
+			$this->{$this->node_field()} = $node->identity();
 		endif;
+	
+		parent::save();
+		
+		$node->version = $this->identity();
+		$node->table = $this->table()->tableName();
+		$node->class = get_class($this);
+		$node->save();
 	}
 
 
@@ -46,22 +55,11 @@ implements Zupal_Node_INode,
 	 */
 	function node($pReload = FALSE)
 	{
-		if ($pReload || is_null($this->_node)):
-			if ($this->nodeId())
-			{
-				$this->_node = new Zupal_Nodes($this->nodeId());
-				$this->_node->table = $this->table()->tableName();
-				$this->_node->class = get_class($this);
-				$this->_node->save();
-			}
-			else
-			{
-				$this->_node = new Zupal_Nodes();
-				$this->_node->save();
-				$this->{$this->node_field()} = $this->_node->identity();
-			}
-		// process
+		if ($pReload || (is_null($this->_node))):
+			$this->_node = new Zupal_Nodes($this->nodeId());
+			$this->_node->save();
 		endif;
+
 		return $this->_node;
 	}
 
@@ -95,6 +93,7 @@ implements Zupal_Node_INode,
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+	const LIVE_SELECT = '((status & 1) AND (NOT (status & 32)))';
 /**
  *
  * @param array $searchCrit
@@ -106,13 +105,8 @@ implements Zupal_Node_INode,
 		$table = $this->table();
 		$id_field = $table->idField();
 
-		// create select for finding node ids
-		if ($this->_is_versioned):
 		$select = $table->getAdapter()->select()
 			->from($table->tableName()); // do not include node table
-		else:
-			$select = $table->select();
-		endif;
 
 		if (is_array($searchCrit) && count($searchCrit)):
 			foreach($searchCrit as $crit):
@@ -146,19 +140,13 @@ implements Zupal_Node_INode,
 
 		$select = $this->_select($searchCrit, $sort);
 
-		if ($this->_is_versioned):
+		$node_stub = Zupal_Nodes::getInstance();
 
-			$node_stub = Zupal_Nodes::getInstance();
-
-			$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
-			$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
-			//@TODO: cache this expression?
-			$select->join($node_stub->table()->tableName(), $cond, array());
-			$rows = $table->getAdapter()->fetchAll($select, array(), Zend_Db::FETCH_OBJ);
-		else:
-			
-			$rows = $table->fetchAll($select);
-		endif;
+		$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
+		$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
+		//@TODO: cache this expression?
+		$select->join($node_stub->table()->tableName(), $cond, array());
+		$rows = $table->getAdapter()->fetchAll($select, array(), Zend_Db::FETCH_OBJ);
 
 		error_log(__METHOD__ . ': ' . $select->assemble());
 
@@ -211,45 +199,25 @@ implements Zupal_Node_INode,
 		return $this->find(NULL, $pSort);
 	}
 
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
-	private static $STATUSES = array(Zupal_Node_INode::STATUS_ARCHIVED,
-		Zupal_Node_INode::STATUS_FLAGGED,
-		Zupal_Node_INode::STATUS_FRONTPAGE,
-		Zupal_Node_INode::STATUS_LIVE,
-		Zupal_Node_INode::STATUS_STICKY);
-
-	private static $STATUS_PHRASES =  array(Zupal_Node_INode::STATUS_ARCHIVED => 'Archived',
-		Zupal_Node_INode::STATUS_FLAGGED => 'Flagged',
-		Zupal_Node_INode::STATUS_FRONTPAGE => 'Frontpage',
-		Zupal_Node_INode::STATUS_LIVE => 'Live',
-		Zupal_Node_INode::STATUS_STICKY => 'Sticky');
 	/**
 	*
-	* @param boolean $pAs_array
-	* @return boolean | array
+	* @return int[]
 	*/
-	public function status ($pAs_array = FALSE)
+	public function status ($pOverride_if_deleted = TRUE)
 	{
-		$status = (int) $this->node()->status;
-		$out = array();
-
-		if ($pAs_array == 2):
-			foreach(self::$STATUS_PHRASES as $s => $phrase):
-				if ($s & $status) $out[$s] = $phrase;
-			endforeach;
-		elseif ($pAs_array):
-			foreach(self::$STATUSES as $s):
-				if ($s & $status) $out[] = $s;
-			endforeach;
-		else:
-			$out = $status;
-		endif;
-		return $out;
+		return $this->node()->status($pOverride_if_deleted);
 	}
 
-	public function is($pStatus)
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param int $pStatus
+	* @return boolean
+	*/
+	public function is ($pStatus, $pOverride_if_deleted = TRUE)
 	{
-		return $pStatus & $this->status();
+		return $this->node()->is($pStatus, $pOverride_if_deleted);
 	}
 }

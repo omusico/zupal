@@ -7,9 +7,43 @@ class Zupal_Menu_Item
 	public $action = '';
 	public $params = array();
 	public $label = '';
+	public $list_class = '';
+	public $submenu = '';
 
-	public function __construct($pLabel, $pModule, $pController = 'index', $pAction = 'index', $pParams = NULL)
+	private static $_item_iter = 0;
+	public function __construct($pLabel, $pModule = '', $pController = 'index', $pAction = 'index', $pParams = NULL)
 	{
+		if (is_array($pLabel)):
+			foreach($pLabel as $key => $value):
+				switch (strtolower($key)):
+					case 'label':
+						$pLabel = $value;
+						break;
+					
+					case 'module':
+						$pModule = $value;
+						break;
+
+					case 'action':
+						$pAction = $value;
+						break;
+
+					case 'list_class':
+						$this->list_class = $value;
+						break;
+					
+					default:
+						if (!is_array($pParams)):
+							$pParams = array($key => $value);
+						else:
+							$pParams[$key] = $value;
+						endif;
+				endswitch;
+			endforeach;
+		endif;
+
+		if (is_array($pLabel)) $pLabel = '' ;
+
 		$this->module = strtolower($pModule);
 		$this->controller = $pController;
 		$this->action = $pAction;
@@ -26,7 +60,7 @@ class Zupal_Menu_Item
 		$this->label = $pLabel;
 	}
 
-	const LINK = '<a href="%s">%s</a>';
+	const LINK = '<a href="%s">%s</a>%s';
 
 	public function __toString()
 	{
@@ -48,7 +82,7 @@ class Zupal_Menu_Item
 
 		$url .= join(DS, $path);
 
-		return sprintf(self::LINK, $url, $this->label);
+		return sprintf(self::LINK, $url, $this->label, $this->submenu);
 
 	}
 

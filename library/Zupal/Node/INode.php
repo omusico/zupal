@@ -20,9 +20,10 @@ interface Zupal_Node_INode {
 	public function status($pAs_array = TRUE);
 
 	const STATUS_LIVE = 1;
-	const STATUS_FRONTPAGE = 2;
-	const STATUS_ARCHIVED = 4;
-	const STATUS_STICKY = 8;
-	const STATUS_FLAGGED = 16;
+	const STATUS_HOMEPAGE = 2;
+	const STATUS_BANNED = 4;
+	const STATUS_FLAGGED = 8;
+	const STATUS_ARCHIVED = 16;
+	const STATUS_DELETED = 32;
 	
 }

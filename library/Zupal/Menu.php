@@ -1,21 +1,22 @@
 <?php
 
 class Zupal_Menu
+implements Zupal_Menu_IMenu
 {
 
 	public function __construct($pTitle = '', $pData = NULL)
 	{
 		$this->set_title($pTitle);
-		
+
+		if ($pData instanceof Zend_Config) $pData = $pData->toArray();
 		if ($pData && is_array($pData))
 		{
 			foreach($pData as $k => $v)
 			{
-				$this->set_item($pData, $k);
+				$this->set_item($v, $k);
 			}
 		}
 	}
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ depth @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -61,10 +62,16 @@ class Zupal_Menu
 
 	public function set_item($pValue, $pID = NULL)
 	{
+
+		if (is_array($pValue)):
+
+			$pValue = new Zupal_Menu_Item($pValue);
+		endif;
+
 		if (is_null($pID)):
-		array_push($this->_items, $pValue);
+			array_push($this->_items, $pValue);
 		else:
-		$this->_items[$pID] = $pValue;
+			$this->_items[$pID] = $pValue;
 		endif;
 	}
 
@@ -82,8 +89,14 @@ class Zupal_Menu
 <h<?= $this->get_depth()?>><?= $this->get_title() ?></h<?= $this->get_depth() ?>>
 <? endif; ?>
 <ol>
-<? foreach($this->get_items() as $item): ?>
-	<li><?= $item ?></li>
+<? foreach($this->get_items() as $item):
+	if (($item instanceof Zupal_Menu_Item) && $item->list_class):
+		$list_class = " class=\"{$item->list_class}\" ";
+	else:
+		$list_class = '';
+	endif;
+?>
+	<li <?= $list_class ?> ><?= $item ?></li>
 <? endforeach; ?>
 </ol>
 </div>
