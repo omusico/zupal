@@ -5,6 +5,7 @@
 	<required>true</required>
 	<version>1.0</version>
 	<core>0.1</core>
+	<menu>menu.xml</menu>
 	
 	<packaging>
 		<version>0.1</version>

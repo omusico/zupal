@@ -1,3 +1,7 @@
+<style>
+	tr.deleted td { color: red; text-decoration: strikethrough }
+</style>
+
 <div class="list">
 	<h2><?= $this->title ? $this->title : 'Content' ?></h2>
 	<table>
@@ -8,15 +12,17 @@
 			<th>Title</th>
 			<th>Summary</th>
 			<th>Date</th>
+			<th>Status</th>
 		</tr>
 		<thead>
 		<tbody>
 	<? foreach ($this->content as $content): ?>
-		<tr>
+		<tr <?= ($content->is(Zupal_Node_INode::STATUS_DELETED)) ? 'class="deleted" ' : '' ?>>
 			<th><?= $content->nodeId() ?></th>
 			<td><?= $content->link() ?></td>
 			<td><?= $content->shortText() ?></td>
 			<td><?= $content->made() ?></td>
+			<td><?= join(',', $content->status(2)) ?></td>
 		</tr>
 	<? endforeach; ?>
 	</tbody>

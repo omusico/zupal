@@ -4,9 +4,9 @@ class Zupal_Table_Content
 extends Zupal_Table_Abstract
 {
 	protected $_id_field = 'id';
-	protected $_name = 'content';
+	protected $_name = 'zupal_content';
 
-	const INSTALL_TABLE = "CREATE TABLE IF NOT EXISTS `content` (
+	const INSTALL_TABLE = "CREATE TABLE IF NOT EXISTS `zupal_content` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `node_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,

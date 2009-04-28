@@ -56,7 +56,7 @@ implements Zupal_Content_IContent
 	}
 
 	/**
-	 * A summary, useful for search listings, front page content, sidebars, aggregation, etc.
+	 * A summary, useful for search listings, home page content, sidebars, aggregation, etc.
 	 * Can be equal to text(), or blank.
 	 */
 	public function shortText()
