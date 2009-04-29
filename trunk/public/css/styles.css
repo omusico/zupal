@@ -72,6 +72,29 @@
     font-size: 100%;
 }
 
+.menu li.active
+{
+	background-color: yellow;
+}
+
+.menu .menu {
+	width: 100%;
+	background-color: transparent;
+}
+
+.menu a:link,
+.menu a:visited,
+.menu a.hover
+{
+	text-decoration: none;
+	color: #009;
+	font-weight: bold;
+
+}
+
+.menu a:hover{ text-decoration: underline; }
+
+.menu .menu { font-weight: normal; }
 
 * {
 	margin:0;
@@ -191,7 +214,7 @@ table {
 }
 th {
 	color: #333;
-	text-align: center;
+	text-align: left;
 	border-bottom: 1px solid #333;
 }
 tbody th {
@@ -211,7 +234,7 @@ th a:hover {
 }
 table tr td {
 	padding: 4px;
-	text-align: center;
+	text-align: left;
 	vertical-align: top;
 }
 table tr.altrow td {
@@ -270,7 +293,9 @@ dt {
 dd {
 	margin-left: 10em;
 	margin-top: -2em;
+	margin-right: 1em;
 	vertical-align: top;
+	margin-bottom: 0.5em;
 }
 
 /* Forms */
@@ -281,14 +306,17 @@ form {
 	width: 80%;
 }
 fieldset {
+	width: 400px;
 	border: 1px solid #ccc;
-	margin-top: 30px;
-	padding: 16px 20px;
+	margin-top: 10px;
+	padding: 8px 8px;
 }
+
+fieldset dl{ width: 100% }
 fieldset legend {
 	background:#fff;
-	color: #0066FF;;
-	font-size: 160%;
+	color: #666;
+	font-size: 80%;
 	font-weight: bold;
 }
 fieldset fieldset {
@@ -297,7 +325,7 @@ fieldset fieldset {
 	padding: 16px 10px;
 }
 fieldset fieldset legend {
-	font-size: 120%;
+	font-size: 80%;
 	font-weight: normal;
 }
 fieldset fieldset div {

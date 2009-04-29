@@ -1,0 +1,23 @@
+
+<configdata>
+	<menu>
+		<new>
+			<module>admin</module>
+			<controller>places</controller>
+			<action>new</action>
+			<label>New Place</label>
+		</new>
+		<flagged>
+			<module>admin</module>
+			<controller>places</controller>
+			<action>index</action>
+			<label>List Places</label>
+		</flagged>
+		<search>
+			<module>admin</module>
+			<controller>index</controller>
+			<action>find</action>
+			<label>Find</label>
+		</search>
+	</menu>
+</configdata>

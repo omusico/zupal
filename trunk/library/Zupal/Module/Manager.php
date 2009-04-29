@@ -16,7 +16,7 @@ class Zupal_Module_Manager {
 	
 	public function getModuleNames() 
 	{
-		$ignoreFiles = array('.svn','default','admin');
+		$ignoreFiles = array('.svn');
 		
 		$moduleNames = array();
 	

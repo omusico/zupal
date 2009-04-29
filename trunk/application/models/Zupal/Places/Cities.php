@@ -77,6 +77,7 @@ implements Zupal_Place_IItem
 			$city = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
 			$city->set_name($pParams); // return a neutrered city object.
 		endif;
+		return $city;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

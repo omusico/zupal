@@ -1,5 +1,5 @@
 <?php
-
+// 415 913 7321
 class Zupal_Menu_Item
 {
 	public $module = '';
@@ -24,6 +24,10 @@ class Zupal_Menu_Item
 						$pModule = $value;
 						break;
 
+					case 'controller':
+						$pController = $value;
+						break;
+					
 					case 'action':
 						$pAction = $value;
 						break;

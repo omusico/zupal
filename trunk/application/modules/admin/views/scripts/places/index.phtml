@@ -1,0 +1,18 @@
+<? if ($this->places) :?>
+<?= $this->partial('Zupal/Places/list.phtml',
+	array(
+		'content' => $this->places,
+		'title' => 'Places'
+	)
+) ?>
+<? else: ?>
+<p>-- no places -- <p>
+<? endif; ?>
+
+<h2>Add Place</h2>
+
+<?
+$form = new Zupal_Places_Form();
+$form->setAction(join(DS, array(Zend_Controller_Front::getInstance()->getBaseUrl(), 'admin','places','newvalidate')));
+echo $form->render();
+?>

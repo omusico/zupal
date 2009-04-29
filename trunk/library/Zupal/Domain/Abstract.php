@@ -377,5 +377,26 @@ implements Zupal_Domain_IDomain
 		return sprintf(self::LINK_TEMPLATE, $pURL, $class, $this);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __call @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pName
+	* @return <type>
+	*/
+	public function __call ($pName, $pParams)
+	{
+		$name = explode('_', $pName);
+		if (count($name) > 1):
+			foreach($name as $n => $v) if ($n) $name[$v] = ucfirst($v);
+			$alt = join('', $name);
+		else:
+			$alt = strtolower(preg_replace('/(?<=[a-z])(?=[A-Z])/','_',$pName));
+		endif;
+		if (method_exists($this, $alt)):
+			return call_user_func_array($this, $alt, $pParams);
+		endif;
+
+		throw new Exception("No function $pName or $alt in " . get_class($this));
+	}
 }
 
