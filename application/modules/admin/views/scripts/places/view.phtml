@@ -1,0 +1,14 @@
+<?
+	$this->placeholder('page_title')->set('Place: ' . $this->place->get_name());
+	$breadcrumb = $this->placeholder('breadcrumb');
+	$breadcrumb = $breadcrumb[0];
+	$breadcrumb->set_item($this->place->get_name());
+	$this->placeholder('breadcrumb')->set($breadcrumb);
+?>
+<dl>
+	<dt>Name</dt>
+	<dd><?= $this->place->get_name() ?></dd>
+	<dt>Address</dt>
+	<dd><?= $this->place->getAddress() ?></dd>
+	
+</dl>

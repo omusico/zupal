@@ -44,8 +44,8 @@ extends Zupal_Domain_IDomain {
 	/**
 	 * @reutrn Zupal_Place_IItem
 	 */
-	public function getPostal();
-	public function setPostal($pPostal);
+	public function getPostalcode();
+	public function setPostalcode($pPostal);
 
 	/**
 	 *

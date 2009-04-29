@@ -7,7 +7,7 @@
  */
 
 class Zupal_Places Extends Zupal_Domain_Abstract
-Implements IPlace
+Implements Zupal_Place_IPlace
 {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -31,6 +31,18 @@ Implements IPlace
 	{
 		return new Zupal_Places($pID);
 	}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ name @@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	/**
+	 * @return class;
+	 */
+
+	public function get_name() { return $this->name; }
+
+	public function set_name($pValue) { $this->name = $pValue; }
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -85,7 +97,7 @@ Implements IPlace
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ address @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
 	/**
-	 * @return Zupal_Place_IItem
+	 * @return Zupal_Place_Address
 	 */
 	public function getAddress()
 	{
@@ -97,6 +109,11 @@ Implements IPlace
 		{
 			$this->addr = $pAddress->address;
 			$this->addr2 = $pAddress->address2;
+		}
+		elseif (is_array($pAddress))
+		{
+			$this->addr = array_shift($pAddress);
+			$this->addr2 = array_shift($pAddress);
 		}
 	}
 
@@ -120,6 +137,7 @@ Implements IPlace
 				$this->city_id = $city->identity();
 				$this->city = $city->get_name();
 			endif;
+			//@TODO: else throw?
 		else:
 			$this->city = $pCity;
 		endif;
@@ -129,50 +147,90 @@ Implements IPlace
 	 * @return Zupal_Place_IItem
 	 */
 	public function getState(){
-		return Zupal_Places_States::get_city($this);
+		return Zupal_Places_States::get_state($this);
 	}
 
 	public function setState($pState)
 	{
 		if ($pState instanceof Zupal_Places_States):
-			$this->city_id = $pState->identity();
-			$this->city_name = $pState->get_value();
+			$this->state_id = $pState->identity();
+			$this->state_name = $pState->get_value();
 			if ($pState->getCountry()):
 				$this->setCountry($pState->getCountry());
 			endif;
 		elseif(is_numeric($pState)):
-			$city = Zupal_Places_States::getInstance()->find($pState);
-			if ($city):
-				$this->city_id = $city->identity();
-				$this->city = $city->get_name();
+			$state = Zupal_Places_States::getInstance()->find($pState);
+			if ($state):
+				$this->state_id = $state->identity();
+				$this->state = $state->get_name();
 			endif;
 		else:
-			$this->city = $pState;
+			$this->state = $pState;
 		endif;
 	}
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ country @@@@@@@@@@@@@@@@@@@@@@@@ */
+
 	/**
-	 * @reutrn Zupal_Place_IItem
+	 * @return class;
 	 */
-	public function getPostal();
-	public function setPostal($pPostal);
+
+	public function getCountry() {
+		return Zupal_Places_Countries::getInstance()->get($this->country_id);
+	}
+
+	public function setCountry($pValue) {
+		$country = Zupal_Places_Countries::getInstance()->get_country($pValue);
+		if ($country):
+			$this->country_id = $country->identity();
+			$this->country = $country->get_value();
+		endif;
+	}
+
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ postal	 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	public function getPostalcode(){ return $this->postalcode; 	}
+	public function setPostalcode($pPostal){ $this->postalcode = $pPostal; }
 
 	/**
 	 *
 	 * @param string $pSeperator
 	 */
-	public function block($pSeparator = "\n");
+	public function block($pSeparator = "\n")
+	{
+		return join($pSeparator, array($this->get_name(), $this->getAddress(), $this->getCity(), $this->getState(), $this->getCountry(), $this->getPostal()));
+	}
 
 	/**
 	 * @return IPlace[]
 	 */
-	public function findLikeMe();
+	public function findLikeMe(){
+		 //@TODO; 
+	}
 
 	/**
 	 * @return IPlace[]
 	 */
-	public function findNearMe($pKilometers, $pMax = NULL);
+	public function findNearMe($pKilometers, $pMax = NULL)
+	{
+		//@TODO;
+	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function save ()
+	{
+		$this->state_id = $this->getState()->identity();
+		$this->city_id  = $this->getCity()->identity();
+		parent::save();
+	}
+	
 }
 
 

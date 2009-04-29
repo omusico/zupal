@@ -1,0 +1,32 @@
+<style>
+	tr.deleted td { color: red; text-decoration: strikethrough }
+</style>
+
+<div class="list">
+	<h2><?= $this->title ? $this->title : 'Places' ?></h2>
+	<table>
+	<thead>
+
+		<tr>
+			<th>Name</th>
+			<th>Address</th>
+			<th>City</th>
+			<th>State</th>
+			<th>Country</th>
+			<th>Postal Code</th>
+		</tr>
+		<thead>
+		<tbody>
+	<? foreach ($this->places as $place): ?>
+		<tr>
+			<th><?= $place->getName() ?></th>
+			<td><?= $place->getAddress() ?></td>
+			<td><?= $place->getCity() ?></td>
+			<td><?= $place->getState() ?></td>
+			<td><?= $place->getCountry() ?></td>
+			<td><?= $place->getPostal() ?></td>
+		</tr>
+	<? endforeach; ?>
+	</tbody>
+	</table>
+</div>

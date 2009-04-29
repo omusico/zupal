@@ -52,6 +52,11 @@ implements Zupal_Place_IItem
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_Instance = NULL;
+	/**
+	 *
+	 * @param boolean $pReload
+	 * @return Zupal_Places_States
+	 */
 	public static function getInstance($pReload = FALSE)
 	{
 		if ($pReload || is_null(self::$_Instance)):
@@ -59,6 +64,53 @@ implements Zupal_Place_IItem
 			self::$_Instance = new Zupal_Place_Cities(Zupal_Donain_Abstract::STUB);
 		endif;
 		return self::$_Instance;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_city @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param any $pParam
+	* @return Zupal_Places_States
+	*/
+	public static function get_state ($pParams)
+	{
+		$state = NULL;
+		if ($pParams instanceof Zupal_Places):
+			if ($pParams->state_id):
+				$state = self::getInstance()->find($pParams->state_id);
+				if ($state && $state->get_value() && ($state->get_value() != $pParams->state)):
+					$pParams->state_id = 0;
+					$table = self::getInstance()->table();
+					$select = $table->select()
+						->where('country = ?', $pParams->country_id)
+						->where('name LIKE ?', $pParams->state)
+						->orWhere('code LIKE ?', $pParams->state);
+					$row = $table->fetchRow($select);
+					if ($row):
+						$state = new Zupal_Places_States($row);
+					else:
+						$state = new Zupal_Places_States();
+						$state->set_value($pParams->state);
+						$state->set_country($pParams->get_country());
+						$state->save();
+					endif;
+				endif;
+			elseif ($pParams->state):
+				$state = self::find_state($pParams->state, $pParams->get_country());
+				if (!$state):
+					$state = new Zupal_Places_Cities();
+					$state->set_name($pParams->state);
+					$state->set_country($pParams->get_country());
+					$state->save();
+				endif;
+			endif; // else keep as null
+		elseif (is_numeric($pParams)):
+			$state = $this->getInstance()->find($pParams);
+		else:
+			$state = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
+			$state->set_name($pParams); // return a neutrered state object.
+		endif;
+		return $state;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ country  @@@@@@@@@@@@@@@@@@@@@@@@ */

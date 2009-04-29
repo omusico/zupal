@@ -78,7 +78,7 @@ class Zupal_Bootstrap
     public static function setupView()
     {
         // Initialise Zend_Layout's MVC helpers
-        Zend_Layout::startMvc(array('layoutPath' => APPLICATION_PATH . "/layouts"));
+        Zend_Layout::startMvc(array('layoutPath' => APPLICATION_PATH . "/layouts", 'layout' => 'default'));
         
         // VIEW SETUP - Initialize properties of the view object
         // The Zend_View component is used for rendering views. Here, we grab a "global" 

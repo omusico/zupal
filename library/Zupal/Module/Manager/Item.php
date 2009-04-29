@@ -29,7 +29,7 @@ class Zupal_Module_Manager_Item
 
 			if(!file_exists($configFile))
 			{
-				throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $this->name()));
+				throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $this->get_name()));
 			}
 			// process
 			$this->_info = new Zend_Config_Xml($configFile);
