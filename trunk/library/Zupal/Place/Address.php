@@ -2,6 +2,8 @@
 /* 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *
+ * Note that unlike
  */
 
 /**
@@ -19,7 +21,7 @@ implements Zupal_Place_IItem
 
 	private $_address_parts = array('');
 
-	public function get_value();
+	public function get_value() {return $this->_address_parts; }
 	public function set_value($pString){
 		if (func_num_args() == 1)
 		{
@@ -33,18 +35,20 @@ implements Zupal_Place_IItem
 			endif;
 		}
 	}
-	public function __toString()
-	{
-		return trim(join("\n", $this->_address_parts));
-	}
+
+	public function identity(){ return $this->__toString(); }
+
+	public function __toString() { return $this->get_value("\n"); 	}
 
 	public function __get($pField)
 	{
 		switch(strtolower($pField)):
+			case 'addr':
 			case 'address':
 				return $this->_address_parts[0];
 			break;
 
+			case 'addr2':
 			case 'address_2':
 				if (array_key_exists(1, $this->_address_parts)):
 					return $this->_address_parts[1];
@@ -61,10 +65,12 @@ implements Zupal_Place_IItem
 	public function __set($pField, $pValue)
 	{
 		switch(strtolower($pField)):
+			case 'addr':
 			case 'address':
 				$this->_address_parts[0] = $pValue;
 			break;
 
+			case 'addr2':
 			case 'address_2':
 				if (is_null($pValue) && array_key_exists(1, $this->_address_parts)):
 					unset($this->_address_parts[1]);

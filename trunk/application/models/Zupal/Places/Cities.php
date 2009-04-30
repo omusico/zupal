@@ -62,7 +62,7 @@ implements Zupal_Place_IItem
 			if ($pParams->city_id):
 				$city = self::getInstance()->find($pParams->city_id);
 			elseif ($pParams->city):
-				$city = self::find_city($pParams->city, $pParams->state_id, $pParams->country_id);
+				$city = self::find_city($pParams->city, $pParams->getState(), $pParams->getCountry());
 				if (!$city):
 					$city = new Zupal_Places_Cities();
 					$city->set_name($pParams->city);
@@ -80,9 +80,61 @@ implements Zupal_Place_IItem
 		return $city;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_city @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pName
+	* @param string | Zupal_Places_States $pState
+	* @param string | Zupal_Places_Countries $pCountry
+	* @return <type>
+	*/
+	public static function find_city ($pName, $pState, $pCountry)
+	{
+		$table = self::getInstance()->table();
+
+		if ((!$pCountry instanceof Zupal_Places_Countries) && $pCountry):
+			$pCountry = Zupal_Places_Countries::get_country($pCountry);
+		endif;
+
+		if (!$pCountry):
+			return NULL;
+		endif;
+
+		if ($pCountry->has_states):
+			if ((!$pState instanceof Zupal_Places_States) && $pState):
+				$pState = Zupal_Places_States::get_state($pState);
+			endif;
+
+			if (!$pState):
+				return NULL;
+			endif;
+
+			$select = $table->select()
+				->where('name LIKE ?', $pName)
+				->where('state = ?', $pState->identity())
+				->where('country LIKE ?', $pCountry->identity());
+		else:
+			$select = $table->select()
+				->where('name LIKE ?', $pName)
+				->where('country LIKE ?', $pCountry->identity());
+		endif;
+
+		$row = $table->fetchRow($select);
+		if ($row):
+			return new Zupal_Places_Cities($row);
+		else:
+			return NULL;
+		endif;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_Instance = NULL;
+	/**
+	 *
+	 * @param boolean $pReload
+	 * @return Zupal_Places_Cities
+	 */
 	public static function getInstance($pReload = FALSE)
 	{
 		if ($pReload || is_null(self::$_Instance)):

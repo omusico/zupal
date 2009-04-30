@@ -96,7 +96,7 @@ implements Zupal_Place_IItem
 					endif;
 				endif;
 			elseif ($pParams->state):
-				$state = self::find_state($pParams->state, $pParams->get_country());
+				$state = self::get_state($pParams->state, $pParams->getCountry());
 				if (!$state):
 					$state = new Zupal_Places_Cities();
 					$state->set_name($pParams->state);
