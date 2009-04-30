@@ -31,23 +31,18 @@ implements Zupal_Place_IItem
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ value @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	public function get_value() { return $this->get_name(); }
-
 	public function set_value($pValue) { $this->set_name($pValue); }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ name @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	public function get_name() { return $this->name; }
-
 	public function set_name($pValue) { $this->name = $pValue; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	* @return string
 	*/
-	public function __toString ()
-	{
-		return $this->get_name();
-	}
+	public function __toString (){ return $this->get_name(); }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -100,7 +95,8 @@ implements Zupal_Place_IItem
 					->orWhere('name LIKE ?', $pParam);
 				$country = $table->fetchRow($select);
 				if ($country):
-					self::$_countries[$pParam] = new Zupal_Places_Countries($country);
+					self::$_countries[strtolower($country->identity())] = new Zupal_Places_Countries($country);
+					self::$_countries[strtolower($country->get_value())] = new Zupal_Places_Countries($country);
 				endif;
 			endif;
 

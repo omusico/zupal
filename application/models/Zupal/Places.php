@@ -4,6 +4,16 @@
  * this class represents the domain class for the nodes table.
  * as such it does NOT implement Zupal_Node_INode, but it is a component
  * of any domain that implements Zupal_Node_INode.
+ *
+ * note -- the getCity/State/Country/Address/PostalCode returns IPlace implementing objects.
+ * They are useful if you care about metadata or identities, but
+ * if you just want to display a string for a value,
+ * access the named fields state, etc. which are faster as they denormalize the string value
+ * in the place record.
+ *
+ * Also note that the getCity.. etc. methods use the country_id, state_id etc.
+ * and ignore the denormalized string fields city, state, and so on.
+ * You must manually keep these references up to date, which you can do by calling setState(string).
  */
 
 class Zupal_Places Extends Zupal_Domain_Abstract
@@ -121,25 +131,36 @@ Implements Zupal_Place_IPlace
 	 * @return Zupal_Place_IItem
 	 */
 	public function getCity(){
-		return Zupal_Places_Cities::get_city($this);
-	}
+		if ($this->city_id):
+			//	ignore denormalized label in favor of record
+			$city = Zupal_Places_Cities::getInstance()->get($this->city_id);
+		else:
+			// return a NON SAVEABLE city record. 
+			$city = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
+			$city->set_value($this->city);
+			$city->set_state($this->state_id);
+			$city->set_country($this->country_id);
+		endif;
+		
+		return $city;
+		}
 
 	public function setCity($pCity)
 	{
-		if ($pCity instanceof Zupal_Places_Cities):
-			$this->city_id = $pCity->identity();
-			$this->city_name = $pCity->get_value();
-
-
-		elseif(is_numeric($pCity)):
-			$city = Zupal_Places_Cities::getInstance()->find($pCity);
-			if ($city):
+		if(is_numeric($pCity)):
+			$pCity = Zupal_Places_Cities::getInstance()->get($pCity);
+			if ($pCity):
 				$this->city_id = $city->identity();
 				$this->city = $city->get_name();
 			endif;
-			//@TODO: else throw?
+		endif;
+
+		if ($pCity instanceof Zupal_Places_Cities):
+			$this->city_id = $pCity->identity();
+			$this->city = $pCity->get_value();
 		else:
 			$this->city = $pCity;
+			$this->update_city();
 		endif;
 	}
 
@@ -147,7 +168,14 @@ Implements Zupal_Place_IPlace
 	 * @return Zupal_Place_IItem
 	 */
 	public function getState(){
-		return Zupal_Places_States::get_state($this);
+		if ($this->state_id):
+			$state = Zupal_Places_States::getInstance()->get($this->city_id);
+		else:
+			$state = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
+			$state->set_value($this->state);
+			$state->set_country($this->country_id);
+		endif;
+		return $state;
 	}
 
 	public function setState($pState)
@@ -166,6 +194,7 @@ Implements Zupal_Place_IPlace
 			endif;
 		else:
 			$this->state = $pState;
+			$this->update_state();
 		endif;
 	}
 
@@ -177,18 +206,31 @@ Implements Zupal_Place_IPlace
 	 */
 
 	public function getCountry() {
-		return Zupal_Places_Countries::getInstance()->get($this->country_id);
-	}
-
-	public function setCountry($pValue) {
-		$country = Zupal_Places_Countries::getInstance()->get_country($pValue);
-		if ($country):
-			$this->country_id = $country->identity();
-			$this->country = $country->get_value();
+		if ($this->country_id):
+			return Zupal_Places_Countries::getInstance()->get($this->country_id);
+		elseif ($this->country):
+			return Zupal_Places_Countries::get_country($this->country);
+		else:
+			return NULL;
 		endif;
 	}
 
-
+	public function setCountry($pValue) {
+		if ($pValue instanceof Zend_Places_Countries):
+			$this->country_id = $pValue->identity();
+			$this->country = $pValue->get_value();
+		else:
+			$country = Zupal_Places_Countries::getInstance()->get_country($pValue);
+			if ($country):
+				$this->country_id = $country->identity();
+				$this->country = $country->get_value();
+			else:
+				$this->country_id = '';
+				$this->country = '';
+				//@TODO: throw error?
+			endif;
+		endif;
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ postal	 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -226,8 +268,6 @@ Implements Zupal_Place_IPlace
 	*/
 	public function save ()
 	{
-		$this->state_id = $this->getState()->identity();
-		$this->city_id  = $this->getCity()->identity();
 		parent::save();
 	}
 	

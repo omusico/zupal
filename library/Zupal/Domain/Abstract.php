@@ -61,8 +61,17 @@ implements Zupal_Domain_IDomain
 
 	public function identity()
 	{
+		//@NOTE: elaborate retrieval for debugging purposes -- should be simplified for production. 
 		$id_field = $this->table()->idField();
-		return $this->_row->$id_field;
+		if ($this->_row instanceof stdClass ):
+			if (property_exists($this->_row, $id_field)):
+				return $this->_row->$id_field;
+			else:
+				throw new Exception (__METHOD__ . ': bad id ' . $id_field . ' requested from ' . get_class($this));
+			endif;
+		else:
+			return $this->_row->$id_field;
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -387,13 +396,13 @@ implements Zupal_Domain_IDomain
 	{
 		$name = explode('_', $pName);
 		if (count($name) > 1):
-			foreach($name as $n => $v) if ($n) $name[$v] = ucfirst($v);
+			foreach($name as $n => $v) if ($n) $name[$n] = ucfirst($v);
 			$alt = join('', $name);
 		else:
 			$alt = strtolower(preg_replace('/(?<=[a-z])(?=[A-Z])/','_',$pName));
 		endif;
 		if (method_exists($this, $alt)):
-			return call_user_func_array($this, $alt, $pParams);
+			return call_user_func_array(array($this, $alt), $pParams);
 		endif;
 
 		throw new Exception("No function $pName or $alt in " . get_class($this));
