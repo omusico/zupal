@@ -14,14 +14,14 @@ The Domain abstract is designed to bridge access to a database table. Note that 
 The current roster of methods in the Domain abstract class include the interface methods plus:
 
     * asStub(): because the domain object has two frequent use cases -- that of a table and that of a record, there is functionality to "stub out" the domain object. A Domain Stub cannot save itself; this is insulation against inadvertant committing of data from an object that was not intended to represent a specific record. (and yes it can be turned off.)
-    * get(id): note this is the id of the table, not the node ID.
-    * identity(): the ide of the table.
-    * link(): a utility class to produce markup to view the record.
-    * loaded(): a boolean method that determines if the domain record has data. (redundant with saved() - probably will be deprecated).
-    * newRow(): inserts a new (unsaved) Zend_Db_Table_Row into the _row property.
-    * table(): Zend_DB_Table_Abstract implementor. Uses tableClass() to produce a singleton of the adaptor for the table.
-    * tableClass(): string; the name of the table class.
-    * _select(): returns a Zend_DB_Table_Select object.
+    * *get*(id): note this is the id of the table, not the node ID.
+    * *identity*(): the ide of the table.
+    * *link*(): a utility class to produce markup to view the record.
+    * *loaded*(): a boolean method that determines if the domain record has data. (redundant with saved() - probably will be deprecated).
+    * *newRow*(): inserts a new (unsaved) Zend_Db_Table_Row into the _row property.
+    * *table*(): Zend_DB_Table_Abstract implementor. Uses tableClass() to produce a singleton of the adaptor for the table.
+    * *tableClass*(): string; the name of the table class.
+    * *_select*(): returns a Zend_DB_Table_Select object.
 
 = Zupal_Node_Abstract implementation =
 
@@ -31,9 +31,9 @@ For instance, the Zupal_Content class has as its base table zupal_content; howev
 
 It extends Zupal_Domain_Abstract (above) and adds a few other methods:
 
-    * node_field(): string -- the name of the field in the metatable that links to the node table -- node_id() by default.
-    * node() -- returns the node domain object that this record links to.
-    * status(override: boolean) : int[] returns a series of flags that reflect the status of the record. Possible values include any combination of:
+    * *node_field*(): string -- the name of the field in the metatable that links to the node table -- node_id() by default.
+    * *node*() -- returns the node domain object that this record links to.
+    * *status*(override: boolean) : int[] returns a series of flags that reflect the status of the record. Possible values include any combination of:
 {{{
     const STATUS_LIVE = 1;
     const STATUS_HOMEPAGE = 2;
@@ -59,3 +59,16 @@ to find homepage content.
 There is a very important distinction between the Zend_Db_Select object returned by the _select() method of Zupal_Domain_Abstract and the Zend_Db_Table_Select object returned by the _select() method of the Zupal_Node_Abstract method: the table_select  version does NOT support the join construct -- you are limited to operations on a single table.
 
 If you want to create a non-noded domain class that spans (or even refers) to other tables, you will need to add a _select() method that calls a select object from the tables' getAdapater() method. 
+
+Another word of warning -- you cannot just dump a row from a non table based query into the constructor of a Zupal_Domain_Abstract/ Node_Abstract based record -- you have to dump it into a row from the table, or save() won't work as expected. 
+
+= Versioning = 
+
+Content in Zupal can be versioned -- that is, more than one record in a metatable can refer to the same node. If the _versioned flag is set to true for a specific table, the 
+find() family of methods return the records referred to by the version field in the node table.
+
+= Retrieval Efficiency =
+
+There has been effort made in the aggregate find() method to drive all retrieval from a single query. Because of some of Zend_DB's quirks this requires a bit of handstands in the find() method, but to date (and without thorough testing to back it up) Zupal avoids the freqent and painful pattern of multiple queries to retrieve aggregate data. 
+
+There hasn't been an effort to bridge the data into any caching system - this is a big to do. 
