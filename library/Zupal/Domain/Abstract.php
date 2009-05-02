@@ -35,7 +35,7 @@ implements Zupal_Domain_IDomain
 
 	protected function newRow()
 	{
-		$this->_row = $this->table()->fetchNew();
+		return $this->_row = $this->table()->fetchNew();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
