@@ -1,15 +1,17 @@
 #labels model,doctrine,Phase-Design,Featured
 This is likely to get wildly out of date but the class heirarchy of the current Zupal version (r89) is this:
 
+http://wonderlandlabs.com/wll_drupal/sites/default/files/interfaces_2.gif
+
 The class Zupal_Domain_Abstract is a domain class that has methods that return a table, the objects' record, and a host of methods for basic record retrieval.
 
-The find(), find_one(), and find_all() methods are intended to facilitate simple queries that do not involve joined tables. They may not satisfy 100% of your data retrival needs but do provide a quick method of getting filtered sorted records when all you want to do is find records matching one or more criteria (as in, find all records whose name LIKE "Leslie".).
-= The Zupal_Domain_Abstract Implementation =
+The find(), find_one(), and find_all() methods are intended to facilitate simple queries that do not involve joined tables. They may not satisfy 100% of your data retrieval needs but do provide a quick method of getting filtered sorted records when all you want to do is find records matching one or more criteria (as in, find all records whose name LIKE "Leslie".).
 
-There were discussions about whether or not Zupal would be better served with Doctrine or the Zend_Db classes; in part the interface approach was taken to enable either approach but the current impelementation is a Zend_DB driven one.
-Zupal_Domain_Abstract
+There were discussions about whether or not Zupal would be better served with Doctrine or the Zend_Db classes; in part the interface approach was taken to enable either approach but the current implementation is a Zend_DB driven one.
 
-The Domain abstract is designed to bridge access to a database table. Note that it does not include node funcitonality; it can be applied to any table, even one outside a modules' scope, as the table() property handles all IO.
+= Zupal_Domain_Abstract =
+
+The Domain abstract is designed to bridge access to a database table. Note that it does not include node functionality; it can be applied to any table, even one outside a modules' scope, as the table() property handles all IO. While the Domain class was designed to facilitate node based I/O, it is functional on its own and can be adapted to any table you need. 
 
 The current roster of methods in the Domain abstract class include the interface methods plus:
 
@@ -22,6 +24,12 @@ The current roster of methods in the Domain abstract class include the interface
     * *table*(): Zend_DB_Table_Abstract implementor. Uses tableClass() to produce a singleton of the adaptor for the table.
     * *tableClass*(): string; the name of the table class.
     * *_select*(): returns a Zend_DB_Table_Select object.
+
+== Table Classes -- Why? ==
+
+Every domain class has a table class that it is bound to. By convention the table class is named as a variant of the domain object -- if you have a domain class Zupal_Places, its table class is Zupal_Table_Places, etc. The table class is pretty thin -- it has the id/table name properties and not much else. 
+
+You can probably override the table() method to return a generic Zend_Db_Table object if you don't feel like making a bunch of table class definitions and improve your efficiency a smidge. However the Zupal table classes also haves static methods that create the tables they depend on, so if you don't create table classes for your domains you'll have to find another way of spawing tables for your modules.
 
 = Zupal_Node_Abstract implementation =
 
