@@ -13,7 +13,7 @@ The Domain abstract is designed to bridge access to a database table. Note that 
 
 The current roster of methods in the Domain abstract class include the interface methods plus:
 
-    * asStub(): because the domain object has two frequent use cases -- that of a table and that of a record, there is functionality to "stub out" the domain object. A Domain Stub cannot save itself; this is insulation against inadvertant committing of data from an object that was not intended to represent a specific record. (and yes it can be turned off.)
+    * *asStub*(): because the domain object has two frequent use cases -- that of a table and that of a record, there is functionality to "stub out" the domain object. A Domain Stub cannot save itself; this is insulation against inadvertant committing of data from an object that was not intended to represent a specific record. (and yes it can be turned off.)
     * *get*(id): note this is the id of the table, not the node ID.
     * *identity*(): the ide of the table.
     * *link*(): a utility class to produce markup to view the record.
@@ -52,7 +52,7 @@ WHERE zupal_nodes & 2
 }}}
 to find homepage content.
 
-    * _select(): returns a Zend_Db_Select object that is joined with the node table.
+    * *_select*(): returns a Zend_Db_Select object that is joined with the node table.
 
 = Joins =
 
