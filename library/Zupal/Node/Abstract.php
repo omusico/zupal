@@ -184,15 +184,13 @@ implements Zupal_Node_INode,
 			$select->join($node_stub->table()->tableName(), $cond, array());
 			$row = $table->getAdapter()->fetchOne($select);
 			$id = $row[$id_field];
+			// transfer data into domain objects.
+			return $this->get($id);
 		else:
 			$row = $this->table()->fetchRow($select);
-			$id = $row->$id_field;
+			return $this->get($row);
 		endif;
-
-		error_log(__METHOD__ . ': ' . $select->assemble());
 		
-		// transfer data into domain objects.
-		return $this->get($id);
 	}
 
 	public function findAll($pSort = NULL){

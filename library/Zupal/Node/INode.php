@@ -17,7 +17,7 @@ interface Zupal_Node_INode {
 
 	public function made($pFormat = NULL);
 
-	public function status($pAs_array = TRUE);
+	public function status($pOverride_if_deleted = TRUE);
 
 	const STATUS_LIVE = 1;
 	const STATUS_HOMEPAGE = 2;
