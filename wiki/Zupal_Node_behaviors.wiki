@@ -4,7 +4,7 @@ This is likely to get wildly out of date but the class heirarchy of the current 
 The class Zupal_Domain_Abstract is a domain class that has methods that return a table, the objects' record, and a host of methods for basic record retrieval.
 
 The find(), find_one(), and find_all() methods are intended to facilitate simple queries that do not involve joined tables. They may not satisfy 100% of your data retrival needs but do provide a quick method of getting filtered sorted records when all you want to do is find records matching one or more criteria (as in, find all records whose name LIKE "Leslie".).
-= The Current Implementation =
+= The Zupal_Domain_Abstract Implementation =
 
 There were discussions about whether or not Zupal would be better served with Doctrine or the Zend_Db classes; in part the interface approach was taken to enable either approach but the current impelementation is a Zend_DB driven one.
 Zupal_Domain_Abstract
