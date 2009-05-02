@@ -1,48 +1,61 @@
-#summary An exploration of using behaviors in Zupal
 #labels model,doctrine,Phase-Design,Featured
+This is likely to get wildly out of date but the class heirarchy of the current Zupal version (r89) is this:
 
-= Introduction =
+The class Zupal_Domain_Abstract is a domain class that has methods that return a table, the objects' record, and a host of methods for basic record retrieval.
 
-There are sevaral objectives in the Zupal data model. 
+The find(), find_one(), and find_all() methods are intended to facilitate simple queries that do not involve joined tables. They may not satisfy 100% of your data retrival needs but do provide a quick method of getting filtered sorted records when all you want to do is find records matching one or more criteria (as in, find all records whose name LIKE "Leslie".).
+= The Current Implementation =
 
-  * Being able to link/refer to an element without knowledge/concern of its actual type/table. 
-  * Being able to organize node content in useful patterns (trees, sets)
-  * Being able to do so with computationally efficient queries
+There were discussions about whether or not Zupal would be better served with Doctrine or the Zend_Db classes; in part the interface approach was taken to enable either approach but the current impelementation is a Zend_DB driven one.
+Zupal_Domain_Abstract
 
-= Using Doctrine Behaviors =
+The Domain abstract is designed to bridge access to a database table. Note that it does not include node funcitonality; it can be applied to any table, even one outside a modules' scope, as the table() property handles all IO.
 
-Each of these systems can be modeled _individualy_ with behaviors. The question is can they be usefully modeled in combination. 
+The current roster of methods in the Domain abstract class include the interface methods plus:
 
-== The combination paradox == 
+    * asStub(): because the domain object has two frequent use cases -- that of a table and that of a record, there is functionality to "stub out" the domain object. A Domain Stub cannot save itself; this is insulation against inadvertant committing of data from an object that was not intended to represent a specific record. (and yes it can be turned off.)
+    * get(id): note this is the id of the table, not the node ID.
+    * identity(): the ide of the table.
+    * link(): a utility class to produce markup to view the record.
+    * loaded(): a boolean method that determines if the domain record has data. (redundant with saved() - probably will be deprecated).
+    * newRow(): inserts a new (unsaved) Zend_Db_Table_Row into the _row property.
+    * table(): Zend_DB_Table_Abstract implementor. Uses tableClass() to produce a singleton of the adaptor for the table.
+    * tableClass(): string; the name of the table class.
+    * _select(): returns a Zend_DB_Table_Select object.
 
-Every Doctrine behavior is table centric. fields and references are field centric. The tree behavior works because the tree is included within a single table. 
+= Zupal_Node_Abstract implementation =
 
-However once you bring nodes into the picture, the left and right references start spanning tables. The obvious fix is then to embed the behavior into the node table but then you really aren't getting as much value from the behaviors - and you are presuming ALL noded content is tree based with will not always be the case. 
+A Zupal_Node domain object is composed to a Zupal_Node object. Zupal_Node is a domain object that governs the zupal_nodes' table. Because of this, Zupal_Node_Abstract and its implementing classes are composites of the zupal_nodes table and a related table (or tables) that have decorative data that customizes the implementing class.
 
-=== Option One: Custom Table Centric Behaviors === 
+For instance, the Zupal_Content class has as its base table zupal_content; however, its node_id field links to the node table and the Zupal_Node_Abstract maintains this relationship invisibly, spawning or saving a node record linked to the metatable when the record is save()d.
 
-Applying behaviors to the custom tables. 
+It extends Zupal_Domain_Abstract (above) and adds a few other methods:
 
-http://zupal.googlecode.com/files/Behaviors_1.png
+    * node_field(): string -- the name of the field in the metatable that links to the node table -- node_id() by default.
+    * node() -- returns the node domain object that this record links to.
+    * status(override: boolean) : int[] returns a series of flags that reflect the status of the record. Possible values include any combination of:
+{{{
+    const STATUS_LIVE = 1;
+    const STATUS_HOMEPAGE = 2;
+    const STATUS_BANNED = 4;
+    const STATUS_FLAGGED = 8;
+    const STATUS_ARCHIVED = 16;
+    const STATUS_DELETED = 32;
+}}}
+However because a deleted record is not (by definition) live or visibile on the home page, if you pass true, those options are supressed for all deleted records.
 
-here you get the behaviors you want -- however they are within the scope of a single table. 
+incidentally, these flags are detectable in SQL using bitwise operators
+{{{
+SELECT * from zupal_content 
+LEFT JOIN zupal_nodes on zupal_content.node_id = zupal_nodes.node_id 
+WHERE zupal_nodes & 2
+}}}
+to find homepage content.
 
-== Option Two: Node centric behaviors == 
+    * _select(): returns a Zend_Db_Select object that is joined with the node table.
 
-http://zupal.googlecode.com/files/Behaviors_2.2.png
+= Joins =
 
-Here you get all possible behaviors for noded content -- however, you don't have the option of applying behaviors selectively on a context by context basis which is kind of the point of behaviors in the first place. All you are doing is saving a little time in implementation. 
+There is a very important distinction between the Zend_Db_Select object returned by the _select() method of Zupal_Domain_Abstract and the Zend_Db_Table_Select object returned by the _select() method of the Zupal_Node_Abstract method: the table_select  version does NOT support the join construct -- you are limited to operations on a single table.
 
-The question is not "will this work"; option two WILL work, no quetions asked. The issue is will it produce optimal query-once SQL or will ii make every node based query a two stage process. 
-
-My impulse is that the latter is true: we would query once to get a set of nodes, then for each type(table) present in the result set we would run a seperate query (SELECT * FROM my_table WHERE nid IN (found_keys) GROUP BY nid ORDER BY vid DESC. If that doesn't work or prove optimal we are back to picking out custom records one by one based on the nid/vid pair returned by the first query, and the table. 
-
-So the fundamental issue is not can a node based system be made -- obviously it CAN (Drupal works). it is, can a node based system be made to run without creating the maximum number of queries possible. 
-
-The third option is of course turning to a caching system for optimization. First run the query to find the node ids, then pull the stdClass data out of memcache. This obligates clients to our optimization system if they want truly optimal code, but they can always put up with a slower billion query implementation if they choose not to implement a cache system (or cannot as they are in a shared system). 
-
-So the questions are: 
-
-  # Does the design pattern of the node sabotoge the true utility of behaviors by forcing them to be applied to the node table and thus all node content universally?
-  # Can noded content be retrieved efficiently without a caching system?
-  # Can behaviors be applied to a custom table at all if the custom table is also using the node behavior?
+If you want to create a non-noded domain class that spans (or even refers) to other tables, you will need to add a _select() method that calls a select object from the tables' getAdapater() method. 
