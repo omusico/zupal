@@ -1,0 +1,31 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+The Module system is still extremely transient; here are the current working principles. 
+
+= Details =
+
+The Zupal module system is still very raw; however there are a few principles in place.
+
+   # Zupal modules are extensions of the Zend Module System and use all conventions found therein.
+   # Because Zupal modules, unlike Zend Modules, include their own bundle of resources that are only used in the context of the module, they contain a Library folder.
+   # All Zupal Classes, inside and outside of modules, are prefixed with Zupal_. All Zupal module classes and models are prefixed with Zupal_[classname]. This also means that to respect the Zend autoloader conventions, the model and library folders are "deep" in order to create the relative classpaths.
+   # Modules will be installed and uninstalled through the Admin menu.
+   # At some point dependency will be a feature of the module system; til then, any resources that more than one module depends on will be globally accessible in the core library and models folders, and modules wil be entirely independent.**
+
+= Files and Classes =
+
+http://wonderlandlabs.com/wll_drupal/sites/default/files/Modules.png
+
+Modules have two configuration files, stored in their root: info.xml and menu.xml.* 
+
+The info file is digested by Zupal_Module_Manager_Item. It contains a name, description and menu field and a host of other documentary tags, but should also have any other configuration variables that the module itself uses (prefs, default, language, etc.)
+
+The menu file is digested by Zupal_Menu whenever an action is called from the module, and is inserted as a submenu of the module link on the main menu. Note that the name of the menu file is a field of the info file; if the info file has no menu node (or an empty one) no submenu will be loaded for that module. 
+
+----
+
+`*`  In keeping with the "design by contract" scheme of ZF, the INI format will be acceptable for config files when the system is fleshed out as well as XML and who knows, maybe even YAML.
+
+`**` this rule excludes the core admin and default modules, which should be static; modules can depend on any content in those modules going forwards. 
