@@ -1,0 +1,33 @@
+#summary The class for link lists
+#labels menu,Phase-Design
+
+= Introduction =
+
+The Zupal_Menu package is a basic system for lists of links. It will become more interesting has hooks back to modules and ACL are embedded. 
+
+= Details =
+
+The Zupal_Menu_IMenu interface is pretty open:
+
+{{{
+Interface Zupal_Menu_IMenu
+{
+
+	public function __construct($pTitle = '', $pData = NULL);
+	
+	public function set_item($pItem, $pID = NULL);
+
+	/**
+	 * returns the menu's HTML markup as a string.
+	 */
+	public function __toString();
+}
+}}}
+
+Menu items can be strings, objects with __toString() functionality, or other menus. Note that the Zupal_Menu_Item clas is designed to serve as a menu item and has a specialized hook, a list_class property, that the core menu class uses to alter the <li> tag that encases the item. 
+
+Note -- the Zupal_Menu_Item class is actually a useful tool to render a link in any context you like -- its not dependent on being embedded in a menu and has no introspection to its context. The Link view helper is also useful in this role, but the ZM_Item class can be used in any context. 
+
+= Execution =
+
+The menu class outputs an ordered list of its items; the ol tag has a menu class as a CSS hook. 
