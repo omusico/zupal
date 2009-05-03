@@ -38,4 +38,12 @@ class Admin_PlacesController extends Zend_Controller_Action
 	{
 		$this->view->place = new Zupal_Places($this->_getParam('id', $this->_getParam('place_id')));
 	}
+
+	public function editAction()
+	{
+		$this->view->place = new Zupal_Places($this->_getParam('id'));
+		$this->view->form = new Zupal_Places_Form($this->view->place);
+		$action = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . join(DS, array('admin', 'places', 'editvalidate'));
+		$this->view->form->setAction($action);
+	}
 }
