@@ -27,7 +27,7 @@
         </database>
     </development>
 
-    <daveelopment extends="development">
+    <edelhart extends="development">
         <webhost>www.zupal.local:8888</webhost>
         <database>
             <params>
@@ -37,5 +37,5 @@
                 <dbname>zupal</dbname>
             </params>
         </database>
-    </daveelopment>
+    </edelhart>
 </configuration>
