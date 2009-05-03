@@ -24,9 +24,13 @@ Interface Zupal_Menu_IMenu
 }
 }}}
 
-Menu items can be strings, objects with __toString() functionality, or other menus. Note that the Zupal_Menu_Item clas is designed to serve as a menu item and has a specialized hook, a list_class property, that the core menu class uses to alter the <li> tag that encases the item. 
+Menu items can be strings, objects with __toString() functionality, or other menus. Note that the Zupal_Menu_Item clas is designed to serve as a menu item and has a specialized hook, a list_class property, that the core menu class uses to alter the list tag that encases the item. (this is the mechanism that highlights the current item.)
 
-Note -- the Zupal_Menu_Item class is actually a useful tool to render a link in any context you like -- its not dependent on being embedded in a menu and has no introspection to its context. The Link view helper is also useful in this role, but the ZM_Item class can be used in any context. 
+= Uses =
+
+You can use the Menu module anywhere you need a list of links; in fact if you are truly lazy you can use it to generate an unordered list of anything you like. It is currently used to generate the main navigation and the breadcrumb. 
+
+The Zupal_Menu_Item class can render a link in any context you like -- its not dependent on being embedded in a menu and has no introspection to its context. The Link view helper is also useful in this role, but the ZM_Item class can be used in any context. This can be useful to insulate you against installation of Zupal in a subfolder of a web server (I.e., with a base path); although this is the exception, Zend Framework projects (and by extension, Zupal projects) can function without being installed in the root of a domain, but this changes the value of Zend_Controller_Front::getInstance()->getBasePath(), which is embedded in Zupal_Menu_Item (and the link helper.)
 
 = Execution =
 
