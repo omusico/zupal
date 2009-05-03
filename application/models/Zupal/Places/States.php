@@ -25,7 +25,7 @@ implements Zupal_Place_IItem
 	 */
 	public function get ($pID)
 	{
-		return new Zupal_Places_Cities($pID);
+		return new Zupal_Places_States($pID);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ value @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -61,7 +61,7 @@ implements Zupal_Place_IItem
 	{
 		if ($pReload || is_null(self::$_Instance)):
 		// process
-			self::$_Instance = new Zupal_Place_Cities(Zupal_Donain_Abstract::STUB);
+			self::$_Instance = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
 		endif;
 		return self::$_Instance;
 	}
@@ -105,7 +105,7 @@ implements Zupal_Place_IItem
 				endif;
 			endif; // else keep as null
 		elseif (is_numeric($pParams)):
-			$state = $this->getInstance()->find($pParams);
+			$state = self::getInstance()->get($pParams);
 		else:
 			$state = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
 			$state->set_name($pParams); // return a neutrered state object.

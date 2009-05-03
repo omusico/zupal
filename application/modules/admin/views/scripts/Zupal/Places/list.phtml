@@ -8,23 +8,36 @@
 	<thead>
 
 		<tr>
+			<th colspan="3">ID</th>
 			<th>Name</th>
 			<th>Address</th>
 			<th>City</th>
 			<th>State</th>
 			<th>Country</th>
-			<th>Postal Code</th>
+			<th colspan="2">Postal Code</th>
 		</tr>
 		<thead>
 		<tbody>
 	<? foreach ($this->places as $place): ?>
 		<tr>
-			<th><?= $place->getName() ?></th>
+			<th><?= $place->identity() ?></th>
+			<td><?= $this->link('(edit)', array('module' => 'admin',
+			'controller' => 'places', 'action' => 'edit',
+			'title' => 'Edit place', 'id' => $place->identity() )) ?></td>
+			<td><?= $this->link('(view)', array('module' => 'admin',
+			'controller' => 'places', 'action' => 'view',
+			'title' => 'Edit place', 'id' => $place->identity() )) ?></td>
+			<td><?= $this->link($place->getName(), array('module' => 'admin',
+			'controller' => 'places', 'action' => 'view',
+			'title' => 'View place', 'id' => $place->identity() )) ?></td>
 			<td><?= $place->getAddress() ?></td>
 			<td><?= $place->getCity() ?></td>
 			<td><?= $place->getState() ?></td>
 			<td><?= $place->getCountry() ?></td>
-			<td><?= $place->getPostal() ?></td>
+			<td><?= $place->getPostalcode() ?></td>
+			<td><?= $this->link('(x)', array('module' => 'admin',
+			'controller' => 'places', 'action' => 'delete',
+			'title' => 'Delete place', 'id' => $place->identity() )) ?></td>
 		</tr>
 	<? endforeach; ?>
 	</tbody>

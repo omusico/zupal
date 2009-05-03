@@ -50,4 +50,9 @@ interface Zupal_Domain_IDomain {
 	public function findOne(array $searchCrit = NULL, $sort = NULL);
 
 	public function findAll($pSort = NULL);
+
+	/**
+	 * @return array;
+	 */
+	public function toArray(); 
 }

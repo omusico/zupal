@@ -4,11 +4,10 @@
 	$breadcrumb = $breadcrumb[0];
 	$breadcrumb->set_item($this->place->get_name());
 	$this->placeholder('breadcrumb')->set($breadcrumb);
+
+
+	$ticket = new Zupal_Places_Ticket($this->place);
+
+	echo $ticket->render();
 ?>
-<dl>
-	<dt>Name</dt>
-	<dd><?= $this->place->get_name() ?></dd>
-	<dt>Address</dt>
-	<dd><?= $this->place->getAddress() ?></dd>
-	
-</dl>
+

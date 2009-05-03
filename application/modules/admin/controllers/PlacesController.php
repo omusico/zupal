@@ -11,7 +11,7 @@ class Admin_PlacesController extends Zend_Controller_Action
 		$menu = new Zupal_Menu();
 		$item = new Zupal_Menu_Item('Admin', 'admin', 'index', 'index');
 		$menu->set_item($item);
-		$item = new Zupal_Menu_Item('Places', 'places', 'index', 'index');
+		$item = new Zupal_Menu_Item('Places', 'admin', 'places', 'index');
 		$menu->set_item($item);
 		$this->view->placeholder('breadcrumb')->set($menu);
 

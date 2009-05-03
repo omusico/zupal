@@ -46,7 +46,12 @@ implements Zupal_Place_IItem
 	*/
 	public function __toString ()
 	{
-		return $this->get_name();
+		try {
+			return $this->get_name();
+		} catch (Exception $e)
+		{
+			return $e->__toString();
+		}
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_city @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -139,7 +144,7 @@ implements Zupal_Place_IItem
 	{
 		if ($pReload || is_null(self::$_Instance)):
 		// process
-			self::$_Instance = new Zupal_Place_Cities(Zupal_Donain_Abstract::STUB);
+			self::$_Instance = new Zupal_Places_Cities(Zupal_Donain_Abstract::STUB);
 		endif;
 		return self::$_Instance;
 	}
