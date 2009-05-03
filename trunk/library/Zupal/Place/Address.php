@@ -38,7 +38,7 @@ implements Zupal_Place_IItem
 
 	public function identity(){ return $this->__toString(); }
 
-	public function __toString() { return $this->get_value("\n"); 	}
+	public function __toString() { return join("\n", $this->get_value()); 	}
 
 	public function __get($pField)
 	{

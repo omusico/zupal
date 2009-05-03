@@ -10,6 +10,7 @@ implements Zupal_Domain_IDomain
 {
 
 	const STUB = '_asStub_';
+	protected $_row = NULL;
 
 	/**
 	 * Creates an object based on the passed ID.
@@ -33,9 +34,26 @@ implements Zupal_Domain_IDomain
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ new @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	protected function newRow()
-	{
-		return $this->_row = $this->table()->fetchNew();
+	protected function newRow($pData = NULL)
+	{		
+		$this->_row = $this->table()->fetchNew();
+		$row = $this->_row;
+		if ($pData):
+			$fields = array_keys($row->toArray());
+			if ($pData instanceof stdClass):
+				foreach($fields as $field):
+					if (property_exists($pData, $field)):
+						$row->$field = $pData->field;
+					endif;
+				endforeach;
+			elseif ($pData instanceof Zend_Db_Table_Row_Abstract):
+				foreach($fields as $field):
+					$row->$field = $pData->field;
+				endforeach;
+			endif;
+		endif;
+		
+		return $row;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -44,13 +62,13 @@ implements Zupal_Domain_IDomain
  */
 	public function table ()
 	{
-		if (! array_key_exists($this->tableClass(), self::$_tables))
+		$tc = $this->tableClass();
+		if (! array_key_exists($tc, self::$_tables))
 		{
-			$tc = $this->tableClass();
-			self::$_tables[$this->tableClass()] = new $tc();
+			self::$_tables[$tc] = new $tc();
 		}
 
-		return self::$_tables[$this->tableClass()];
+		return self::$_tables[$tc];
 	}
 
 	private static $_tables = array();
@@ -61,6 +79,7 @@ implements Zupal_Domain_IDomain
 
 	public function identity()
 	{
+		if ($this->isStub()) return NULL;
 		//@NOTE: elaborate retrieval for debugging purposes -- should be simplified for production. 
 		$id_field = $this->table()->idField();
 		if ($this->_row instanceof stdClass ):
@@ -69,8 +88,10 @@ implements Zupal_Domain_IDomain
 			else:
 				throw new Exception (__METHOD__ . ': bad id ' . $id_field . ' requested from ' . get_class($this));
 			endif;
-		else:
+		elseif (is_object($this->_row)):
 			return $this->_row->$id_field;
+		else:
+			throw new Exception(__METHOD__ . ': non object row in ' . $this->tableClass() . ': ' . print_r($this->_row, 1));
 		endif;
 	}
 
@@ -92,11 +113,16 @@ implements Zupal_Domain_IDomain
 		endif;
 		$pID = (int) $pID;
 
-		if ($pID > 0):
-		$this->_row = $this->table()->getRow($pID);
-		 else:
-			$this->_row = $this->table()->createRow();
+	//	echo '<p>loading ' . $pID . ' from ' . $this->tableClass() . '</p>';
+		if ($pID):
+			$hits = $this->table()->find($pID);
+			if ($hits): 
+				$this->_row = $hits->current();
+			else:
+				error_log('cannot find ' . $pID . ' in ' . $this->tableClass());
+			endif;
 		endif;
+		if (!$this->_row) $this->_row = $this->table()->createRow();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Status tests @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -301,6 +327,7 @@ implements Zupal_Domain_IDomain
 	{
 		$this->_asStub = TRUE;
 	}
+	public function isStub() { return $this->_asStub; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 

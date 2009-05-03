@@ -152,7 +152,11 @@ implements Zupal_Node_INode,
 
 		// transfer data into domain objects.
 		$domain_objects = array();
-		foreach($rows as $row) $domain_objects[] = $this->get($row);
+		foreach($rows as $row):
+			$data = $this->newRow();
+			$data->setFromArray($row->toArray());
+			$domain_objects[] = $this->get($data);
+		endforeach;
 
 		return $domain_objects;
 	}
