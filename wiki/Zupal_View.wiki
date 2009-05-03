@@ -1,4 +1,5 @@
 #summary The Visual resources for this page
+#labels Featured,view
 
 = Introduction =
 
@@ -20,13 +21,13 @@ Each view should set the page title and optionally append items to the breadcrum
 Here is an example of customizing the placeholders in a view script:
 
 {{{
-	$this->placeholder('page_title')->set($this->content->title());
-	$breadcrumb = $this->placeholder('breadcrumb');
-	$breadcrumb = $breadcrumb[0];
-	$breadcrumb->set_item($this->content->title()); 
-        // note -- this is a static text item in the breadcrumb 
-        /// and will not be clickable. 
-	$this->placeholder('breadcrumb')->set($breadcrumb);
+$this->placeholder('page_title')->set($this->content->title());
+breadcrumb = $this->placeholder('breadcrumb');
+$breadcrumb = $breadcrumb[0];
+$breadcrumb->set_item($this->content->title()); 
+// note -- this is a static text item in the breadcrumb 
+// and will not be clickable. 
+$this->placeholder('breadcrumb')->set($breadcrumb);
 }}}
 
 
