@@ -21,9 +21,9 @@ Activating a given template should be a matter of setting the template folder na
 
 Currently there are three placeholders available to the template; more to come. 
 
-* *page_title* is the main top of content title. By convention it is embedded in an H1 tag. 
-* *breadcrumb* is an arbitrary string (or class with a __toString() method) currently being satisfied by a Zupal_Menu object. 
-* *nav* is the main page navigation currently being satisfied by a Zupal_Menu object.
+  * *page_title* is the main top of content title. By convention it is embedded in an H1 tag. 
+  * *breadcrumb* is an arbitrary string (or class with a __toString() method) currently being satisfied by a Zupal_Menu object. 
+  * *nav* is the main page navigation currently being satisfied by a Zupal_Menu object.
 
 = Current State =
 
