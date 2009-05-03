@@ -33,4 +33,12 @@ $this->placeholder('breadcrumb')->set($breadcrumb);
 
 == Layouts == 
 
-The current system is locked into a single default layout; a templating system is to come. 
+The current system is locked into a single default layout; a Zupal_Templates system is to come. 
+
+== Helpers ==
+
+=== link($pTitle, $pParams) ===
+
+This helper generates a hyperlinked text or icon element. $pParams is an array of path items -- module, controller, action, (css) class, title; many of these have defaults. Note that there are a set of icons in the folder pubic/img/icons that can be referred to in shorthand; for instance a title value of '(x)' will create a linked delete icon. 
+
+Note: this helper respects the getBasePath() property of the Zend_Controller_Front() singleton. 
