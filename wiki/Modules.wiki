@@ -1,4 +1,5 @@
 #summary One-sentence summary of this page.
+#labels Featured,module
 
 = Introduction =
 
@@ -23,6 +24,24 @@ Modules have two configuration files, stored in their root: info.xml and menu.xm
 The info file is digested by Zupal_Module_Manager_Item. It contains a name, description and menu field and a host of other documentary tags, but should also have any other configuration variables that the module itself uses (prefs, default, language, etc.)
 
 The menu file is digested by Zupal_Menu whenever an action is called from the module, and is inserted as a submenu of the module link on the main menu. Note that the name of the menu file is a field of the info file; if the info file has no menu node (or an empty one) no submenu will be loaded for that module. 
+
+Modules must have a manager class that implements Zupal_Module_IModule in its library. This interface has three methods:
+
+  * *install*()
+  * *uninstall*()
+  * *can_install*()
+
+The nature of these methods are completely optional. However install should install all tables using the "IF NOT EXISTS" switch to enable repeated re-installs. 
+
+The can_install() method should return a boolean and detect any required libraries, tables, etc. You can presume it to have returned true before install() is ever called. 
+
+Although there are no requirements on uninstall, it is recommended that you do not delete tables/records when uninstalling a module. 
+
+None of the methods of your Zupal_Module_IModule class should generate visible markup. 
+
+= Some Useful Conventions =
+
+There is far to little work done in Zupal to nail down any rules as to how a module should go about its business. However it is reccommended that for most simple modules (with a single node based table as their basis) to have two controllers: an index controller for the destination page and a second item controller for CRUD operations on that content. 
 
 ----
 
