@@ -35,3 +35,13 @@ The Zupal_Menu_Item class can render a link in any context you like -- its not d
 = Execution =
 
 The menu class outputs an ordered list of its items; the ol tag has a menu class as a CSS hook. 
+
+It is __toString() compatible, meaning, you simply echo it as if it were a scalar and it renders in markup. 
+
+{{{
+$m = new Zupal_Menu("My Menu", array($link_1, $link_2, $link_3));
+echo $m;
+// or simply ... 
+?>
+<?= $m ?>
+}}}
