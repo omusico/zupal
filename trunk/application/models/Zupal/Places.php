@@ -134,9 +134,8 @@ Implements Zupal_Place_IPlace
 		if ($this->city_id):
 			//	ignore denormalized label in favor of record
 			$city = Zupal_Places_Cities::getInstance()->get($this->city_id);
-		else:
-			// return a NON SAVEABLE city record. 
-			$city = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
+		else: 
+			$city = new Zupal_Places_Cities();
 			$city->set_value($this->city);
 			$city->set_state($this->state_id);
 			$city->set_country($this->country_id);
@@ -147,15 +146,15 @@ Implements Zupal_Place_IPlace
 
 	public function setCity($pCity)
 	{
-		if(is_numeric($pCity)):
+		if (!$pCity):
+			return;
+		elseif(is_numeric($pCity)):
 			$pCity = Zupal_Places_Cities::getInstance()->get($pCity);
 			if ($pCity):
 				$this->city_id = $city->identity();
 				$this->city = $city->get_name();
 			endif;
-		endif;
-
-		if ($pCity instanceof Zupal_Places_Cities):
+		elseif ($pCity instanceof Zupal_Places_Cities):
 			$this->city_id = $pCity->identity();
 			$this->city = $pCity->get_value();
 		else:
@@ -164,14 +163,48 @@ Implements Zupal_Place_IPlace
 		endif;
 	}
 
+	public function update_city()
+	{
+		$cities = FALSE;
+		if ($this->getCountry()):
+			if ($this->getCountry()->has_states() && $this->getState()):
+				$cities = Zupal_Places_Cities::getInstance()->find(array('name' => $this->city, 'state' => $this->state_id, 'country' => $this->country_id));
+			else:
+				$cities = Zupal_Places_Cities::getInstance()->find(array('name' => $this->city, 'country' => $this->country_id));
+			endif;
+		endif;
+
+		if ($cities):
+			switch (count($cities)):
+				case 0:
+					$city = new Zupal_Places_Cities();
+					$city->set_value($this->city);
+					$city->set_country($this->getCountry());
+					$city->set_state($this->getState());
+					$city->save();
+					$this->city_id = $city->identity();
+					$this->city = $city->get_value();
+				break;
+
+				case 1:
+				default:
+					$city = array_pop($cities);
+					$this->city_id = $city->identity();
+				
+			endswitch;
+		else:
+		endif;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ state @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	 * @return Zupal_Place_IItem
 	 */
 	public function getState(){
 		if ($this->state_id):
-			$state = Zupal_Places_States::getInstance()->get($this->city_id);
+			$state = Zupal_Places_States::getInstance()->get($this->state_id);
 		else:
-			$state = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
+			$state = new Zupal_Places_States();
 			$state->set_value($this->state);
 			$state->set_country($this->country_id);
 		endif;
@@ -180,7 +213,9 @@ Implements Zupal_Place_IPlace
 
 	public function setState($pState)
 	{
-		if ($pState instanceof Zupal_Places_States):
+		if (!$pState):
+			return;
+		elseif ($pState instanceof Zupal_Places_States):
 			$this->state_id = $pState->identity();
 			$this->state_name = $pState->get_value();
 			if ($pState->getCountry()):
@@ -198,16 +233,36 @@ Implements Zupal_Place_IPlace
 		endif;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ update_state @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*\
+	* @return void;
+	*/
+	public function update_state ()
+	{
+		if ($this->getCountry()):
+			if(! $this->getCountry()->has_states()):
+				return;
+			endif;
+			$state = Zupal_Places_States::getInstance()->findOne(array('state' => $this->state, 'country' => $this->country_id));
+			if ($state):
+				$this->state_id = $state->identity();
+			else:
+				$state = new Zupal_Places_States();
+				$state->country = $this->country_id;
+				$state->set_value($this->state);
+			endif;
+		endif;
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ country @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
-	 * @return class;
+	 * @return Zupal_Places_Countries;
 	 */
-
 	public function getCountry() {
 		if ($this->country_id):
-			return Zupal_Places_Countries::getInstance()->get($this->country_id);
+			return Zupal_Places_Countries::get_country($this->country_id);
 		elseif ($this->country):
 			return Zupal_Places_Countries::get_country($this->country);
 		else:
@@ -243,7 +298,7 @@ Implements Zupal_Place_IPlace
 	 */
 	public function block($pSeparator = "\n")
 	{
-		return join($pSeparator, array($this->get_name(), $this->getAddress(), $this->getCity(), $this->getState(), $this->getCountry(), $this->getPostal()));
+		return join($pSeparator, array($this->get_name(), $this->getAddress(), $this->getCity(), $this->getState(), $this->getCountry(), $this->getPostalcode()));
 	}
 
 	/**
@@ -268,6 +323,21 @@ Implements Zupal_Place_IPlace
 	*/
 	public function save ()
 	{
+		if ($this->getCountry()):
+			if ($this->getCountry()->identity()):
+				$this->country_id = $this->getCountry()->identity();
+				if ($this->getState()->identity()):
+					$this->state_id = $this->getState()->identity();
+				elseif ($this->state):
+					$state = new Zupal_Places_States();
+					$state->set_value($this->state);
+					$state->set_country($this->getCountry());
+					$state->save();
+					$this->state_id = $state->identity();
+				endif;
+			endif;
+		endif;
+
 		parent::save();
 	}
 	

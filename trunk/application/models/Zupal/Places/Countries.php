@@ -42,7 +42,15 @@ implements Zupal_Place_IItem
 	/**
 	* @return string
 	*/
-	public function __toString (){ return $this->get_name(); }
+	public function __toString (){
+		try
+		{
+			return is_null($this->get_name()) ? '--' : $this->get_name(); }
+		catch(Exception $e)
+		{
+			return sprintf('%s: %s', __METHOD__, $e);
+		}
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -95,8 +103,9 @@ implements Zupal_Place_IItem
 					->orWhere('name LIKE ?', $pParam);
 				$country = $table->fetchRow($select);
 				if ($country):
-					self::$_countries[strtolower($country->identity())] = new Zupal_Places_Countries($country);
-					self::$_countries[strtolower($country->get_value())] = new Zupal_Places_Countries($country);
+					$country = self::getInstance()->get($country);
+					self::$_countries[strtolower($country->identity())] = $country;
+					self::$_countries[strtolower($country->get_value())] = $country;
 				endif;
 			endif;
 
@@ -108,5 +117,15 @@ implements Zupal_Place_IItem
 		endif;
 		
 		return NULL;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ has_states @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return boolean
+	*/
+	public function has_states ()
+	{
+		return $this->has_states ? TRUE : FALSE;
 	}
 }

@@ -1,6 +1,6 @@
-07020<?php
+<?php
 
-class Zupal_Content_Module
+class Zupal_Default_Module
 implements Zupal_Module_IModule
 {
 
@@ -19,7 +19,7 @@ implements Zupal_Module_IModule
 
 	function install()
 	{
-		Zupal_Table_Content::install();
+		Zupal_Table_Places::install();
 	}
 
 	function unistall()

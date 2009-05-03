@@ -99,7 +99,6 @@ implements Zupal_Domain_IDomain
 /*
  * Loads the row with data from the database -- or mock source.
  */
-	protected $_row = NULL;
 
 	protected function load ($pID)
 	{
@@ -341,19 +340,16 @@ implements Zupal_Domain_IDomain
 
 	}
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ toArray @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
-	public function toArray()
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ toArray @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function toArray ()
 	{
-		$out = array();
-
-		foreach($this->_row as $field => $value):
-			$out[$field] = $value;
-		endforeach;
-
-		return $out;
+		return $this->_row->_toArray();
 	}
-
+	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_from_sql @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
@@ -434,5 +430,6 @@ implements Zupal_Domain_IDomain
 
 		throw new Exception("No function $pName or $alt in " . get_class($this));
 	}
+
 }
 

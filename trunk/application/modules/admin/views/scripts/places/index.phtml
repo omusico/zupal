@@ -1,7 +1,11 @@
+<?
+	$this->placeholder('page_title')->set('Places');
+?>
+
 <? if ($this->places) :?>
 <?= $this->partial('Zupal/Places/list.phtml',
 	array(
-		'content' => $this->places,
+		'places' => $this->places,
 		'title' => 'Places'
 	)
 ) ?>
