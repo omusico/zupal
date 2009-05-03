@@ -74,8 +74,8 @@ extends Zend_Form
 	public function place_to_fields()
 	{
 		$this->name->setValue($this->get_place()->get_name());
-		$this->address->setValue($this->get_place()->getAddress()->address);
-		$this->address2->setValue($this->get_place()->getAddress()->address2);
+		$this->addr->setValue($this->get_place()->getAddress()->addr);
+		$this->addr2->setValue($this->get_place()->getAddress()->addr2);
 		$this->city->setValue($this->get_place()->getCity()->get_value());
 		$this->state->setValue($this->get_place()->getState()->get_value());
 		$this->postalcode->setValue($this->get_place()->getPostalcode()->get_value());

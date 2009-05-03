@@ -289,7 +289,7 @@ Implements Zupal_Place_IPlace
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ postal	 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	public function getPostalcode(){ return $this->postalcode; 	}
+	public function getPostalcode(){ return new Zupal_Places_Postalcode($this->postalcode); 	}
 	public function setPostalcode($pPostal){ $this->postalcode = $pPostal; }
 
 	/**
