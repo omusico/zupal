@@ -27,12 +27,19 @@ class Zupal_Module_Manager_Item
 		if ($pReload || is_null($this->_info)):
 			$configFile = $this->directory() . DS . 'info.xml';
 
-			if(!file_exists($configFile))
-			{
-				throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $this->get_name()));
-			}
-			// process
-			$this->_info = new Zend_Config_Xml($configFile);
+			if(file_exists($configFile)):
+				// process
+				$this->_info = new Zend_Config_Xml($configFile);
+			else:							
+				$configFile = preg_replace('~xml#~', 'ini', $configFile);
+
+				if (file_exists($configFile)):
+					$this->_info = new Zend_Config_Ini($configFile);
+				else:
+					throw new RuntimeException(sprintf("Module '%s' has no info.xml file.", $this->get_name()));
+				endif;
+			endif;		
+			
 		endif;
 		return $this->_info;
 	}
