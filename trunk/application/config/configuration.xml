@@ -13,6 +13,7 @@
         <cache>
             <lifetime>7200</lifetime>
         </cache>
+		<layout>default</layout>
     </production>
 
     <development extends="production">
