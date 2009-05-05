@@ -1,6 +1,5 @@
 #summary One-sentence summary of this page.
-
-= Introduction =
+#labels Phase-Requirements,people
 
 As I've detailed on http://wonderlandlabs.com/wll_drupal/refactoring_humanity.html, far too many systems overload the concept of people with functional specifications. Because of this I am including a model for people in Zupal that does not presume anything about the nature of the people in terms of role, context or other metadata.
 
@@ -19,3 +18,11 @@ This should improve archiving and updating of personal records. If a lead change
 De-duplication can also be done at the atomic level. You can prevent creation of identical addresses and flagged as a possible duplicate. 
 
 You can also group addresses into location areas or grids for marketing purposes. 
+
+Note that people are not currently considered nodes. The likelihood of the people system being used for lead gen means that a huge swath of anonymous content is going to be stored in the people table, and we don't want that blowing back to the node table. "People Pages" will probably include a seperate resource table which will be noded. 
+
+I might flip on this and add People to the roster of things that get nodes if it turns useful. 
+
+== Current Status ==
+
+The Zupal_Locations resource has been fleshed out -- People are TBD. 
