@@ -1,0 +1,30 @@
+#summary One-sentence summary of this page.
+#labels Phase-Design
+
+= Introduction =
+
+Zupal Locations are a resource type -- that is they are not noded and will (probably) not get their own module. 
+
+= Design =
+
+A place is a central record that includes the classic elements -- address, city, state, country, and postal code. It has been designed to associate with person's location should be useful for other purposes including mapping, billing. etc. It has (currently unused) fields for lat/long as well. 
+
+The *Zupal_Places* domain is designed to store both key and string values for the city state and country elements. When one is saved it spontaneously links to existing cities, states or countries and (except for countries) spawns a new record if a city or state is entered in text form that is not in the database. 
+
+Places are not nodes. 
+
+Zupal_Places has a __toString() method that renders out as a useful block. 
+
+Note that the getCity(), getState(), getCountry() method respect the relative id over the embedded text string. If you believe they have gotten out of sync: 
+ * if you want the string to be respected, delete the id and save the Zupal_Places domain.
+ * if you want the value of the record referred to by the id to replace the string, manually set the string field to the __toString() method of the getCity/State/Zip() returned value
+
+= Internal Details =
+
+The getCity(), getState(), getPostalcode() and getCountry() methods all return a Zupal_Places_IItem implementor. These objects have get_value() and identity() method; however, the postalcode is not stored in the database (for now) -- its identity and value are one and the same. 
+
+Not all countries have states. At this point only the US has been flagged as eligible to associate to States. Because of this non-American cities are associated only with their host country, where US cities are associated with cities and states. This matters because cities that belong to different states are given different records. 
+
+You can store incomplete addresses -- there is currently no blocks requiring entry in any field within the domain object. 
+
+Note that the forms built for addresses are text - centric for all fields other than the country which it keys to the two letter country code. That is, all other entry is done by type-in text and the domain object attempts to rationalize the entries against the databases' current roster of cities and states through text comparison. This means you can type in the states' name OR two letter code (at least in the US). 
