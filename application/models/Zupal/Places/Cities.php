@@ -60,27 +60,41 @@ implements Zupal_Place_IItem
 	* @param any $pParam
 	* @return Zupal_Places_Cities
 	*/
-	public function get_city ($pParams)
+	public static function get_city ($pCity, $pState = NULL, $pCountry = NULL, $pMake_if_missing = TRUE)
 	{
+		$i = self::getInstance();
 		$city = NULL;
-		if ($pParams instanceof Zupal_Places):
-			if ($pParams->city_id):
-				$city = self::getInstance()->find($pParams->city_id);
-			elseif ($pParams->city):
-				$city = self::find_city($pParams->city, $pParams->getState(), $pParams->getCountry());
-				if (!$city):
-					$city = new Zupal_Places_Cities();
-					$city->set_name($pParams->city);
-					$city->set_state($pParams->get_state());
-					$city->set_country($pParams->get_country());
-					$city->save();
+		if ($pState instanceof Zupal_Place_IItem) $pState = $pState->identity();
+		$pState = (int) $pState;
+		if ($pCountry instanceof Zupal_Place_IItem) $pCountry = $pCountry->identity();
+		
+		if (is_numeric($pCity)):
+			$city = $i->get($pCity);
+			if (!$city):
+			 	$city = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
+			endif;
+		elseif ($pCountry):
+			if ($pCity instanceof Zupal_Places):
+				return self::get_city($pCity->city, $pCity->state_id, $pCity->country_id);
+			else:
+				$select = $i->table()->select();
+				$select->where('name LIKE ?', $pCity);
+				if ($pState):
+					$select->where('state = ?', $pState);
 				endif;
-			endif; // else keep as null
-		elseif (is_numeric($pParams)):
-			$city = $this->getInstance()->find($pParams);
-		else:
-			$city = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
-			$city->set_name($pParams); // return a neutrered city object.
+				$row = $i->table()->fetchRow($select);
+				if ($row):
+					$city = new Zupal_Places_Cities($row);
+				endif;
+			endif;					
+		endif;
+		
+		if (!$city): // return read only stub
+			$city = new Zupal_Places_Cities($pMake_if_missing ? NULL : Zupal_Domain_Abstract::STUB);		
+			$city->set_name($pCity);
+			$city->state = $pState;
+			$city->country = $pCountry;
+			if ($pMake_if_missing){ $city->save();}
 		endif;
 		return $city;
 	}
@@ -144,7 +158,7 @@ implements Zupal_Place_IItem
 	{
 		if ($pReload || is_null(self::$_Instance)):
 		// process
-			self::$_Instance = new Zupal_Places_Cities(Zupal_Donain_Abstract::STUB);
+			self::$_Instance = new Zupal_Places_Cities(Zupal_Domain_Abstract::STUB);
 		endif;
 		return self::$_Instance;
 	}

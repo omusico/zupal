@@ -19,8 +19,16 @@
 		</div>
 	  
 	    <div id="nav"><?php echo $this->placeholder('nav') ?></div>
-	
-	    <div id="content">
+
+
+	    <div id="content">		
+<? if ($this->placeholder('message')): ?>
+		<div id="message"><?= $this->placeholder('message') ?></div>
+<? endif; ?>
+
+<? if ($this->placeholder('error')): ?>
+		<div id="error"><?= $this->placeholder('error') ?></div>
+<? endif; ?>
 		<? if ($this->placeholder('page_title')): ?>
 		<h1><?= $this->placeholder('page_title') ?></h1>
 		<? endif; ?>

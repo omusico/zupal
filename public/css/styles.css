@@ -21,6 +21,42 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
+.iconv
+{
+	width: 40px;
+	padding: 2px;
+	border: 1px solid #E1E1E1;
+	margin: 2px;
+	text-align: center;
+	float: left;
+}
+
+a:link .iconv ,
+a:visitied .iconv 
+{
+	font-size: 80%;
+	font-weight: bold;
+	color: black;
+}
+
+#message
+{
+	background-color: green;
+	color: white;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+
+
+#error
+{
+	background-color: red;
+	color: yellow;
+	font-weight: bold;
+	font-size: 120%;
+}
+
 #breadcrumb div
 {
 	background-color: transparent;
@@ -189,12 +225,13 @@ ul, li {
 #content{
 	background: #fff;
 	clear: right;
-	color: #333;
-	padding: 10px 50px 40px 50px;
+	color: black;
+	padding: 10px 20px 40px 50px;
 	overflow: auto;
 	float: left;
 	width: 800px;
 	margin-left: 10px;
+	margin-bottom: 5px;
 	
 }
 #footer {
@@ -416,8 +453,9 @@ input[type=submit] {
 	padding: 2px 5px;
 	width: auto;
 	vertical-align: bottom;
-	border: 2px solid #666;
-	background: #ccc;
+	border: 2px solid #090;
+	background: #E1FFE1;
+	color: black
 }
 
 /* Notices and Errors */

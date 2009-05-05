@@ -1,7 +1,3 @@
-<style>
-	tr.deleted td { color: red; text-decoration: strikethrough }
-</style>
-
 <div class="list">
 	<h2><?= $this->title ? $this->title : 'Places' ?></h2>
 	<table>
@@ -18,7 +14,8 @@
 		</tr>
 		<thead>
 		<tbody>
-	<? foreach ($this->places as $place): ?>
+	<? foreach ($this->places as $place):
+	?>
 		<tr>
 			<th><?= $place->identity() ?></th>
 			<td><?= $this->link('(edit)', array('module' => 'admin',
@@ -31,10 +28,10 @@
 			'controller' => 'places', 'action' => 'view',
 			'title' => 'View place', 'id' => $place->identity() )) ?></td>
 			<td><?= $place->getAddress() ?></td>
-			<td><?= $place->getCity() ?></td>
-			<td><?= $place->getState() ?></td>
-			<td><?= $place->getCountry() ?></td>
-			<td><?= $place->getPostalcode() ?></td>
+			<td nowrap><?= $place->getCity() ?></td>
+			<td nowrap><?= $place->getState() ?></td>
+			<td nowrap><?= $place->getCountry() ?></td>
+			<td nowrap><?= $place->getPostalcode() ?></td>
 			<td><?= $this->link('(x)', array('module' => 'admin',
 			'controller' => 'places', 'action' => 'delete',
 			'title' => 'Delete place', 'id' => $place->identity() )) ?></td>
