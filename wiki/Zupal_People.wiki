@@ -3,7 +3,7 @@
 
 As I've detailed on http://wonderlandlabs.com/wll_drupal/refactoring_humanity.html, far too many systems overload the concept of people with functional specifications. Because of this I am including a model for people in Zupal that does not presume anything about the nature of the people in terms of role, context or other metadata.
 
-People in Zupal may be leads, users, customers, celeberities, etc. they are not, in fact, content nodes, but a more general resource types. Little more than their names and email addresses are stored in the people table. (for convenience the username/password has been denormalized to the table but that might not stick.) 
+People in Zupal may be leads, users, customers, celebrities, etc. they are not, in fact, content nodes, but a more general resource types. Little more than their names and email addresses are stored in the people table. (for convenience the username/password has been denormalized to the table but that might not stick.) 
 
 Every other piece of information about a person is normalized; phone numbers, addresses, etc. 
 
@@ -25,4 +25,4 @@ I might flip on this and add People to the roster of things that get nodes if it
 
 == Current Status ==
 
-The Zupal_Locations resource has been fleshed out -- People are TBD. 
+The Zupal_Places resource has been fleshed out -- People are TBD. 
