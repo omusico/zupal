@@ -19,5 +19,12 @@ extends Zupal_View_Ticket
 		$this->set_value('Country', $pPlace->getCountry());
 
 		$this->set_value('Postal Code', $pPlace->getPostalcode());
+
+		$this->set_action('new', new Zupal_Control_IconLink('edit.gif', 'Edit', array(
+			'module' => 'admin',
+			'controller' => 'places',
+			'action' => 'edit',
+			'id' => $pPlace->identity()
+			)));
 	}
 }

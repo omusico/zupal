@@ -72,43 +72,26 @@ implements Zupal_Place_IItem
 	* @param any $pParam
 	* @return Zupal_Places_States
 	*/
-	public static function get_state ($pParams)
+	public static function get_state ($pState, $country_id = NULL, $pCreate_if_missing = TRUE)
 	{
-		$state = NULL;
-		if ($pParams instanceof Zupal_Places):
-			if ($pParams->state_id):
-				$state = self::getInstance()->find($pParams->state_id);
-				if ($state && $state->get_value() && ($state->get_value() != $pParams->state)):
-					$pParams->state_id = 0;
-					$table = self::getInstance()->table();
-					$select = $table->select()
-						->where('country = ?', $pParams->country_id)
-						->where('name LIKE ?', $pParams->state)
-						->orWhere('code LIKE ?', $pParams->state);
-					$row = $table->fetchRow($select);
-					if ($row):
-						$state = new Zupal_Places_States($row);
-					else:
-						$state = new Zupal_Places_States();
-						$state->set_value($pParams->state);
-						$state->set_country($pParams->get_country());
-						$state->save();
-					endif;
-				endif;
-			elseif ($pParams->state):
-				$state = self::get_state($pParams->state, $pParams->getCountry());
-				if (!$state):
-					$state = new Zupal_Places_Cities();
-					$state->set_name($pParams->state);
-					$state->set_country($pParams->get_country());
-					$state->save();
-				endif;
-			endif; // else keep as null
-		elseif (is_numeric($pParams)):
-			$state = self::getInstance()->get($pParams);
-		else:
-			$state = new Zupal_Places_States(Zupal_Domain_Abstract::STUB);
-			$state->set_name($pParams); // return a neutrered state object.
+		if ($pState instanceof Zupal_Places) return self::get_state($pState->state, $pState->country_id);
+		if (is_numeric($pState)) return new Zupal_Places_States($pState);
+
+		$i = self::getInstance();
+
+		$select = $i->table()->select();
+		if ($country_id) $select->where('country = ?', $country_id);
+		$select->where('name LIKE ?', $pState);
+		$select->orWhere('code LIKE ?', $pState);
+		$row = $i->table()->fetchRow($select);
+		if ($row) return new Zupal_Places_States($row);
+		//@TODO: cache;
+		// @TODO -- don't do for known contry states (like US)
+		if($pCreate_if_missing):
+			$state = new Zupal_Places_States();
+			$state->set_name($pState);
+			$state->set_country($country_id);
+			$state->save();
 		endif;
 		return $state;
 	}

@@ -1,6 +1,6 @@
 <?php 
 
-class Admin_PlacesController extends Zend_Controller_Action
+class Admin_PlacesController extends Zupal_Controller_Abstract
 {
 
 
@@ -41,9 +41,26 @@ class Admin_PlacesController extends Zend_Controller_Action
 
 	public function editAction()
 	{
-		$this->view->place = new Zupal_Places($this->_getParam('id'));
-		$this->view->form = new Zupal_Places_Form($this->view->place);
+		$place = Zupal_Places::getInstance()->get($this->_getParam('id'));
+		$this->view->place = $place;
+		$this->view->form = new Zupal_Places_Form($place);
+		$this->view->form->submit->setLabel('Update Place');
+		if ($this->_getParam('reload')) $this->view->form->isValid($this->_getAllParams());
 		$action = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . join(DS, array('admin', 'places', 'editvalidate'));
 		$this->view->form->setAction($action);
+	}
+
+	public function editvalidateAction()
+	{
+		$place = Zupal_Places::getInstance()->get($this->_getParam('place_id'));
+		$this->view->place = new Zupal_Places($place);
+		$this->view->form = new Zupal_Places_Form($place);
+		if($this->view->form->isValid($this->_getAllParams())):
+			$this->view->form->fields_to_place();
+			$this->view->form->get_place()->save();
+			$this->_forward('view', NULL, NULL, array('message' => 'Place Upadated', 'id' => $this->view->form->get_place()->identity()));
+		else:
+			$this->_forward('edit', NULL, NULL, array('error' => 'Could not save place', 'reload' => 1,  'id' => $this->view->form->get_place()->identity()));
+		endif;
 	}
 }

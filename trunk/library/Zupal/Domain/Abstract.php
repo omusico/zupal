@@ -25,6 +25,7 @@ implements Zupal_Domain_IDomain
 			$this->_row = $pID;
 		elseif (!strcasecmp($pID, self::STUB)):
 			$this->asStub();
+			$this->newRow();
 		elseif ($pID):
 			$this->load($pID);
 		else:

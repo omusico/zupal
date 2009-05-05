@@ -13,10 +13,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 		$root = realpath(dirname(__FILE__) . '/../../../');
 		$layout->setLayoutPath(LAYOUT_PATH);
 		$layout->setLayout('default');
-		foreach(array('message', 'error') as $field)
-		if ($this->_hasParam($field)):
-			$this->view->$field = $this->_getParam($field);
-		endif;
+
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
 	}
 
@@ -41,11 +38,11 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 						switch (pathinfo($menu_path, PATHINFO_EXTENSION )):
 							case 'xml':
 								$config = new Zend_Config_Xml($menu_path, 'menu');
-								break;
+							break;
 
 							case 'ini';
 								$config = new Zend_Config_Ini($menu_path);
-								break;
+							break;
 
 						endswitch;
 						
@@ -59,5 +56,13 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 		}
 
 		$this->view->placeholder('nav')->set($menu);
+
+		foreach(array('message', 'error') as $property):
+			$v = $this->_getParam($property, '');
+			if ($v):
+				error_log(__METHOD__ . ': ' . $property . ' = ' . $v);
+				$this->view->placeholder($property)->set($v);
+			endif;
+		endforeach;
 	}
 }

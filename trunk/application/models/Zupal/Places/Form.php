@@ -24,6 +24,18 @@ extends Zend_Form
 		}
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ isValid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param array $pParam
+	* @return boolean
+	*/
+	public function isValid ($pParam)
+	{
+		foreach ($pParam as $f => $v) $pParam[$f] = stripslashes($v);
+		return parent::isValid($pParam);
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_countries @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -37,6 +49,7 @@ extends Zend_Form
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ place @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private $_place = null;
+	public function set_place($pPlace){ $this->_place = $pPlace; }
 	/**
 	 * @return Zupal_Places;
 	 */
@@ -50,8 +63,6 @@ extends Zend_Form
 		return $this->_place; 
 	}
 
-	public function set_place($pValue) { $this->_place = $pValue; }
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ place_to_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
@@ -59,6 +70,7 @@ extends Zend_Form
 	 */
 	public function fields_to_place()
 	{
+		$this->get_place()->place_id = $this->place_id->getValue();
 		$this->get_place()->setAddress(array($this->addr->getValue(), $this->addr2->getValue()));
 		$this->get_place()->set_name($this->name->getValue());
 		$this->get_place()->setCity($this->city->getValue());
@@ -73,6 +85,7 @@ extends Zend_Form
 	*/
 	public function place_to_fields()
 	{
+		$this->place_id->setValue($this->get_place()->identity());
 		$this->name->setValue($this->get_place()->get_name());
 		$this->addr->setValue($this->get_place()->getAddress()->addr);
 		$this->addr2->setValue($this->get_place()->getAddress()->addr2);

@@ -1,4 +1,4 @@
-SetEnv APPLICATION_ENV daveelopment
+SetEnv APPLICATION_ENV edelhart
 
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} -s [OR]
