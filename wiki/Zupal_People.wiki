@@ -1,0 +1,21 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+As I've detailed on http://wonderlandlabs.com/wll_drupal/refactoring_humanity.html, far too many systems overload the concept of people with functional specifications. Because of this I am including a model for people in Zupal that does not presume anything about the nature of the people in terms of role, context or other metadata.
+
+People in Zupal may be leads, users, customers, celeberities, etc. they are not, in fact, content nodes, but a more general resource types. Little more than their names and email addresses are stored in the people table. (for convenience the username/password has been denormalized to the table but that might not stick.) 
+
+Every other piece of information about a person is normalized; phone numbers, addresses, etc. 
+
+I am flipping a coin as to whether or not to associate users as a separate table or simply allocate all privileges to people; i.e., is "User" functionality worth a unique and separate frame of reference, or are users just people with privileges? My gut is leaning that way. 
+
+Having the entity of people being a reusable component should save some time when extneding functionality into areas like e-commerce. Creating a customer domain just means defining a business centric table linked to the person, and a set of decorated addresses (billing, shipping, work) with that customer. 
+
+Similarly, a lead is simply a person who has a relationship with (optionally) their company and their representative. 
+
+This should improve archiving and updating of personal records. If a lead changes addresses, just archive their home address and add a new one. 
+
+De-duplication can also be done at the atomic level. You can prevent creation of identical addresses and flagged as a possible duplicate. 
+
+You can also group addresses into location areas or grids for marketing purposes. 
