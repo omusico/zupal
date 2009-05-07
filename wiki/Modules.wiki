@@ -1,9 +1,11 @@
-#summary One-sentence summary of this page.
+#summary The overall look at the interchangable units of Zupal
 #labels Featured,module
 
 = Introduction =
 
-The Module system is still extremely transient; here are the current working principles. 
+The Module system is still extremely transient; here are the current working principles. However it is ultimately the *ONLY REASON ZUPAL EXISTS*. Zend Framework is on its own quite adequate for single project site generation; where it fails is that it doesn't have a contract system for reusable components. 
+
+The Zupal Module will when complete be a template for a reusable component with contracts into the node system for interchange of data and access to the shared admin resource.
 
 = Details =
 
