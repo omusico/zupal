@@ -1,81 +1,65 @@
 <?php
 
 class Zupal_People_Form
-extends Zupal_Nodes_Form
+extends Zend_Form
 {
-	public function __construct(Zupal_Content $pContent = NULL)
+	public function __construct(Zupal_People $pPeople = NULL)
 	{
-		if (is_null($pContent)) $pContent = new Zupal_Content();
+		if (is_null($pPeople)) $pPeople = new Zupal_People();
 		
 		$ini_path = dirname(__FILE__) . DS . 'form.ini';
 		$config = new Zend_Config_Ini($ini_path, 'fields');
-		$elements = $config->elements->toArray();
 		
-		parent::__construct($pContent);
+		parent::__construct($config);
 
-		$this->addElements($elements);
+		$root = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . 'people' . DS . 'item';
 
-		$this->addDisplayGroup(array_keys($elements), 'content', array('order' => -1, 'legend' => 'detail', 'style' =>"width: 400px"));
-		$this->getDisplayGroup('content')->removeDecorator('DtDdWrapper');
-
-		$root = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . 'content' . DS . 'item';
-
-		if ($pContent->identity())
+		if ($pPeople->identity())
 		{
-			$this->set_content($pContent);
-			$this->content_to_fields();
+			$this->set_people($pPeople);
+			$this->people_to_fields();
 			$this->setAction($root . DS . 'updatevalidate');
 		}
 		else
 		{
 			$this->setAction($root . DS . 'addvalidate');
-			$this->submit->setLabel('Create Content');
-			$this->set_content(new Zupal_Content());
+			$this->submit->setLabel('Create Person');
+			$this->set_people($pPeople);
 		}
 		$this->setMethod('post');
 	}
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ people @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	private $_content = null;
+	private $_people = null;
 	/**
-	 * @return Zupal_Content;
+	 * @return Zupal_People;
 	 */
-	public function get_content() {
-		if (is_null($this->_content))
+	public function get_people() {
+		if (is_null($this->_people))
 		{
-			$this->_content = new Zupal_Content();
-			$this->fields_to_content();
+			$this->_people = new Zupal_People();
 		}
 		
-		return $this->_content; 
+		return $this->_people;
 	}
 
 	/**
-	 * Note -- to prevent recursion this method does NOT check the existence of _content.
+	 * Note -- to prevent recursion this method does NOT check the existence of _people.
 	 */
-	public function fields_to_content()
+	public function fields_to_people()
 	{
-		$this->_content->node_id = $this->node_id->getValue();
-		$this->_content->title = $this->title->getValue();
-		$this->_content->text = $this->text->getValue();
-		$this->_content->node()->set_status($this->status->getValue());
 	}
 
-	public function set_content($pValue) { $this->_content = $pValue; }
+	public function set_people($pValue) { $this->_people = $pValue; }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ content_to_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ people_to_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
 	* @return void
 	*/
-	public function content_to_fields ()
+	public function people_to_fields ()
 	{
-		$this->title->setValue( $this->get_content()->title());
-		$this->text->setValue( $this->get_content()->text());
-		$this->node_id->setValue( $this->get_content()->nodeId());
-		$statuses = $this->get_content()->node()->status(1);
-		$this->status->setValue($statuses);
 
 	}
 }
