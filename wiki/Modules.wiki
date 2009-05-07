@@ -45,6 +45,10 @@ None of the methods of your Zupal_Module_IModule class should generate visible m
 
 The Library folder is one of the most noticeable deviation with the MVC conventions of ZF. Unlike ZF's global library, each module needs an independent repository of resources that are self contained within the module itself. Also all contents of the library must be namespaced to the specific module for guaranteed namespace containment within the module. 
 
+The only required content of this folder is /[module]/Library/[module]/Manager.php
+
+Which implements the Zupal_Module_IModule interface. 
+
 = Some Useful Conventions =
 
 There is far to little work done in Zupal to nail down any rules as to how a module should go about its business. However it is reccommended that for most simple modules (with a single node based table as their basis) to have two controllers: an index controller for the destination page and a second item controller for CRUD operations on that content. 
