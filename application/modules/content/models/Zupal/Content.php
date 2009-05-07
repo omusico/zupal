@@ -11,8 +11,8 @@ implements Zupal_Content_IContent
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
-	* @param <type> $pID
-	* @return <type>
+	* @param  $pID
+	* @return Zupal_Content
 	*/
 	public function get ($pID)
 	{

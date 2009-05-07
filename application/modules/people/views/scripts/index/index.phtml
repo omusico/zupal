@@ -1,0 +1,25 @@
+<?php
+
+	$this->placeholder('page_title')->set('People');
+	/*
+	$breadcrumb = $this->placeholder('breadcrumb');
+	$breadcrumb = $breadcrumb[0];
+	$breadcrumb->set_item('People');
+	$this->placeholder('breadcrumb')->set($breadcrumb);
+*/
+?>
+<table>
+<tr>
+
+	<td width="1*">
+	<h2>Add People</h2>
+
+<?= $this->form->render() ?>
+	</td>
+	<td width="1*">
+	<h2>Find People</h2>
+
+<?= $this->people_form->render() ?>
+	</td>
+</tr>
+</table>
