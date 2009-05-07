@@ -325,7 +325,6 @@ div.paging span a {
 dl {
 	line-height: 2em;
 	margin: 0em 0em;
-	width: 60%;
 }
 dl.altrow {
 	background: #f4f4f4;
@@ -346,9 +345,8 @@ dd {
 /* Forms */
 form {
 	clear: both;
-	margin-right: 20px;
+	margin-right: 1em;
 	padding: 0;
-	width: 80%;
 }
 fieldset {
 	width: 400px;
