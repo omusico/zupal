@@ -1,0 +1,11 @@
+<?php
+$this->placeholder('page_title')->set('New Person');
+?>
+<h2>Person</h2>
+
+<dl>
+<?	foreach($this->person->toArray() as $k => $v): ?>
+	<dt><?= $k ?></dt>
+	<dd><?= $v ?>&nbsp;</dd>
+<? endforeach; ?>
+</dl>
