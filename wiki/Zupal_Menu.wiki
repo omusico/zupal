@@ -5,6 +5,8 @@
 
 The Zupal_Menu package is a basic system for lists of links. It will become more interesting has hooks back to modules and ACL are embedded. 
 
+It is *COMPLETELY ReDUNDANT* with Zend_Navigation and will be deprecated ASAP.
+
 = Details =
 
 The Zupal_Menu_IMenu interface is pretty open:
