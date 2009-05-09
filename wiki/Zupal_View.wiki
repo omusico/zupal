@@ -13,6 +13,8 @@ The current menu system is fairly brutal; there is a single navigation menu that
 
 If you want to customize the submenu for context/ACL, you can access the submenu of the global navigation (accessible through the nav placeholder) and change the submenu property of the current modules' menu item. 
 
+*NOTE*: the Menu System will be replaced with Zend_Navigation constructs ASAP
+
 == Customizing the Layout for Context. ==
 
 There are two stock elements in the view placeholder context: breadcrumb and page_title. 
