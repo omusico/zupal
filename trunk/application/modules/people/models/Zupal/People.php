@@ -30,6 +30,26 @@ implements Zupal_Grid_IGrid
 		return new Zupal_People($pID);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * note -- this "boilderplate" can be dropped anywhere.
+ */
+	private static $_Instance = NULL;
+
+/**
+ *
+ * @return Zupal_People
+ */
+	public static function getInstance()
+	{
+		if (is_null(self::$_Instance)):
+		// process
+		self::$_Instance = new self();
+		endif;
+		return self::$_Instance;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ User Stuff @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ locations @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -43,19 +63,19 @@ implements Zupal_Grid_IGrid
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IGrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
-	private static $RENDER_GRID_PARAM_DEFAULTS = array('identifier' => 'id');
 	
-	public function render_grid($pID, array $pParams = NULL)
+	public function render_grid($pID, array $pColumns, $pURL)
 	{
-		$pParams = array_merge(self::$RENDER_GRID_PARAM_DEFAULTS, $pParams);
+		$identifier = $this->table()->idField();
 		ob_start();
 		?>
-<table id="igrid_<?= $pID ?>node" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid"
-	   query="{ <?= $identifier ?> : '*' }" store="jsonStore">
+
+<span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_store" url="<?= $pURL ?>" />
+<table id="igrid_<?= $pID ?>node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
+	   query="{ <?= $identifier ?> : '*' }" store="igrid_<?= $pID ?>_store">
 	<thead>
 		<tr>
-<? foreach($pParams['columns'] as $key => $column): ?>
+<? foreach($pColumns as $key => $column): ?>
 	<? if (is_array($column)): ?>
 		<?= $this->render_array_column($key, $column) ?>
 <? elseif (is_string($column)): ?>
@@ -70,7 +90,7 @@ implements Zupal_Grid_IGrid
 </table>
 
 		<?
-		return ob_end_flush();
+		return ob_get_clean();
 	}
 
 	public function render_data(array $pParams, $pSort = NULL, $pStart = 0, $pRows = 30)
@@ -84,7 +104,7 @@ implements Zupal_Grid_IGrid
 			$items[] = $row->toArray();
 		endforeach;
 
-		$data = new Zend_Dojo_Data($pIdentitfier, $items, $pLabel);
+		$data = new Zend_Dojo_Data($this->table()->idField(), $items, 'email');
 
 		return $data;
 	}
@@ -95,7 +115,7 @@ implements Zupal_Grid_IGrid
 			$field = $pColumn['field'];
 			unset($pColumn['field']);
 		endif;
-		?><th field="<?= $key ?>" <?
+		?><th field="<?= $pKey ?>" <?
 		if (array_key_exists('label', $pColumn)): // Is a keyed set of parameters.
 			$label = $pColumn['label'];
 			unset($pColumn['label']);

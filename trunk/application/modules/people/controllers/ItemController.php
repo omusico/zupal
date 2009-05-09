@@ -24,6 +24,16 @@ extends Zupal_Controller_Abstract
 		$this->people = new Zupal_People(Zupal_Domain_Abstract::STUB);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function dataAction ()
+	{
+        $this->_helper->layout->disableLayout();
+		$this->view->data = Zupal_People::getInstance()->render_data(array(), 'email');
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ addAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*

@@ -9,12 +9,17 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 	public function init()
 	{
 		$this->view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
+		
+		Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
+
 		$layout = $this->_helper->layout;
 		$root = realpath(dirname(__FILE__) . '/../../../');
 		$layout->setLayoutPath(LAYOUT_PATH);
 		$layout->setLayout('default');
 
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
+		$this->view->dojo()
+             ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
 	}
 
 	public function preDispatch()
