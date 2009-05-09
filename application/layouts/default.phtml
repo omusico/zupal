@@ -8,6 +8,14 @@
     <?php echo $this->headLink()->appendStylesheet('/css/styles.css');  ?>
     <?php echo $this->headScript()?>
     <?php echo $this->headStyle() ?>
+<?
+
+if ($this->dojo()->isEnabled()){
+    $this->dojo() //->setLocalPath($this->placeholder('base_path') . '/scripts/Dojo/dojo/dojo.js') note - changed to Google
+                 ->addStyleSheetModule('dijit.themes.tundra');
+    echo $this->dojo();
+   }
+?>
 </head>
 <body>
 	<div id="container">

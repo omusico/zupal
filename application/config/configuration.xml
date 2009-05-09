@@ -12,6 +12,7 @@
         </database>
         <cache>
             <lifetime>7200</lifetime>
+			<root>cache</root>
         </cache>
 		<layout>default</layout>
     </production>

@@ -248,40 +248,7 @@ ul, li {
 }
 
 /* Tables */
-table {
-	background: #fff;
-	clear: both;
-	color: #333;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	width: 100%;
-	border-bottom: 1px solid #333;	
-}
-th {
-	color: #333;
-	text-align: left;
-	border-bottom: 1px solid #333;
-}
-tbody th {
-	border-bottom: none;
-	text-align: left;
-}
-th a {
 
-	display: block;
-	padding: 2px 4px;
-	text-decoration: none;
-}
-th a:hover {
-	background: #eee;
-	color: #333;
-	text-decoration: none;
-}
-table tr td {
-	padding: 4px;
-	text-align: left;
-	vertical-align: top;
-}
 table tr.altrow td {
 	background: #FEFFB3;
 }
