@@ -106,12 +106,8 @@ implements Zupal_Grid_IGrid
 				$pColumn['width'] = $width;
 			endif;
 		endif; // end parameter loop
-		foreach($pColumn as $key => $value):
-?> <?= $key ?>="<?= $value ?>"
-<?		endforeach; // parameter loop
-?> >
-<?= $label ?>
-</th>
+		foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
+?> ><?= $label ?></th>
 <?
 	}
 

@@ -348,7 +348,7 @@ implements Zupal_Domain_IDomain
 	*/
 	public function toArray ()
 	{
-		return $this->_row->_toArray();
+		return $this->_row->toArray();
 	}
 	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_from_sql @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
