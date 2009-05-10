@@ -70,4 +70,9 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 			endif;
 		endforeach;
 	}
+
+	public function postDispatch()
+	{
+		$this->view->headTitle($this->view->placeholder('page_title'));
+	}
 }

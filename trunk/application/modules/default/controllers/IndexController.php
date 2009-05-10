@@ -6,7 +6,7 @@ class IndexController extends Zupal_Controller_Abstract
 
     public function indexAction()
     {
-                // action body
+		$this->view->params = $this->_getAllParams();
     }
 
 }

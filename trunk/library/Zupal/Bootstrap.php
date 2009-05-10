@@ -70,6 +70,7 @@ class Zupal_Bootstrap
         self::$frontController = Zend_Controller_Front::getInstance();
         self::$frontController->throwExceptions(true);
         self::$frontController->returnResponse(true);
+        self::$frontController->registerPlugin(new Zupal_Plugins_Pagerouter());
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
         self::$frontController->addModuleDirectory(ZUPAL_APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
