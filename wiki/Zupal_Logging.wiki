@@ -1,0 +1,23 @@
+#labels Featured,logging,debugging
+# Log Messages in Zupal
+
+Zupal has a switchable log component that extends from the Zupal_Manager component. It is a straightforward adoption of the Zend_Log system. Logging is governed by the logging branch of the configuration file; two sup properties, write and log_to_db.
+
+  * If *logging* is set to *false* no logging occurs.
+  * If *write_to_db* is set to *true*, logging is directed towards the database. Otherwise it writes to a file in the respective [module]/logs/history.log file. 
+
+Log objects are accessed off the module's item class (see Zupal_Module for details on that component). This example is an override on the Zupal_People::save() method that throws a log message every time a person is saved. 
+
+{{{
+
+	public function save()
+	{
+		$logger = Zupal_Module_Manager::getInstance()->get('people')->logger();
+		parent::save();
+		$logger->info('Person ' . $this->identity() . ' saved');
+	}
+}}}
+
+the logger() method returns a `Zupal_Logger` object; this object is a decorated Zend_Log wherein the redirection of the log (database or file) occurs. But for usage, all you need to know is that the logger implements all the usual log calls of a Zend_Log. 
+
+Note that if logging is set to false, all calls to loggers are turned off. Also at this point in time, you can't turn logging on or off for one particular module -- its all or nothing.  
