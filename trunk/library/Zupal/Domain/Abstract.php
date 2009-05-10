@@ -119,7 +119,8 @@ implements Zupal_Domain_IDomain
 			if ($hits): 
 				$this->_row = $hits->current();
 			else:
-				error_log('cannot find ' . $pID . ' in ' . $this->tableClass());
+			$log = Zupal_Module_Manager::getInstance()->get('people')->logger();
+				$log->error('cannot find ' . $pID . ' in ' . $this->tableClass());
 			endif;
 		endif;
 		if (!$this->_row) $this->_row = $this->table()->createRow();
@@ -333,12 +334,7 @@ implements Zupal_Domain_IDomain
 
 	public function delete()
 	{
-		if (!strcasecmp(Zupal_Config::get_env(), 'test')):
-			$this->_row = $this->table()->delete_mock_row($this->_row);
-		else:
-			$this->_row->delete();
-		endif;
-
+		$this->_row->delete();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ toArray @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
