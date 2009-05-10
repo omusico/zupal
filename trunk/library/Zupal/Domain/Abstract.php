@@ -111,7 +111,6 @@ implements Zupal_Domain_IDomain
 				throw new Exception(__METHOD__ . ': Non integer ' . print_r($pID, 1) . ' passed to ' . __CLASS__);
 			endif;
 		endif;
-		$pID = (int) $pID;
 
 	//	echo '<p>loading ' . $pID . ' from ' . $this->tableClass() . '</p>';
 		if ($pID):

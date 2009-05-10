@@ -21,6 +21,12 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
+#gender-element label,
+#gender-element input
+{
+	display: inline-block
+}
+
 .iconv
 {
 	width: 40px;
