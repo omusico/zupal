@@ -46,3 +46,7 @@ Note: this helper respects the getBasePath() property of the Zend_Controller_Fro
 = Data Grids =
 
 By connecting the Dojo Grid to the Domain system, Zupal allows for a very substantial list and detail system. Very fast and flexible grids can be presented and their layout and data cached for rapid presentation. 
+
+= Images, Icons and Links =
+
+There is a compact set of classes for rendering linked icons etc. These are intended for simple links and buttons but might be useful for a gallery system as well. There are also a set of CRUD icons in the public/img/icons folder. 
