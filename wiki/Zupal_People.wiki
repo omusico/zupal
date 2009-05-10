@@ -23,6 +23,10 @@ Note that people are not currently considered nodes. The likelihood of the peopl
 
 I might flip on this and add People to the roster of things that get nodes if it turns useful. 
 
+== Usage ==
+
+People are not noded content. However the people table functions as its own dimension of nodes in their own way. 
+
 == Current Status ==
 
-The Zupal_Places resource has been fleshed out -- People are TBD. 
+People can be made and listed in the people module. An acctual login and ACL season is TBD. 
