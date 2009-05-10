@@ -28,16 +28,18 @@ extends Zend_Log
 		if (Zupal_Bootstrap::$registry->configuration->logging->log_to_db):
 			$table = Zupal_Eventlogs::getInstance()->table();
 			$adapter = $table->getAdapter();
-			return new Zend_Log_Writer_Db($adapter, $table->getName());
+			return new Zend_Log_Writer_Db($adapter, $table->tableName());
 		else:
 
 			if (!is_dir($this->module_dir())):
-				throw new Exception(__METHOD__ . ': Cannot find module ' . $pName);
+				throw new Exception(__METHOD__ . ': Cannot find module ' . $this->get_name());
 			endif;
 
 			if (!is_dir($this->log_dir())):
-				$this->mkdir($this->log_dir, 0775);
+				mkdir($this->log_dir(), 0775);
 			endif;
+
+			if (!file_exists($this->file())) touch($this->file());
 
 			return new Zend_Log_Writer_Stream($this->file());
 		endif;
@@ -52,7 +54,11 @@ extends Zend_Log
 
 	public function get_name() { return $this->_name; }
 
-	public function set_name($pValue) { $this->_name = $pValue; }
+	public function set_name($pValue) { 
+		$this->_name = $pValue;
+		$this->setEventItem('module', strtolower($pValue));
+
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
