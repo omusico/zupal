@@ -21,14 +21,14 @@ extends Zend_Log
 	*/
 	public function get_stream ()
 	{
-		if (!Zupal_Bootstrap::$registry->logging->write):
+		if (!Zupal_Bootstrap::$registry->configuration->logging->write):
 			return new Zend_Log_Writer_Null();
 		endif;
 
-		if (Zupal_Bootstrap::$registry->logging->log_to_db):
-			$adapter = Zupal_Nodes::getInstance()->table()->getAdapter();
-			return new Zend_Log_Writer_Db($adapter,
-				Zupal_Bootstrap::$registry->logging->log_table);
+		if (Zupal_Bootstrap::$registry->configuration->logging->log_to_db):
+			$table = Zupal_Eventlogs::getInstance()->table();
+			$adapter = $table->getAdapter();
+			return new Zend_Log_Writer_Db($adapter, $table->getName());
 		else:
 
 			if (!is_dir($this->module_dir())):
@@ -40,7 +40,6 @@ extends Zend_Log
 			endif;
 
 			return new Zend_Log_Writer_Stream($this->file());
-
 		endif;
 	}
 

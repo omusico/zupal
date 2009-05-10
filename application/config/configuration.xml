@@ -19,7 +19,6 @@
 		<logging>
 			<write>0</write>
 			<log_to_db>0</log_to_db>
-			<log_table>zupal_logs</log_table>
 		</logging>
     </production>
 
@@ -49,5 +48,6 @@
 		<logging>
 			<write>1</write>
 			<log_to_db>0</log_to_db>
+		</logging>
     </edelhart>
 </configuration>

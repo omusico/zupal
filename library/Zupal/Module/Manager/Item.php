@@ -51,7 +51,7 @@ class Zupal_Module_Manager_Item
 	*/
 	public function directory ()
 	{
-		return APPLICATION_PATH . DS . 'modules' . DS . $this->get_name();
+		return ZUPAL_MODULE_PATH . DS . $this->get_name();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_paths @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -87,15 +87,19 @@ class Zupal_Module_Manager_Item
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logger @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	private static $_logger = NULL;
-	public static function get_logger($pModule = 'default')
+	private static $_logger = array();
+	/**
+	 *
+	 * @return Zupal_Module_Logger
+	 */
+	public function logger()
 	{
-		$pModule = strtolower($pModule);
-		if ($pReload || !array_key_exists($pModule, $this->_logger)):
+		$module = strtolower($this->get_name());
+		if ( !array_key_exists($module, self::$_logger)):
 			// process
-			self::$_logger[$pModule] = new Zupal_Module_Logger($pModule);
+			self::$_logger[$module] = new Zupal_Module_Logger($module);
 		endif;
-		return self::$_logger[$pModule];
+		return self::$_logger[$module];
 	}
 }
 

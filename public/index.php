@@ -14,7 +14,7 @@ defined('ZUPAL_ROOT_DIR')
 	|| define('ZUPAL_ROOT_DIR', dirname(dirname(__FILE__)));
 
 defined('ZUPAL_APPLICATION_PATH')
-    || define(ZUPAL_'APPLICATION_PATH', ZUPAL_ROOT_DIR . DS . 'application');
+    || define('ZUPAL_APPLICATION_PATH', ZUPAL_ROOT_DIR . DS . 'application');
 
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
@@ -26,14 +26,13 @@ defined('ZUPAL_LAYOUT_PATH') ||
 	define('ZUPAL_LAYOUT_PATH', ZUPAL_APPLICATION_PATH . DS . 'layouts');
 
 defined('ZUPAL_MODULE_PATH') ||
-	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DD . 'modules');
+	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DS . 'modules');
 
 /** setup include path **/
 set_include_path(
-      LIBRARY_PATH . PS
-    . APPLICATION_PATH . PS
-    . APPLICATION_PATH . DS . 'models' . PS
-    . APPLICATION_PATH . DS . 'forms' . PS
+      ZUPAL_LIBRARY_PATH . PS
+    . ZUPAL_APPLICATION_PATH . PS
+    . ZUPAL_APPLICATION_PATH . DS . 'models' . PS
     . get_include_path()
 );
 

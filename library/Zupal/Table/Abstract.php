@@ -21,6 +21,18 @@ abstract class Zupal_Table_Abstract extends Zend_Db_Table_Abstract
 		return $this->_name;
 	}	
 
+	/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_exists @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return boolean
+	*/
+	public function table_exists ()
+	{
+		$out = $this->getAdapter()->fetchOne('SHOW TABLES LIKE ?', array($this->tableName()));
+		error_log(__METHOD__ . ': finding ' . $this->tableName() . ': ' . print_r($out, 1));
+		return count($out);
+	}
+	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __construct @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
 	public function __construct($config = NULL)

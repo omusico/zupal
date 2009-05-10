@@ -11,7 +11,7 @@ implements Zupal_Grid_IGrid
 
 	/**
 	 * @see CPF_Formset_Domain::get_table_class()
-	 *
+	 * -- note -- this is "boilerplate" code that can be put into any new domain
 	 */
 	public function tableClass ()
 	{
@@ -27,7 +27,7 @@ implements Zupal_Grid_IGrid
 	 */
 	public function get ($pID)
 	{
-		return new Zupal_People($pID);
+		return new self($pID);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -179,6 +179,13 @@ implements Zupal_Grid_IGrid
 		foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
 ?> ><?= $label ?></th>
 <?
+	}
+
+	public function save()
+	{
+		$logger = Zupal_Module_Manager::getInstance()->get('people')->logger();
+		parent::save();
+		$logger->info('Person ' . $this->identity() . ' saved');
 	}
 
 }
