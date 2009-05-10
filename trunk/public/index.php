@@ -13,18 +13,20 @@ defined('DS')
 defined('ZUPAL_ROOT_DIR')
 	|| define('ZUPAL_ROOT_DIR', dirname(dirname(__FILE__)));
 
-defined('APPLICATION_PATH')
-    || define('APPLICATION_PATH', ZUPAL_ROOT_DIR . DS . 'application');
+defined('ZUPAL_APPLICATION_PATH')
+    || define(ZUPAL_'APPLICATION_PATH', ZUPAL_ROOT_DIR . DS . 'application');
 
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'development'));
 
-defined('LIBRARY_PATH') || 
-	define('LIBRARY_PATH', ZUPAL_ROOT_DIR . DS . 'library');
+defined('ZUPAL_LIBRARY_PATH') ||
+	define('ZUPAL_LIBRARY_PATH', ZUPAL_ROOT_DIR . DS . 'library');
 
-defined('LAYOUT_PATH') ||
-	define('LAYOUT_PATH', APPLICATION_PATH . DS . 'layouts');
+defined('ZUPAL_LAYOUT_PATH') ||
+	define('ZUPAL_LAYOUT_PATH', ZUPAL_APPLICATION_PATH . DS . 'layouts');
 
+defined('ZUPAL_MODULE_PATH') ||
+	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DD . 'modules');
 
 /** setup include path **/
 set_include_path(

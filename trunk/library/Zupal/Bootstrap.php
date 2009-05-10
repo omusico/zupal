@@ -17,7 +17,7 @@ class Zupal_Bootstrap
             'automatic_serialization' => true
         );
 
-        $backendOptions = array('cache_dir' => ZUPAL_ROOT_DIR . DS . 'cache');
+        $backendOptions = array('cache_dir' => ZUPAL_ROOT_DIR . DS . self::$registry->configuration->cache->path);
 	//	print_r($backendOptions);
 		
         // getting a Zend_Cache_Core object

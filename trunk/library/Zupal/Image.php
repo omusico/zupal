@@ -81,4 +81,17 @@ class Zupal_Image
 	{
 		return sprintf(self::IMG, $this->get_path(), $this->get_height(TRUE), $this->get_width(TRUE));
 	}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ icon @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pName
+	* @return string
+	*/
+	public static function icon ($pName)
+	{
+		$path = Zend_Controller_Front::getInstance()->getBaseUrl() . '/img/icons/' . $pName . '.gif';
+		return new Zupal_Image($path, 21, 21);
+	}
 }

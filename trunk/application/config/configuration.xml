@@ -12,9 +12,15 @@
         </database>
         <cache>
             <lifetime>7200</lifetime>
-			<root>cache</root>
+			<path>cache</path>
         </cache>
 		<layout>default</layout>
+
+		<logging>
+			<write>0</write>
+			<log_to_db>0</log_to_db>
+			<log_table>zupal_logs</log_table>
+		</logging>
     </production>
 
     <development extends="production">
@@ -39,5 +45,9 @@
                 <dbname>zupal</dbname>
             </params>
         </database>
+
+		<logging>
+			<write>1</write>
+			<log_to_db>0</log_to_db>
     </edelhart>
 </configuration>

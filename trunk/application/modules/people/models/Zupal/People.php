@@ -67,14 +67,16 @@ implements Zupal_Grid_IGrid
 	public function render_grid($pID, array $pColumns, $pURL)
 	{
 		$identifier = $this->table()->idField();
-		ob_start();
-		?>
-
+		$cache = Zupal_Bootstrap::$registry->cache;
+		if (!$cache->test('people_grid')):
+?>
 <span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_store" url="<?= $pURL ?>" />
-<table id="igrid_<?= $pID ?>node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
+<table id="igrid_<?= $pID ?>_people_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
 	   query="{ <?= $identifier ?> : '*' }" store="igrid_<?= $pID ?>_store">
 	<thead>
 		<tr>
+			<th get="people_view" width="25">&nbsp;</th>
+			<th get="people_edit"  width="25">&nbsp;</th>
 <? foreach($pColumns as $key => $column): ?>
 	<? if (is_array($column)): ?>
 		<?= $this->render_array_column($key, $column) ?>
@@ -85,28 +87,76 @@ implements Zupal_Grid_IGrid
 			<?= $column ?>
 <? endif; ?>
 <? endforeach; ?>
+			<th get="people_delete" width="25" >&nbsp;</th>
+
 		</tr>
 	</thead>
 </table>
+<script language="javascript">
+	function people_view(id, item)
+	{
+		if (!item) return this.defaultValue;
 
-		<?
-		return ob_get_clean();
+		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
+
+	//	id = g.store.getValue(item, 'id');
+
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+		+ '<?= Zupal_Image::icon('view')  ?></a>';
+	}
+
+
+	function people_edit(id, item)
+	{
+		if (!item) return this.defaultValue;
+
+		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
+
+	//	id = g.store.getValue(item, 'id');
+
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+		+ '<?= Zupal_Image::icon('edit')  ?></a>';
+	}
+
+
+	function people_delete(id, item)
+	{
+		if (!item) return this.defaultValue;
+
+		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
+
+	//	id = g.store.getValue(item, 'id');
+
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+		+ '<?= Zupal_Image::icon('x')  ?></a>';
+	}
+
+</script>
+<?
+		endif;
+
+		return $cache->load('people_grid');
 	}
 
 	public function render_data(array $pParams, $pSort = NULL, $pStart = 0, $pRows = 30)
 	{
-		$select = $this->_select($pParams, $pSort);
+		$cache = Zupal_Bootstrap::$registry->cache;
 
-		$rows = $this->table()->fetchAll($select);
-		$items = array();
+		if (!$cache->test('people_data')):
 
-		foreach($rows as $row):
-			$items[] = $row->toArray();
-		endforeach;
+			$select = $this->_select($pParams, $pSort);
 
-		$data = new Zend_Dojo_Data($this->table()->idField(), $items, 'email');
+			$rows = $this->table()->fetchAll($select);
+			$items = array();
 
-		return $data;
+			foreach($rows as $row):
+				$items[] = $row->toArray();
+			endforeach;
+
+			$cache->save(new Zend_Dojo_Data($this->table()->idField(), $items, 'email'));
+		endif;
+
+		return $cache->load('people_data');
 	}
 
 	protected function render_array_column($pKey, $pColumn)
