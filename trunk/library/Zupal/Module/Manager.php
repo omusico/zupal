@@ -6,7 +6,7 @@ class Zupal_Module_Manager {
 	
 	public function __construct() 
 	{
-		$this->_moduleDir = APPLICATION_PATH . DS . 'modules';
+		$this->_moduleDir = ZUPAL_APPLICATION_PATH . DS . 'modules';
 	}
 	
 	public function getInstalledModules() {
@@ -61,7 +61,11 @@ class Zupal_Module_Manager {
 	{
 		return $this->_modules;
 	}
-
+/**
+ *
+ * @param string $pManager
+ * @return Zupal_Manager_Item
+ */
 	public function get($pManager)
 	{
 		$this->load($pManager);

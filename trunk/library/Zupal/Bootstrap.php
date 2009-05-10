@@ -71,7 +71,7 @@ class Zupal_Bootstrap
         self::$frontController->throwExceptions(true);
         self::$frontController->returnResponse(true);
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
-        self::$frontController->addModuleDirectory(APPLICATION_PATH . DS . "modules");
+        self::$frontController->addModuleDirectory(ZUPAL_APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
     }
 
@@ -80,14 +80,14 @@ class Zupal_Bootstrap
         // Initialise Zend_Layout's MVC helpers
 	//	print_r(self::$registry);
 		$layout = self::$registry->configuration->layout;
-        Zend_Layout::startMvc(array('layoutPath' => APPLICATION_PATH . "/layouts", 'layout' => $layout));
+        Zend_Layout::startMvc(array('layoutPath' => ZUPAL_LAYOUT_PATH, 'layout' => $layout));
         
         // VIEW SETUP - Initialize properties of the view object
         // The Zend_View component is used for rendering views. Here, we grab a "global" 
         // view instance from the layout object, and specify the doctype we wish to 
         // use. In this case, XHTML1 Strict.
         $view = Zend_Layout::getMvcInstance()->getView();
-        $view->addHelperPath(LIBRARY_PATH . '/Zupal/View/Helper', 'Zupal_View_Helper');
+        $view->addHelperPath(ZUPAL_LIBRARY_PATH . '/Zupal/View/Helper', 'Zupal_View_Helper');
         $view->doctype('XHTML1_STRICT');
     }
 
@@ -104,7 +104,7 @@ class Zupal_Bootstrap
 
     public static function setupConfiguration()
     {
-        $config = new Zend_Config_Xml(APPLICATION_PATH . '/config/configuration.xml', APPLICATION_ENV, true);
+        $config = new Zend_Config_Xml(ZUPAL_APPLICATION_PATH . '/config/configuration.xml', APPLICATION_ENV, true);
         self::$registry->configuration = $config;
     }
 

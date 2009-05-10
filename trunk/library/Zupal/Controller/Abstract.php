@@ -14,7 +14,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 
 		$layout = $this->_helper->layout;
 		$root = realpath(dirname(__FILE__) . '/../../../');
-		$layout->setLayoutPath(LAYOUT_PATH);
+		$layout->setLayoutPath(ZUPAL_LAYOUT_PATH);
 		$layout->setLayout('default');
 
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
