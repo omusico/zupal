@@ -25,7 +25,7 @@ I might flip on this and add People to the roster of things that get nodes if it
 
 == Usage ==
 
-People are not noded content. However the people table functions as its own dimension of nodes in their own way. 
+People are not noded content. However the people table functions as its own dimension of nodes in their own way. The People module is intended as a potential resource for people related systems like CRMs, contract books and family albums; however its first usage will be for the user management system. 
 
 == Current Status ==
 
