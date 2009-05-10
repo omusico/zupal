@@ -70,4 +70,19 @@ extends Zupal_Controller_Abstract
 			$this->_forward('add', NULL, NULL, array('error' => 'Cannot save person', 'reload' => 1));
 		endif;
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ deleteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function deleteAction ()
+	{
+		$id = $this->_getParam('id');
+		$this->view->person = new Zupal_People($id);
+		if ($this->_getParam('confirm')):
+			$this->view->person->delete();
+			$this->_forward('index', 'index', NULL, array('message' => 'Person ' . $id . ' Deleted'));
+		endif;
+	}
+
 }

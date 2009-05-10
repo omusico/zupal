@@ -29,6 +29,27 @@ extends Zupal_Form_Abstract
 		$this->setMethod('post');
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ isValid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param array $pFields
+	* @return boolean
+	*/
+	public function isValid ($pFields)
+	{
+		if (!parent::isValid($pFields)) return FALSE;
+
+		if ($this->name_first->getValue() || $this->username->getValue() || $this->name_last->getValue() || $this->email->getValue()) return true;
+
+		$this->name_first->addErrorMessage('Must have this OR');
+		$this->name_last->addErrorMessage('Must have this OR');
+		$this->username->addErrorMessage('Must have this OR');
+		$this->email->addErrorMessage('Must have this');
+
+
+		return false;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -47,6 +68,6 @@ extends Zupal_Form_Abstract
 	*/
 	public function domain_fields ()
 	{
-		return array('name_first', 'name_last', 'email');
+		return array('name_first', 'name_last', 'email', 'username', 'gender', 'title');
 	}
 }

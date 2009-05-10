@@ -17,13 +17,14 @@
 ?>
 <?= Zupal_People::getInstance()->render_grid('list',
 	 array(
-			'name_first' => array('label' => 'First Name', 'width' => 150),
-			'name_last' =>  array('label' => 'Last Name', 'width' => 150),
+			'name_first' => array('label' => 'First Name', 'width' => 80),
+			'name_last' =>  array('label' => 'Last Name', 'width' => 100),
+			'username' => array('label' => 'User', 'width' => 80),
 			'email' => array('label' => 'eMail', 'width' => 200)
 		),
 		Zend_Controller_Front::getInstance()->getBaseUrl() . '/people/item/data' ) ?>
 
-<table>
+<table width="100%">
 <tr>
 
 	<td width="1*"  valign="top">

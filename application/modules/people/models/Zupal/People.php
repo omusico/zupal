@@ -70,13 +70,14 @@ implements Zupal_Grid_IGrid
 		$cache = Zupal_Bootstrap::$registry->cache;
 		if (!$cache->test('people_grid')):
 ?>
-<span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_store" url="<?= $pURL ?>" />
+<span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_store" url="<?= $pURL ?>/rand/<?= (int) (rand() * 10000) ?>" />
 <table id="igrid_<?= $pID ?>_people_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
 	   query="{ <?= $identifier ?> : '*' }" store="igrid_<?= $pID ?>_store">
 	<thead>
 		<tr>
 			<th get="people_view" width="25">&nbsp;</th>
 			<th get="people_edit"  width="25">&nbsp;</th>
+			<th field="person_id"  width="60">ID</th>
 <? foreach($pColumns as $key => $column): ?>
 	<? if (is_array($column)): ?>
 		<?= $this->render_array_column($key, $column) ?>
@@ -93,6 +94,16 @@ implements Zupal_Grid_IGrid
 	</thead>
 </table>
 <script language="javascript">
+
+	function people_identity(id, item)
+	{
+
+		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
+
+		return g.store.getValue(item, 'person_id');
+
+	}
+
 	function people_view(id, item)
 	{
 		if (!item) return this.defaultValue;
@@ -101,7 +112,7 @@ implements Zupal_Grid_IGrid
 
 	//	id = g.store.getValue(item, 'id');
 
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + people_identity(id, item) + '">'
 		+ '<?= Zupal_Image::icon('view')  ?></a>';
 	}
 
@@ -114,7 +125,7 @@ implements Zupal_Grid_IGrid
 
 	//	id = g.store.getValue(item, 'id');
 
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/edit/id/' +  people_identity(id, item)  + '">'
 		+ '<?= Zupal_Image::icon('edit')  ?></a>';
 	}
 
@@ -127,7 +138,7 @@ implements Zupal_Grid_IGrid
 
 	//	id = g.store.getValue(item, 'id');
 
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + id + '">'
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/delete/id/' +  people_identity(id, item)  + '">'
 		+ '<?= Zupal_Image::icon('x')  ?></a>';
 	}
 
@@ -150,6 +161,7 @@ implements Zupal_Grid_IGrid
 			$items = array();
 
 			foreach($rows as $row):
+				if ($row == 'password') continue;
 				$items[] = $row->toArray();
 			endforeach;
 
@@ -188,6 +200,14 @@ implements Zupal_Grid_IGrid
 		$logger->info('Person ' . $this->identity() . ' saved');
 		$cache = Zupal_Bootstrap::$registry->cache;
 		$cache->remove('people_data');
+	}
+	public function delete()
+	{
+		$logger = Zupal_Module_Manager::getInstance()->get('people')->logger();
+		$logger->info('Person ' . $this->identity() . ' deleted');
+		$cache = Zupal_Bootstrap::$registry->cache;
+		$cache->remove('people_data');
+		parent::delete();
 	}
 
 }
