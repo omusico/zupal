@@ -3,15 +3,13 @@
 
 = Introduction =
 
-At this stage most of the visual systems of Zupal are simply utilization of the existing Zend resources. here are a few exceptions
+At this stage most of the visual systems of Zupal are simply utilization of the existing Zend resources. Unlike the rest of Zupal, which takes the open ended components of ZF and frames them in a more finished set of systems, the view based resources of Zupal are optional. 
 
-= Details =
+The only absolute requirement of Zupal is its implementation of the Zend_Layout. When complete this system will allow for downloadable self contained templates. 
 
 == The Menu System ==
 
 The current menu system is fairly brutal; there is a single navigation menu that lists all the current modules and a submenu (optional) that is defined by a menu config file in the menu root that appears whenever a module's action is called. Further development will tie menus to the ACL system as it develops. 
-
-If you want to customize the submenu for context/ACL, you can access the submenu of the global navigation (accessible through the nav placeholder) and change the submenu property of the current modules' menu item. 
 
 *NOTE*: the Menu System will be replaced with Zend_Navigation constructs ASAP
 
@@ -44,3 +42,7 @@ The current system is locked into a single default layout; a Zupal_Templates sys
 This helper generates a hyperlinked text or icon element. $pParams is an array of path items -- module, controller, action, (css) class, title; many of these have defaults. Note that there are a set of icons in the folder pubic/img/icons that can be referred to in shorthand; for instance a title value of '(x)' will create a linked delete icon. 
 
 Note: this helper respects the getBasePath() property of the Zend_Controller_Front() singleton. 
+
+= Data Grids =
+
+By connecting the Dojo Grid to the Domain system, Zupal allows for a very substantial list and detail system. Very fast and flexible grids can be presented and their layout and data cached for rapid presentation. 
