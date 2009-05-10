@@ -12,17 +12,16 @@
 
 I've been attending a lot of Drupal meetings, and have come to the conclusion that Drupal is probably the strongest CMS out there because it goes beyond being a content management system and is actually an application platform -- and one that makes a darn good CMS.
 
-Zend, my current "Go-to" framework, cannot compete with Drupal because it has no "hands off" CMS implementation. It was designed by coders, for coders, to be as loosely coupled and implementation agnostic as possible. I think this is both its greatest strength and gretest weakness. Nobody would ever suggest that a lay person download Zend and throw up a CMS: there is just no "there" there -- no layouts (though there is a layout component), no modules (in the sense of, "lets drop this module folder into our app so we can have a bulletin board") and no adminstrative toolset (though the tools exist for user authentication, ACL, etc., they are not bound into a unified implementation.
+Zend, my current "Go-to" framework, cannot compete with Drupal because it is not trying to; it is a developers toolset made for hands-on coders, where Drupal strives to provide a set of lego-like systems that anyone can use to produce a site through administrative acumen. 
 
-So I ask: what would a Zend CMS look like? I.E.: how easy would it be to rip off the lessons and learning's of Drupal and apply them inside the codebase of Zend?
+It was designed by coders, for coders, to be as loosely coupled and implementation agnostic as possible. I think this is both its greatest strength and gretest weakness. Nobody would ever suggest that a lay person download Zend and throw up a CMS: there is just no "there" there -- no layouts (though there is a layout component), no modules (in the sense of, "lets drop this module folder into our app so we can have a bulletin board") and no administrative toolset (though the tools exist for user authentication, ACL, etc., they are not bound into a unified implementation.
 
-The reasons you might want to do so (as opposed to just using Drupal which at this point is a far more rewarding experience) is that Zends strong OOP orientation and great Database Abstration Layer are both from an engineering point of view much stronger than Drupal's Node based system. A node is everything you would want an object to be -- extensible, linkable, identifiable -- except that it is not an object -- it is an application conceit made of global functions and a global database  registry. Again: it is a conceit that works marvelously and has years of implementation and development behind it.
+Further the lack of presumptions in Zend also means that each ZF-backed system is unique; where the ZF components are designed to be usable as toolsets, there is not a single "complete" module in the mix. 
 
-However you lose the ability within the coding context to take advantage of the strengths of OOP at a syntactic level, incuding inheritence, interface, type hinting, reflection, Autoloading (a biggie) etc. I really, really like OOP, and I really like how it plays out specifically in Zend.
+Zupal is an attempt to make a fully usable set of components that can be used to assemble a blog, CMS, or storefront. Being strongly grounded in the Zend system of development, and using Drupal as a design template, Zupal provides a set of fleshed out and reusable modules. The distinction between a reusable module (in the Drupal sense) and the reusable components of the ZF itself is important. A module is a complete, useful system that is independent and fully functional. Modules can be extended, linked and altered, of course, to suit a client but they should be complete enough to solve the 80-90% use cases; of course the reality will be, they solve the use cases that the designer intends to solve...
 
-In many customer facing applications this is a nonissue. However if your application has complex interactions that require complex codebase, having those conventions built into the core can be an asset.
 
-= So what will Zupal look like? = 
+= The Component System = 
 
 http://wonderlandlabs.com/wll_drupal/sites/default/files/Components.gif
 
@@ -30,36 +29,15 @@ The hierarchy lines here are not that meaningful as these components would inter
 
 Zupal_Project would be an initializer plugin that prepares the overall Zend project for loading.
 
-Zupal_Modules would be self contained folders with the core module class, the node classes that they contain, and the views they use. They would be able to load all their included files via a method, to obviate the need to work within the constraints of the autoloader. Zend's modules would probably serve as a superstructure for Zupal modules as they have model and view data. What they lack is any self-installation functionality and a built in interoperability system (the node thing).
+Zupal_Modules are contained folders with the core module class, the node classes that they contain, and the views they use. They would be able to load all their included files via a method, to obviate the need to work within the constraints of the autoloader. Zend's modules would probably serve as a superstructure for Zupal modules as they have model and view data. What they lack is any self-installation functionality and a built in interoperability system (the node thing).
 
-Zupal_Admin would have an interface that aggregates all the interfaces of the component modules, and a module loader, enabler, etc. 
+Zupal_Admin aggregates all the interfaces of the component modules, and a module loader, enabler, etc. Each module has an admin controller that is accessible through the administrative UI.  
 
-Zupal_Member would be a Zupal_Modle designed to handle the login, authorization, and member management tasks within the Admin and at the front gate.
+Zupal_People is a toolset for creation of user management, address books, CRM, etc. 
 
-Zupal_View would handle all the visual elements of a page. They would generally be composites of views; they take in a Zupal_Node (which may itself be the head of a collection of nodes) and be able to return a block of markeup.
 
-[ZupalModel Zupal_Nodes] would be the atomic unit of information in the system. They relate to other nodes via links and have identity, content (in the properties aggregate) and association with a particular module.
-
-Any real utility for a given node comes from the combination of its descendent methods, its views, and its interaction with any aggregate code contained within the module class.
-Zend's MVC and Zupal
-
-Each module would have its own controller, most of whose methods would point back to the module as a singleton, or alternately a subcomponent of the module. The interaction of the zend view and the module helper is up to the module designer, but there should be a few generic "scaffolding" Zupal helpers for reporting and entry.
+[ZupalModel Zupal_Nodes] are the atomic unit of information in the system. They relate to other nodes via links and have identity, content (in the properties aggregate) and association with a particular module.
 
 The Admin system would be a Zend module meant to aggregate the Zupal modules' functionality -- as such, swapping out a custom admin implementation should be a relatively approachable task, as the bulk of the requisite handlers would be behind the API of each module.
 
-Many existing components such as Zend_Layout, Zend_DB and Zend_Form can probably be used whole cloth, with some node-based adaptation.
-Zupal Core
-
-Beyond the components above, to be viable, the Zupal system would have to have
-
-   # An article management module featuring an editorial pipeline, versioning, and contextual variations (summary, teaser, RSS) with augmented versions of the title and content for each
-   # A message module which could be purposed towards user commentary, bulletin boards, and user to user communication. user to group messaging (see Social Networking below) would also be key.
-   # An issue management module; extending from the message module, this would be for bug tracking, content complaints (obscenity), hack alerts, etc.
-   # A social networking module. One of Drupals weakness is that is preceded the SN boom so there is no core component for community building. Self-created groups, events, and networking should be core and aggressively maintained.
-   # A search module. Handling content indexing early and well is key.
-
-= The Middle Way =
-
-Zupal can never compete with Drupal in the sheer number and variety of modules and users; nor should it try to. Nor will it ever be as absolutely open ended as the Zend core itself. What it can be though is an "aggressive compromise": a version of Zend Framework that has the modularity and the scaffolding of a CMS, and the archetectural strengths of ZF. The addressable base would most likely be purely from the ZF community -- the strengths of Zupal will be lost on 99% of the current Drupal users.
-
-However, the ability to play "catch up" with the Drupal module community in a few interesting areas should be supported by the strength of the architecture and the quality of develoepers that such a project attracts. As well it will provide a common interchange API for Zend Framework developers to trade useful pieces of work that is not quite part of the current ZF vocabulary.
+Many existing components such as Zend_Layout, Zend_DB and Zend_Form can probably be used whole cloth, with some node-based adaptation. 
