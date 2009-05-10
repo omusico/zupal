@@ -91,4 +91,5 @@ class Zupal_Module_Manager {
 	{
 		foreach($this->getModuleNames() as $module) $this->load($module);
 	}
+
 }

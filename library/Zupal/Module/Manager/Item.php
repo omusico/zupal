@@ -73,5 +73,29 @@ class Zupal_Module_Manager_Item
 		}
 		Zupal_Includes::add($paths);
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ log @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> message
+	* @return <type>
+	*/
+	public function log_message ($pMessage)
+	{
+		return $out;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logger @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private static $_logger = NULL;
+	public static function get_logger($pModule = 'default')
+	{
+		$pModule = strtolower($pModule);
+		if ($pReload || !array_key_exists($pModule, $this->_logger)):
+			// process
+			self::$_logger[$pModule] = new Zupal_Module_Logger($pModule);
+		endif;
+		return self::$_logger[$pModule];
+	}
 }
 
