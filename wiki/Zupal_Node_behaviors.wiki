@@ -25,11 +25,11 @@ The current roster of methods in the Domain abstract class include the interface
     * *tableClass*(): string; the name of the table class.
     * *_select*(): returns a Zend_DB_Table_Select object.
 
-== Table Classes -- Why? ==
+== Table Classes ==
 
-Every domain class has a table class that it is bound to. By convention the table class is named as a variant of the domain object -- if you have a domain class Zupal_Places, its table class is Zupal_Table_Places, etc. The table class is pretty thin -- it has the id/table name properties and not much else. 
+Every domain class has a table class that it is bound to. By convention the table class is named as a variant of the domain object -- if you have a domain class Zupal_Places, its table class is Zupal_Table_Places, etc. The table class is pretty thin -- it has the id/table name properties.
 
-You can probably override the table() method to return a generic Zend_Db_Table object if you don't feel like making a bunch of table class definitions and improve your efficiency a smidge. However the Zupal table classes also haves static methods that create the tables they depend on, so if you don't create table classes for your domains you'll have to find another way of spawing tables for your modules.
+The one functionality it has that extends beyond the simple activeRecord pattern is that the table class creates a  table in the database if none exists. This implementation is still being worked out. 
 
 = Zupal_Node_Abstract implementation =
 
