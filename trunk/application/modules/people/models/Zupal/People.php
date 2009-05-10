@@ -186,6 +186,8 @@ implements Zupal_Grid_IGrid
 		$logger = Zupal_Module_Manager::getInstance()->get('people')->logger();
 		parent::save();
 		$logger->info('Person ' . $this->identity() . ' saved');
+		$cache = Zupal_Bootstrap::$registry->cache;
+		$cache->remove('people_data');
 	}
 
 }
