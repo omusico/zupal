@@ -1,21 +1,14 @@
 <?php 
 
-class Admin_ModulesController extends Zend_Controller_Action 
+class Admin_ModulesController extends Zupal_Controller_Abstract
 {
 	
 	public function indexAction() 
 	{
 		$moduleConfigs = array();
 	
-		$manager = new Zupal_Module_Manager();
-		
-		foreach($manager->getModuleNames() as $moduleName) 
-		{
-			$config = $manager->getModuleInfo($moduleName);
-			$moduleConfigs[$moduleName] = $config->toArray();	
-		}	
-		
-		$this->view->moduleConfigs = $moduleConfigs;
+
+		$this->view->modules = Zupal_Module_Manager::getInstance()->get_all();
 	}
 	
 	public function installAction() {}
@@ -36,4 +29,16 @@ class Admin_ModulesController extends Zend_Controller_Action
 	public function enableAction() {}
 	
 	public function disableAction() {}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function dataAction ()
+	{
+        $this->_helper->layout->disableLayout();
+		$this->view->data = Zupal_Modules::getInstance()->render_data(array(), 'name');
+	}
+
 }

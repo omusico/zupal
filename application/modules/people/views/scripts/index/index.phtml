@@ -7,16 +7,12 @@
 	$breadcrumb->set_item('People');
 	$this->placeholder('breadcrumb')->set($breadcrumb);
 */
-
-	$this->dojo()
-             ->requireModule('dojox.grid.DataGrid')
-             ->requireModule('dojo.data.ItemFileReadStore')
-			 ->addStyleSheet('http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojox/grid/resources/Grid.css')
-			 ->enable();
 			 
 ?>
-<?= Zupal_People::getInstance()->render_grid('list',
+<?= Zupal_People::getInstance()->render_grid($this,'list',
 	 array(
+			'person_id' => array('label' => 'ID', 'width' => 40),
+			'gender' => array('label' => 'G', 'width' => 20),
 			'name_first' => array('label' => 'First Name', 'width' => 80),
 			'name_last' =>  array('label' => 'Last Name', 'width' => 100),
 			'username' => array('label' => 'User', 'width' => 80),

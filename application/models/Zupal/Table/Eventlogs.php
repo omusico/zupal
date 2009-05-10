@@ -3,7 +3,7 @@
 class Zupal_Table_Eventlogs
 extends Zupal_Table_Abstract
 {
-	protected $_id_field = 'place_id';
+	protected $_id_field = 'id';
 	protected $_name = 'zupal_eventlogs';
 
 	public static function install()

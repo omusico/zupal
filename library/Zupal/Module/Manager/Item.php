@@ -101,5 +101,41 @@ class Zupal_Module_Manager_Item
 		endif;
 		return self::$_logger[$module];
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ enabled @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return boolean
+	*/
+	public function enabled ()
+	{
+		return $this->module_record()->enabled;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module_record @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_module_record = NULL;
+	function module_record($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_module_record)):
+
+			$value = Zupal_Modules::module($this->get_name());
+	
+		// process
+		$this->_module_record = $value;
+		endif;
+		return $this->_module_record;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ required @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return boolean
+	*/
+	public function required ()
+	{
+		return $this->info()->get('required', FALSE);
+	}
+
 }
 
