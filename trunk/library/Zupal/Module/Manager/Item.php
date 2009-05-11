@@ -120,11 +120,35 @@ class Zupal_Module_Manager_Item
 		if ($pReload || is_null($this->_module_record)):
 
 			$value = Zupal_Modules::module($this->get_name());
-	
+			if (!$value->is_saved()):
+				$value = new Zupal_Modules();
+				$value->name = $this->get_name();
+				$value->save();
+			endif;
 		// process
 		$this->_module_record = $value;
 		endif;
 		return $this->_module_record;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ update_database @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return void;
+	*/
+	public function update_database ()
+	{
+		$mr = $this->module_record();
+		$info = $this->info(TRUE);
+
+		$mr->description = $info->description;
+		$mr->required = $info->required;
+		$mr->version = $info->version;
+		$mr->package = strtolower($info->package);
+
+		$mr->save();
+		return $mr;
+
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ required @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -137,5 +161,14 @@ class Zupal_Module_Manager_Item
 		return $this->info()->get('required', FALSE);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function __toString ()
+	{
+		return $this->get_name();
+	}
 }
 

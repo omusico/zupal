@@ -2,61 +2,11 @@
 	$this->placeholder('page_title')->set('Modules');
 ?>
 
-<? $this->headStyle()->captureStart() ?>
-	table.modules td
-	{
-		padding: 1em;
-	}
-<? $this->headStyle()->captureEnd() ?>
-<table class="modules">
-<thead>
-	<tr>
-		<th>Active</th>
-		<th>Module</th>
-		<th>Description</th>
-		<th>Package</th>
-		<th>Version</th>
-		<th>Core</th>
-		<th>Actions</th>
-	</tr>
-</thead>
-<tbody>		
-<?php foreach($this->modules as $item):
-$config = $item->info()->toArray();
-?>
-
-	<tr>
-<? if ($item->required()): ?>
-		<td><font color="orange">Core</font></td>
-<? else: ?>
-		<td><input type="checkbox" name='modules[<?= $item->get_name() ?>]'
-	<? if ($item->enabled()) echo ' checked ' ?> /></td>
-<? endif; ?>
-		<td><?php echo $config['name']; ?></td>
-		<td><?php echo $config['description'];?></td>
-		<td><?php echo $config['package']; ?></td>
-		<td><?php echo $config['version']; ?></td>
-		<td><?php echo $config['core']; ?></td>
-<? if ($item->required()): ?>
-		<td><font color="orange">Required</font></td>
-<? else: ?>
-		<td>
-			<a class="control delete" href="/admin/modules/uninstall/moduleName/<?=  $config['name'] ?>">Uninstall</a>
-		</td>
-<? endif; ?>
-
-	</tr>
-
-<?php endforeach; ?>
-</tbody>
-</table>
-<input type="submit" value="Enable/Disable modules" />
-</form>
-
 <?= Zupal_Modules::getInstance()->render_grid($this,'list',
 	 array(
-			'name' => array('label' => 'Name', 'width' => 200),
-		),
-		Zend_Controller_Front::getInstance()->getBaseUrl() . '/admin/modules/data' ) ?>
-
-
+		'name' => array('label' => 'Name', 'width' => 200, 'formatter' => 'format_bold'),
+		'description' => array('label' => 'Description', 'width' => 300),
+		'version' => array('label' => 'Version', 'width' => 50),
+		'enabled' => array('label' => 'On', 'width' => 30, 'formatter' => 'format_bool'),
+		'package' => array('label' => 'Pkg', 'width' => 50)
+	),	Zend_Controller_Front::getInstance()->getBaseUrl() . '/admin/modules/data' ) ?>

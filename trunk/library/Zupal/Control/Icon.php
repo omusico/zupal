@@ -33,7 +33,7 @@ extends Zupal_Image
 	const PLACEMENT_HORIZONTAL = 0;
 	const PLACEMENT_VERTICAL = 1;
 	const PLACEMENT_NONE = 2;
-	private $_placement = 1;
+	private $_placement = 0;
 	/**
 	 * @return class;
 	 */

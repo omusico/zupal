@@ -1,0 +1,17 @@
+<?php
+
+	$this->placeholder('page_title')->set('View Module &quot;' . $this->item . '&quot;');
+
+?>
+
+<dl>
+<? foreach($this->item->module_record()->toArray() as $f => $v): ?>
+	<dt><?= $f ?></dt>
+	<dd><?= $v ?>&nbsp;</dd>
+<? endforeach; ?>
+</dl>
+<?= new Zupal_Control_IconLink('edit.gif', 'Edit', array('module' => 'admin',
+		'controller' => 'modules',
+		'action' => 'edit',
+		'name' => $this->item->get_name()
+	)) ?>

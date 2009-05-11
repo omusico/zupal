@@ -96,4 +96,19 @@ class Zupal_Module_Manager {
 		foreach($this->getModuleNames() as $module) $this->load($module);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ update_database @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return void
+	*/
+	public function update_database ()
+	{
+		$cache = Zupal_Bootstrap::$registry->cache;
+
+		foreach($this->get_all() as $item):
+			$item->update_database();
+		endforeach;
+		$cache->remove('modules_data');
+	}
+
 }
