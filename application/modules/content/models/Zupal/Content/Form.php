@@ -7,7 +7,7 @@ extends Zupal_Nodes_Form
 	{
 		if (is_null($pContent)) $pContent = new Zupal_Content();
 		
-		$ini_path = dirname(__FILE__) . DS . 'form.ini';
+		$ini_path = dirname(__FILE__) . DS . 'Form.ini';
 		$config = new Zend_Config_Ini($ini_path, 'fields');
 		$elements = $config->elements->toArray();
 		
