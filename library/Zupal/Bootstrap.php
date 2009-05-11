@@ -74,8 +74,8 @@ class Zupal_Bootstrap
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
         self::$frontController->addModuleDirectory(ZUPAL_APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
-		if ($registry->configuration->baseurl):
-			self::$frontController->setBaseUrl($registry_configuration->baseurl);
+		if (self::$registry->configuration->baseurl):
+			self::$frontController->setBaseUrl(self::$registry->configuration->baseurl);
 		endif;
 		defined('ZUPAL_BASEURL') ||
 			define('ZUPAL_BASEURL', self::$frontController->getBaseUrl());
