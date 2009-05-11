@@ -104,9 +104,10 @@ implements Zupal_Node_INode,
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
+		$tn = $table->tableName();
 
 		$select = $table->getAdapter()->select()
-			->from($table->tableName()); // do not include node table
+			->from($tn); // do not include node table
 
 		if (is_array($searchCrit) && count($searchCrit)):
 			foreach($searchCrit as $crit):
