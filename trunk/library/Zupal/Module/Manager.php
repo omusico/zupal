@@ -83,7 +83,7 @@ class Zupal_Module_Manager {
 			return;
 		}
 
-		$item = new Zupal_Module_Manager_item($pManager);
+		$item = new Zupal_Module_Manager_Item($pManager);
 		$this->_modules[$pManager] = $item;
 	}
 
