@@ -1,0 +1,17 @@
+
+<configdata>
+	<menu>
+		<employees>
+			<module>people</module>
+			<controller>employees</controller>
+			<action>index</action>
+			<label>Employees</label>
+		</employees>
+		<seventh>
+			<module>people</module>
+			<controller>employees</controller>
+			<action>seventh</action>
+			<label>7th highest</label>
+		</seventh>
+	</menu>
+</configdata>

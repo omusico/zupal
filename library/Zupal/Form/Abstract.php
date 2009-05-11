@@ -41,7 +41,11 @@ extends Zend_Form
 
 		foreach($pFields as $field):
 			$element = $this->getElement($field);
-			$element->setValue($object->$field);
+			if ($element):
+				$element->setValue($object->$field);
+			else:
+				throw new Exception("Cannot find $field");
+			endif;
 		endforeach;
 	}
 
