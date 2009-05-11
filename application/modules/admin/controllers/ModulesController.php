@@ -7,7 +7,7 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	{
 		$moduleConfigs = array();
 	
-
+		Zupal_Module_Manager::getInstance()->update_database();
 		$this->view->modules = Zupal_Module_Manager::getInstance()->get_all();
 	}
 	
@@ -30,6 +30,14 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	
 	public function disableAction() {}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ viewAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function viewAction ()
+	{
+		$this->view->item = Zupal_Module_Manager::getInstance()->get($this->_getParam('name'));
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**

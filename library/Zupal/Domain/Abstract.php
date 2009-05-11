@@ -112,7 +112,6 @@ implements Zupal_Domain_IDomain
 			endif;
 		endif;
 
-	//	echo '<p>loading ' . $pID . ' from ' . $this->tableClass() . '</p>';
 		if ($pID):
 			$hits = $this->table()->find($pID);
 			if ($hits): 
@@ -139,16 +138,19 @@ implements Zupal_Domain_IDomain
 	public function isSaved()
 	{
 		$id_field = $this->table()->idField();
-		$table_name = $this->table()->getName();
-		$id = intval($this->$id_field);
+		$table_name = $this->table()->tableName();
+		$id = $this->$id_field;
 
 		if (!$id):
 
 			return FALSE;
 
 		else:
-
-			$sql = "SELECT count(`$id_field`) FROM `$table_name` WHERE `$id_field` = $id";
+			if (is_numeric($id)):
+				$sql = "SELECT count(`$id_field`) FROM `$table_name` WHERE `$id_field` = $id";
+			else:
+				$sql = "SELECT count(`$id_field`) FROM `$table_name` WHERE `$id_field` LIKE '$id'";
+			endif;
 			$tally = $this->table()->getAdapter()->fetchOne($sql);
 
 			return $tally; // note -- any (unlikely) duplication of an ID key in a table has to be handled downstream of this method

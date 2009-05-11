@@ -6,7 +6,7 @@ extends Zupal_Form_Abstract
 	public function __construct(Zupal_People $pPeople = NULL)
 	{
 		
-		$ini_path = dirname(__FILE__) . DS . 'form.ini';
+		$ini_path = dirname(__FILE__) . DS . 'Form.ini';
 		$config = new Zend_Config_Ini($ini_path, 'fields');
 		
 		parent::__construct($config);

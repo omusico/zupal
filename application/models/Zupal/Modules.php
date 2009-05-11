@@ -54,7 +54,16 @@ implements Zupal_Grid_IGrid
 		return self::getInstance()->get($pName);
 	}
 
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return void
+	*/
+	public function save ()
+	{
+		if ($this->package == 'core') $this->enabled = 1;
+		parent::save();
+	}
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IGrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	public function render_grid(Zend_View $pView, $pID, array $pColumns, $pURL)
@@ -86,8 +95,6 @@ implements Zupal_Grid_IGrid
 			<?= $column ?>
 <? endif; ?>
 <? endforeach; ?>
-			<th get="modules_delete" width="25" >&nbsp;</th>
-
 		</tr>
 	</thead>
 </table>
@@ -98,7 +105,7 @@ implements Zupal_Grid_IGrid
 
 		var g = dijit.byId('igrid_<?= $pID ?>_modules_node');
 
-		return g.store.getValue(item, 'person_id');
+		return g.store.getValue(item, 'name');
 
 	}
 
@@ -110,7 +117,7 @@ implements Zupal_Grid_IGrid
 
 	//	id = g.store.getValue(item, 'id');
 
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/modules/item/view/id/' + modules_identity(id, item) + '">'
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/admin/modules/view/name/' + modules_identity(id, item) + '">'
 		+ '<?= Zupal_Image::icon('view')  ?></a>';
 	}
 
@@ -123,22 +130,18 @@ implements Zupal_Grid_IGrid
 
 	//	id = g.store.getValue(item, 'id');
 
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/modules/item/edit/id/' +  modules_identity(id, item)  + '">'
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/admin/modules/edit/name/' +  modules_identity(id, item)  + '">'
 		+ '<?= Zupal_Image::icon('edit')  ?></a>';
 	}
 
-
-	function modules_delete(id, item)
+	function format_bool(b)
 	{
-		if (!item) return this.defaultValue;
 
-		var g = dijit.byId('igrid_<?= $pID ?>_modules_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/modules/item/delete/id/' +  modules_identity(id, item)  + '">'
-		+ '<?= Zupal_Image::icon('x')  ?></a>';
+		if (b) return '<div style="background-color: green; text-align: center; padding: 3px; color: #CFC; font-weight: bold">Y</div>';
+		return '<div style="background-color: red; text-align: center; padding: 3px; color: #FCC; font-weight: bold">N</div>';
 	}
+
+	function format_bold(v){ return '<b>' + v + '</b>'; }
 
 </script>
 <?
