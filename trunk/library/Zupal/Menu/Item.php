@@ -68,7 +68,7 @@ class Zupal_Menu_Item
 
 	public function __toString()
 	{
-		$url = ltrim(DS, Zend_Controller_Front::getInstance()->getBaseUrl());
+		$url = ZUPAL_BASEURL . DS;
 		if (($this->module == '') || ($this->module == 'default'))
 		{
 			$path = array($this->controller, $this->action);
