@@ -20,6 +20,7 @@
 			<write>0</write>
 			<log_to_db>0</log_to_db>
 		</logging>
+		<seed>This is salt for password encryption -- change this locally to a random phrase</seed>
     </production>
 
     <development extends="production">

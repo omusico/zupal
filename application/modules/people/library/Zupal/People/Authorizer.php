@@ -1,6 +1,6 @@
 <?php
 
-class Zupal_Authorizer
+class Zupal_People_Authorizer
 implements Zend_Auth_Adapter_Interface 
 {
 	/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __construct @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -41,14 +41,12 @@ implements Zend_Auth_Adapter_Interface
     public function authenticate()
     {
     	$stub = new Zupal_People(Zupal_Domain::STUB);
-		error_log(__METHOD__ . ': checking in ' . $this->get_username() . ',' . $this->get_password() . '(md5 = ' . md5($this->get_password() . ')'));
 		$user = $stub->find_one(
-    		array(
-    		'username' => array($this->get_username(), 'LIKE')
-    		)
+    		array( 'username' => array($this->get_username(), 'LIKE'))
     	);
     	
-		if ($user && $user->is_saved() && (crypt(md5($this->get_password()),md5($user->identity())) == $user->password)):
+		if ($user && $user->is_saved() &&
+			Zupal_Poeple::encrypt_password($this->get_password(), $user->identity()) == $user->password):
     		$result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $user);
     	else:
     		$result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, NULL);
