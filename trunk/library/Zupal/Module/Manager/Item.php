@@ -74,17 +74,6 @@ class Zupal_Module_Manager_Item
 		Zupal_Includes::add($paths);
 	}
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ log @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-	/**
-	*
-	* @param <type> message
-	* @return <type>
-	*/
-	public function log_message ($pMessage)
-	{
-		return $out;
-	}
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logger @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_logger = array();
@@ -169,6 +158,17 @@ class Zupal_Module_Manager_Item
 	public function __toString ()
 	{
 		return $this->get_name();
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ search_logs @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pPhrase
+	* @return array
+	*/
+	public function search_logs ($pPhrase, $pLines)
+	{
+		return $this->logger()->search_logs($pPhrase, $pLines);
 	}
 }
 

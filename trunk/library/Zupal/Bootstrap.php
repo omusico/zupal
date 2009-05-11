@@ -74,6 +74,9 @@ class Zupal_Bootstrap
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
         self::$frontController->addModuleDirectory(ZUPAL_APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
+
+		defined('ZUPAL_BASEURL') ||
+			define('ZUPAL_BASEURL', self::$frontController->getBaseUrl());
     }
 
     public static function setupView()

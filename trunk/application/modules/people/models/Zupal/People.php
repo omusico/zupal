@@ -201,6 +201,11 @@ implements Zupal_Grid_IGrid
 	public function save()
 	{
 		$logger = Zupal_Module_Manager::getInstance()->get('people')->logger();
+
+		if (!$this->isSaved()):
+			$password = $this->password;
+		endif;
+
 		parent::save();
 		$logger->info('Person ' . $this->identity() . ' saved');
 		$cache = Zupal_Bootstrap::$registry->cache;
@@ -215,4 +220,13 @@ implements Zupal_Grid_IGrid
 		parent::delete();
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ encrypt_password @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return string
+	*/
+	public static function encrypt_password ($pass, $seed = 0)
+	{
+		return crypt(md5($pass), md5($seed) . Zupal_Bootstrap::$registry->configuration->seed);
+	}
 }

@@ -14,6 +14,62 @@ extends Zend_Log
 		
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ search_logs @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pPhrase
+	* @return array
+	*/
+	public function search_logs ($pPhrase, $pLines)
+	{
+		if(file_exists($this->file())):
+			if ($pLines == 0):
+				$log_lines = file($this->file());
+			else:
+				$size = filesize($this->file());
+				$search_size = $pLines * 100;
+				if($search_size >= $size): // the log is not that big
+					$log_lines = file($this->file());
+				else:
+					$pass = 0;
+					do
+					{
+						$log_lines = array();
+						$h = fopen($this->file(), 'r');
+						fseek($h, -1 * $search_size, SEEK_END);
+						while(!feof($h)) $log_lines[] = fgets($h);
+						fclose($h);
+						array_shift($log_lines);
+						error_log('******************** ' . __METHOD__ . ' pass ' . $pass++ . '***********');
+						error_log(__METHOD__ . ': getting ' . $search_size . ' : text = ' . join("\n", $log_lines));
+						$scaled_size = (int)($search_size * $pLines /count($log_lines));
+						$search_size = max($search_size + 500, $scaled_size);
+					}
+					while(($search_size < $size) &&(count($log_lines) < $pLines));
+					if (count($log_lines) < $pLines):
+						$log_lines = file($this->file()); // if the last condition broke the loop, get all the lines
+					endif;
+
+				endif;
+
+			endif;
+			$out = array();
+
+			Zupal_Bootstrap::$registry->log_set = $log_lines;
+			$log_lines = array_slice($log_lines, -1 * $pLines);
+
+			foreach($log_lines as $line):
+				if (stristr($line, $pPhrase) !== FALSE):
+					$out[] = $line;
+				endif;
+			endforeach;
+			return $out;
+
+		else: // no log file
+			return array();
+		endif;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_stream @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*

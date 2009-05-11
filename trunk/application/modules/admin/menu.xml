@@ -15,9 +15,9 @@
 		</flagged>
 		<search>
 			<module>admin</module>
-			<controller>index</controller>
-			<action>find</action>
-			<label>Find</label>
+			<controller>logs</controller>
+			<action>index</action>
+			<label>Search Logs</label>
 		</search>
 	</menu>
 </configdata>

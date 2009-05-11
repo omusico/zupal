@@ -1,6 +1,6 @@
 <?
 
-class UserController extends Zupal_Controller_Abstract
+class People_UserController extends Zupal_Controller_Abstract
 {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logoutAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -20,7 +20,6 @@ class UserController extends Zupal_Controller_Abstract
 			$login_form->isValid($this->_getAllParams());
 		endif;
 		$this->view->form = $login_form;
-
 	}
 
 	/**
