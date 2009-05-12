@@ -26,7 +26,9 @@ if ($this->dojo()->isEnabled()){
 			<? endif; ?>
 		</div>
 	  
-	    <div id="nav"><?php echo $this->placeholder('nav') ?></div>
+	    <div id="nav">
+		<?php echo $this->placeholder('nav') ?>
+		<?=  $this->loginPanel() ?></div>
 
 
 	    <div id="content">		

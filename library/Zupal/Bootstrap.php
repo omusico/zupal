@@ -94,6 +94,12 @@ class Zupal_Bootstrap
         // use. In this case, XHTML1 Strict.
         $view = Zend_Layout::getMvcInstance()->getView();
         $view->addHelperPath(ZUPAL_LIBRARY_PATH . '/Zupal/View/Helper', 'Zupal_View_Helper');
+
+		foreach(Zupal_Module_Manager::getInstance()->getModuleNames() as $name):
+			$view->addHelperPath(
+				ZUPAL_MODULE_PATH . DS . $name . DS . 'views'. DS . 'helpers',
+				'Zupal_' . ucfirst($name) . '_Helper');
+		endforeach;
         $view->doctype('XHTML1_STRICT');
     }
 
