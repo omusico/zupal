@@ -1,11 +1,14 @@
 <?php
 
 abstract class Zupal_Nodes_Form
-extends Zend_Form
+extends Zupal_Form_Abstract
 {
-	public function __construct(Zupal_Node_Abstract $pContent = NULL)
+	public function __construct(Zupal_Node_Abstract $pContent = NULL, $pOptions = NULL)
 	{
-		parent::__construct();
+		parent::__construct($pOptions);
+
+		$this->set_domain($pContent);
+		
 		$this->removeDecorator('HtmlTag');
 		
 		$this->addElement('multiCheckbox', 'status', array('label' => 'Status', 'separator' => ''));
@@ -19,17 +22,15 @@ extends Zend_Form
 		$this->addDisplayGroup(array('submit'), 'buttons', array( 'order' => 12));
 		$this->getDisplayGroup('buttons')->removeDecorator('DtDdWrapper');
 
-
 		$this->setMethod('post');
 	}
-	
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	private $_content = null;
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
-	 * @return Zupal_Node_Abstract;
-	 */
-	public function get_content(){ return $this->_content; }
-	public function set_content(Zupal_Node_Abstract $pValue) { $this->_content = $pValue; }
-
+	*
+	*/
+	public function domain_fields ()
+	{
+		return array('title', 'text', 'node_id');
+	}
 }

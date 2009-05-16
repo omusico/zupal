@@ -1,0 +1,19 @@
+<?php
+
+$cs = Zupal_Content::getInstance();
+
+$this->headScript()->captureStart();
+
+$cs->render_script('list');
+
+$this->headScript()->captureEnd();
+
+$this->placeholder('page_title')->set("Content");
+
+$cs->render_store('content_store', '/content/admin/data');
+
+$cs->render_grid($this, 'list', 'content_store', array(
+		'id' => array('width' => 60, 'label' => 'ID'),
+		'node_id' => array('width' => 60, 'label' => 'Node'),
+		'title' =>	array('width' => 200,  'label'=> 'Title', 'field' =>'title'))
+	);

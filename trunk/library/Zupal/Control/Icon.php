@@ -13,7 +13,8 @@ extends Zupal_Image
 		$path = Zend_Controller_Front::getInstance()->getBaseUrl() . self::ICON_PATH . $pPath;
 
 		parent::__construct($path, self::WIDTH, self::HEIGHT);
-
+		$this->set_placement($pPlacement);
+		
 		$this->set_label($pLabel);
 	}
 
@@ -45,7 +46,7 @@ extends Zupal_Image
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	const VI = '<div class="iconv">%s<div class="label">%s</div></div>';
-	const HI = '<div class="iconh">%s<div class="label">%s</div></div>';
+	const HI = '<div class="iconh">%s<span class="label">%s</span></div>';
 	const NI = '<div class="iconn">%s</div>';
 	/**
 	*

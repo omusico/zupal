@@ -5,8 +5,116 @@
  */
 
 class Zupal_Content extends Zupal_Node_Abstract
-implements Zupal_Content_IContent
+implements Zupal_Content_IContent, Zupal_Grid_IGrid
 {
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ versions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function versions ()
+	{
+		return $this->domain_find(
+			array(
+				$this->node_field() =>	$this->nodeId()
+			),
+			$this->table()->idField(),
+			TRUE
+		);
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns)
+	{
+
+		Zupal_Grid_Maker::prep_view($pView);
+
+		$columns = array(
+			'' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'content_view'),
+			'content_edit' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'content_edit'));
+
+		foreach($pColumns as $k => $v) $columns[$k] = $v;
+
+		$columns['content_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'content_delete');
+
+		return Zupal_Grid_Maker::grid( $pID, $columns, $pStore_ID);
+
+	}
+
+	public function render_data(array $pParams, $pStart = 0, $pRows = 30, $pSort = NULL)
+	{
+		$cache = Zupal_Bootstrap::$registry->cache;
+
+		if (!$cache->test('content_data')):
+			$select = $this->_select($pParams, $pSort);
+			$items = $this->table()->getAdapter()->fetchAll($select);
+			$cache->save(new Zend_Dojo_Data($this->table()->idField(), $items, $pSort));
+		endif;
+
+		return $cache->load('content_data');
+
+	}
+
+	public function render_script($pID, array $pParams = NULL)
+	{
+?>
+
+	function content_identity(id, item)
+	{
+
+		var g = dijit.byId('<?= $pID ?>');
+
+		return g.store.getValue(item, 'id');
+
+	}
+
+	function content_view(id, item)
+	{
+		if (!item) return '';
+
+		var g = dijit.byId('<?= $pID ?>');
+
+		content_id = content_identity(id, item);
+		url = '<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/content/admin/view/id/';
+		icon = '<?= Zupal_Image::icon('view')  ?>';
+	return '<a href="' + url + content_id + '">' + icon + '</a>';
+	}
+
+
+	function content_edit(id, item)
+	{
+		if (!item) return this.defaultValue;
+
+		var g = dijit.byId('<?= $pID ?>');
+
+	//	id = g.store.getValue(item, 'id');
+
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/content/admin/edit/id/' +  content_identity(id, item)  + '">'
+		+ '<?= Zupal_Image::icon('edit')  ?></a>';
+	}
+
+
+	function content_delete(id, item)
+	{
+		if (!item) return this.defaultValue;
+
+		var g = dijit.byId('<?= $pID ?>');
+
+	//	id = g.store.getValue(item, 'id');
+
+	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/content/admin/delete/id/' +  content_identity(id, item)  + '">'
+		+ '<?= Zupal_Image::icon('x')  ?></a>';
+	}
+
+<?
+	}
+
+	public function render_store($pStore_ID, $pURL)
+	{
+		return Zupal_Grid_Maker::store($pStore_ID, $pURL);
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
@@ -150,6 +258,12 @@ implements Zupal_Content_IContent
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_instance = NULL;
+
+/**
+ *
+ * @param bool $pReload
+ * @return Zupal_Content
+ */
 	public static function getInstance($pReload = FALSE)
 	{
 		if ($pReload || is_null(self::$_instance)){

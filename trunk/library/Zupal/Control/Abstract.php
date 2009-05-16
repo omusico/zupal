@@ -14,7 +14,7 @@ abstract class Zupal_Control_Abstract {
 
 	public abstract function __toString();
 
-	const LINK = '<a href="%s" title="%s" class="%s">%s</a>';
+	const LINK = '<a href="%s" %s>%s</a>';
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ as_link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
@@ -23,7 +23,9 @@ abstract class Zupal_Control_Abstract {
 	*/
 	public function as_link ()
 	{
-		return sprintf(self::LINK, $this->url(), $this->get_title(), $this->get_class(), $this->get_label() );
+		$props = join(' ', array($this->get_title(TRUE), $this->get_class(TRUE), $this->get_target(TRUE) ));
+
+		return sprintf(self::LINK, $this->url(), $props, $this->get_label() );
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -43,6 +45,19 @@ abstract class Zupal_Control_Abstract {
 		return join(DS, $url);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tag @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pName
+	* @param string $pValue
+	* @return string
+	*/
+	public function tag ($pName, $pValue)
+	{
+		if ($pValue =='') return '';
+		return " $pName=\"$pValue\" ";
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ class @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private $_class = null;
@@ -50,7 +65,10 @@ abstract class Zupal_Control_Abstract {
 	 * @return class;
 	 */
 
-	public function get_class() { return $this->_class; }
+	public function get_class($pTag = FALSE) {
+		if ($pTag) return $this->tag('class', $this->_class);
+		return $this->_class;
+	}
 
 	public function set_class($pValue) { $this->_class = $pValue; }
 
@@ -87,6 +105,10 @@ abstract class Zupal_Control_Abstract {
 					$this->set_title($v);
 				break;
 
+				case 'target':
+					$this->set_target($v);
+				break;
+
 				default:
 					$this->set_param($k, $v);
 			endswitch;
@@ -94,13 +116,39 @@ abstract class Zupal_Control_Abstract {
 
 	}
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ target @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_target = null;
+	/**
+	 * @return class;
+	 */
+
+	public function get_target($pAs_tag = FALSE)
+	{
+		if ($pAs_tag):
+			if ($this->_target):
+				return sprintf(' target="%s" ', $this->_target);
+			else:
+				return '';
+			endif;
+		endif;
+		
+		return $this->_target;
+	}
+
+	public function set_target($pValue) { $this->_target = $pValue; }
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ title @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private $_title = null;
 	/**
 	 * @return string;
 	 */
-	public function get_title() { return $this->_title ? $this->_title : $this->get_label(); }
+	public function get_title($pTag = FALSE) {
+		if ($pTag) return $this->tag('title', $this->_class);
+		return $this->_title ? $this->_title : $this->get_label(); }
 
 	public function set_title($pValue) { $this->_title = $pValue; }
 

@@ -74,6 +74,97 @@ class Zupal_Module_Manager_Item
 		Zupal_Includes::add($paths);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ has @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pFile
+	* @return int
+	*/
+	public function has ($pFile)
+	{
+		$full_path = $this->directory() . DS . ltrim($pFile, DS);
+
+		if (is_dir($full_path)):
+			if (file_exists($full_path)):
+				return self::HAS_BOTH;
+			else:
+				return self::HAS_DIR;
+			endif;
+		elseif(file_exists($full_path)):
+			return self::HAS_FILE;
+		else:
+			return self::HAS_NONE;
+		endif;
+	}
+
+	const HAS_NONE = 0;
+	const HAS_DIR  = 1;
+	const HAS_FILE = 2;
+	const HAS_BOTH = 3;
+
+	public function has_admin(){ return $this->has(self::ADMIN_FILE) & self::HAS_FILE; }
+
+	const ADMIN_FILE = 'controllers/AdminController.php';
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ has_controller_action @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param $pController, $pItem
+	* @return boolean
+	*/
+	public function has_controller_action ($pController, $pItem)
+	{
+		$pController = ucfirst($pController);
+		$file = 'controllers/' . $pController . 'Controller.php';
+		if (self::HAS_FILE & $this->has($file)):
+			$this->include_file($file);
+		endif;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ include @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pFile
+	* @return <type>
+	*/
+	public function include_file ($pFile, $pOnce = TRUE)
+	{
+		if (self::HAS_FILE & $this->has($pFile)):
+			if ($pOnce):
+				include_once $this->directory() . DS . $pFile;
+			else:
+				include $this->directory() . DS . $pFile;
+			endif;
+		endif;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_file @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pFile
+	* @return string
+	*/
+	public function get_file ($pFile)
+	{
+		$path = $this->directory() . DS . $pFile;
+
+		if (file_exists($path)):
+			return file_get_contents($path);
+		else:
+			return NULL;
+		endif;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ admin_menu_item @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	* @return <type>
+	*/
+	public function admin_menu_item ()
+	{
+		$mi = new Zupal_Menu_item($this->get_name(), $this->get_name(), 'admin');
+		return $mi;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logger @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_logger = array();

@@ -19,6 +19,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
 		$this->view->dojo()
+			->requireModule('dijit.form.Form')
              ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
 	}
 
@@ -54,6 +55,11 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 						if ($config):
 							$submenu = new Zupal_Menu('', $config);
 							$item->submenu = $submenu;
+						endif;
+					else:
+						$module_item = Zupal_Module_Manager::getInstance()->get($module);
+						if ($module_item->has('library' . DS . str_replace('_', DS, $menu_file). '.php')):
+							$item->submenu = new $menu_file();
 						endif;
 					endif;
 				endif;

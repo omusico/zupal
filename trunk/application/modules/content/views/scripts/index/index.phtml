@@ -1,14 +1,5 @@
-<?= $this->partial('Zupal/Content/list.phtml',
-	array(
-		'content' => $this->content,
-		'title' => 'Content'
-	)
-) ?>
-
-<h2>Add Content</h2>
-
 <?
-$form = new Zupal_Content_Form();
 
-echo $form->render();
+$this->placeholder('page_title')->set('Content');
+
 ?>

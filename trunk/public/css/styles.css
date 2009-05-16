@@ -27,6 +27,28 @@
 	display: inline-block
 }
 
+fieldset.ilist
+{
+	width: auto;
+}
+
+fieldset.ilist ul
+{
+	width: auto;
+	margin: 0px;
+	padding: 0px;
+}
+
+fieldset.ilist li
+{
+	float: left;
+	display: inline-block;
+	width: auto;
+	list-style: none;
+	margin: 0px;
+	padding: 8px;
+}
+
 .iconv
 {
 	width: 40px;
@@ -37,12 +59,36 @@
 	float: left;
 }
 
-a:link .iconv ,
-a:visitied .iconv 
+a:link .iconv, a:visitied .iconv
 {
 	font-size: 80%;
 	font-weight: bold;
 	color: black;
+}
+
+.iconh img
+{
+	float: left;
+}
+
+.iconh
+{
+	padding: 2px;
+	border: 1px solid #E1E1E1;
+	margin: 2px;
+	text-align: left;
+	float: left;
+}
+
+.iconh .label
+{
+	font-size: 90%;
+	font-weight: normal;
+	color: black;
+	padding: 0px;
+	margin: 0px;
+	margin-left: 8px;
+
 }
 
 #message

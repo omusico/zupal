@@ -1,23 +1,17 @@
 
 <configdata>
 	<menu>
-		<new>
+		<create>
 			<module>admin</module>
-			<controller>places</controller>
-			<action>new</action>
-			<label>New Place</label>
-		</new>
-		<flagged>
+			<controller>item</controller>
+			<action>create</action>
+			<label>Create Content</label>
+		</create>
+		<find>
 			<module>admin</module>
-			<controller>places</controller>
-			<action>index</action>
-			<label>List Places</label>
-		</flagged>
-		<search>
-			<module>admin</module>
-			<controller>logs</controller>
-			<action>index</action>
-			<label>Search Logs</label>
-		</search>
+			<controller>item</controller>
+			<action>find</action>
+			<label>Find Content</label>
+		</find>
 	</menu>
 </configdata>
