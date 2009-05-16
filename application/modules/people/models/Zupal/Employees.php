@@ -7,13 +7,8 @@ implements Zupal_Grid_IGrid
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IGrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	public function render_grid(Zend_View $pView, $pID, array $pColumns, $pURL)
+	public function render_grid($pID, array $pColumns, $pURL)
 	{
-		$pView->dojo()
-             ->requireModule('dojox.grid.DataGrid')
-             ->requireModule('dojo.data.ItemFileReadStore')
-			 ->addStyleSheet('http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojox/grid/resources/Grid.css')
-			 ->enable();
 
 		$identifier = $this->table()->idField();
 		$cache = Zupal_Bootstrap::$registry->cache;
@@ -41,6 +36,17 @@ implements Zupal_Grid_IGrid
 		</tr>
 	</thead>
 </table>
+<?
+		endif;
+
+		return $cache->load('employee_grid');
+	}
+
+	public function render_script(array $pData = NULL) {
+
+		$cache = Zupal_Bootstrap::$registry->cache;
+		if (!$cache->test('employee_grid_script')):
+	?>
 <script language="javascript">
 
 	function employee_identity(id, item)
@@ -94,7 +100,7 @@ implements Zupal_Grid_IGrid
 <?
 		endif;
 
-		return $cache->load('employee_grid');
+		return $cache->load('employee_grid_script');
 	}
 
 	public function render_data(array $pParams, $pSort = NULL, $pStart = 0, $pRows = 30)
@@ -129,24 +135,7 @@ implements Zupal_Grid_IGrid
 
 	protected function render_array_column($pKey, $pColumn)
 	{
-		if (array_key_exists('field', $pColumn)):
-			$field = $pColumn['field'];
-			unset($pColumn['field']);
-		endif;
-		?><th field="<?= $pKey ?>" <?
-		if (array_key_exists('label', $pColumn)): // Is a keyed set of parameters.
-			$label = $pColumn['label'];
-			unset($pColumn['label']);
-		else: // IS NOT a keyed set of parameters
-			$label = array_shift($pColumn);
-			if (count($pColumn)): // take next parameter as width -- tranform it to named parameter.
-				$width = array_shift($pColumn);
-				$pColumn['width'] = $width;
-			endif;
-		endif; // end parameter loop
-		foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
-?> ><?= $label ?></th>
-<?
+		return Zupal_Grid_Maker::array_column($pKey, $pColumn);
 	}
 
 

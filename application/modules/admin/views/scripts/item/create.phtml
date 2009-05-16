@@ -1,0 +1,16 @@
+<?
+$this->placeholder('page_title')->set('Create Content');
+?>
+
+<ul>
+<? foreach($this->modules as $module): ?>
+	<li><?= $this->link('Create ' . ucfirst($module->get_name()), 
+	array(
+		'module' => $module->get_name(),
+		'action' => 'create',
+		'controller' => 'admin'
+	)
+	) ?>
+	</li>
+<? endforeach; ?>
+</ul>

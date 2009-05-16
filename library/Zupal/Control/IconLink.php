@@ -7,9 +7,15 @@ extends Zupal_Control_Abstract
 	public function __construct($pIconPath, $pLabel, $pParams)
 	{
 
+		if (array_key_exists('placement', $pParams)):
+			$placement = $pParams['placement'];
+			unset($pParams['placement']);
+		else:
+			$placement = Zupal_Control_Icon::PLACEMENT_VERTICAL;
+		endif;
 		parent::load($pParams);
 
-		$icon = new Zupal_Control_Icon($pIconPath, $pLabel);
+		$icon = new Zupal_Control_Icon($pIconPath, $pLabel, $placement);
 
 		$this->set_title($pLabel);
 

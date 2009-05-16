@@ -100,21 +100,29 @@ implements Zupal_Node_INode,
  * @param string $sort
  * @return Zend_Db_Table_Select
  */
-	protected function _select(array $searchCrit = NULL, $sort = NULL)
+	protected function _select(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
 		$tn = $table->tableName();
 
-		$select = $table->getAdapter()->select()
-			->from($tn); // do not include node table
+		if ($pDomain):
+			$select= $table->select();
+		else:
+			$select = $table->getAdapter()->select()
+				->from($tn); // do not include node table
+		endif;
 
 		if (is_array($searchCrit) && count($searchCrit)):
-			foreach($searchCrit as $crit):
+			foreach($searchCrit as $key => $crit):
 				if (is_array($crit)):
 					call_user_func_array(array($select, 'where'), $crit);
-				else:
+				elseif (preg_match('~(=|LIKE|>|<)~', $crit)):
 					$select->where($crit);
+				elseif (is_numeric($crit)):
+					$select->where("$key = ?", $crit);
+				else:
+					$select->where("$key LIKE ?", $crit);
 				endif;
 			endforeach;
 		endif;
@@ -134,30 +142,39 @@ implements Zupal_Node_INode,
 
 	protected $_is_versioned = TRUE;
 
-	public function find(array $searchCrit = NULL, $sort = NULL)
+	public function find(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
+		$domain_objects = array();
 
-		$select = $this->_select($searchCrit, $sort);
+		$select = $this->_select($searchCrit, $sort, $pDomain);
 
-		$node_stub = Zupal_Nodes::getInstance();
+		if (!$pDomain):
+			$node_stub = Zupal_Nodes::getInstance();
 
-		$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
-		$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
-		//@TODO: cache this expression?
-		$select->join($node_stub->table()->tableName(), $cond, array());
-		$rows = $table->getAdapter()->fetchAll($select, array(), Zend_Db::FETCH_OBJ);
+			$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
+			$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
+			//@TODO: cache this expression?
+			$select->join($node_stub->table()->tableName(), $cond, array());
+			$rows = $table->getAdapter()->fetchAll($select, array(), Zend_Db::FETCH_OBJ);
+
+			// transfer data into domain objects.
+			foreach($rows as $row):
+				$data = $this->newRow();
+				$data->setFromArray((array) $row);
+				$domain_objects[] = $this->get($data);
+			endforeach;
+		else:
+			error_log(__METHOD__ . ': ' . $select->assemble());
+			$rows = $table->fetchAll($select);
+			foreach($rows as $row):
+				$domain_objects[] = $this->get($row);
+			endforeach;
+		endif;
 
 		error_log(__METHOD__ . ': ' . $select->assemble());
 
-		// transfer data into domain objects.
-		$domain_objects = array();
-		foreach($rows as $row):
-			$data = $this->newRow();
-			$data->setFromArray((array) $row);
-			$domain_objects[] = $this->get($data);
-		endforeach;
 
 		return $domain_objects;
 	}
@@ -223,4 +240,21 @@ implements Zupal_Node_INode,
 	{
 		return $this->node()->is($pStatus, $pOverride_if_deleted);
 	}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __call @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pMethod, $pParams
+	* @return <type>
+	*/
+	public function __call ($pMethod, $pParams)
+	{
+		if (preg_match('~^domain_(.*)~', $pMethod, $hits)):
+			return call_user_func_array(array($this, $hits[1]), $pParams);
+		endif;
+
+		return parent::__call($pMethod, $pParams);
+	}
+
 }

@@ -6,6 +6,10 @@
 	<version>1.0</version>
 	<core>0.1</core>
 	<menu>menu.xml</menu>
+
+	<admin>
+		<create>1</create>
+	</admin>
 	
 	<packaging>
 		<version>0.1</version>

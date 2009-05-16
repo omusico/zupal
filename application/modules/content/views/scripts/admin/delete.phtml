@@ -1,0 +1,42 @@
+<?
+	$this->placeholder('page_title')->set('Delete ' . $this->content->title());
+?>
+<p>Do you want to delete the following version</p>
+<form method="post">
+<input type="hidden" name="id" value="<?= $this->content->identity() ?>" />
+<input type="hidden" name="node_id" value="<?= $this->content->nodeId() ?>" />
+<input type="hidden" name="confirm" />
+<label><input type="radio" name="delete_class" value="by_id"> Delete the single version you selected.</label>
+<fieldset>
+<legend>Content id = <?= $this->content->identity() ?></legend>
+<h3><?=	$this->content->title() ?></h3>
+
+<p>
+	<?= $this->content->text() ?>
+</p>
+</fieldset>
+
+<label><input type="radio" name="delete_class" value="by_node"> Delete the single version you selected.</label>
+
+<fieldset>
+	<legend>Content whose nodes = <?= $this->content->nodeId() ?></legend>
+
+<? foreach($this->content->versions() as $version): ?>
+
+<?= new Zupal_Control_IconLink(
+	'popup.gif',
+	$version->shortTitle(),
+		array(
+			'module' => 'content',
+			'action' => 'popup',
+			'target' => 'content_preview',
+			'controller' => 'admin',
+			$this->content->table()->idField() => $version->identity(),
+				'placement' => Zupal_Control_Icon::PLACEMENT_HORIZONTAL
+		)
+) ?>
+<? endforeach; ?>
+
+</fieldset>
+<p><small>Click icon above to view content</small></p>
+<iframe id="content_preview" name="content_preview" width="400" height="400"></iframe>
