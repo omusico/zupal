@@ -1,0 +1,30 @@
+<?
+
+$this->placeholder('page_name')->set('Media: Artists');
+
+
+$cs = Zupal_Media_Artists::getInstance();
+
+$this->headScript()->captureStart();
+
+$cs->render_script('list');
+
+$this->headScript()->captureEnd();
+
+$this->placeholder('page_title')->set("Content");
+
+$cs->render_store('artist_store', '/media/artists/data', 'node_id');
+
+$cs->render_grid(
+	$this,'list', 'artist_store',
+	 array(
+			'node_id' => array('label' => 'Node', 'width' => 40),
+			'artist_id' => array('label' => 'ID', 'width' => 40),
+			'person_id' => array('label' => 'PID', 'width' => 40), 
+			'person_gender' => array('label' => 'G', 'width' => 20),
+			'person_name_first' => array('label' => 'First Name', 'width' => 80),
+			'person_name_last' =>  array('label' => 'Last Name', 'width' => 100), 
+			'performs_as' => array('label' => 'Performs As', 'width' => 120),
+		)
+	); 
+?>

@@ -1,17 +1,17 @@
 
 <configdata>
 	<menu>
-		<employees>
-			<module>people</module>
-			<controller>employees</controller>
+		<artists>
+			<module>media</module>
+			<controller>artists</controller>
 			<action>index</action>
-			<label>Employees</label>
-		</employees>
-		<seventh>
-			<module>people</module>
-			<controller>employees</controller>
-			<action>seventh</action>
-			<label>7th highest</label>
-		</seventh>
+			<label>Artists</label>
+		</artists>
+		<find>
+			<module>media</module>
+			<controller>artists</controller>
+			<action>find</action>
+			<label>Find</label>
+		</find>
 	</menu>
 </configdata>

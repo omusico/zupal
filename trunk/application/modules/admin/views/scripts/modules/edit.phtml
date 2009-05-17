@@ -1,0 +1,8 @@
+<?
+	$this->placeholder('page_title')->set('Module: ' . $this->module->name);
+
+	$this->form->setAction(ZUPAL_BASEURL . DS . 'admin/modules/editvalidate');
+
+	echo $this->form->render();
+?>
+

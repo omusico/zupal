@@ -225,7 +225,7 @@ class Zupal_Module_Manager_Item
 		$mr->required = $info->required;
 		$mr->version = $info->version;
 		$mr->package = strtolower($info->package);
-
+		$mr->menu = $info->menu;
 		$mr->save();
 		return $mr;
 

@@ -58,7 +58,7 @@ jsId="<?= $pStore_ID ?>" url="<?= $pURL ?>/rand/<?= rand(0, 100000) ?>" />
 	* @param <type> $pParam
 	* @return <type>
 	*/
-public static function grid ($pID, $pColumns, $pStore_ID = NULL, $pIdentifier = 'id')
+public static function grid ($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 'id')
 {
 	if (is_null($pStore_ID)) $pStore_ID = $pID . '_store';
 ?>

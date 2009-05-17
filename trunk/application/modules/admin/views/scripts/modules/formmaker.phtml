@@ -1,0 +1,39 @@
+<?
+
+$this->placeholder('page_title')->set('Form Maker');
+
+?>
+
+<table>
+	<tr>
+		<th>
+			Tables
+		</th>
+		<th>
+			Result
+		</th>
+	</tr>
+
+	<tr>
+		<td valign="top">
+		<ul>
+<? foreach($this->tables as $table): ?>
+<li><?= new Zupal_Control_Link($table, array(
+	'module' => 'admin',
+	'controller' => 'modules',
+	'action' => 'formmakervalidate',
+	'table' => $table,
+	'target' => 'data'
+)) ?></li>
+<? endforeach; ?>
+		</ul>
+		</td>
+
+		<td>
+			<iframe name="data" width="600" height="600">
+			Click on a link at left
+			</iframe>
+		</td>
+
+	</tr>
+</table>
