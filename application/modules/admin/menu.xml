@@ -1,17 +1,29 @@
 
 <configdata>
 	<menu>
+		<modules>
+			<module>admin</module>
+			<controller>modules</controller>
+			<action>index</action>
+			<label>Modules</label>
+		</modules>
 		<create>
 			<module>admin</module>
 			<controller>item</controller>
 			<action>create</action>
-			<label>Create Content</label>
+			<label>Create Module</label>
 		</create>
 		<find>
 			<module>admin</module>
 			<controller>item</controller>
 			<action>find</action>
-			<label>Find Content</label>
+			<label>Find</label>
 		</find>
+		<mm>
+			<module>admin</module>
+			<controller>modules</controller>
+			<action>formmaker</action>
+			<label>Form Maker</label>
+		</mm>
 	</menu>
 </configdata>

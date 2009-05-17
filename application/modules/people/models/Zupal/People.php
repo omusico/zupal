@@ -77,7 +77,10 @@ implements Zupal_Grid_IGrid
 	public static function fields ()
 	{
 		if (!self::$_fields):
-			self::$_fields = self::getInstance()->toArray();
+			$i = self::getInstance();
+			$a = $i->toArray();
+			$ak = array_keys($a);
+			self::$_fields =$ak;
 		endif;
 
 		return self::$_fields;

@@ -39,7 +39,7 @@ implements Zupal_Content_IContent, Zupal_Grid_IGrid
 
 		$columns['content_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'content_delete');
 
-		return Zupal_Grid_Maker::grid( $pID, $columns, $pStore_ID);
+		return Zupal_Grid_Maker::grid( $pID, $pStore_ID, $columns);
 
 	}
 

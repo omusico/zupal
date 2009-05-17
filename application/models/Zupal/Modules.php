@@ -141,7 +141,6 @@ implements Zupal_Grid_IGrid
 			$items = array();
 
 			foreach($rows as $row):
-				if ($row == 'password') continue;
 				$items[] = $row->toArray();
 			endforeach;
 

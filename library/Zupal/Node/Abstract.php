@@ -142,6 +142,11 @@ implements Zupal_Node_INode,
 
 	protected $_is_versioned = TRUE;
 
+	public function find_node($pNode_id)
+	{
+		return $this->find(array(array('zupal_nodes.node_id = ?', $pNode_id)));
+	}
+
 	public function find(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();

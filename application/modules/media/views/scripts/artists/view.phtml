@@ -1,0 +1,14 @@
+<?
+
+$this->placeholder('page_name')->set($this->artist->name());
+?>
+
+<dl>
+
+	<dt>True Name</dt>
+	<dd><?= $this->artist->person()->name() ?></dd>
+
+	<dt>performs as</dt>
+	<dd><?= $this->artist->name() ?></dd>
+
+</dl>

@@ -61,22 +61,26 @@ implements Zupal_Domain_IDomain
 
 	public function get_join($pKey, $pCreate_if_empty = TRUE)
 	{
-		$pType = strtolower(trim($pType));
+	//	$pType = strtolower(trim($pType));
 
 		$data = $this->_joins[$pKey];
 		if ($data):
-			$id = $this->$local_key;
+			extract($data);
+			$id = $this->__get($local_key);
+			
 			extract($data); // should return $class, $local_key, $value = NULL
-			if ($value):
-				if ($value->identity() != $id):
-					$value = new $class($id);
-					$this->_joins[$pKey]['value'] = $value;
-				endif;
-				return $value;
-			endif;
 			
 			if ($id):
+				if ($value):
+					if ($value->identity() != $id):
+						$value = new $class($id);
+						$this->_joins[$pKey]['value'] = $value;
+					endif;
+					return $value;
+				endif;
 				return $this->set_join($pKey, $class, $id);
+			elseif($value):
+				return $value;
 			elseif ($pCreate_if_empty):
 				$stub = new $class();
 				$this->_joins[$pKey]['value'] = $stub;
@@ -96,7 +100,11 @@ implements Zupal_Domain_IDomain
 			);
 			$this->_joins[$pKey] = $data;
 		elseif ($pID):
-			$this->_joins[$pKey]['value'] = new $pClass($pID);
+			$new = new $pClass($pID);
+			$this->_joins[$pKey]['value'] = $new;
+			return $new;
+		else:
+			return NULL;
 		endif; 
 	}
 
@@ -137,22 +145,6 @@ implements Zupal_Domain_IDomain
 	/*	else:
 			throw new Exception(__METHOD__ . ': non object row in ' . $this->tableClass() . ': ' . print_r($this->_row, 1));
 		endif; */
-	}
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_join @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-	/**
-	 * This method, customizable, returns the domain object(s)
-	 * joined through a speciic context. They will be erased
-	 * upon
-	 * 
-	 *
-	 * @param string
-	 * @return array | Zupal_Domain_Abstract
-	 */
-
-	public function get_joined($pType, $pAsStdClass = FALSE)
-	{
-		return NULL;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -376,7 +368,20 @@ implements Zupal_Domain_IDomain
 		if ($this->_asStub):
 			throw new Exception('Attempt to save a stub of ' . get_class($this));
 		elseif ($this->_row):
+
+			foreach($this->_joins as $join):
+				if ($join && is_array($join)):
+					$value = NULL;
+					extract($join);
+					if (is_object($value)):
+						$value->save();
+						$this->$local_key = $value->identity();
+					endif;
+
+				endif;
+			endforeach;
 			$this->_row->save();
+
 		else:
 			throw new Exception(__METHOD__ . ': Cannot save empty row');
 		endif;

@@ -7,9 +7,18 @@ extends Zupal_Form_Abstract
 	{
 		parent::__construct($pOptions);
 
+		$elements = array();
+		foreach($this->getElements() as $element):
+			$elements[] = $element->getName();
+		endforeach;
+
+
 		$this->set_domain($pContent);
 		
 		$this->removeDecorator('HtmlTag');
+		
+		$this->addDisplayGroup($elements, 'content', array('legend' => 'Content', 'seperator' => ''));
+		$this->getDisplayGroup('content')->removeDecorator('DtDdWrapper');
 		
 		$this->addElement('multiCheckbox', 'status', array('label' => 'Status', 'separator' => ''));
 		$this->status->setMultiOptions(Zupal_Nodes::$STATUS_PHRASES);

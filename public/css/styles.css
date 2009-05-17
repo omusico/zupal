@@ -490,15 +490,19 @@ label {
 	font-size: 110%;
 	padding-right: 20px;
 }
+dd label {display: inline-block }
+
 input, textarea {
 	clear: both;
 	font-size: 140%;
 	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
 	padding: 2px;
-	border: 2px solid #ccc;
+	border: 1px solid #E1E1E1;
 	background: #ffffcc;
-	color: #666;
+	color: black;
 	width: 100%;
+    border-left-color: #ccc;
+	border-top-color: #999;
 }
 select {
 	clear: both;
@@ -575,13 +579,17 @@ a.delete:visited
 
 input[type=submit] {
 	display: inline;
-	font-size: 110%;
+	font-size: 140%;
 	padding: 2px 5px;
 	width: auto;
 	vertical-align: bottom;
-	border: 2px solid #090;
+	border: 2px solid #0c0;
+	border-bottom-color: #090;
 	background: #E1FFE1;
-	color: black
+	color: black;
+    font-weight: bold;
+    border-top-color: #ccff99;
+    border-left-color: #ccff99;
 }
 
 input[type=button] {
