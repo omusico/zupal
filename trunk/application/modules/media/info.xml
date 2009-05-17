@@ -1,0 +1,15 @@
+<module>
+	<name>Media</name>
+	<description>Module for managing, indexing artists, images and music</description>
+	<package>Publishing</package>
+	<required>false</required>
+	<version>1.0</version>
+	<core>0.1</core>
+	<menu>menu.xml</menu>
+	
+	<packaging>
+		<version>0.1</version>
+		<project>zupal</project>
+		<datestamp>1234567890</datestamp>
+	</packaging>
+</module>

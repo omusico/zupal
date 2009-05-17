@@ -1,12 +1,18 @@
 <?
 	$this->placeholder('page_title')->set('Modules');
+	
+	$mi = Zupal_Modules::getInstance();
+	$this->headScript()->captureStart();
+	$mi->render_script('list');
+	$this->headScript()->captureEnd();
+	$mi->render_store('list_store', ZUPAL_BASEURL . '/admin/modules/data');
 ?>
 
-<?= Zupal_Modules::getInstance()->render_grid($this,'list',
+<?= $mi->render_grid($this,'list', 'list_store',
 	 array(
 		'name' => array('label' => 'Name', 'width' => 200, 'formatter' => 'format_bold'),
 		'description' => array('label' => 'Description', 'width' => 300),
 		'version' => array('label' => 'Version', 'width' => 50),
 		'enabled' => array('label' => 'On', 'width' => 30, 'formatter' => 'format_bool'),
 		'package' => array('label' => 'Pkg', 'width' => 50)
-	),	Zend_Controller_Front::getInstance()->getBaseUrl() . '/admin/modules/data' ) ?>
+	) ) ?>

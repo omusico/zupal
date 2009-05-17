@@ -2,7 +2,6 @@
 
 class Admin_ModulesController extends Zupal_Controller_Abstract
 {
-	
 	public function indexAction() 
 	{
 		$moduleConfigs = array();
@@ -10,6 +9,14 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		Zupal_Module_Manager::getInstance()->update_database();
 		$this->view->modules = Zupal_Module_Manager::getInstance()->get_all();
 	}
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ edit @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	public function editAction()
+	{
+		$this->view->form = new Zupal_Modules_Form(new Zupal_Modules($this->_getParam('name')));
+	}
+	
 	
 	public function installAction() {}
 	

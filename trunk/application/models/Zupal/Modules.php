@@ -38,7 +38,7 @@ implements Zupal_Grid_IGrid
 	private static $_Instance = NULL;
 
 	/**
-	 * @return self
+	 * @return Zupal_Modules
 	 */
 	public static function getInstance()
 	{
@@ -53,6 +53,28 @@ implements Zupal_Grid_IGrid
 		$pName = strtolower($pName);
 		return self::getInstance()->get($pName);
 	}
+	
+	/**
+	 * @see Zupal_Grid_IGrid::render_script()
+	 *
+	 * @param unknown_type $pID
+	 * @param array $pParams
+	 */
+	public function render_script($pID, array $pParams = NULL) 
+	{
+		include_once (dirname(__FILE__) . DS . 'modules_grid_script.php');
+	}
+	
+	/**
+	 * @see Zupal_Grid_IGrid::render_store()
+	 *
+	 * @param unknown_type $pStore_ID
+	 * @param unknown_type $pURL
+	 */
+	public function render_store($pStore_ID, $pURL) 
+	{
+		Zupal_Grid_Maker::store($pStore_ID, $pURL);
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
@@ -65,26 +87,28 @@ implements Zupal_Grid_IGrid
 		parent::save();
 	}
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IGrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+//	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns);
 
-	public function render_grid(Zend_View $pView, $pID, array $pColumns, $pURL)
+	public function render_grid(Zend_View $pView, $pID, $pStore, array $pColumns)
 	{
-		$pView->dojo()
-             ->requireModule('dojox.grid.DataGrid')
-             ->requireModule('dojo.data.ItemFileReadStore')
-			 ->addStyleSheet('http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojox/grid/resources/Grid.css')
-			 ->enable();
+		Zupal_Grid_Maker::prep_view($pView);
 
 		$identifier = $this->table()->idField();
 		$cache = Zupal_Bootstrap::$registry->cache;
 		if (!$cache->test('modules_grid')):
 ?>
-<span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_module_store" url="<?= $pURL ?>/rand/<?= (int) (rand() * 10000) ?>" />
-<table id="igrid_<?= $pID ?>_modules_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
-	   query="{ <?= $identifier ?> : '*' }" store="igrid_<?= $pID ?>_module_store">
+<span dojoType="dojo.data.ItemFileReadStore"
+	jsId="igrid_<?= $pID ?>_module_store"
+	url="<?= $pURL ?>/rand/<?= (int) (rand() * 10000) ?>" />
+<table id="igrid_<?= $pID ?>_modules_node" rowsPerPage="10"
+	style="height: 400px" jsId="igrid_<?= $pID ?>"
+	dojoType="dojox.grid.DataGrid" clientSort="true"
+	query="{ <?= $identifier ?> : '*' }"
+	store="<?= $pStore ?>">
 	<thead>
 		<tr>
 			<th get="modules_view" width="25">&nbsp;</th>
-			<th get="modules_edit"  width="25">&nbsp;</th>
+			<th get="modules_edit" width="25">&nbsp;</th>
 <? foreach($pColumns as $key => $column): ?>
 	<? if (is_array($column)): ?>
 		<?= $this->render_array_column($key, $column) ?>
@@ -98,52 +122,7 @@ implements Zupal_Grid_IGrid
 		</tr>
 	</thead>
 </table>
-<script language="javascript">
 
-	function modules_identity(id, item)
-	{
-
-		var g = dijit.byId('igrid_<?= $pID ?>_modules_node');
-
-		return g.store.getValue(item, 'name');
-
-	}
-
-	function modules_view(id, item)
-	{
-		if (!item) return this.defaultValue;
-
-		var g = dijit.byId('igrid_<?= $pID ?>_modules_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/admin/modules/view/name/' + modules_identity(id, item) + '">'
-		+ '<?= Zupal_Image::icon('view')  ?></a>';
-	}
-
-
-	function modules_edit(id, item)
-	{
-		if (!item) return this.defaultValue;
-
-		var g = dijit.byId('igrid_<?= $pID ?>_modules_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/admin/modules/edit/name/' +  modules_identity(id, item)  + '">'
-		+ '<?= Zupal_Image::icon('edit')  ?></a>';
-	}
-
-	function format_bool(b)
-	{
-
-		if (b) return '<div style="background-color: green; text-align: center; padding: 3px; color: #CFC; font-weight: bold">Y</div>';
-		return '<div style="background-color: red; text-align: center; padding: 3px; color: #FCC; font-weight: bold">N</div>';
-	}
-
-	function format_bold(v){ return '<b>' + v + '</b>'; }
-
-</script>
 <?
 		endif;
 
@@ -178,7 +157,8 @@ implements Zupal_Grid_IGrid
 			$field = $pColumn['field'];
 			unset($pColumn['field']);
 		endif;
-		?><th field="<?= $pKey ?>" <?
+		?><th field="<?= $pKey ?>"
+	<?
 		if (array_key_exists('label', $pColumn)): // Is a keyed set of parameters.
 			$label = $pColumn['label'];
 			unset($pColumn['label']);
@@ -189,8 +169,9 @@ implements Zupal_Grid_IGrid
 				$pColumn['width'] = $width;
 			endif;
 		endif; // end parameter loop
-		foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
-?> ><?= $label ?></th>
+		foreach($pColumn as $key => $value): ?>
+	<?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
+?>><?= $label ?></th>
 <?
 	}
 

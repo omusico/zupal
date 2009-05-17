@@ -7,6 +7,24 @@ class Zupal_People extends Zupal_Domain_Abstract
 implements Zupal_Grid_IGrid
 {
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pSeperator = ' '
+	* @return <type>
+	*/
+	public function name ($pSeperator = ' ')
+	{
+		$parts = array();
+
+		if ($this->title) $parts[] = $this->title;
+		if ($this->name_first) $parts[] = $this->name_first;
+		if ($this->name_middle) $parts[] = $this->name_middle;
+		if ($this->name_last) $parts[] = $this->name_last;
+
+		return join($pSeperator, $parts);
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
@@ -50,35 +68,60 @@ implements Zupal_Grid_IGrid
 		return self::$_Instance;
 	}
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ User Stuff @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ locations @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
-	* @return Zupal_People_Places[]
+	* @return <type>
 	*/
-	public function places ()
+	private static $_fields = NULL;
+	public static function fields ()
 	{
-		return $out;
+		if (!self::$_fields):
+			self::$_fields = self::getInstance()->toArray();
+		endif;
+
+		return self::$_fields;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Grid Stuff @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_script @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return void;
+	*/
+	public function render_script ($pID, array $pParams = NULL)
+	{
+		include_once(dirname(__FILE__) . DS . 'grid_script.php');
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pStoreID
+	* @param string $pURL
+	* @return void
+	*/
+	public function render_store ($pStore_ID, $pURL)
+	{
+		return Zupal_Grid_Maker::store($pStore_ID, $pURL);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IGrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-	
-	public function render_grid(Zend_View $pView, $pID, array $pColumns, $pURL)
+
+//	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns);
+
+	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns)
 	{
-		$pView->dojo()
-             ->requireModule('dojox.grid.DataGrid')
-             ->requireModule('dojo.data.ItemFileReadStore')
-			 ->addStyleSheet('http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojox/grid/resources/Grid.css')
-			 ->enable();
+		
+		Zupal_Grid_Maker::prep_view($pView);
 
 		$identifier = $this->table()->idField();
 		$cache = Zupal_Bootstrap::$registry->cache;
 		if (!$cache->test('people_grid')):
 ?>
-<span dojoType="dojo.data.ItemFileReadStore" jsId="igrid_<?= $pID ?>_store" url="<?= $pURL ?>/rand/<?= (int) (rand() * 10000) ?>" />
-<table id="igrid_<?= $pID ?>_people_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
-	   query="{ <?= $identifier ?> : '*' }" store="igrid_<?= $pID ?>_store">
+	<table id="igrid_<?= $pID ?>_people_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
+	   query="{ <?= $identifier ?> : '*' }" store="<?= $pStore ?>">
 	<thead>
 		<tr>
 			<th get="people_view" width="25">&nbsp;</th>
@@ -98,63 +141,15 @@ implements Zupal_Grid_IGrid
 		</tr>
 	</thead>
 </table>
-<script language="javascript">
 
-	function people_identity(id, item)
-	{
-
-		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
-
-		return g.store.getValue(item, 'person_id');
-
-	}
-
-	function people_view(id, item)
-	{
-		if (!item) return this.defaultValue;
-
-		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/view/id/' + people_identity(id, item) + '">'
-		+ '<?= Zupal_Image::icon('view')  ?></a>';
-	}
-
-
-	function people_edit(id, item)
-	{
-		if (!item) return this.defaultValue;
-
-		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/edit/id/' +  people_identity(id, item)  + '">'
-		+ '<?= Zupal_Image::icon('edit')  ?></a>';
-	}
-
-
-	function people_delete(id, item)
-	{
-		if (!item) return this.defaultValue;
-
-		var g = dijit.byId('igrid_<?= $pID ?>_people_node');
-
-	//	id = g.store.getValue(item, 'id');
-
-	return '<a href="<?= Zend_Controller_Front::getInstance()->getBaseUrl() ?>/people/item/delete/id/' +  people_identity(id, item)  + '">'
-		+ '<?= Zupal_Image::icon('x')  ?></a>';
-	}
-
-</script>
 <?
 		endif;
 
 		return $cache->load('people_grid');
 	}
 
-	public function render_data(array $pParams, $pSort = NULL, $pStart = 0, $pRows = 30)
+//	public function render_data(array $pParams, $pStart = 0, $pRows = 30, $pSort = NULL);
+	public function render_data(array $pParams, $pStart = 0, $pRows = 30, $pSort = NULL)
 	{
 		$cache = Zupal_Bootstrap::$registry->cache;
 

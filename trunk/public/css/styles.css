@@ -131,7 +131,74 @@ a:link .iconv, a:visitied .iconv
 
 #breadcrumb a:hover { text-decoration: underline }
 
-.menu
+.panel input[type=submit] {
+	display: inline;
+	font-size: 80%;
+	padding: 1px 3px;
+	width: auto;
+	vertical-align: bottom;
+	border: 1px solid #090;
+	background: #E1FFE1;
+	font-size: 100%;
+	color: black;
+	font-weight: bold;
+}
+
+.panel input[type=button] {
+	display: inline;
+	font-size: 80%;
+	padding: 1px 3px;
+	width: auto;
+	vertical-align: bottom;
+	border: 1px solid #666;
+	background: #E1E1E1;
+	font-size: 100%;
+	color: black;
+	font-weight: bold;
+}
+.panel label
+{
+	display: block;
+	clear: both;
+	padding: 0px;
+	margin: 0px;
+}
+
+.panel dt,
+.panel dd
+{
+	margin: 0px;
+	display: block;
+	padding: 0px;
+	font-size: 80%;
+}
+
+.panel dl
+{
+	margin: 0px;
+	display: block;
+	padding: 0px;
+}
+
+.panel dt#submit-label
+{display: none}
+
+.panel input,
+.panel input[type=text],
+.panel textarea {
+	clear: both;
+	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
+	padding: 1px;
+	border: 1px solid #ccc;
+	background: #FFFFE1;
+	color: black;
+	width: 100%;
+	float: none;
+	margin: 0px;
+}
+
+.menu,
+.panel
 {
 	width: 200px;
 	background-color: white;
@@ -222,6 +289,11 @@ h1 {
 	font-weight: bold;
 	border-bottom: 1px solid #999
 }
+fieldset h1
+{
+	border-bottom: none;
+}
+
 h2 {
 	color: #0066FF;
 	font-family:'Gill Sans','lucida grande',helvetica, arial, sans-serif;
@@ -509,6 +581,17 @@ input[type=submit] {
 	vertical-align: bottom;
 	border: 2px solid #090;
 	background: #E1FFE1;
+	color: black
+}
+
+input[type=button] {
+	display: inline;
+	font-size: 110%;
+	padding: 2px 5px;
+	width: auto;
+	vertical-align: bottom;
+	border: 2px solid #666;
+	background: #E1E1E1;
 	color: black
 }
 
