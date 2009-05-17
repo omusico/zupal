@@ -12,7 +12,32 @@ extends Zupal_Controller_Abstract
 	{
 		$this->view->artist_stub = Zupal_Media_Artists::getInstance();
 	}
-	
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function findAction ()
+	{
+		$this->view->form = new Zupal_Media_Artists_Find();
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findvalidate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	 * 
+	* @return <type>
+	*/
+	public function findvalidateAction ()
+	{
+		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/artist/");
+		$client->type('xml');
+		$client->name(str_replace(' ', '+', $this->_getParam('find')));
+		$result = $client->get();
+		
+		$this->view->result = $result;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ newAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
