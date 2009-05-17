@@ -1,0 +1,24 @@
+<table>
+	<tr>
+		<th width="1*">Artists</th>
+
+
+	</tr>
+
+	<tr>
+		<td>
+			<ul>
+		<? foreach(Zupal_Media_Artists::getInstance()->findAll('performs_as') as $artist): ?>
+				<li><?= $artist->name() ?></li>
+		<? endforeach; ?>
+			</ul>
+
+			<?= $this->link('New Artist', array(
+				'module' => 'media',
+				'controller' => 'artists',
+				'action' => 'new'
+			)) ?>
+		</td>
+	</tr>
+
+</table>

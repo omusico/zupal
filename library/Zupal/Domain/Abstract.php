@@ -57,6 +57,49 @@ implements Zupal_Domain_IDomain
 		return $row;
 	}
 
+	protected $_joins = array();
+
+	public function get_join($pKey, $pCreate_if_empty = TRUE)
+	{
+		$pType = strtolower(trim($pType));
+
+		$data = $this->_joins[$pKey];
+		if ($data):
+			$id = $this->$local_key;
+			extract($data); // should return $class, $local_key, $value = NULL
+			if ($value):
+				if ($value->identity() != $id):
+					$value = new $class($id);
+					$this->_joins[$pKey]['value'] = $value;
+				endif;
+				return $value;
+			endif;
+			
+			if ($id):
+				return $this->set_join($pKey, $class, $id);
+			elseif ($pCreate_if_empty):
+				$stub = new $class();
+				$this->_joins[$pKey]['value'] = $stub;
+				return $stub;
+			endif;
+		endif;
+		return NULL;
+	}
+
+	public function set_join($pKey, $pClass, $pID = NULL, $pLocal_Key = NULL)
+	{
+		if ($pLocal_Key):
+			$data = array(
+				'local_key' => $pLocal_Key,
+				'value' => NULL,
+				'class' => $pClass
+			);
+			$this->_joins[$pKey] = $data;
+		elseif ($pID):
+			$this->_joins[$pKey]['value'] = new $pClass($pID);
+		endif; 
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  * @return Zupal_Table_Abstract
@@ -83,17 +126,33 @@ implements Zupal_Domain_IDomain
 		if ($this->isStub()) return NULL;
 		//@NOTE: elaborate retrieval for debugging purposes -- should be simplified for production. 
 		$id_field = $this->table()->idField();
-		if ($this->_row instanceof stdClass ):
+	/*	if ($this->_row instanceof stdClass ):
 			if (property_exists($this->_row, $id_field)):
 				return $this->_row->$id_field;
 			else:
 				throw new Exception (__METHOD__ . ': bad id ' . $id_field . ' requested from ' . get_class($this));
 			endif;
-		elseif (is_object($this->_row)):
+		elseif (is_object($this->_row)): */
 			return $this->_row->$id_field;
-		else:
+	/*	else:
 			throw new Exception(__METHOD__ . ': non object row in ' . $this->tableClass() . ': ' . print_r($this->_row, 1));
-		endif;
+		endif; */
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_join @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	 * This method, customizable, returns the domain object(s)
+	 * joined through a speciic context. They will be erased
+	 * upon
+	 * 
+	 *
+	 * @param string
+	 * @return array | Zupal_Domain_Abstract
+	 */
+
+	public function get_joined($pType, $pAsStdClass = FALSE)
+	{
+		return NULL;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -274,6 +333,7 @@ implements Zupal_Domain_IDomain
 
 	/**
 	 * This is a "Magic Method" passthrough to the row object/array
+	 * @TODO: should work simplified -- only Zend_DB_Table_Rows used a sa possible row value. 
 	 */
 	public function __get ($pField)
 	{
