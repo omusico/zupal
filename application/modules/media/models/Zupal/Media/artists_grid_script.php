@@ -14,7 +14,7 @@ function artist_view(id, item)
 	var g = dijit.byId('<?= $pID ?>');
 
 
-return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/view/name/' + artist_identity(id, item) + '">'
+return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/view/node_id/' + artist_identity(id, item) + '">'
 	+ '<?= Zupal_Image::icon('view')  ?></a>';
 }
 
@@ -26,7 +26,7 @@ function artist_delete(id, item)
 	var g = dijit.byId('<?= $pID ?>');
 
 
-return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/delete/name/' +  artist_identity(id, item)  + '">'
+return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/delete/node_id/' +  artist_identity(id, item)  + '">'
 	+ '<?= Zupal_Image::icon('x')  ?></a>';
 }
 
@@ -37,7 +37,7 @@ function artist_edit(id, item)
 	var g = dijit.byId('<?= $pID ?>');
 
 
-return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/edit/name/' +  artist_identity(id, item)  + '">'
+return '<a href="<?= ZUPAL_BASEURL ?>/media/artists/edit/node_id/' +  artist_identity(id, item)  + '">'
 	+ '<?= Zupal_Image::icon('edit')  ?></a>';
 }
 

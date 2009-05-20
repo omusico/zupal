@@ -1,55 +1,26 @@
 <?
 
-$this->placeholder('page_title')->set('Artist Search Result') ?>
-<pre>
-<? print_r($this->result) ?>
-</pre>
-<?
-	foreach($this->result as $k => $root_node):
-		switch ($k):
-			case 'artist-list':
-				foreach($root_node as $type => $node):
-					switch($type):
-						case 'artist':
-							$begin = '?';
-							$end = '?';
-							$name = '?';
-							foreach($node  as $ele_name => $element):
+$this->placeholder('page_title')->set('Artist Search Result');
 
-								switch($ele_name):
-									case 'life-span':
-										foreach ($element->attributes() as $life_prop => $life_value):
-											echo '<h5>', $life_prop, ' = ' , $life_value, '</h5>';
-											$$life_prop = $life_value;
-										endforeach;
-									break;
-
-									case 'name':
-										$name = (string) $element;
-									break;
-
-									case 'sort-name': // don't care
-									break;
-
-									default:
-
-										echo '<h4>Unknown element &quot;' , $element->getName() , '&quot;</h4>';
-								endswitch;
-							endforeach;
-						?>
-<h3><?= $name ?></h3>
-<dl>
-	<dt>Born</dt>
-	<dd><?= $begin ?></dd>
-	<dt>Died</dt>
-	<dd><?= $end ?></dd>
-</dl>
-						<? break; // end case artist
-					endswitch;
-				endforeach;
+$list = Zupal_Media_MusicBrains::digest_result($this->result);
+$list = $list['artist-list'];
 ?>
-<? break; // end case artist ?>
-<? default: ?>
-	<h2>Unknown node: <?= $k ?></h2>
-<? endswitch; ?>
+<form method="post" action="<?= ZUPAL_BASEURL ?>/media/artists/mbartist">
+<table>
+<tr>
+	<th>&nbsp;</th>
+	<th>
+	<?= join('</th><th>', array_keys($list[0])) ?>
+</th></tr>
+
+<? foreach($list as $k => $l): ?>
+<tr>
+	<td>
+		<input type="radio" name="musicbrainz_id" <? if(!$k) echo ' checked="checked" ' ?> value="<?= $l['id'] ?>">
+	</td>
+
+	<td><?= join('</td><td>', $l) ?></td>
+</tr>
 <? endforeach; ?>
+</table>
+<input type=submit value="Add Artist From MusicBrainz" />

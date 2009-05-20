@@ -22,20 +22,36 @@ extends Zupal_Controller_Abstract
 		$this->view->form = new Zupal_Media_Artists_Find();
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mbartistAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	 *
+	 */
+
+	public function mbartistAction ()
+	{
+		$id = $this->_getParam('musicbrainz_id');
+		$data = Zupal_Media_MusicBrains::get_artist($id);
+		
+		$this->view->form = new Zupal_Media_Artists_Form();
+		$this->view->form->performs_as->setValue($data['name']);
+		$this->view->form->mb_id->setValue($id);
+		$this->view->form->type->setValue(strtolower($data['type']));
+		$this->view->form->media_id->setValue(1);
+		$this->view->form->person_born->setValue($data['born']);
+		
+		if (!strcasecmp('person', $data['type'])):
+			$this->view->form->parse_name($data['name']);
+		endif;
+		$this->view->data = $data;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findvalidate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
-	*
-	 * 
-	* @return <type>
-	*/
+	 * @return <type>
+	 */
 	public function findvalidateAction ()
-	{
-		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/artist/");
-		$client->type('xml');
-		$client->name(str_replace(' ', '+', $this->_getParam('find')));
-		$result = $client->get();
-		
-		$this->view->result = $result;
+	{		
+		$this->view->result = Zupal_Media_MusicBrains::find_artist($this->_getParam('find'));
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ newAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -69,6 +85,11 @@ extends Zupal_Controller_Abstract
 	{
 		$artists = Zupal_Media_Artists::getInstance()->find_node($this->_getParam('node_id'));
 		$this->view->artist = array_pop($artists);
+		if ($this->view->artist->mb_id):
+			$this->view->relat = Zupal_Media_MusicBrains::get_artist_relat($this->view->artist->mb_id);
+		else:
+			$this->view->relat = NULL;
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
