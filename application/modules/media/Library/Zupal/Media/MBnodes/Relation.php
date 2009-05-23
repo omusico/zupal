@@ -9,6 +9,50 @@ class Zupal_Media_MBnodes_Relation
 		$this->set_name($pName);
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ meta @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	 *
+	* @return <type>
+	*/
+	public function meta ()
+	{
+		if (!strcasecmp($this->get_type(), 'release')):
+			return Zupal_Media_MusicBrains::get_release($this->get_target());
+		endif;
+		return '';
+	}
+
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ end @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	private $_end = NULL;
+	/**
+	  * @return scalar
+	  */
+	public function get_end(){ return $this->_end; }
+	public function set_end($value){ $this->_end = $value; }	
+	
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ begin @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	private $_begin = NULL;
+	/**
+	  * @return scalar
+	  */
+	public function get_begin(){ return $this->_begin; }
+	public function set_begin($value){ $this->_begin = strtolower((string) $value); }
+	
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ relationship @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	private $_relationship = '';
+	/**
+	  * @return scalar
+	  */
+	public function get_relationship(){ return $this->_relationship; }
+	public function set_relationship($value){ $this->_relationship = strtolower((string) $value); }
+	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ artist @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private $_artist = null;
@@ -20,8 +64,8 @@ class Zupal_Media_MBnodes_Relation
 
 	public function set_artist($pValue) {
 		if ($pValue):
-			if (is_scalar($pValue)):
-				$pValue = Zupal_Media_MBnodes_Artist::factory($pValue);
+			if (!is_scalar($pValue)):
+				$pValue = $pValue->get_id();
 			endif;
 			$this->_artist = $pValue;
 		else:

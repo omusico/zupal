@@ -69,13 +69,9 @@ class Zupal_Media_MBnodes_Artist
 
 	private $_relations = array();
 
-	public function set_relation($pValue, $pID = NULL)
+	public function add_relation($pValue)
 	{
-		if (is_null($pID)):
-		array_push($this->_relations, $pValue);
-		else:
-		$this->_relations[$pID] = $pValue;
-		endif;
+		$this->_relations[] = $pValue;
 	}
 
 	public function get_relation($pID){ return $this->_relations[$pID]; }
