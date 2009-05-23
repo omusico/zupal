@@ -52,18 +52,35 @@ jsId="<?= $pStore_ID ?>" url="<?= $pURL ?>/rand/<?= rand(0, 100000) ?>" />
 <?
 }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ params @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param array $pParam
+	* @return string
+	*/
+public static function params ($pParam)
+{
+	$out = '';
+	if ($pParam):
+		foreach($pParam as $k => $v):
+			$out .= sprintf(' %s="%s" ', $k, $v);
+		endforeach;
+	endif;
+	return $out;
+}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
 	* @param <type> $pParam
 	* @return <type>
 	*/
-public static function grid ($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 'id')
+public static function grid ($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 'id', array $pParams = NULL)
 {
 	if (is_null($pStore_ID)) $pStore_ID = $pID . '_store';
 ?>
 <table id="<?= $pID ?>"  rowsPerPage="10" style=" height: 400px" jsId="<?= $pID ?>"
-dojoType="dojox.grid.DataGrid" clientSort="true"
+dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>
 		<tr>

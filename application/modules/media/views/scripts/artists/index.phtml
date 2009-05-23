@@ -1,21 +1,17 @@
 <?
 
-$this->placeholder('page_name')->set('Media: Artists');
+$this->placeholder('page_title')->set('Media: Artists');
 
-
-$cs = Zupal_Media_Artists::getInstance();
+$artist_domain = Zupal_Media_Artists::getInstance();
 
 $this->headScript()->captureStart();
-
-$cs->render_script('list');
-
+$artist_domain->render_script('list');
 $this->headScript()->captureEnd();
 
-$this->placeholder('page_title')->set("Content");
 
-$cs->render_store('artist_store', '/media/artists/data', 'node_id');
+$artist_domain->render_store('artist_store', '/media/artists/data', 'node_id');
 
-$cs->render_grid(
+$artist_domain->render_grid(
 	$this,'list', 'artist_store',
 	 array(
 			'node_id' => array('label' => 'Node', 'width' => 40),
@@ -26,5 +22,17 @@ $cs->render_grid(
 			'person_name_last' =>  array('label' => 'Last Name', 'width' => 100), 
 			'performs_as' => array('label' => 'Performs As', 'width' => 120),
 		)
-	); 
+	);
+
+
+$form = new Zupal_Media_Artists_Form();
+$form->setName('artist_detail');
+$form->setAction(ZUPAL_BASEURL . '/media/artists/editvalidate');
+Zend_Dojo::enableForm($form);
+
+echo $form;
 ?>
+
+
+
+
