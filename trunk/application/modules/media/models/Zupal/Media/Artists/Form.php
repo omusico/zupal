@@ -30,7 +30,9 @@ extends Zupal_Nodes_Form
 			'person_name_first',
 			'person_name_middle',
 			'person_name_last',
+			'person_gender',
 			'media_id',
+			'node_id',
 			'person_born',
 			'mb_id',
 			'type'

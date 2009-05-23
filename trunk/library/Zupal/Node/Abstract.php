@@ -144,7 +144,12 @@ implements Zupal_Node_INode,
 
 	public function find_node($pNode_id)
 	{
-		return $this->find(array(array('zupal_nodes.node_id = ?', $pNode_id)));
+		$nf = $this->node_field();
+		return $this->findOne(
+			array($nf => $pNode_id),
+			NULL,
+			TRUE
+		);
 	}
 
 	public function find(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
@@ -193,31 +198,36 @@ implements Zupal_Node_INode,
 	 * @param string $sort
 	 * @return Zupal_Content_IDomain
 	 */
-	public function findOne(array $searchCrit = NULL, $sort = NULL)
+	public function findOne(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
 		$node_field = $this->node_field();
 
-		$select = $this->_select($searchCrit, $sort);
+		$select = $this->_select($searchCrit, $sort, $pDomain);
 
-		if ($this->_is_versioned):
-
-			$node_stub = Zupal_Nodes::getInstance();
-
-			$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
-			$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
-			//@TODO: cache this expression?
-			$select->join($node_stub->table()->tableName(), $cond, array());
-			$row = $table->getAdapter()->fetchOne($select);
-			$id = $row[$id_field];
-			// transfer data into domain objects.
-			return $this->get($id);
-		else:
-			$row = $this->table()->fetchRow($select);
+		if ($pDomain):
+			$row = $table->fetchRow($select);
 			return $this->get($row);
+		else:
+			if ($this->_is_versioned):
+
+				$node_stub = Zupal_Nodes::getInstance();
+
+				$cond = sprintf('( `%s`.%s = `%s`.node_id )', $table->tableName(), $this->node_field(), $node_stub->table()->tableName());
+				$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
+				//@TODO: cache this expression?
+				$select->join($node_stub->table()->tableName(), $cond, array());
+				$row = $table->getAdapter()->fetchOne($select);
+				$id = $row[$id_field];
+				// transfer data into domain objects.
+				return $this->get($id);
+			else:
+				$row = $this->table()->fetchRow($select);
+				return $this->get($row);
+			endif;
 		endif;
-		
+
 	}
 
 	public function findAll($pSort = NULL){

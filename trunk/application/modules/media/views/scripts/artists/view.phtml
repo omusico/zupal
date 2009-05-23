@@ -2,8 +2,6 @@
 
 $this->placeholder('page_name')->set($this->artist->name());
 ?>
-<table>
-	<tr><td valign="top">
 <dl>
 
 	<dt>True Name</dt>
@@ -12,33 +10,66 @@ $this->placeholder('page_name')->set($this->artist->name());
 	<dt>performs as</dt>
 	<dd><?= $this->artist->name() ?>&nbsp;</dd>
 
+	<dt>Type</dt>
+	<dd><?= $this->artist->type ?></dd>
+
+	<dt>Gender</dt>
+	<dd><?= $this->artist->person_gender ?>&nbsp;</dd>
 </dl>
-<fieldset  class="ilist">
+
+<fieldset>
+	<legend>Relationships</legend>
+
+	<table width="100%">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Target</th>
+			<th>Type</th>
+		</tr>
+		</thead>
+		<tbody>
+		<? foreach($this->data->get_relations() as $row): ?>
+			<tr>
+				<td>
+					<?= $row->get_name() ?>
+				</td>
+				<td>
+					<?= $row->get_target() ?>
+				</td>
+				<td>
+					<?= $row->get_type() ?>
+				</td>
+			</tr>
+		<? endforeach; ?>
+		</tbody>
+
+	</table>
+
+
+</fieldset>
+
+
+<fieldset class="ilist">
 	<legend><?= $this->artist->name() ?></legend>
 <ul>
 	<li>
 		<?= new Zupal_Control_IconLink('edit.gif', 'Edit', array('module' => 'media',
-		'controller' => 'artist',
+		'controller' => 'artists',
 		'action' => 'edit',
-		'id' => $this->artist->identity(),
+		'node_id' => $this->artist->nodeId(),
 		'placement' => Zupal_Control_Icon::PLACEMENT_HORIZONTAL
 	)) ?>
 	</li>
 
 	<li>
 		<?=  new Zupal_Control_IconLink('x.gif', 'Delete', array('module' => 'media',
-		'controller' => 'artist',
+		'controller' => 'artists',
 		'action' => 'delete',
 		'id' => $this->artist->identity(),
 		'placement' => Zupal_Control_Icon::PLACEMENT_HORIZONTAL
 	)) ?>
 	</li>
 </ul>
-</td>
-<td valign="top">
-	<pre>
-<? print_r($this->relat) ?>
-	</pre>
-</td></tr>
-</table>
 </fieldset>
+<pre><? print_r($this->data) ?></pre>

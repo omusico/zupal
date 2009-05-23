@@ -36,7 +36,7 @@ implements Zupal_Grid_IGrid
 		endif;
 		return self::$_field_map;
 	}
-	
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ virtual fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  * by overriding the magic get/set, we treate the person fields as if they belonged
@@ -168,7 +168,7 @@ implements Zupal_Grid_IGrid
 
 /**
  *
- * @return Zupal_People
+ * @return Zupal_Media_Artists
  */
 	public static function getInstance()
 	{
@@ -343,7 +343,7 @@ implements Zupal_Grid_IGrid
 		$columns['artist_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_delete');
 
 
-		return Zupal_Grid_Maker::grid($pID, $pStore_ID, $columns, 'node_id');
+		return Zupal_Grid_Maker::grid($pID, $pStore_ID, $columns, 'node_id', array('onRowClick' => 'artist_row_click'));
 	}
 	
 	/**
@@ -367,6 +367,14 @@ implements Zupal_Grid_IGrid
 		return Zupal_Grid_Maker::store($pStore_ID, $pURL);
 	}
 
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function __toString ()
+	{
+		return $this->name();
+	}
 
 }

@@ -13,7 +13,7 @@ $list = $list['artist-list'];
 	<?= join('</th><th>', array_keys($list[0])) ?>
 </th></tr>
 
-<? foreach($list as $k => $l): ?>
+<? foreach($list as $k => $l): unset($l['relations']); ?>
 <tr>
 	<td>
 		<input type="radio" name="musicbrainz_id" <? if(!$k) echo ' checked="checked" ' ?> value="<?= $l['id'] ?>">

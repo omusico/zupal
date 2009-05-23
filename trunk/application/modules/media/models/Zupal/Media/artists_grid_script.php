@@ -7,6 +7,31 @@ function artist_identity(id, item)
 
 }
 
+function artist_row_click(e)
+{
+	// alert(e.rowIndex);
+
+	g = dijit.byId('<?= $pID ?>');
+
+	item = g.getItem(e.rowIndex);
+
+	// alert(item.performs_as);
+
+	f = dojo.byId('artist_detail');
+
+	f.performs_as.value = item.performs_as;
+	f.node_id.value = item.node_id;
+	f.person_name_first.value = item.person_name_first;
+	f.person_name_last.value = item.person_name_last;
+	f.person_born.value = item.person_born;
+
+	i = dojo.byId('person_gender-' + item.person_gender);
+	if (i) i.checked = true;
+
+	t = dojo.byId('type-' + item.type);
+	if (t) t.checked = true;
+}
+
 function artist_view(id, item)
 {
 	if (!item) return this.defaultValue;

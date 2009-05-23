@@ -13,8 +13,26 @@ class Zupal_Media_MusicBrains
 	{
 		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/artist/" . $pID);
 		$client->type('xml');
-		return array_pop(self::digest_artist_list($client->get()));
+		return $this->digest_artist_or_group($client->get());
 	}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_artist @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pID
+	* @return <type>
+	*/
+	public function get_release ($pID)
+	{
+		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/release/" . $pID);
+		$client->ind('artist artist-rels');
+		$client->type('xml');
+		return $this->digest_release($client->get());
+	}
+
+
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_artist_relat @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
@@ -78,7 +96,7 @@ class Zupal_Media_MusicBrains
 			switch($k):
 				case 'relation':
 					foreach($element as $r => $relat):
-						$out[$r][] = self::digest_relat_item($relat, $r);
+						$out[$k][] = self::digest_relat_item($relat, $r);
 					endforeach;
 				break;
 			endswitch;
@@ -91,24 +109,30 @@ class Zupal_Media_MusicBrains
 	
 	public static function digest_relat_item($element, $k)
 	{
+		$type = '';
+		$target = '';
+		$name = '';
 		
+		$attrs = $element->attributes();
 		switch($k):
 			case 'artist':
-				$attrs = $element->attributes();
 				$type = (string) $attrs['type'];
 				$target = (string) $attrs['id'];
 				$name = (string) $element->name;
-				return array(
-					'type' => $type,
-					'target' => $target,
-					'name' => $name
-				);
 			break;
 			
-			default: 
-				return $k . ': ' . print_r($element, 1);
+			case 'release':
+				$type = (string) $attrs['type'];
+				$target = (string) $attrs['id'];
+				$name = (string) $element->title;
+			break;
 		endswitch;
 		
+		return array(
+			'type' => $type,
+			'target' => $target,
+			'name' => $name
+		);
 	}
 
 	public static function digest_artist_list($root_node)
@@ -158,15 +182,34 @@ class Zupal_Media_MusicBrains
 				default:
 					// don't care
 			endswitch;
+			
 		endforeach;
 
-		return array(
-			'id' => $id,
-			'name' => $name,
-			'born' => $begin,
-			'died' => $end,
-			'type' => $type,
-			'relations' => $relations
-		);
+		if ($id):
+
+			$artist = Zupal_Media_MBnodes_Artist::factory($id);
+			$artist->set_name($name);
+			$artist->set_type($type);
+			$artist->set_born($begin);
+			$artist->set_died($end);
+
+			foreach($relations as $relation_set):
+				foreach($relation_set as $relation_list):
+					foreach($relation_list as $relation):
+						if (!$relation):
+							continue;
+						endif;
+						$to_id = $relation['target'];
+						$rel_obj = Zupal_Media_MBnodes_Relation::factory($id, $to_id);
+						$rel_obj->set_name($relation['name']);
+						$rel_obj->set_type($relation['type']);
+						$artist->set_relation($rel_obj);
+					endforeach;
+				endforeach;
+			endforeach;
+		endif;
+
+		return $artist;
 	}
+
 }
