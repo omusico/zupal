@@ -221,7 +221,7 @@ implements Zupal_Node_INode,
 				$row = $table->getAdapter()->fetchOne($select);
 				$id = $row[$id_field];
 				// transfer data into domain objects.
-				return $this->get($id);
+				return is_null($id) ? NULL : $this->get($id);
 			else:
 				$row = $this->table()->fetchRow($select);
 				return $this->get($row);

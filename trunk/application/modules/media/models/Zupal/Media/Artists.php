@@ -17,9 +17,9 @@ implements Zupal_Grid_IGrid
 			'class' => 'Zupal_Media_Media'
 		),
 		'artist_mb' => array(
-			'local_key' => 'artist_mb',
+			'local_key' => 'mb_id',
 			'value' => NULL,
-			'class' => 'Zupal_Media_MusicBrains_Artist'
+			'class' => 'Zupal_Media_MusicBrains_Artists'
 		)
 	);
 
@@ -144,9 +144,10 @@ implements Zupal_Grid_IGrid
 	*/
 	public function artist_mb ($pCreate_if_empty = TRUE)
 	{
-		if ($ths->artist_mb):
-		return $this->get_join('artist_mb', $pCreate_if_empty);
+		if ($this->mb_id):
+			return $this->get_join('artist_mb', $pCreate_if_empty);
 		endif;
+		return NULL;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_person @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -207,7 +208,7 @@ implements Zupal_Grid_IGrid
 				$artist->copy_mb($pMB_ID);
 			endif;
 		endif;
-		return $out;
+		return $artist;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ copy_mb @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -227,10 +228,62 @@ implements Zupal_Grid_IGrid
 		if ($mb_artist):
 			$this->performs_as = $mb_artist->name;
 			$this->type = strtolower($mb_artist->type);
-			$this->person_born = $mb_artist->begin;
-			$this->person_died = $mb_artist->died;
+			if ($this->type == 'person'):
+				$this->person_born = $mb_artist->begin;
+				$this->person_died = $mb_artist->end;
+				$this->guess_name($mb_artist->name);
+			endif;
 			$this->save();
 		endif;
+	}
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ guessPname @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	private static $TITLES_T = array(
+		'Mr', 'Mrs', 'Ms', 'Miss', 'Dr', 'Sir'
+	);
+	/**
+	*
+	* @return <type>
+	*/
+	public function guess_name ($pName = NULL)
+	{
+		if (is_null($pName)):
+			$pName = $this->performs_as;
+		endif;
+		
+		$name_parts = split(' ', $pName);
+		
+		$this->person_name_first = '';
+		$this->person_name_last = '';
+		$this->person_name_middle = '';
+		$this->person_title = '';
+		
+		$title = ucfirst(strtolower(rtrim($name_parts[0], '.')));
+		
+		if (in_array($title, self::$TITLES_T)):
+			$this->person_title = ucfirst(strtolower(array_shift($name_parts)));
+		endif;
+		
+		switch(count($name_parts)):
+			case 0:
+			break;
+		
+			case 1:
+				$this->person_name_first = $pName;
+			break;
+			
+			case 2:
+				list($this->person_name_first, $this->person_name_last) = $name_parts;
+			break;
+			
+			case 3:
+				list($this->person_name_first, $this->person_name_middle, $this->person_name_last) = $name_parts;
+			break;
+
+			default:
+				$this->person_name_first = array_shift($name_parts);
+				$this->person_name_last = array_pop($name_parts);
+				$this->person_name_middle = join(' ', $name_parts);
+		endswitch;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

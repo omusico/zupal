@@ -295,10 +295,12 @@ implements Zupal_Domain_IDomain
 			foreach($pParams as $field => $value):
 				if (is_array($value)):
 					list($value, $operator) = $value;
-				else:
+				elseif(is_numeric($value)):
 					$operator = '=';
+				else:
+					$operator = 'LIKE';
 				endif;
-				$select->where("$field $operator ?", $value);
+				$select->where("`$field` $operator ?", $value);
 			endforeach;
 		endif;
 		if ($pSort):
@@ -380,6 +382,11 @@ implements Zupal_Domain_IDomain
 
 				endif;
 			endforeach;
+			if ($this->_row instanceof stdClass):
+				print_r($this->_row);
+				throw new Exception('Cannot save ' . print_r($this->_row, 1));
+			endif;
+			
 			$this->_row->save();
 
 		else:

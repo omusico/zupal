@@ -25,5 +25,11 @@
 			<action>formmaker</action>
 			<label>Form Maker</label>
 		</mm>
+		<tabledef>
+			<module>admin</module>
+			<controller>modules</controller>
+			<action>tabledef</action>
+			<label>Make Table Class</label>
+		</tabledef>
 	</menu>
 </configdata>
