@@ -40,11 +40,17 @@ extends Zend_Form
 		endif;
 
 		foreach($pFields as $field):
+			if ($field == 'person_born'):
+				error_log('mark');
+			endif;
+			
 			$element = $this->getElement($field);
 			if ($element):
 				$element->setValue($object->$field);
 			else:
-				throw new Exception("Cannot find $field");
+				$object->$field;
+				throw new Exception(__METHOD__ . ": Cannot find $field");
+				
 			endif;
 		endforeach;
 	}

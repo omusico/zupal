@@ -9,7 +9,47 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		Zupal_Module_Manager::getInstance()->update_database();
 		$this->view->modules = Zupal_Module_Manager::getInstance()->get_all();
 	}
-	
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tabledefAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function tabledefAction ()
+	{
+		$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+		$this->view->tables = $adapter->fetchCol('show tables;');
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tableclassAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function tableclassAction ()
+	{
+        $this->_helper->layout->disableLayout();
+		$table_def = Zend_Db_Table_Abstract::getDefaultAdapter()->describeTable($this->_getParam('table'));
+		$td = $table_def;
+		
+		foreach($td as $c => $row) 
+		{
+			if ($td[$c]['IDENTITY']):
+				 $name = $td[$c]['COLUMN_NAME'];
+				  $td[$c]['COLUMN_NAME'] = "<b><u>$name</u></b>";
+				  $this->view->id_field = $name;
+			endif;
+			$this->view->table_name = $td[$c]['TABLE_NAME'];
+			
+			unset($td[$c]['SCHEMA_NAME']);
+			unset($td[$c]['TABLE_NAME']);
+			unset($td[$c]['COLUMN_POSITION']);
+			unset($td[$c]['PRIMARY_POSITION']);
+			unset($td[$c]['PRIMARY']);
+			unset($td[$c]['IDENTITY']);
+		}
+		$this->view->table_def_display = $td;
+		$this->view->table_def = $table_def;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ edit @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
 	public function editAction()

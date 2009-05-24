@@ -1,0 +1,174 @@
+<?
+$first = FALSE;
+?>
+<html>
+	<head>
+	</head>
+	<body>
+
+	<style>
+	* {
+		font-family:Frutiger, Helvetica, Arial, sans-serif;
+		padding: 0px;
+		margin: 0px;
+	}
+
+	
+	table
+	{
+		border: 2px solid black;
+	}
+
+	th
+	{
+		border-left: 1px solid black;
+		padding: 2px;
+		font-size: 80%;
+		color: #900;
+		
+	}
+
+	td
+	{
+		border-left: 1px solid black;
+		border-top: 1px solid black;
+		padding: 2px;
+		font-size: 80%;
+	}
+
+	input, option, select {
+		font-weight: bold;
+		padding: 2px;
+		font-size: 115%;
+	}
+	textarea
+	{
+		padding: 8px;
+		font-family: monospace;
+		font-size: 80%;
+	}
+
+	h1, h2, h3, h4
+	{
+		margin-top: 1em;
+		margin-bottom: 1em;
+	}
+	/* Scaffold View */
+dl {
+	line-height: 2em;
+	margin: 0em 0em;
+}
+dl.altrow {
+	background: #f4f4f4;
+}
+dt {
+	font-weight: bold;
+	padding-left: 4px;
+	vertical-align: top;
+}
+dd {
+	margin-left: 10em;
+	margin-top: -2em;
+	margin-right: 1em;
+	vertical-align: top;
+	margin-bottom: 0.5em;
+}
+
+	</style>
+<table>
+<? foreach($this->table_def_display as $column):
+if (!$first): ?>
+	<tr>
+		<th><?= ucfirst(strtolower(str_replace('_', ' ',
+					join('</th><th>', array_keys($column))))) ?></th>
+	</tr>
+<? $first = TRUE;
+endif; ?>
+	<tr>
+		<td>
+			<?= join('&nbsp;</td><td>', $column) ?>&nbsp;
+		</td>
+	</tr>
+<? endforeach; ?>
+</table>
+<h2>Table Definition</h2>
+<form>
+
+	<textarea rows="10" cols="80">
+<?
+
+	$class = new Zend_CodeGenerator_Php_Class(
+					array(
+						'name' => 'Zupal_Table_' .
+				ucwords(
+					preg_replace('~(_.)~e', "strtoupper('\\0')",
+					preg_replace(
+				'~^Zupal_~i', '',
+				$this->table_name)
+			)),
+						'extendedClass' => 'Zupal_Table_Abstract'
+					)
+				);
+//	$class->set
+	/*
+	 *
+	protected $_id_field = 'mb_id';
+	protected $_name = 'zupal_media_mb_artists';
+	 */
+	$id_prop = new Zend_CodeGenerator_Php_Property(
+		array(
+		'name' => '_id_field',
+		'defaultValue' => $this->id_field,
+		'visibility' => 'protected'
+		)
+	);
+
+	$name_prop = new Zend_CodeGenerator_Php_Property(
+		array(
+		'name' => '_name',
+		'defaultValue' => $this->table_name,
+		'visibility' => 'protected'
+		)
+	);
+
+	$class->setProperties(
+		array(
+			$id_prop,
+			$name_prop
+		)
+
+	);
+
+	$file = new Zend_CodeGenerator_Php_File(
+		array(
+			'classes' => array(
+				$class
+			)
+		)
+	);
+
+	echo $file;
+?>
+	</textarea>
+	<input type="hidden" name="table" value="<?= $this->table_name ?>" />
+<dl>
+	<dt>
+		Module
+	</dt>
+	<dd>
+		<select name="module">
+		<? foreach (Zupal_Module_Manager::getInstance()->getModuleNames() as $m): ?>
+			<option value="<?= $m ?>"><?= ucfirst($m) ?></option>
+
+		<? endforeach ?>
+
+		</select>
+	</dd>
+	<dt>&nbsp;</dt>
+	<dd>
+		<input type="submt" value="Create Table Class" />
+	</dd>
+</dl>
+</form>
+</body>
+</html>
