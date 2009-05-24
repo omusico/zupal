@@ -12,6 +12,7 @@ class Zupal_Media_MusicBrains
 	public function get_artist ($pID)
 	{
 		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/artist/" . $pID);
+		$client->inc('artist-rels');
 		$client->type('xml');
 		return self::digest_artist_or_group($client->get());
 	}
@@ -39,28 +40,35 @@ class Zupal_Media_MusicBrains
 	*/
 	public static function digest_release ($pNode)
 	{
-		$release_attrs = $release->attributes();
+		$release_node = $pNode->release;
+		
+		$release_attrs = $release_node->attributes();
 		$type = (string) $release_attrs['type'];
 		$artist = NULL;
 		$relations = NULL;
-		
-		if ($pNode->artist):
-			$artist = self::digest_artist_or_group($pNode->artist);
-		endif;
 		$id = (string) $release_attrs['id'];
 		
-		if ($pNode['relation-list']):
-			$relations = self::digest_relat_list($id, $pNode['relation-list']);
-		endif;
-		
 		$release = Zupal_Media_MBnodes_Release::factory($id);
+		$release->set_type($type);
 		
-		if ($artist):
-			$release->set_artist($artist->get_id());
-		endif;
-		
-		foreach($relations as $relation):
-			$release->add_relation($relation);
+		foreach($release_node->children() as $rel_name => $relation_item):
+			switch($rel_name):
+				case 'artist':
+					$artist = self::digest_artist_or_group($relation_item);
+					$release->set_artist($artist->get_id());
+				break;
+				
+				case 'relation-list':
+					$relations = self::digest_relat_list($id, $relation_item);
+					foreach($relations as $relation):
+						$release->add_relation($relation);
+					endforeach;
+				break;
+				
+				case 'title':
+					$release->set_title((string) $relation_item);
+				break;
+			endswitch;
 		endforeach;
 		
 		return $release;
@@ -117,7 +125,7 @@ class Zupal_Media_MusicBrains
 	* @param <type> $pParam
 	* @return <type>
 	*/
-	public static function digest_relat_list ($id, $pParam, $ele_name)
+	public static function digest_relat_list ($id, $pParam)
 	{
 		$out = array();
 		$attrs = $pParam->attributes();
@@ -252,4 +260,111 @@ class Zupal_Media_MusicBrains
 		return $artist;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_string @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pString
+	* @return <type>
+	*/
+	public static function id_string ($pString)
+	{
+		$out = '';
+		$set = preg_replace('~[\W]+~', '', $pString);
+		$data = array_chunk(str_split($set), 3);
+
+		foreach($data as $triplet):
+			$char = $triplet[0];
+
+			while(count($triplet) < 3) $triplet[] = 0;
+			$color = strtolower(join('', $triplet));
+
+			foreach($triplet as $i => $h):
+				$triplet[$i] = self::$_hue[strtolower($h)];
+			endforeach;
+
+			$out .= sprintf('<span class="c%s">%s</span>', $color, $char, $color);
+
+			list($r, $g, $b) = $triplet;
+			if (!array_key_exists($color, self::$_colors)):
+				self::$_colors[$color] = self::rgb2html($r, $g, $b);
+			endif;
+		endforeach;
+
+		return $out;
+	}
+	
+	private static $_hue = array(
+		0 => 255,
+		1 => 25,
+		2 => 50,
+		3 => 75, 
+		4 => 100, 
+		5 => 125,
+		6 => 150,
+		7 => 175,
+		8 => 200,
+		9 => 225,
+'a' => 0,
+'b' => 51,
+'c' => 102,
+'d' => 153,
+'e' => 204,
+'f' => 255,
+'g' => 0,
+'h' => 51,
+'i' => 102,
+'j' => 153,
+'k' => 204,
+'l' => 255,
+'m' => 0,
+'n' => 51,
+'o' => 102,
+'p' => 153,
+'q' => 204,
+'r' => 255,
+'s' => 0,
+'t' => 51,
+'u' => 102,
+'v' => 153,
+'w' => 204,
+'x' => 255,
+'y' => 0,
+'z' => 51,
+	);
+	
+	private static $_colors = array();
+	
+	private static function rgb2html($r, $g=-1, $b=-1)
+	{
+		if (is_array($r) && sizeof($r) == 3)
+			list($r, $g, $b) = $r;
+
+		$r = intval($r); $g = intval($g);
+		$b = intval($b);
+
+		$r = dechex($r<0?0:($r>255?255:$r));
+		$g = dechex($g<0?0:($g>255?255:$g));
+		$b = dechex($b<0?0:($b>255?255:$b));
+
+		$color = (strlen($r) < 2?'0':'').$r;
+		$color .= (strlen($g) < 2?'0':'').$g;
+		$color .= (strlen($b) < 2?'0':'').$b;
+		return '#'.$color;
+	}
+
+	public static function color_css()
+	{
+		$odd = TRUE;
+		ob_start();
+		?>
+	<? foreach (self::$_colors as $key => $value): $odd = !$odd; ?>
+<? if ($odd): ?>
+	.c<?= $key ?> {color: <?= $value ?>; font-weight: bold;}
+<? else: ?>
+	.c<?= $key ?> {color: <?= $value ?>;}
+<? endif; ?>
+	<? endforeach; ?>
+		<?
+		return ob_get_clean();
+	}
 }

@@ -4,7 +4,7 @@ class Zupal_Media_MBnodes_Release
 {
 	public function __construct($pID) {
 		$this->set_id($pID);
-		self::$_artists[$pID] = $this;
+		self::$_releases[$pID] = $this;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ id @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -98,7 +98,7 @@ class Zupal_Media_MBnodes_Release
 	/**
 	 *
 	 * @param scalar $pID
-	 * @return Zupal_Media_MBnodes_Artist
+	 * @return Zupal_Media_MBnodes_Release
 	 */
 	public static function factory($pID)
 	{
@@ -109,4 +109,15 @@ class Zupal_Media_MBnodes_Release
 		return self::$_releases[$pID];
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	public function __toString()
+	{
+		$out = $this->get_type() . ' &quot;' . $this->get_title() . '&quot;<br />';
+		foreach($this->get_relations() as $relation): 
+			$out .= $relation . '<br />';
+		endforeach;
+		
+		return $out;
+	}
 }
