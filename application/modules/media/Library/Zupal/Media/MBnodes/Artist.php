@@ -95,5 +95,15 @@ class Zupal_Media_MBnodes_Artist
 		return self::$_artists[$pID];
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function __toString ()
+	{
+		return $this->get_name();
+	}
+
 }
 

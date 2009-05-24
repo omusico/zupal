@@ -3,7 +3,8 @@
 $this->placeholder('page_name')->set($this->artist->name());
 ?>
 <dl>
-
+	<dt>MBID</dt>
+	<dd><?= Zupal_Media_MusicBrains::id_string($this->artist->mb_id) ?></dd>
 	<dt>True Name</dt>
 	<dd><?= $this->artist->person()->name() ?>&nbsp;</dd>
 
@@ -23,6 +24,7 @@ $this->placeholder('page_name')->set($this->artist->name());
 	<table width="100%">
 		<thead>
 		<tr>
+			<th>ID</th>
 			<th>Name</th>
 			<th colspan="2">Duration</th>
 			<th colspan="2">Type</th>
@@ -32,6 +34,9 @@ $this->placeholder('page_name')->set($this->artist->name());
 		<tbody>
 		<? foreach($this->data->get_relations() as $row): ?>
 			<tr>
+				<td>
+					<?= $row->id_string() ?>
+				</td>
 				<td>
 					<?= $row->get_name() ?>
 				</td>
@@ -81,3 +86,6 @@ $this->placeholder('page_name')->set($this->artist->name());
 </ul>
 </fieldset>
 <pre><? print_r($this->data) ?></pre>
+<?= $this->headStyle()->captureStart(); ?>
+<?= Zupal_Media_MusicBrains::color_css() ?>
+<?= $this->headStyle()->captureEnd(); ?>

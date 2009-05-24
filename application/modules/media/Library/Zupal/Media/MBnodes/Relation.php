@@ -17,13 +17,28 @@ class Zupal_Media_MBnodes_Relation
 	*/
 	public function meta ()
 	{
-		if (!strcasecmp($this->get_type(), 'release')):
-			return Zupal_Media_MusicBrains::get_release($this->get_target());
-		endif;
+		switch (strtolower($this->get_type())):
+			case 'release':
+				return Zupal_Media_MusicBrains::get_release($this->get_target());
+			break;
+			
+			case 'artist':
+				return Zupal_Media_MusicBrains::get_artist($this->get_target());
+			break;
+		endswitch;
 		return '';
 	}
 
-	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ id_string @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return string
+	*/
+	public function id_string ()
+	{
+		return Zupal_Media_MusicBrains::id_string($this->get_target());
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ end @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
 	private $_end = NULL;
@@ -73,6 +88,18 @@ class Zupal_Media_MBnodes_Relation
 		endif;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artist @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	public function artist()
+	{
+		if ($this->get_artist()):
+			return Zupal_Media_MBnodes_Artist::factory($this->get_artist());
+		else:		
+			return NULL;
+		endif;
+		
+	}
+	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ name @@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private $_name = null;
@@ -133,5 +160,26 @@ class Zupal_Media_MBnodes_Relation
 		endif;
 		
 		return self::$_relation[$pFrom][$pTarget];
+	}
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	public function __toString()
+	{
+		
+		$out = Zupal_Media_MusicBrains::id_string($this->get_target()) . ': ' . $this->get_type() . ' ' . $this->get_relationship() . ' ' . $this->get_name();
+		switch ($this->get_type()):
+			case 'artist':
+				$artist_name = '';
+				
+				$artist = $this->artist();
+				if ($artist):
+					$artist_name = ' with ' . $artist->get_name();			
+				endif;
+				
+				$out .= $artist_name;
+			break;
+		endswitch;
+		return $out;
 	}
 }
