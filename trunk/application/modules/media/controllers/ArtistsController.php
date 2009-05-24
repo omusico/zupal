@@ -42,20 +42,22 @@ extends Zupal_Controller_Abstract
 
 	public function mbartistAction ()
 	{
-		$id = $this->_getParam('musicbrainz_id');
-		$data = Zupal_Media_MusicBrains::get_artist($id);
+		$id = $this->_getParam('mb_id');
+		$mb_artist->name = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->_getParam('mb_id'));
 		
-		$this->view->form = new Zupal_Media_Artists_Form();
-		$this->view->form->performs_as->setValue($data['name']);
-		$this->view->form->mb_id->setValue($id);
-		$this->view->form->type->setValue(strtolower($data['type']));
-		$this->view->form->media_id->setValue(1);
-		$this->view->form->person_born->setValue($data['born']);
+		$form = new Zupal_Media_Artists_Form();
+		$form->performs_as->setValue($mb_artist->name);
+		$form->mb_id->setValue($mb_artist->identity());
+		$form->type->setValue(strtolower($mb_artist->type));
+		$form->media_id->setValue(1);
+		$form->person_born->setValue($mb_artist->begin);
 		
 		if (!strcasecmp('person', $data['type'])):
-			$this->view->form->parse_name($data['name']);
+			$form->parse_name($mb_artist->name);
 		endif;
-		$this->view->data = $data;
+
+		$this->view->form = $form;
+		$this->view->mb_artist = $mb_artist;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findvalidate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -64,7 +66,7 @@ extends Zupal_Controller_Abstract
 	 */
 	public function findvalidateAction ()
 	{		
-		$this->view->result = Zupal_Media_MusicBrains::find_artist($this->_getParam('find'));
+		$this->view->artists = Zupal_Media_MusicBrains_Artists::search($this->_getParam('find'));
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ newAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -90,6 +92,18 @@ extends Zupal_Controller_Abstract
 		endif;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function deleteAction ()
+	{
+		$artist = Zupal_Media_Artists::getInstance()->find_node($this->_getParam('node_id'));
+		$artist->delete();
+		$this->_forward('index', NULL, NULL, array('message' => $artist . ' deleted'));
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ viewAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -98,10 +112,8 @@ extends Zupal_Controller_Abstract
 	{
 		$artist = Zupal_Media_Artists::getInstance()->find_node($this->_getParam('node_id'));
 		$this->view->artist = $artist;
-		if ($this->view->artist->mb_id):
-			$this->view->data = array_pop(
-				Zupal_Media_MusicBrains::get_artist_relat($this->view->artist->mb_id)
-			);
+		if ($artist->mb_id):
+			$this->view->artist_mb = $artist->mb_artist();
 		else:
 			$this->view->data = NULL;
 		endif;
@@ -120,12 +132,11 @@ extends Zupal_Controller_Abstract
 		
 		if($form->isValid($this->_getAllParams())):
 			$form->save();
-			$this->_forward('view', NULL, NULL, array('message' => $form->get_domain() . ' saved.' ,
+			$this->_forward('view', NULL, NULL,
+				array('message' => $form->get_domain() . ' saved.' ,
 				'node_id' => $form->node_id->getValue()));
-		endif;
-		
+		endif;		
 	}
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**

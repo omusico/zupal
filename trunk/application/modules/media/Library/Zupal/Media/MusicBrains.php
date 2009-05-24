@@ -214,6 +214,7 @@ class Zupal_Media_MusicBrains
 
 	public static function digest_artist_or_group($node, $get_relations = TRUE)
 	{
+		if ($node->artist) $node = $node->artist;
 		$begin = '?';
 		$end = '?';
 		$name = '?';
@@ -221,8 +222,7 @@ class Zupal_Media_MusicBrains
 		$type = (string) $attrs['type'];
 		$id = (string) $attrs['id'];
 		$relations = array();
-		
-		foreach($node  as $ele_name => $element):
+		foreach($node->children()  as $ele_name => $element):
 
 			switch($ele_name):
 				case 'life-span':
@@ -279,7 +279,12 @@ class Zupal_Media_MusicBrains
 			$color = strtolower(join('', $triplet));
 
 			foreach($triplet as $i => $h):
-				$triplet[$i] = self::$_hue[strtolower($h)];
+				$h = strtolower($h);
+				if (!array_key_exists($h, self::$_hue)):
+					error_log(__METHOD__ . ': no key for (' . $h . ')');
+					continue 2;
+				endif;
+				 $triplet[$i] = self::$_hue[$h];
 			endforeach;
 
 			$out .= sprintf('<span class="c%s">%s</span>', $color, $char, $color);
