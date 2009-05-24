@@ -15,8 +15,15 @@ implements Zupal_Grid_IGrid
 			'local_key' => 'media_id',
 			'value' => NULL,
 			'class' => 'Zupal_Media_Media'
+		),
+		'artist_mb' => array(
+			'local_key' => 'artist_mb',
+			'value' => NULL,
+			'class' => 'Zupal_Media_MusicBrains_Artist'
 		)
 	);
+
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ field_map @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -115,6 +122,17 @@ implements Zupal_Grid_IGrid
 	public function person ($pCreate_if_empty = TRUE)
 	{
 		return $this->get_join('person', $pCreate_if_empty);
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artist_mb @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	* @return Zupal_Media_MusicBrains_Artists
+	*/
+	public function artist_mb ($pCreate_if_empty = TRUE)
+	{
+		if ($ths->artist_mb):
+		return $this->get_join('artist_mb', $pCreate_if_empty);
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_person @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -365,6 +383,38 @@ implements Zupal_Grid_IGrid
 	 */
 	public function render_store($pStore_ID, $pURL) {
 		return Zupal_Grid_Maker::store($pStore_ID, $pURL);
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function save ()
+	{
+		parent::save();
+		$this->clear_cache();
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ clear_cache @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function clear_cache ()
+	{
+		Zupal_Bootstrap::$registry->cache->remove('artist_data');
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function delete ()
+	{
+		parent::delete();
+		$this->clear_cache();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
