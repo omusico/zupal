@@ -26,7 +26,7 @@ extends Zupal_Domain_Abstract
 	{
 		$artist = new self($pID);
 		if (!$artist->isSaved()):
-			$artist->load_from_mb();
+			$artist->load_from_mb($pID);
 		endif;
 		return $artist;
 	}
@@ -57,22 +57,27 @@ extends Zupal_Domain_Abstract
 	* @param boolean $pInclude_relations)
 	* @return boolean
 	*/
-	public function load_from_mb ($pInclude_relations)
+	public function load_from_mb ($pID)
 	{
-		if (!$this->identity()) return FALSE;
-
 		$client = new  Zend_Rest_Client("http://musicbrainz.org/ws/1/artist/" . $pID);
 		$client->inc('artist-rels release-rels');
 		$client->type('xml');
-
-		if ($client->artist):
+		$result = $client->get();
+		if ($result->artist):
 		
-			$artist_node = $client->artist;
+			$artist_node = $result->artist;
 			$attrs = $artist_node->attributes();
 			$type = (string) $attrs['type'];
 			$id_field = $this->table()->idField();
-			$this->$id_field = (string) $attrs['id'];
 
+			$this->table()->getAdapter()->query('REPLACE INTO ' . $this->table()->tableName() . '(' . $id_field . ') values (?)', array($pID));
+			$select = $this->table()->select()
+			->where('mb_id LIKE ?', array($pID));
+			
+			$this->_row = $this->table()->fetchRow($select);
+			$this->type = strtolower($type);
+			$relations = array();
+			
 			foreach($artist_node->children() as $ele_name => $element):
 
 				switch($ele_name):
@@ -82,7 +87,7 @@ extends Zupal_Domain_Abstract
 							switch($life_prop):
 								case 'begin':
 								case 'end':
-									$this->$life_prop = $life_value;
+									$this->$life_prop = (string) $life_value;
 							endswitch;
 						endforeach;
 					break;
@@ -96,7 +101,7 @@ extends Zupal_Domain_Abstract
 
 					case 'relation-list':
 						$list = Zupal_Media_MusicBrains_Relations::digest_list(
-							$relations, $element, $this->identity(), 'artist'
+							$element, $pID, 'artist'
 						);
 						$relations = array_merge($relations, $list);
 					break;
@@ -123,14 +128,31 @@ extends Zupal_Domain_Abstract
 
 	private $_relations = array();
 
-	public function set_relation(Zupal_Media_MusicBrains_Relations $pRelat)
+	public function add_relation(Zupal_Media_MusicBrains_Relations $pRelat)
 	{
 		$this->_relations[$pRelat->identity()] = $pRelat;
 	}
 
-	public function get_relation($pID){ return $this->_relations[$pID]; }
+	public function get_relation($pID){
+		if(!$this->_relations) $this->load_relations();
+		return $this->_relations[$pID];
+	}
 
-	public function get_relations(){ return $this->_relations; }
+	public function get_relations(){
+		if(!$this->_relations) $this->load_relations();
+		return $this->_relations;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_relations @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function load_relations ()
+	{
+		$this->_relations = Zupal_Media_MusicBrains_Relations::getInstance()
+			->find_from($this->identity());
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ search @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**

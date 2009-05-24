@@ -43,17 +43,18 @@ extends Zupal_Controller_Abstract
 	public function mbartistAction ()
 	{
 		$id = $this->_getParam('mb_id');
-		$mb_artist->name = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->_getParam('mb_id'));
+		$mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($id);
 		
 		$form = new Zupal_Media_Artists_Form();
 		$form->performs_as->setValue($mb_artist->name);
-		$form->mb_id->setValue($mb_artist->identity());
+		$form->mb_id->setValue($mb_artist->mb_id);
 		$form->type->setValue(strtolower($mb_artist->type));
-		$form->media_id->setValue(1);
-		$form->person_born->setValue($mb_artist->begin);
 		
-		if (!strcasecmp('person', $data['type'])):
+		$form->media_id->setValue(1);
+		
+		if (!strcasecmp('person',$mb_artist->type)):
 			$form->parse_name($mb_artist->name);
+			$form->person_born->setValue($mb_artist->begin);
 		endif;
 
 		$this->view->form = $form;
@@ -110,7 +111,13 @@ extends Zupal_Controller_Abstract
 	*/
 	public function viewAction ()
 	{
-		$artist = Zupal_Media_Artists::getInstance()->find_node($this->_getParam('node_id'));
+		$mb_id = $this->_getParam('mb_id');
+
+		if ($mb_id):
+			$artist = Zupal_Media_Artists::getInstance()->find_mb($mb_id);
+		else:
+			$artist = Zupal_Media_Artists::getInstance()->find_node($this->_getParam('node_id'));
+		endif;
 		$this->view->artist = $artist;
 		if ($artist->mb_id):
 			$this->view->artist_mb = $artist->mb_artist();
