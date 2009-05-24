@@ -44,6 +44,20 @@ implements Zupal_Grid_IGrid
 		return self::$_field_map;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mb_artist @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_mb_artist = NULL;
+	function mb_artist($pReload = FALSE)
+	{
+		if (!$this->mb_id):
+			return NULL;
+		endif;
+		if ($pReload || is_null($this->_mb_artist)):
+		// process
+		$this->_mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->mb_id);
+		endif;
+		return $this->_mb_artist;
+	}
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ virtual fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  * by overriding the magic get/set, we treate the person fields as if they belonged
@@ -175,6 +189,48 @@ implements Zupal_Grid_IGrid
 	public function get ($pID)
 	{
 		return new self($pID);
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_mb @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pMB_ID
+	* @return Zupal_Media_Artists
+	*/
+	public function find_mb ($pMB_ID)
+	{
+		$artist = $this->findOne(array('mb_id' => $pMB_ID));
+		if (!$artist):
+			$mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($pMB_ID);
+			if ($mb_artist):
+				$artist = new self();
+				$artist->copy_mb($pMB_ID);
+			endif;
+		endif;
+		return $out;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ copy_mb @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pMB_ID
+	* @return boolean
+	*/
+	public function copy_mb ($pMB_ID = NULL)
+	{
+		if ($pMB_ID):
+			$this->mb_id = $pMB_ID;
+		endif;
+
+		$mb_artist = $this->artist_mb();
+
+		if ($mb_artist):
+			$this->performs_as = $mb_artist->name;
+			$this->type = strtolower($mb_artist->type);
+			$this->person_born = $mb_artist->begin;
+			$this->person_died = $mb_artist->died;
+			$this->save();
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -78,27 +78,26 @@ extends Zupal_Domain_Abstract
 
 		$attrs = $pNode->attributes();
 
-		$type = strtolower($attrs['type']);
-		$target = $attrs['target'];
+		$type = strtolower((string) $attrs['type']);
+		$target = (string) $attrs['target'];
 		
 		$props = array(
 			'from' => $pFrom,
 			'from_type' => $pFrom_type,
 			'target' => $target,
-			'target_type' => $target_type,
+			'target_type' => strtolower($pTarget_type),
 			'type' => $type
 		);
 		
-		$select = self::getInstance()->_select($props);
-		$relation = self::getInstance()->findOne($select);
+		$relation = self::getInstance()->findOne($props);
 		
 		if (!$relation):
 			$relation = new self();
 			foreach($props as $name => $value):
-				$relation->name = $value;
+				$relation->$name = $value;
 			endforeach;
 
-			switch ($pTarget_type):
+			switch ($props['target_type']):
 
 				case 'artist':
 					$relation->label = $pNode->artist->name;
@@ -120,5 +119,42 @@ extends Zupal_Domain_Abstract
 			//@TODO: take advantage of inner content
 		endif;
 		return $relation;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ target @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_target = NULL;
+	function target($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_target)):
+			switch (strtolower($this->target_type)):
+				case 'artist':
+					$value = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->target);
+				break;
+
+				case 'release':
+					$value = Zupal_Media_MusicBrains_Releases::getInstance()->get($this->target);
+				break;
+
+				default:
+					$value = NULL;
+			endswitch;
+
+		// process
+		$this->_target = $value;
+		endif;
+		return $this->_target;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param string $pMB_ID
+	* @return Zupal_Media_MusicBrains_Relations[]
+	*/
+	public function find_from ($pMB_ID)
+	{
+		$relations = $this->find(array('from' => $pMB_ID), 'label');
+		return $relations;
 	}
 }

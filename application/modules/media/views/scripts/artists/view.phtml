@@ -26,33 +26,42 @@ $this->placeholder('page_name')->set($this->artist->name());
 		<tr>
 			<th>ID</th>
 			<th>Name</th>
-			<th colspan="2">Duration</th>
-			<th colspan="2">Type</th>
-			<th>Meta</th>
+			<th>Type</th>
+			<th>Relationship</th>
 		</tr>
 		</thead>
 		<tbody>
-		<? foreach($this->data->get_relations() as $row): ?>
+		<? foreach($this->artist_mb->get_relations() as $row): ?>
 			<tr>
 				<td>
-					<?= $row->id_string() ?>
+					<?=  Zupal_Media_MusicBrains::id_string($row->target) ?>
 				</td>
 				<td>
-					<?= $row->get_name() ?>
+<?
+	$target = $row->target();
+	
+	if ($target && $target instanceof Zupal_Media_MusicBrains_Artists):
+		echo $this->link(
+			$row->label,
+			array('module' => 'media',
+				'controller' => 'artists',
+				'action' => 'view',
+				'mb_id' => $row->target
+			)
+		);
+	else:
+		echo $row->label;
+	endif;
+?>
 				</td>
-				<td> <?= $row->get_begin() ?></td>
-
-				<td> <?= $row->get_end() ?></td>
 				<td>
-					<?= $row->get_type() ?>
+					<?= $row->target_type ?>
 				</td>
 
 				<td>
-					<?= $row->get_relationship() ?>
+					<?= $row->type ?>
 				</td>
 
-
-				<td><pre><?= $row->meta() ?></pre></td>
 			</tr>
 		<? endforeach; ?>
 		</tbody>
