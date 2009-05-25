@@ -43,7 +43,7 @@ extends Zupal_Controller_Abstract
 	public function mbartistAction ()
 	{
 		$id = $this->_getParam('mb_id');
-		$mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($id);
+		$mb_artist = Zupal_Media_Musicbrains_Artists::getInstance()->get($id);
 		
 		$form = new Zupal_Media_Artists_Form();
 		$form->performs_as->setValue($mb_artist->name);
@@ -67,7 +67,7 @@ extends Zupal_Controller_Abstract
 	 */
 	public function findvalidateAction ()
 	{		
-		$this->view->artists = Zupal_Media_MusicBrains_Artists::search($this->_getParam('find'));
+		$this->view->artists = Zupal_Media_Musicbrains_Artists::search($this->_getParam('find'));
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ newAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

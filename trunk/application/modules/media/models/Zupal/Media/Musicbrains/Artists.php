@@ -100,7 +100,7 @@ extends Zupal_Domain_Abstract
 					break;
 
 					case 'relation-list':
-						$list = Zupal_Media_MusicBrains_Relations::digest_list(
+						$list = Zupal_Media_Musicbrains_Relations::digest_list(
 							$element, $pID, 'artist'
 						);
 						$relations = array_merge($relations, $list);
@@ -128,7 +128,7 @@ extends Zupal_Domain_Abstract
 
 	private $_relations = array();
 
-	public function add_relation(Zupal_Media_MusicBrains_Relations $pRelat)
+	public function add_relation(Zupal_Media_Musicbrains_Relations $pRelat)
 	{
 		$this->_relations[$pRelat->identity()] = $pRelat;
 	}
@@ -150,7 +150,7 @@ extends Zupal_Domain_Abstract
 	*/
 	public function load_relations ()
 	{
-		$this->_relations = Zupal_Media_MusicBrains_Relations::getInstance()
+		$this->_relations = Zupal_Media_Musicbrains_Relations::getInstance()
 			->find_from($this->identity());
 	}
 

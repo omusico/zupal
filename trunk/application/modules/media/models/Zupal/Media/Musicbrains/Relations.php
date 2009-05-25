@@ -37,7 +37,7 @@ extends Zupal_Domain_Abstract
 
 /**
  *
- * @return Zupal_Media_MusicBrains_Relations
+ * @return Zupal_Media_Musicbrains_Relations
  */
 	public static function getInstance()
 	{
@@ -52,7 +52,7 @@ extends Zupal_Domain_Abstract
 	/**
 	*
 	* @param SimpleXMLElement $pList
-	* @return Zupal_Media_MusicBrains_Relations[]
+	* @return Zupal_Media_Musicbrains_Relations[]
 	*/
 	public static function digest_list (SimpleXMLElement $pList, $pFrom, $pFrom_type)
 	{
@@ -71,7 +71,7 @@ extends Zupal_Domain_Abstract
 	/**
 	*
 	* @param SimpleXMLElement $pNode
-	* @return Zupal_Media_MusicBrains_Relations
+	* @return Zupal_Media_Musicbrains_Relations
 	*/
 	public static function digest_node (SimpleXMLElement $pNode, $pFrom, $pFrom_type, $pTarget_type = '')
 	{
@@ -129,11 +129,11 @@ extends Zupal_Domain_Abstract
 		if ($pReload || is_null($this->_target)):
 			switch (strtolower($this->target_type)):
 				case 'artist':
-					$value = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->target);
+					$value = Zupal_Media_Musicbrains_Artists::getInstance()->get($this->target);
 				break;
 
 				case 'release':
-					$value = Zupal_Media_MusicBrains_Releases::getInstance()->get($this->target);
+					$value = Zupal_Media_Musicbrains_Releases::getInstance()->get($this->target);
 				break;
 
 				default:
@@ -150,7 +150,7 @@ extends Zupal_Domain_Abstract
 	/**
 	*
 	* @param string $pMB_ID
-	* @return Zupal_Media_MusicBrains_Relations[]
+	* @return Zupal_Media_Musicbrains_Relations[]
 	*/
 	public function find_from ($pMB_ID)
 	{
