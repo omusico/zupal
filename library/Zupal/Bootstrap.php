@@ -28,8 +28,11 @@ class Zupal_Bootstrap
     public static function setupEnvironment()
     {
         date_default_timezone_set('America/Los_Angeles');	   
-        require_once('Zend/Loader.php');
-        Zend_Loader::registerAutoload();
+        /*require_once('Zend/Loader.php');
+        Zend_Loader::registerAutoload(); */
+		require_once 'Zend/Loader/Autoloader.php';
+        $autoloader = Zend_Loader_Autoloader::getInstance();
+        $autoloader->setFallbackAutoloader(true);
     }
 
     public static function prepareMVC()
