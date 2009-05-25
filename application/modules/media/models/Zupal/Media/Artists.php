@@ -19,7 +19,7 @@ implements Zupal_Grid_IGrid
 		'artist_mb' => array(
 			'local_key' => 'mb_id',
 			'value' => NULL,
-			'class' => 'Zupal_Media_MusicBrains_Artists'
+			'class' => 'Zupal_Media_Musicbrains_Artists'
 		)
 	);
 
@@ -54,7 +54,7 @@ implements Zupal_Grid_IGrid
 		endif;
 		if ($pReload || is_null($this->_mb_artist)):
 		// process
-		$this->_mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($this->mb_id);
+		$this->_mb_artist = Zupal_Media_Musicbrains_Artists::getInstance()->get($this->mb_id);
 		endif;
 		return $this->_mb_artist;
 	}
@@ -140,7 +140,7 @@ implements Zupal_Grid_IGrid
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artist_mb @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
-	* @return Zupal_Media_MusicBrains_Artists
+	* @return Zupal_Media_Musicbrains_Artists
 	*/
 	public function artist_mb ($pCreate_if_empty = TRUE)
 	{
@@ -202,7 +202,7 @@ implements Zupal_Grid_IGrid
 	{
 		$artist = $this->findOne(array('mb_id' => $pMB_ID));
 		if (!$artist):
-			$mb_artist = Zupal_Media_MusicBrains_Artists::getInstance()->get($pMB_ID);
+			$mb_artist = Zupal_Media_Musicbrains_Artists::getInstance()->get($pMB_ID);
 			if ($mb_artist):
 				$artist = new self();
 				$artist->copy_mb($pMB_ID);
