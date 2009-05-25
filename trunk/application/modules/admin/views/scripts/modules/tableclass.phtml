@@ -3,9 +3,6 @@ $first = FALSE;
 ?>
 <html>
 	<head>
-	</head>
-	<body>
-
 	<style>
 	* {
 		font-family:Frutiger, Helvetica, Arial, sans-serif;
@@ -36,7 +33,7 @@ $first = FALSE;
 		font-size: 80%;
 	}
 
-	input, option, select {
+	input, select {
 		font-weight: bold;
 		padding: 2px;
 		font-size: 115%;
@@ -74,7 +71,12 @@ dd {
 	margin-bottom: 0.5em;
 }
 
+body { padding: 1em; }
 	</style>
+	</head>
+	<body>
+
+
 <table>
 <? foreach($this->table_def_display as $column):
 if (!$first): ?>
@@ -92,21 +94,44 @@ endif; ?>
 <? endforeach; ?>
 </table>
 <h2>Table Definition</h2>
-<form>
+<form method="post" action="<?= ZUPAL_BASEURL ?>/admin/modules/tablewrite/" >
+<input type="hidden" name="table_class_name" value="<?= $this->table_class_name ?>" />
+	<textarea rows="20" cols="80" name="class_file">
+<? ob_start(); ?>
+	 Zend_Db_Table_Abstract::getDefaultAdapter()->query("<?= $this->create_sql ?>");
+<? $body = ob_get_clean();
 
-	<textarea rows="10" cols="80">
-<?
+	$create_method = new Zend_CodeGenerator_Php_Method(
+		array(
+			'name' => 'create_table',
+			'visibility' => 'public',
+			'static' => TRUE,
+			'body' => $body
+		)
+	);
+	$create_method->setStatic(TRUE);
+
+	ob_start();
+	?>
+	if(!$this->table_exists()) $this->create_table();
+	<?
+	$body = ob_get_clean();
+
+	$init_method = new Zend_CodeGenerator_Php_Method(
+		array(
+			'name' => '_init',
+			'visibility' => 'protected',
+			'body' => $body
+		)
+	);
 
 	$class = new Zend_CodeGenerator_Php_Class(
 					array(
-						'name' => 'Zupal_Table_' .
-				ucwords(
-					preg_replace('~(_.)~e', "strtoupper('\\0')",
-					preg_replace(
-				'~^Zupal_~i', '',
-				$this->table_name)
-			)),
-						'extendedClass' => 'Zupal_Table_Abstract'
+						'name' => $this->table_class_name,
+						'extendedClass' => 'Zupal_Table_Abstract',
+						'methods' => array(
+							$create_method, $init_method
+						)
 					)
 				);
 //	$class->set
@@ -130,7 +155,7 @@ endif; ?>
 		'visibility' => 'protected'
 		)
 	);
-
+	
 	$class->setProperties(
 		array(
 			$id_prop,
@@ -156,7 +181,7 @@ endif; ?>
 		Module
 	</dt>
 	<dd>
-		<select name="module">
+		<select name="table_module">
 		<? foreach (Zupal_Module_Manager::getInstance()->getModuleNames() as $m): ?>
 			<option value="<?= $m ?>"><?= ucfirst($m) ?></option>
 
@@ -166,7 +191,7 @@ endif; ?>
 	</dd>
 	<dt>&nbsp;</dt>
 	<dd>
-		<input type="submt" value="Create Table Class" />
+		<input type="submit" value="Create Table Class" />
 	</dd>
 </dl>
 </form>

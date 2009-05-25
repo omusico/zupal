@@ -27,7 +27,9 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	public function tableclassAction ()
 	{
         $this->_helper->layout->disableLayout();
-		$table_def = Zend_Db_Table_Abstract::getDefaultAdapter()->describeTable($this->_getParam('table'));
+		$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+		$table_def = $adapter->describeTable($this->_getParam('table'));
+
 		$td = $table_def;
 		
 		foreach($td as $c => $row) 
@@ -37,7 +39,7 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 				  $td[$c]['COLUMN_NAME'] = "<b><u>$name</u></b>";
 				  $this->view->id_field = $name;
 			endif;
-			$this->view->table_name = $td[$c]['TABLE_NAME'];
+			$this->view->table_name = $table_name = $td[$c]['TABLE_NAME'];
 			
 			unset($td[$c]['SCHEMA_NAME']);
 			unset($td[$c]['TABLE_NAME']);
@@ -46,8 +48,55 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 			unset($td[$c]['PRIMARY']);
 			unset($td[$c]['IDENTITY']);
 		}
+
+		$connection = $adapter->getConnection();
+
+		$result = $connection->query("SHOW CREATE TABLE `$table_name`");
+		$this->view->create_sql = array_pop($result->fetch_row());
+
 		$this->view->table_def_display = $td;
 		$this->view->table_def = $table_def;
+		$table_class = 'Zupal_Table_' .
+				ucwords(
+					preg_replace('~(_.)~e', "strtoupper('\\0')",
+					preg_replace(
+				'~^Zupal_~i', '',
+				$table_name)
+			));
+
+		$this->view->table_class_name = $table_class;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tablewriteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function tablewriteAction ()
+	{
+        $this->_helper->layout->disableLayout();
+		
+		$table_class_name = $this->_getParam('table_class_name');
+
+		$class_file = stripslashes($this->_getParam('class_file'));
+
+		$module = $this->_getParam('table_module');
+
+		$file_path = ZUPAL_MODULE_PATH . DS . $module . DS . 'models' . DS . str_replace('_', DS, $table_class_name) . '.php';
+
+		$this->view->body = $class_file;
+		$this->view->file_path = $file_path;
+
+		if (file_exists($file_path)):
+			$this->view->status = 'Table Class Updated';									
+		else:
+			$this->view->status = 'Table Class Created';
+		endif;
+
+		if (!is_dir(dirname($file_path))):
+			mkdir(dirname($file_path), 0775, TRUE);
+		endif;
+		
+		file_put_contents($file_path, $class_file);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ edit @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
