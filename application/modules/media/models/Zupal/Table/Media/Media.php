@@ -1,16 +1,29 @@
 <?php
 
-class Zupal_Table_Media_Media
-extends Zupal_Table_Abstract
+class Zupal_Table_Media_Media extends Zupal_Table_Abstract
 {
-	protected $_id_field = 'media_id';
-	protected $_name = 'media_media';
-	
-	const INSTALL_MEDIA = '';
 
-	public static function install()
-	{
-		Zupal_Database_Manager::get_adapter()->query(self::INSTALL_MEDIA);
-	}
+    protected $_id_field = 'media_id';
+
+    protected $_name = 'zupal_media_media';
+
+    public function create_table()
+    {
+        Zend_Db_Table_Abstract::getDefaultAdapter()->query("CREATE TABLE `zupal_media_media` (
+          `media_id` int(10) unsigned NOT NULL auto_increment,
+          `name` varchar(100) NOT NULL,
+          `parent` int(10) unsigned NOT NULL default '0',
+          PRIMARY KEY  (`media_id`),
+          KEY `parent` (`parent`)
+        ) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1");
+    }
+
+    protected function _init()
+    {
+        if(!$this->table_exists()) $this->create_table();
+    }
+
 
 }
+
+	
