@@ -23,12 +23,6 @@ class Zupal_Table_Employees extends Zupal_Table_Abstract
         ) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1");
     }
 
-    protected function _init()
-    {
-        if(!$this->table_exists()) $this->create_table();
-    }
-
-
 }
 
 	

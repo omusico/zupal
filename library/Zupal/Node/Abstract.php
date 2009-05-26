@@ -12,9 +12,9 @@ implements Zupal_Node_INode,
 	public function save()
 	{		
 		$node = $this->node();
-
-		if (!$this->{$this->node_field()}):
-			$this->{$this->node_field()} = $node->identity();
+		$node_field = $this->node_field();
+		if (!$this->$node_field):
+			$this->$node_field = $node->identity();
 		endif;
 	
 		parent::save();
@@ -218,7 +218,7 @@ implements Zupal_Node_INode,
 				$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
 				//@TODO: cache this expression?
 				$select->join($node_stub->table()->tableName(), $cond, array());
-				$row = $table->getAdapter()->fetchOne($select);
+				$row = $table->getAdapter()->fetchRow($select);
 				$id = $row[$id_field];
 				// transfer data into domain objects.
 				return is_null($id) ? NULL : $this->get($id);

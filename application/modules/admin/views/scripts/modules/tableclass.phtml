@@ -119,7 +119,7 @@ endif; ?>
 
 	$init_method = new Zend_CodeGenerator_Php_Method(
 		array(
-			'name' => '_init',
+			'name' => 'init',
 			'visibility' => 'protected',
 			'body' => $body
 		)
@@ -130,7 +130,7 @@ endif; ?>
 						'name' => $this->table_class_name,
 						'extendedClass' => 'Zupal_Table_Abstract',
 						'methods' => array(
-							$create_method, $init_method
+							$create_method// , $init_method
 						)
 					)
 				);

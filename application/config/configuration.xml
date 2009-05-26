@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <configuration>
-    <production>
-        <webhost>www.zupal.com</webhost>
-        <database>
-            <params>
-                <host>localhost</host>
-                <username>zupal</username>
-                <password>zupal</password>
-                <dbname>zupal</dbname>
-            </params>
-        </database>
-        <cache>
-            <lifetime>7200</lifetime>
+	<production>
+		<webhost>www.zupal.com</webhost>
+		<database>
+			<params>
+				<host>localhost</host>
+				<username>zupal</username>
+				<password>zupal</password>
+				<dbname>zupal</dbname>
+			</params>
+		</database>
+		<cache>
+			<lifetime>7200</lifetime>
 			<path>cache</path>
-        </cache>
+		</cache>
 		<layout>default</layout>
 
 		<logging>
@@ -21,34 +21,45 @@
 			<log_to_db>0</log_to_db>
 		</logging>
 		<seed>This is salt for password encryption -- change this locally to a random phrase</seed>
-    </production>
+	</production>
 
-    <development extends="production">
-        <webhost>www.zupal.local</webhost>
-        <database>
-            <params>
-                <host>localhost</host>
-                <username>root</username>
-                <password></password>
-                <dbname>zupal</dbname>
-            </params>
-        </database>
-    </development>
+	<development extends="production">
+		<webhost>www.zupal.local</webhost>
+		<database>
+			<params>
+				<host>localhost</host>
+				<username>root</username>
+				<password></password>
+				<dbname>zupal</dbname>
+			</params>
+		</database>
+	</development>
 
-    <edelhart extends="development">
-        <webhost>www.zupal.local:8888</webhost>
-        <database>
-            <params>
-                <host>localhost</host>
-                <username>root</username>
-                <password>222Finance</password>
-                <dbname>zupal</dbname>
-            </params>
-        </database>
-
+	<edelhart extends="development">
+		<webhost>www.zupal.local:8888</webhost>
+		<database>
+			<params>
+				<host>localhost</host>
+				<username>root</username>
+				<password>222Finance</password>
+				<dbname>zupal</dbname>
+			</params>
+		</database>
 		<logging>
 			<write>1</write>
 			<log_to_db>1</log_to_db>
 		</logging>
-    </edelhart>
+	</edelhart>
+	<wll extends="edelhart">
+		<webhost>www.wonderlandlabs.com</webhost>
+		<database>
+			<params>
+				<username>bingoman_zupal</username>
+				<password>wllpass</password>
+				<dbname>bingoman_zupal</dbname>
+			</params>
+		</database>
+		<baseurl>/zupal/public</baseurl>
+	</wll>
+
 </configuration>

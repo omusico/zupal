@@ -22,12 +22,6 @@ class Zupal_Table_Modules extends Zupal_Table_Abstract
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
     }
 
-    protected function _init()
-    {
-        if(!$this->table_exists()) $this->create_table();
-    }
-
-
 }
 
 	
