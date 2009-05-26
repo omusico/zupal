@@ -9,12 +9,12 @@
     <?php echo $this->headScript()?>
     <?php echo $this->headStyle() ?>
 <?
-
-if ($this->dojo()->isEnabled()){
-    $this->dojo() //->setLocalPath($this->placeholder('base_path') . '/scripts/Dojo/dojo/dojo.js') note - changed to Google
+if ($this->dojo()->isEnabled())
+{
+   $this->dojo()->setLocalPath(ZUPAL_BASEURL . '/scripts/Dojo/dojo/dojo.js')
                  ->addStyleSheetModule('dijit.themes.tundra');
     echo $this->dojo();
-   }
+}
 ?>
 </head>
 <body>

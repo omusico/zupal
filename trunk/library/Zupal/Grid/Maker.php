@@ -34,10 +34,12 @@ class Zupal_Grid_Maker {
 	{
 
 		$pView->dojo()
-             ->requireModule('dojox.grid.DataGrid')
-             ->requireModule('dojo.data.ItemFileReadStore')
-			 ->addStyleSheet('http://ajax.googleapis.com/ajax/libs/dojo/1.2.0/dojox/grid/resources/Grid.css')
-			 ->enable();
+			->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/scaffold.js.uncompressed.js')
+			->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/nls/scaffold_en-us.js')
+           //  ->requireModule('dojox.grid.DataGrid')
+           //  ->requireModule('dojo.data.ItemFileReadStore')
+			->addStyleSheet(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojox/grid/resources/Grid.css')
+			->enable();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

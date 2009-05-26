@@ -18,8 +18,10 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 		$layout->setLayout('default');
 
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
+		// note -- deprecated, using ZUPAL_BASEURL constant.
 		$this->view->dojo()
-			->requireModule('dijit.form.Form')
+			->setLocalPath(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/dojo.js')
+			//->requireModule('dijit.form.Form')
              ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
 	}
 

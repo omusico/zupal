@@ -3,7 +3,7 @@
 class Zupal_Table_Media_Musicbrains_Artists extends Zupal_Table_Abstract
 {
 
-    protected $_id_field = null;
+    protected $_id_field = 'mb_id';
 
     protected $_name = 'zupal_media_musicbrains_artists';
 
@@ -19,12 +19,6 @@ class Zupal_Table_Media_Musicbrains_Artists extends Zupal_Table_Abstract
           PRIMARY KEY  (`mb_id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
     }
-
-    protected function _init()
-    {
-        if(!$this->table_exists()) $this->create_table();
-    }
-
 
 }
 
