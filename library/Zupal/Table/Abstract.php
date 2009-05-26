@@ -37,8 +37,14 @@ abstract class Zupal_Table_Abstract extends Zend_Db_Table_Abstract
 	
 	public function __construct($config = NULL)
 	{
+		if(!$this->table_exists()) $this->create_table();
 		parent::__construct($config);
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ create_table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*/
+	protected abstract function create_table ();
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ id_field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
