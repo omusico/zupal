@@ -44,7 +44,7 @@ abstract class Zupal_Table_Abstract extends Zend_Db_Table_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ create_table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*/
-	protected abstract function create_table ();
+	public abstract function create_table ();
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ id_field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
