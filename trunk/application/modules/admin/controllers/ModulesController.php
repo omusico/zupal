@@ -18,6 +18,7 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	{
 		$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
 		$this->view->tables = $adapter->fetchCol('show tables;');
+		
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tableclassAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -26,10 +27,15 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	*/
 	public function tableclassAction ()
 	{
-        $this->_helper->layout->disableLayout();
-		$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-		$table_def = $adapter->describeTable($this->_getParam('table'));
+		$database = $this->_getParam('database', '');
 
+        $this->_helper->layout->disableLayout();
+		if ($database):
+			$adapter = Zupal_Module_Manager::getInstance()->database($database);
+		else:
+			$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
+		endif;
+		$table_def = $adapter->describeTable($this->_getParam('table'));
 		$td = $table_def;
 		
 		foreach($td as $c => $row) 
@@ -65,6 +71,7 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 			));
 
 		$this->view->table_class_name = $table_class;
+		$this->view->db_name = $database;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tablewriteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -74,11 +81,9 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 	public function tablewriteAction ()
 	{
         $this->_helper->layout->disableLayout();
-		
+
 		$table_class_name = $this->_getParam('table_class_name');
-
 		$class_file = stripslashes($this->_getParam('class_file'));
-
 		$module = $this->_getParam('table_module');
 
 		$file_path = ZUPAL_MODULE_PATH . DS . $module . DS . 'models' . DS . str_replace('_', DS, $table_class_name) . '.php';

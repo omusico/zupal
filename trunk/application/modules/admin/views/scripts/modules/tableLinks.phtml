@@ -1,0 +1,17 @@
+<?
+	$tables = $this->adapter->fetchCol('show tables');
+?>
+<dl>
+<? foreach($tables as $table): ?>
+	<dt>
+<?=  new Zupal_Control_Link($table, array(
+		'target' => 'table_def_' . $this->db_name,
+		'module' => 'admin',
+		'controller' => 'modules',
+		'action' => 'tableclass',
+		'style' => 'font-size: 80%; font-weight: normal',
+		'database' => $this->db_name,
+		'table' => $table)) ?>
+	</dt>
+<? endforeach; ?>
+</dl>

@@ -7,11 +7,19 @@
 			<action>index</action>
 			<label>Artists</label>
 		</artists>
+		
 		<find>
 			<module>media</module>
 			<controller>artists</controller>
 			<action>find</action>
 			<label>Find</label>
 		</find>
+
+		<mb>
+			<module>media</module>
+			<controller>musicbrainz</controller>
+			<action>index</action>
+			<label>MusicBrainz</label>
+		</mb>
 	</menu>
 </configdata>
