@@ -23,7 +23,7 @@ abstract class Zupal_Control_Abstract {
 	*/
 	public function as_link ()
 	{
-		$props = join(' ', array($this->get_title(TRUE), $this->get_class(TRUE), $this->get_target(TRUE) ));
+		$props = join(' ', array($this->get_title(TRUE), $this->get_class(TRUE), $this->get_style(TRUE), $this->get_target(TRUE) ));
 
 		return sprintf(self::LINK, $this->url(), $props, $this->get_label() );
 	}
@@ -72,6 +72,21 @@ abstract class Zupal_Control_Abstract {
 
 	public function set_class($pValue) { $this->_class = $pValue; }
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ style @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_style = '';
+	/**
+	 * @return class;
+	 */
+
+	public function get_style($pTag = FALSE) {
+		if ($pTag) return $this->tag('style', $this->_style);
+		return $this->_style; }
+
+	public function set_style($pValue) { $this->_style = $pValue; }
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -107,6 +122,10 @@ abstract class Zupal_Control_Abstract {
 
 				case 'target':
 					$this->set_target($v);
+				break;
+
+				case 'style':
+					$this->set_style($v);
 				break;
 
 				default:
