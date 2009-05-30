@@ -1,0 +1,22 @@
+<?
+$this->placeholder('page_title')->set('Loading Data');
+?>
+<p>Run this script in phpMyAdmin or via console using</p>
+<pre>
+mysql -u[username] -p[password] < "where/you/saved/this/file.sql"
+</pre>
+
+<form action="" >
+<textarea cols="80" rows="20">
+
+<? foreach($this->files as $file => $path): ?>
+
+TRUNCATE `<?= $file ?>`;
+
+LOAD DATA LOCAL INFILE '<?= $path ?>' INTO TABLE `<?= $file ?>`
+FIELDS TERMINATED BY '\t' ENCLOSED BY '' ESCAPED BY '\\'
+LINES TERMINATED BY '\n' STARTING BY '';
+<? endforeach; ?>
+
+</textarea>
+</form>

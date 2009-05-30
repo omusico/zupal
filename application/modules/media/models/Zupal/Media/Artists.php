@@ -1,5 +1,4 @@
 <?
-
 class Zupal_Media_Artists
 extends Zupal_Node_Abstract
 implements Zupal_Grid_IGrid
@@ -22,8 +21,6 @@ implements Zupal_Grid_IGrid
 			'class' => 'Zupal_Media_Musicbrains_Artists'
 		)
 	);
-
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ field_map @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 

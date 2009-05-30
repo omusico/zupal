@@ -1,23 +1,28 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?
+if ($this->dojo()->isEnabled())
+{
+   $this->dojo()
+	->setCdnBase(Zend_Dojo::CDN_BASE_GOOGLE)
+    ->addStyleSheetModule('dijit.themes.tundra')
+	->useCdn();
+   
+
+}
+?>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<? if ($this->dojo()->isEnabled()) echo $this->dojo(); ?>
     <?php echo $this->headTitle() ?>
     <?php echo $this->headLink()->appendStylesheet(ZUPAL_BASEURL . '/css/styles.css');  ?>
     <?php echo $this->headScript()?>
     <?php echo $this->headStyle() ?>
-<?
-if ($this->dojo()->isEnabled())
-{
-   $this->dojo()->setLocalPath(ZUPAL_BASEURL . '/scripts/Dojo/dojo/dojo.js')
-                 ->addStyleSheetModule('dijit.themes.tundra');
-    echo $this->dojo();
-}
-?>
+
 </head>
-<body>
+<body class="tundra">
 	<div id="container">
 		<div id="header">
 			<h1>Zupal</h1>
