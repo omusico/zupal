@@ -17,6 +17,9 @@ class Zupal_Database_Manager
 			if(!$db->adapter){ $db->adapter = 'mysqli'; }
 
 			self::$_adapter = Zend_Db::factory($db);
+			if (!self::$_adapter):
+				throw new Exception('Cannot retrieve database adapter');
+			endif;
 		endif;
 		return self::$_adapter;
 	}

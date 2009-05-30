@@ -113,4 +113,32 @@ class Zupal_Module_Manager {
 		$cache->remove('modules_data');
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ databases @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_databases = NULL;
+	function databases($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_databases)):
+			$list = array();
+			foreach($this->get_all() as $module):
+				$list = array_merge($list, $module->databases());
+			endforeach;
+		// process
+			$this->_databases = $list;
+		endif;
+		return $this->_databases;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ database @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type> $pName
+	* @return <type>
+	*/
+	public function database ($pName)
+	{
+		$db_list = $this->databases();
+
+		return $db_list[$pName];
+	}
 }

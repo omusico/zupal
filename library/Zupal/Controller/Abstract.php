@@ -19,10 +19,10 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 
 		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
 		// note -- deprecated, using ZUPAL_BASEURL constant.
-		$this->view->dojo()
-			->setLocalPath(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/dojo.js')
+	//	$this->view->dojo()
+	//		->setLocalPath(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/dojo.js')
 			//->requireModule('dijit.form.Form')
-             ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
+    //         ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
 	}
 
 	public function preDispatch()

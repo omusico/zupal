@@ -10,7 +10,9 @@ extends Zupal_Image
 
 	public function __construct($pPath, $pLabel = '', $pPlacement = self::PLACEMENT_HORIZONTAL)
 	{
-		$path = Zend_Controller_Front::getInstance()->getBaseUrl() . self::ICON_PATH . $pPath;
+		$path = !preg_match('~^http~', $pPath) ?
+			Zend_Controller_Front::getInstance()->getBaseUrl() . self::ICON_PATH . $pPath
+			: $pPath;
 
 		parent::__construct($path, self::WIDTH, self::HEIGHT);
 		$this->set_placement($pPlacement);

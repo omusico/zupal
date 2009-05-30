@@ -44,6 +44,28 @@ class Zupal_Module_Manager_Item
 		return $this->_info;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ databases @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	private $_databases = NULL;
+	function databases($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_databases)):
+				$value = array();
+			if ($this->info()->databases):
+				foreach($this->info()->databases as $key => $db):
+					if (!$db->adapter):
+						$db->adapter = 'mysqli';
+					endif;
+					$value[$key] = Zend_DB::factory($db);
+				endforeach;
+			endif;		// process
+
+			$this->_databases = $value;
+		endif;
+
+		return $this->_databases;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ directory @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
