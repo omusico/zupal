@@ -64,7 +64,7 @@ class Zupal_Module_Manager {
 /**
  *
  * @param string $pManager
- * @return Zupal_Manager_Item
+ * @return Zupal_Module_Manager_Item
  */
 	public function get($pManager)
 	{
@@ -73,7 +73,11 @@ class Zupal_Module_Manager {
 			return $this->_modules[$pManager];
 		endif;
 	}
-
+/**
+ *
+ * @param string $pManager
+ * @return Zupal_Module_Manager_Item
+ */
 	public function load($pManager)
 	{
 		$pManager = strtolower(trim($pManager));
@@ -90,7 +94,7 @@ class Zupal_Module_Manager {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_all @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
-	* @return Zupal_Manager_item[]
+	* @return Zupal_Module_Manager_item[]
 	*/
 
 	public function load_all ()

@@ -30,17 +30,20 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		$database = $this->_getParam('database', '');
 
         $this->_helper->layout->disableLayout();
+		$this->view->db_name = $database;
+
 		if ($database):
 			$adapter = Zupal_Module_Manager::getInstance()->database($database);
 		else:
 			$adapter = Zend_Db_Table_Abstract::getDefaultAdapter();
 		endif;
+		
 		$table_def = $adapter->describeTable($this->_getParam('table'));
 		$td = $table_def;
 		
 		foreach($td as $c => $row) 
 		{
-			if ($td[$c]['IDENTITY']):
+			if ($td[$c]['IDENTITY'] || $td[$c]['PRIMARY']):
 				 $name = $td[$c]['COLUMN_NAME'];
 				  $td[$c]['COLUMN_NAME'] = "<b><u>$name</u></b>";
 				  $this->view->id_field = $name;
@@ -63,15 +66,15 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		$this->view->table_def_display = $td;
 		$this->view->table_def = $table_def;
 		$table_class = 'Zupal_Table_' .
+				($database ? ucfirst($database) . '_' : '') .
 				ucwords(
 					preg_replace('~(_.)~e', "strtoupper('\\0')",
-					preg_replace(
-				'~^Zupal_~i', '',
-				$table_name)
+					preg_replace('~^Zupal_~i', '',	$table_name)
 			));
 
 		$this->view->table_class_name = $table_class;
 		$this->view->db_name = $database;
+		$this->view->module_class = preg_replace('~^Zupal_Table~', 'Zupal', $table_class);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tablewriteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -86,7 +89,8 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		$class_file = stripslashes($this->_getParam('class_file'));
 		$module = $this->_getParam('table_module');
 
-		$file_path = ZUPAL_MODULE_PATH . DS . $module . DS . 'models' . DS . str_replace('_', DS, $table_class_name) . '.php';
+		$file_path = ZUPAL_MODULE_PATH . DS . $module . DS . 'models' .
+			DS . str_replace('_', DS, $table_class_name) . '.php';
 
 		$this->view->body = $class_file;
 		$this->view->file_path = $file_path;
@@ -102,6 +106,18 @@ class Admin_ModulesController extends Zupal_Controller_Abstract
 		endif;
 		
 		file_put_contents($file_path, $class_file);
+		
+		$module_class_name = $this->_getParam('module_class_name');
+		$module_class_file = stripslashes($this->_getParam('module_file'));
+	
+		if ($this->_getParam('make_domain')):
+			$module_path = ZUPAL_MODULE_PATH . DS . $module . DS . 'models' .
+				DS . str_replace('_', DS, $module_class_name) . '.php';
+			if (!is_dir(dirname($module_path))):
+				mkdir(dirname($module_path), 0775, TRUE);
+			endif;
+			file_put_contents($module_path, stripslashes($this->_getParam('module_file')));
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ edit @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

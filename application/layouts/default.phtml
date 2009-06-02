@@ -5,7 +5,9 @@
 if ($this->dojo()->isEnabled())
 {
    $this->dojo()
-	->setCdnBase(Zend_Dojo::CDN_BASE_GOOGLE)
+	//->setCdnBase(Zend_Dojo::CDN_BASE_GOOGLE)
+	->setLocalPath(ZUPAL_BASEURL . '/scripts/Dojo/dojo/dojo.js')
+	->requireModule('dijit.form.Form')
     ->addStyleSheetModule('dijit.themes.tundra')
 	->useCdn();
    

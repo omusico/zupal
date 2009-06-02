@@ -1,0 +1,72 @@
+<?/*
+<div dojoType="dojox.data.QueryReadStore"
+    jsId="continentStore"
+    url="continents.php"
+    doClientPaging="false"
+    >
+<span dojoType="dojox.grid.data.DojoData"
+    jsId="dataModel2"
+    rowsPerPage="20"
+    store="continentStore"
+    query="{ name : '*' }"
+    >
+    <script type="dojo/method" event="requestRows" args="inRowIndex, inCount">
+        // creates serverQuery-parameter
+        var row  = inRowIndex || 0;
+        var params = {
+            start: row,
+            count: inCount || this.rowsPerPage,
+            serverQuery: dojo.mixin(
+              { start: row,
+                count: inCount || this.rowsPerPage,
+                sort:(this.sortColumn || '')
+              },
+              this.query
+            ),
+            query: this.query,
+            // onBegin: dojo.hitch(this, "beginReturn"),
+            onComplete: dojo.hitch(this, "processRows")
+        }
+        this.store.fetch(params);
+    </script>
+    <script type="dojo/method" event="getRowCount">
+        // should return total count (fetch from server), not "rowsPerPage"
+        return 50;
+    </script>
+    <script type="dojo/method" event="sort" args="colIndex">
+        // clears old data to force loading of new, then requests new rows
+        this.clearData();
+        this.sortColumn = colIndex;
+        this.requestRows();
+    </script>
+    <script type="dojo/method" event="setData" args="inData">
+        // edited not to reset the store
+        this.data = [];
+        this.allChange();
+    </script>
+    <script type="dojo/method" event="canSort">
+        // always true
+        return true;
+    </script>
+</span>
+ *
+ *
+ */
+
+
+$artist_domain = Zupal_Musicbrainz_Artist::getInstance();
+
+$this->headScript()->captureStart();
+$artist_domain->render_script('list');
+$this->headScript()->captureEnd();
+
+
+echo $artist_domain->render_store('artist_store', '/media/musicbrainz/artistsdata', 'id');
+
+$artist_domain->render_grid(
+	$this,'list', 'artist_store',
+	 array(
+			'name' => array('label' => 'Artist', 'width' => 80),
+			'gid' => array('label' => 'GID', 'width' => 120)
+		)
+	);

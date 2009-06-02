@@ -12,5 +12,24 @@
 			'action' => 'load'
 		)
 	) ?>
+	<?= new Zupal_Control_IconLink(
+	'http://wiki.musicbrainz.org/-/skins/musicbrainzcommon/musicbrainz_logo.png',
+	'Artists',
+		array(
+			'module' => 'media',
+			'controller' => 'musicbrainz',
+			'action' => 'artists'
+		)
+	) ?>
+
+	<?= new Zupal_Control_IconLink(
+	'http://wiki.musicbrainz.org/-/skins/musicbrainzcommon/musicbrainz_logo.png',
+	'Data',
+		array(
+			'module' => 'media',
+			'controller' => 'musicbrainz',
+			'action' => 'artistsdata'
+		)
+	) ?>
 
 </fieldset>
