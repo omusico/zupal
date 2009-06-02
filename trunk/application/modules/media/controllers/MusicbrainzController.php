@@ -31,12 +31,32 @@ extends Zupal_Controller_Abstract
 				$this->view->files[$fi->getFilename()] = $fi->getRealPath();
 			endif;
 		endforeach;
-		/*
-	sql/temp.sql");
-      print TEMPSQL "USE $g_db_name;\nLOAD DATA LOCAL INFILE 'mbdump/$file' INTO TABLE `$table`\n";
-      print TEMPSQL "FIELDS TERMINATED BY '\\t' ENCLOSED BY '' ESCAPED BY '\\\\'\n";
-      print TEMPSQL "LINES TERMINATED BY '\\n' STARTING BY '';";
-		 */
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistsAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function artistsAction ()
+	{
+		$this->view;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistdataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function artistsdataAction ()
+	{
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+		$artist = Zupal_Musicbrainz_Artist::getInstance();
+		echo $artist->render_data(array(), 
+				$this->_getParam('start', 0), 
+				$this->_getParam('rows', 30), 
+				$this->_getParam('sort', 'name')); // first thirty artists by default
+
+		
 	}
 
 }

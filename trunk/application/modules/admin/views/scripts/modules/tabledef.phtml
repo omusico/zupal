@@ -8,8 +8,17 @@ $this->dojo()->requireModule('dijit.form.Form')
 	->requireModule('dojo.parser')
 	->setCdnBase(Zend_Dojo::CDN_BASE_GOOGLE)
 	->useCdn();
+
+$this->headStyle()->captureStart();
+?>
+#content dl.table_links dt { padding: 0px; margin: 0px; font-size: 80%; line-height: 110%}
+#content dl.table_links dt a,
+#content dl.table_links dt a:link,
+#content dl.table_links dt a:visited{padding: 0px; margin: 0px; font-weight: normal}
+<?
+$this->headStyle()->captureEnd();
 	
-$this->tabContainer()->captureStart('db', array( 'style'=>"width: 800px; height: 400px"));
+$this->tabContainer()->captureStart('db', array( 'style'=>"width: 800px; height: 850px"));
 ?>
 <div id="main_db" dojoType="dijit.layout.ContentPane" title="Main Database" selected="true">
 <table>
@@ -19,24 +28,16 @@ $this->tabContainer()->captureStart('db', array( 'style'=>"width: 800px; height:
 </tr>
 
 <tr>
-	<td valign="top">
-<dl>
-<? foreach($this->tables as $table): ?>
-	<dt>
-<?=  new Zupal_Control_Link($table, array('target' => 'table_def',
-		'module' => 'admin',
-		'controller' => 'modules',
-		'action' => 'tableclass',
-		'style' => 'font-size: 80%; font-weight: normal',
-		'table' => $table)) ?>
-	</dt>
-<? endforeach; ?>
-</dl>
+	<td valign="top"><div
+	style="height: 700px; overflow: scroll;">
+	<?= $this->partial('modules/tableLinks.phtml', array('db_name' => '',
+		'adapter' =>  Zend_Db_Table_Abstract::getDefaultAdapter())) ?>
 </td>
 <td valign=top>
-	<iframe name="table_def" width="600" height="800">
+	<iframe name="table_def_" width="500" height="700">
 	<p>Click a link at the left</p>
 	</iframe>
+		</div>
 </td>
 </table>
 </div>
@@ -48,13 +49,14 @@ $this->tabContainer()->captureStart('db', array( 'style'=>"width: 800px; height:
 	<th>Code </th>
 </tr>
 <tr>
-	<td valign="top">
+	<td valign="top"><div style="height: 700px; overflow: scroll">
 	<?= $this->partial('modules/tableLinks.phtml', array('db_name' => $db_name,
 		'adapter' => $adapter)) ?>
+		</div>
 	</td>
 
 	<td valign="top">
-		<iframe name="table_def_<?= $db_name ?>" width="600" height="800">
+		<iframe name="table_def_<?= $db_name ?>" width="500" height="700">
 	<p>Click a link at the left</p>
 	</iframe>
 	</td>

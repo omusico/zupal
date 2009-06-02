@@ -20,7 +20,7 @@ $first = FALSE;
 	{
 		border-left: 1px solid black;
 		padding: 2px;
-		font-size: 80%;
+		font-size: 70%;
 		color: #900;
 		
 	}
@@ -30,7 +30,7 @@ $first = FALSE;
 		border-left: 1px solid black;
 		border-top: 1px solid black;
 		padding: 2px;
-		font-size: 80%;
+		font-size: 70%;
 	}
 
 	input, select {
@@ -96,10 +96,11 @@ endif; ?>
 <h2>Table Definition</h2>
 <form method="post" action="<?= ZUPAL_BASEURL ?>/admin/modules/tablewrite/" >
 <input type="hidden" name="table_class_name" value="<?= $this->table_class_name ?>" />
-	<textarea rows="20" cols="80" name="class_file">
+	<textarea rows="10" cols="60" name="class_file">
 <? ob_start(); ?>
 	 Zend_Db_Table_Abstract::getDefaultAdapter()->query("<?= $this->create_sql ?>");
 <? $body = ob_get_clean();
+
 
 	$create_method = new Zend_CodeGenerator_Php_Method(
 		array(
@@ -109,6 +110,7 @@ endif; ?>
 			'body' => $body
 		)
 	);
+	
 	$create_method->setStatic(TRUE);
 
 	ob_start();
@@ -125,15 +127,6 @@ endif; ?>
 		)
 	);
 
-	$class = new Zend_CodeGenerator_Php_Class(
-					array(
-						'name' => $this->table_class_name,
-						'extendedClass' => 'Zupal_Table_Abstract',
-						'methods' => array(
-							$create_method// , $init_method
-						)
-					)
-				);
 //	$class->set
 	/*
 	 *
@@ -156,13 +149,35 @@ endif; ?>
 		)
 	);
 	
+	$class = new Zend_CodeGenerator_Php_Class(
+		array(
+			'name' => $this->table_class_name,
+			'extendedClass' => 'Zupal_Table_Abstract',
+			'methods' => array(
+				$create_method// , $init_method
+			),
+			'properties' => array($id_prop, $name_prop)
+		)
+	);
+	if ($this->db_name):
+
+		$const = new Zend_CodeGenerator_Php_Method(
+			array(
+				'name' => '__construct',
+				'body' => '        parent::__construct(array("db" => Zupal_Module_Manager::getInstance()->database("' .  $this->db_name . '")));'
+			)
+		);
+		$class->setMethod($const);
+	endif;
+
+/*
 	$class->setProperties(
 		array(
 			$id_prop,
 			$name_prop
 		)
 
-	);
+	); */
 
 	$file = new Zend_CodeGenerator_Php_File(
 		array(
@@ -182,6 +197,7 @@ endif; ?>
 	</dt>
 	<dd>
 		<select name="table_module">
+			<option value="" selected="selected">Choose a Module</option>
 		<? foreach (Zupal_Module_Manager::getInstance()->getModuleNames() as $m): ?>
 			<option value="<?= $m ?>"><?= ucfirst($m) ?></option>
 
@@ -193,7 +209,95 @@ endif; ?>
 	<dd>
 		<input type="submit" value="Create Table Class" />
 	</dd>
+	<dt>Make Module File</dt>
+	<dd>
+		<input type="checkbox" name="make_domain" />
+	</dd>
+	
 </dl>
+
+<input type="hidden" name="module_class_name" value="<?= $this->module_class ?>" />
+<textarea name="module_file" rows="10" cols="60" >
+<?
+
+	$module_get = new Zend_CodeGenerator_Php_Method(
+		array(
+			'name' => 'get',
+			'body' => 'retun new self($pID);',
+			'parameters' => array(array('name' => 'pID'))
+		)
+	);
+
+	$module_tableClass = new Zend_CodeGenerator_Php_Method(
+		array(
+			'name' => 'tableClass',
+			'body' => "return '{$this->table_class_name}';"
+		)
+	);
+/*
+	private static $_Instance = NULL;
+
+/**
+ *
+ * @return Zupal_People
+ *
+	public static function getInstance()
+	{
+
+	} */
+
+	$module_instance_prop = new Zend_CodeGenerator_Php_Property(
+		array(
+			'static' => TRUE,
+			'visibility' => 'protected static',
+			'name' => '_Instance'
+		)		
+	);
+
+	ob_start();
+?>
+		if (is_null(self::$_Instance)):
+	self::$_Instance = new self();
+endif;
+return self::$_Instance;
+<?
+	$body = ob_get_clean();
+
+	$module_instance_method = new Zend_CodeGenerator_Php_Method(
+		array(
+			'name' => 'getInstance',
+			'body' => $body,
+			'visibility' => 'public static'
+		)
+	);
+
+	$module_class = new Zend_CodeGenerator_Php_Class(
+		array(
+			'name' => $this->module_class,
+			'extendedClass' => 'Zupal_Domain_Abstract',
+			'methods' => array(
+				$module_get,
+				$module_tableClass,
+				$module_instance_method
+			),
+			'properties' => array($module_instance_prop)
+		)
+	);
+
+
+
+	$module_file = new Zend_CodeGenerator_Php_File(
+		array(
+			'classes' => array(
+				$module_class
+			)
+		)
+	);
+
+	echo $module_file;
+?>
+</textarea>
+
 </form>
 </body>
 </html>
