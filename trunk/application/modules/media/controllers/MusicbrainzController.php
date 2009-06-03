@@ -33,6 +33,15 @@ extends Zupal_Controller_Abstract
 		endforeach;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findartistAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function findartistAction ()
+	{
+	
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistsAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -51,12 +60,19 @@ extends Zupal_Controller_Abstract
         $this->_helper->layout->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
 		$artist = Zupal_Musicbrainz_Artist::getInstance();
-		echo $artist->render_data(array(), 
-				$this->_getParam('start', 0), 
-				$this->_getParam('rows', 30), 
-				$this->_getParam('sort', 'name')); // first thirty artists by default
 
+		$data = array();
+		$name = $this->_getParam('name', NULL);
 		
+		if ($name):
+			$data['name'] = $name;
+		endif;
+
+		echo $artist->render_data($data,
+				$this->_getParam('start', 0), 
+				$this->_getParam('rows', 400),
+				$this->_getParam('sort', 'name'));
+
 	}
 
 }
