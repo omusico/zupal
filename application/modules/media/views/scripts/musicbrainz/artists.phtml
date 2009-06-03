@@ -1,72 +1,55 @@
-<?/*
-<div dojoType="dojox.data.QueryReadStore"
-    jsId="continentStore"
-    url="continents.php"
-    doClientPaging="false"
-    >
-<span dojoType="dojox.grid.data.DojoData"
-    jsId="dataModel2"
-    rowsPerPage="20"
-    store="continentStore"
-    query="{ name : '*' }"
-    >
-    <script type="dojo/method" event="requestRows" args="inRowIndex, inCount">
-        // creates serverQuery-parameter
-        var row  = inRowIndex || 0;
-        var params = {
-            start: row,
-            count: inCount || this.rowsPerPage,
-            serverQuery: dojo.mixin(
-              { start: row,
-                count: inCount || this.rowsPerPage,
-                sort:(this.sortColumn || '')
-              },
-              this.query
-            ),
-            query: this.query,
-            // onBegin: dojo.hitch(this, "beginReturn"),
-            onComplete: dojo.hitch(this, "processRows")
-        }
-        this.store.fetch(params);
-    </script>
-    <script type="dojo/method" event="getRowCount">
-        // should return total count (fetch from server), not "rowsPerPage"
-        return 50;
-    </script>
-    <script type="dojo/method" event="sort" args="colIndex">
-        // clears old data to force loading of new, then requests new rows
-        this.clearData();
-        this.sortColumn = colIndex;
-        this.requestRows();
-    </script>
-    <script type="dojo/method" event="setData" args="inData">
-        // edited not to reset the store
-        this.data = [];
-        this.allChange();
-    </script>
-    <script type="dojo/method" event="canSort">
-        // always true
-        return true;
-    </script>
-</span>
- *
- *
- */
-
+<?
+$this->placeholder('page_title')->set('MusicBrainz Artists');
 
 $artist_domain = Zupal_Musicbrainz_Artist::getInstance();
 
 $this->headScript()->captureStart();
 $artist_domain->render_script('list');
 $this->headScript()->captureEnd();
+?>
+<form  dojoType="dijit.form.Form">
+	<dl>
 
+	<dt>Find</dt>
 
+	<dd>
+	<input type=text name="search_for" id="find_search_for" style="padding: 4px"
+	dojoType="dijit.form.TextBox" style="width: 250px"  />
+	<button id="find_button"
+	dojoType="dijit.form.Button">Search
+    <script type="dojo/method" event="onClick" args="evt">
+
+		sf = dijit.byId('find_search_for');
+		search_text = sf.getValue();
+		alert('finding ' + search_text);
+		q = dijit.byId('list');
+		q.setQuery({name: search_text});
+			/*, onComplete: function()
+		}
+		{
+			alert("I'm back!");
+			dijit.byId('list').setData();
+		}}); */
+		
+	</script>
+	</button>
+	</dd>
+
+	</dl>
+<script type="dojo/method" event="onSubmit">
+	return false;
+</script>
+</form>
+
+<?
 echo $artist_domain->render_store('artist_store', '/media/musicbrainz/artistsdata', 'id');
 
 $artist_domain->render_grid(
 	$this,'list', 'artist_store',
 	 array(
-			'name' => array('label' => 'Artist', 'width' => 80),
-			'gid' => array('label' => 'GID', 'width' => 120)
+			'name' => array('label' => 'Artist', 'width' => 180),
+			'gid' => array('label' => 'GID', 'width' => 300),
+			'begindate' => array('label' => 'b/formed', 'width' => 120),
+			'enddate' => array('label' => 'd/ended', 'width' => 120)
 		)
 	);

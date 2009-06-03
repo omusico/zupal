@@ -42,14 +42,31 @@ implements Zupal_Grid_IGrid
 	 * @param unknown_type $pRows
 	 * @param unknown_type $pSort
 	 */
-	public function render_data(array $pParams, $pStart = 0, $pRows = 30, $pSort = 'name') {
+	public function render_data(array $pParams, $pStart = 0, $pRows = 400, $pSort = 'name')
+	{
 		$cache = Zupal_Media_MusicBrainz_Cache::getInstance();
-		$key = 'artists_' . $pStart . '_' . $pRows . '_' . 'name';
+		$key = 'artists_' . $pStart . '_' . $pRows . '_' . $pSort;
+		if (array_key_exists('name', $pParams)):
+			$name = $pParams['name'];
+			$key .= '_' . trim(preg_replace('~[\W]+~', '_', $name));
+		else:
+			$name = '';
+		endif;
+
 		if (!$cache->test($key)):
-
+			$count_sql = sprintf('SELECT count(id) FROM `%s`', $this->table()->tableName());
+			if ($name):
+				$pParams['name'] = "%$name%";
+				$count_sql .= " WHERE `name` LIKE '%$name%'";
+			endif;
+			error_log(__METHOD__ . ': count = '. $count_sql);
 			$select = $this->_select($pParams, $pSort);
-
-			$rows = $this->table()->fetchAll(NULL, $pSort, $pRows, $pStart);
+			
+			$select->limit($pRows, $pStart);
+			$fsql = $select->assemble();
+			error_log(__METHOD__ . ': '. $fsql);
+			
+			$rows = $this->table()->fetchAll($select);
 			$items = array();
 
 			foreach($rows as $row):
@@ -58,7 +75,12 @@ implements Zupal_Grid_IGrid
 				$items[] = $data;
 			endforeach;
 
-			$cache->save(new Zend_Dojo_Data('id', $items, 'name'));
+			$count = $this->table()->getAdapter()->fetchOne($count_sql);
+
+			$data = new Zend_Dojo_Data('id', $items, 'name');
+			$data->setMetadata('numRows', $count);
+
+			$cache->save($data);
 		endif;
 
 		return $cache->load($key);
@@ -75,17 +97,19 @@ implements Zupal_Grid_IGrid
 	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns) {
 		Zupal_Grid_Maker::prep_view($pView);
 
-		$columns = array(
-			'artist_view' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_view'),
-			'artist_edit' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_edit'));
+		$columns = array();
+		//	'artist_view' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_view'),
+		//	'artist_edit' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_edit'));
 
 		foreach($pColumns as $k => $v) $columns[$k] = $v;
 
-		$columns['artist_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_delete');
+	//	$columns['artist_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_delete');
 
 
-		return Zupal_Grid_Maker::querygrid($pID, $pStore_ID, $columns, 'id', array('onRowClick' => 'artist_row_click'));
+		return Zupal_Grid_Maker::querygrid($pID, $pStore_ID, $columns, 'id'); //, array('onRowClick' => 'artist_row_click'));
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_script @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
 	 * @see Zupal_Grid_IGrid::render_script()
@@ -99,6 +123,7 @@ implements Zupal_Grid_IGrid
 		$module_root = $media->directory();
 		include $module_root . DS . join(DS, array('models', 'Zupal', 'Musicbrainz', 'Artist')) . DS . 'artists_grid_script.php';
 	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	 * @see Zupal_Grid_IGrid::render_store()
