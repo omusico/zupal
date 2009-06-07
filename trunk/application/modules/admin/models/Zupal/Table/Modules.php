@@ -3,7 +3,7 @@
 class Zupal_Table_Modules extends Zupal_Table_Abstract
 {
 
-    protected $_id_field = null;
+    protected $_id_field = 'name';
 
     protected $_name = 'zupal_modules';
 
@@ -21,6 +21,7 @@ class Zupal_Table_Modules extends Zupal_Table_Abstract
           PRIMARY KEY  (`name`)
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1");
     }
+
 
 }
 
