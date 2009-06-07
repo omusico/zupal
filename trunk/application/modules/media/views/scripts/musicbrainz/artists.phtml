@@ -51,5 +51,6 @@ $artist_domain->render_grid(
 			'gid' => array('label' => 'GID', 'width' => 300),
 			'begindate' => array('label' => 'b/formed', 'width' => 120),
 			'enddate' => array('label' => 'd/ended', 'width' => 120)
-		)
+		),
+		array('onRowClick' => 'artist_row_click')
 	);

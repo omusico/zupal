@@ -7,6 +7,12 @@ extends Zend_Cache
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	private static $_instance = NULL;
+
+	/**
+	 *
+	 * @param boolean $pReload
+	 * @return Zupal_Media_MusicBrainz_Cache
+	 */
 	public static function getInstance($pReload = FALSE)
 	{
 		if ($pReload || is_null(self::$_instance)):

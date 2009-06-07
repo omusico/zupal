@@ -70,9 +70,18 @@ extends Zupal_Controller_Abstract
 
 		echo $artist->render_data($data,
 				$this->_getParam('start', 0), 
-				$this->_getParam('rows', 400),
+				$this->_getParam('rows', 100),
 				$this->_getParam('sort', 'name'));
 
 	}
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function artistAction ()
+	{
+		if ($this->_getParam('id')):
+		$this->view->artist = new Zupal_Musicbrainz_Artist($this->_getParam('id'));
+		endif;
+	}
 }

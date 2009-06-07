@@ -420,7 +420,7 @@ implements Zupal_Grid_IGrid
 	 * @param unknown_type $pRows
 	 * @param unknown_type $pSort
 	 */
-	public function render_data(array $pParams, $pStart = 0, $pRows = 400, $pSort = NULL) {
+	public function render_data(array $pParams, $pStart = 0, $pRows = 100, $pSort = NULL) {
 		$cache = Zupal_Bootstrap::$registry->cache;
 
 		if (!$cache->test('artist_data')):

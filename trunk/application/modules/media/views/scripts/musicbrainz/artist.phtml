@@ -1,0 +1,21 @@
+<?php
+	$this->placeholder('page_title')->set($this->artist->name);
+?>
+
+<dl>
+	<dt>Name</dt>
+	<dd><?= $this->artist->name ?></dd>
+	<dt>Type</dt>
+	<dd><?= $this->artist->type() ?></dd>
+<? if ($this->artist->is_person()): ?>
+	<dt>Group(s)</dt>
+	<dd>
+	<ol>
+		<? foreach($this->artist->groups() as $group): ?>
+		<li><?= $group->name ?></li>
+		<? endforeach; ?>
+	</ol>
+	</dd>
+<? endif; ?>
+
+</dl>
