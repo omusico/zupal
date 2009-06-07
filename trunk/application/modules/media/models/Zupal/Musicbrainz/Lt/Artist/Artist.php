@@ -83,7 +83,7 @@ class Zupal_Musicbrainz_Lt_Artist_Artist extends Zupal_Domain_Abstract
 	{
 		if ($pReload || is_null($this->_attribute)):
 			$attr_table = Zupal_Musicbrainz_Link_Attribute::getInstance();
-			$attrs = $attr_table->fetchAll(
+			$attrs = $attr_table->find(
 				array(
 					'link' => $this->identity(),
 					'link_type' => 'artist_artist'
@@ -103,7 +103,7 @@ class Zupal_Musicbrainz_Lt_Artist_Artist extends Zupal_Domain_Abstract
 	{
 		if ($pReload || is_null($this->_attr_types)):		
 			$anames = array();
-			foreach($attrs as $attr):
+			foreach($this->attrs() as $attr):
 				$names[] = $attr->get_type()->name();
 			endforeach;		
 		// process

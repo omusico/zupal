@@ -27,4 +27,7 @@
 		</musicbrainz>
 	</databases>
 
+	<plugins>
+		<seo>Zupal_Media_MusicBrainz_Seo</seo>
+	</plugins>
 </module>

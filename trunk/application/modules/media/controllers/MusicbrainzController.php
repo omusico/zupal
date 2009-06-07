@@ -51,13 +51,72 @@ extends Zupal_Controller_Abstract
 		$this->view;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ reloadAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function reloadAction ()
+	{
+		$beginswith = $this->_getParam('beginswith', NULL);
+		$type = $this->_getParam('type', 'artist');
+		$this->view->beginswith = $beginswith;
+		$this->view->type = $type;
+
+		switch($type):
+		
+			case 'artist':
+				if (!is_null($beginswith)):
+					$mba = Zupal_Musicbrainz_Artist::getInstance();
+					$select = $mba->table()->select()->order('id')
+					->limit(1000, $beginswith);
+
+					$this->view->artists = $mba->find($select);
+				else:
+					$this->view->artists = array();
+				endif;
+
+				foreach($this->view->artists as $artist):
+					$artist->json(TRUE);
+				endforeach;
+			break;
+
+		endswitch;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ manageAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function manageAction ()
+	{
+		$this->view;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
 	*/
 	public function dataAction ()
 	{
-		$this->view;
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+		switch($this->_getParam('type')):
+			case 'artist':
+				
+				$gid = $this->_getParam('gid');
+				$key = str_replace('-', '_', $gid);
+				$ac = Zupal_Media_MusicBrainz_Cache_Artists::getInstance();
+
+				if (!$ac->test($key)):
+					$artist = Zupal_Media_Musicbrains_Artists::getInstance()->findOne(array('gid' => $gid));
+					$json = $artist->json(); // handles caching
+				else:
+					$json = $ac->load($key);
+				endif;
+				echo $json;
+			break;
+
+		endswitch;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistdataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

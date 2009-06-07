@@ -23,6 +23,10 @@ class Zupal_Modules extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
+	public static function module($pName){
+		$pName = strtolower($pName);
+		return self::getInstance()->get($pName);
+	}
 
 }
 
