@@ -7,7 +7,7 @@ class Zupal_Musicbrainz_Lt_Artist_Artist extends Zupal_Domain_Abstract
 
     public function get($pID)
     {
-        retun new self($pID);
+        return new self($pID);
     }
 
     public function tableClass()
@@ -23,6 +23,18 @@ class Zupal_Musicbrainz_Lt_Artist_Artist extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ linkphrase @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param boolean $pRight_phrase = FALSE
+	* @return string
+	*/
+	public function linkphrase ($pRight_phrase = FALSE)
+	{
 
+		$phrase = $pRight_phrase ? $this->rlinkphrsae : $this->linkphrase;
+
+
+	}
 }
 
