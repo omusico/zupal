@@ -9,9 +9,23 @@ class Zupal_Module_Manager {
 		$this->_moduleDir = ZUPAL_APPLICATION_PATH . DS . 'modules';
 	}
 	
-	public function getInstalledModules() {
-		@TODO;
-		
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ InstalledModules @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_InstalledModules = NULL;
+	public function getEnabledModules($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_InstalledModules)):
+			$value = array();
+			foreach($this->get_all() as $module):
+				if ($module->is_enabled()):
+					$value[] = $module;
+				endif;
+			endforeach;
+			// process
+		$this->_InstalledModules = $value;
+		endif;
+		return $this->_InstalledModules;
 	}
 	
 	public function getModuleNames() 
@@ -55,10 +69,15 @@ class Zupal_Module_Manager {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ manager @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	private $_modules = array();
+	private $_modules = NULL;
 
 	public function get_all()
 	{
+		if (is_null($this->_modules)):
+			$this->_modules = array();
+		endif;
+		$this->load_all();
+		
 		return $this->_modules;
 	}
 /**
@@ -82,7 +101,7 @@ class Zupal_Module_Manager {
 	{
 		$pManager = strtolower(trim($pManager));
 
-		if((!$pManager) || array_key_exists($pManager, $this->_modules))
+		if((!$pManager) ||  array_key_exists($pManager, $this->_modules))
 		{
 			return;
 		}
@@ -99,6 +118,10 @@ class Zupal_Module_Manager {
 
 	public function load_all ()
 	{
+		if (is_null($this->_modules)):
+			$this->_modules = array();
+		endif;
+
 		foreach($this->getModuleNames() as $module) $this->load($module);
 	}
 

@@ -44,6 +44,24 @@ class Zupal_Module_Manager_Item
 		return $this->_info;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ plugins @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type>
+	* @return <type>
+	*/
+	public function plugins ()
+	{
+		$out = array();
+		$info = @$this->info();
+		$plugins = $info->plugins ? $info->plugins : array();
+		foreach($plugins as $plugin):
+			$out[] = new $plugin();
+		endforeach;
+		
+		return $out;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ databases @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	
 	private $_databases = NULL;
@@ -221,7 +239,7 @@ class Zupal_Module_Manager_Item
 	{
 		if ($pReload || is_null($this->_module_record)):
 
-			$value = Zupal_Modules::module($this->get_name());
+			$value = Zupal_Modules::getInstance()->module($this->get_name());
 			if (!$value->is_saved()):
 				$value = new Zupal_Modules();
 				$value->name = $this->get_name();
@@ -231,6 +249,16 @@ class Zupal_Module_Manager_Item
 		$this->_module_record = $value;
 		endif;
 		return $this->_module_record;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_installed @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function is_enabled ()
+	{
+		return $this->module_record()->enabled;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ update_database @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
