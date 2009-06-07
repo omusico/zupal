@@ -50,7 +50,7 @@ implements Zupal_Content_IContent, Zupal_Grid_IGrid
 		if (!$cache->test('content_data')):
 			$select = $this->_select($pParams, $pSort);
 			$items = $this->table()->getAdapter()->fetchAll($select);
-			$cache->save(new Zend_Dojo_Data($this->table()->idField(), $items, $pSort));
+			$cache->save('content_data', new Zend_Dojo_Data($this->table()->idField(), $items, $pSort));
 		endif;
 
 		return $cache->load('content_data');

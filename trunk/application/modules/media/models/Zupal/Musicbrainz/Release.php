@@ -7,7 +7,7 @@ class Zupal_Musicbrainz_Release extends Zupal_Domain_Abstract
 
     public function get($pID)
     {
-        retun new self($pID);
+        return new self($pID);
     }
 
     public function tableClass()

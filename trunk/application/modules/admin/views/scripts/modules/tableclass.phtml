@@ -223,7 +223,7 @@ endif; ?>
 	$module_get = new Zend_CodeGenerator_Php_Method(
 		array(
 			'name' => 'get',
-			'body' => 'retun new self($pID);',
+			'body' => 'return new self($pID);',
 			'parameters' => array(array('name' => 'pID'))
 		)
 	);
