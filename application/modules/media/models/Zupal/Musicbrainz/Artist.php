@@ -276,20 +276,37 @@ LIMIT 0 , 30
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ json @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
-	* @return <type>
+	* @return string
 	*/
 	public function json ()
 	{
-		return Zend_Json::encode($this->json_data());
+		$key = str_replace('-', '_', $this->gid);
+		$ac = Zupal_Media_MusicBrainz_Cache_Artists::getInstance();
+
+		if (!$ac->test($key)):
+			$ac->save(Zend_Json::encode($this->json_data()), $key);
+		endif;
+
+		return $ac->load($key);
 	}
 
 	public function json_data($pBrief = FALSE)
 	{
+		
 		$data = array();
 		if ($pBrief):
 			$data['id'] = $this->identity();
 			$data['name'] = $this->name;
 			$data['type'] = $this->type();
+
+			if ($this->is_group()):
+			$data['people'] = array();
+				foreach($this->people() as $person_data):
+					if ($person_data->type->is_type(1)): // musical
+						$data['people'][] = $person_data->artist->json_data(1);
+					endif;
+				endforeach;
+			endif;
 		else:
 
 		$data['artist'] = $this->toArray();
@@ -300,7 +317,8 @@ LIMIT 0 , 30
 			foreach($this->groups() as $group):
 				$data['groups'][] = array_merge(
 					$group->artist->json_data(1),
-					array('type_text' => $group->type->linkphrase(TRUE)));
+					array('type_text' => $group->type->linkphrase(TRUE))
+				);
 			endforeach;
 		endif;
 
@@ -308,8 +326,8 @@ LIMIT 0 , 30
 
 		foreach($this->people() as $person):
 			$data['people'][] = array_merge(
-					$person->artist->json_data(1), array(
-					'type_name' => $person->type->linkphrase())
+					$person->artist->json_data(1),
+					array('type_name' => $person->type->linkphrase())
 				);
 		endforeach;
 		endif;

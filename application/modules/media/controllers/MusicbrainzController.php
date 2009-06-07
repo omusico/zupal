@@ -51,6 +51,15 @@ extends Zupal_Controller_Abstract
 		$this->view;
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function dataAction ()
+	{
+		$this->view;
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistdataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
