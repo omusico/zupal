@@ -36,5 +36,21 @@ class Zupal_Musicbrainz_Lt_Artist_Artist extends Zupal_Domain_Abstract
 
 
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ attribute @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_attribute = NULL;
+	function get_attribute($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_attribute)):
+
+			$value = 
+
+		// process
+		$this->_attribute = $value;
+		endif;
+		return $this->_attribute;
+	}
+
 }
 
