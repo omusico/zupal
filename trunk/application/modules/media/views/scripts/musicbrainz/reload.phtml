@@ -24,9 +24,19 @@ switch ($this->type):
 			'beginswith' => 'aaa'
 		)
 	) ?>
-
 <? endif; ?>
 </p>
+<? if (!$this->stop_reload): ?>
+<script language="javascript">
+	function reload_page()
+	{
+		document.location="/media/musicbrainz/reload/type/artist/beginswith/<?= $this->beginswith + 1 ?>";
+	}
+	
+	window.onload=reload_page;
+</script>	
+<? endif; ?>
+
 <?
 	break;
 
