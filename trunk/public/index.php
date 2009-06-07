@@ -28,6 +28,10 @@ defined('ZUPAL_LAYOUT_PATH') ||
 defined('ZUPAL_MODULE_PATH') ||
 	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DS . 'modules');
 
+defined('ZUPAL_PUBLIC_PATH') ||
+	define('ZUPAL_PUBLIC_PATH', dirname(__FILE__)
+);
+
 /** setup include path **/
 set_include_path(
       ZUPAL_LIBRARY_PATH . PS
