@@ -12,10 +12,37 @@
 	<dd>
 	<ol>
 		<? foreach($this->artist->groups() as $group): ?>
-		<li><?= $group->name ?></li>
+		<li><?= $group->artist->name ?> (<?= $group->type->name ?>)
+		<ul>
+<? foreach ($group->artist->people() as $person): ?>
+			<li>
+				<?= $person->artist->name ?>(<?= $person->type->name ?>)
+			</li>
+<? endforeach; ?>
+		</ul>
+		</li>
 		<? endforeach; ?>
 	</ol>
 	</dd>
 <? endif; ?>
-
+	<dt>People</dt>
+	<dd>
+		<ol>
+<? foreach($this->artist->people() as $person): ?>
+			<li>
+				<?= $person->artist->name ?>(<?= $person->type->name ?>)
+			</li>
+<? endforeach; ?>
+		</ol>
+	</dd>
 </dl>
+
+<h2>JSON</h2>
+
+<textarea rows="30" cols="40">
+<?= stripslashes($this->artist->json()) ?>
+</textarea>
+
+<pre>
+<? print_r($this->artist->json_data()) ?>
+</pre>

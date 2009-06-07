@@ -186,12 +186,12 @@ implements Zupal_Grid_IGrid
 
 			$key = 'artist_groups_' . $this->identity();
 
-			if (!$cache->test($key)):
+			if ((!$cache->test($key)) || $pReload):
 				$sql = 'SELECT laa.link1 AS id, laa.link_type AS link_type' .
 				' FROM l_artist_artist laa LEFT JOIN artist a ON a.id = link1 ' .
 				' WHERE (link0 = ?) and (a.type = 2) ORDER BY a.begindate';
 				error_log(__METHOD__ . ': ' . $sql);
-				$data = $this->table()->getAdapter()->fetchCol($sql, array($this->identity()));
+				$data = $this->table()->getAdapter()->fetchAssoc($sql, array($this->identity()));
 				$cache->save($data, $key);
 			endif;
 			$data = $cache->load($key);
@@ -200,7 +200,12 @@ implements Zupal_Grid_IGrid
 				foreach($data as $keys):
 					extract($keys);
 					$artist = new Zupal_Musicbrainz_Artist($id);
-					$link = new Zupal_M
+					$link = new Zupal_Musicbrainz_Lt_Artist_Artist($link_type);
+					$group = new stdClass();
+					$group->artist = $artist;
+					$group->type = $link;
+
+					$groups[] = $group;
 				endforeach;
 			endif;
 			$this->_groups = $groups;
@@ -230,21 +235,27 @@ LIMIT 0 , 30
 
 			$key = 'artist_people_' . $this->identity();
 
-			if (!$cache->test($key)):
-				$sql = 'SELECT link1 ' .
-				' FROM l_artist_artist LEFT JOIN artist a ON a.id = link1 ' .
-				' WHERE (link0 = ?) and (a.type = 1) ORDER BY a.begindate';
+			if ((!$cache->test($key)) || $pReload):
+				$sql = 'SELECT laa.link0 AS id, laa.link_type AS link_type' .
+				' FROM l_artist_artist laa LEFT JOIN artist a ON a.id = link0 ' .
+				' WHERE (link1 = ?) and (a.type = 1) ORDER BY a.begindate';
 				error_log(__METHOD__ . ': ' . $sql);
-				$data = $this->table()->getAdapter()->fetchCol($sql, array($this->identity()));
+				$data = $this->table()->getAdapter()->fetchAssoc($sql, array($this->identity()));
 				$cache->save($data, $key);
 			endif;
 			$data = $cache->load($key);
 			$people = array();
 			if ($data):
-				$rows = $this->table()->fetchAll('id IN (' . join(',', $data) . ')', 'sortname');
-				foreach($rows as $row):
-					$people[] = self::getInstance()->get($row);
-				endforeach;		// process
+				foreach($data as $keys):
+					extract($keys);
+					$artist = new Zupal_Musicbrainz_Artist($id);
+					$link = new Zupal_Musicbrainz_Lt_Artist_Artist($link_type);
+					$group = new stdClass();
+					$group->artist = $artist;
+					$group->type = $link;
+
+					$people[] = $group;
+				endforeach;
 			endif;
 			$this->_people = $people;
 		endif;
@@ -260,5 +271,51 @@ LIMIT 0 , 30
 	{
 		return $this->type == 2;
 	}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ json @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function json ()
+	{
+		return Zend_Json::encode($this->json_data());
+	}
+
+	public function json_data($pBrief = FALSE)
+	{
+		$data = array();
+		if ($pBrief):
+			$data['id'] = $this->identity();
+			$data['name'] = $this->name;
+			$data['type'] = $this->type();
+		else:
+
+		$data['artist'] = $this->toArray();
+
+		$data['groups'] = array();
+
+		if ($this->is_person()):
+			foreach($this->groups() as $group):
+				$data['groups'][] = array_merge(
+					$group->artist->json_data(1),
+					array('type_text' => $group->type->linkphrase(TRUE)));
+			endforeach;
+		endif;
+
+		$data['people'] = array();
+
+		foreach($this->people() as $person):
+			$data['people'][] = array_merge(
+					$person->artist->json_data(1), array(
+					'type_name' => $person->type->linkphrase())
+				);
+		endforeach;
+		endif;
+		return $data;
+	}
+
+
 }
 
