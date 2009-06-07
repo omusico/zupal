@@ -42,7 +42,7 @@ implements Zupal_Grid_IGrid
 	 * @param unknown_type $pRows
 	 * @param unknown_type $pSort
 	 */
-	public function render_data(array $pParams, $pStart = 0, $pRows = 400, $pSort = 'name')
+	public function render_data(array $pParams, $pStart = 0, $pRows = 100, $pSort = 'name')
 	{
 		$cache = Zupal_Media_MusicBrainz_Cache::getInstance();
 		$key = 'artists_' . $pStart . '_' . $pRows . '_' . $pSort;
@@ -80,7 +80,7 @@ implements Zupal_Grid_IGrid
 			$data = new Zend_Dojo_Data('id', $items, 'name');
 			$data->setMetadata('numRows', $count);
 
-			$cache->save($data);
+			$cache->save($key, $data);
 		endif;
 
 		return $cache->load($key);
@@ -106,7 +106,7 @@ implements Zupal_Grid_IGrid
 	//	$columns['artist_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_delete');
 
 
-		return Zupal_Grid_Maker::querygrid($pID, $pStore_ID, $columns, 'id'); //, array('onRowClick' => 'artist_row_click'));
+		return Zupal_Grid_Maker::querygrid($pID, $pStore_ID, $columns, 'id', array('onRowClick' => 'artist_row_click')); //, array('onRowClick' => 'artist_row_click'));
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_script @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -141,6 +141,124 @@ implements Zupal_Grid_IGrid
 		<?
 		return ob_get_clean();
 	}
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param <type>
+	* @return <type>
+	*/
+	public function type ()
+	{
+		switch($this->type):
+			case 1:
+				return 'person';
+			case 2:
+				return 'group';
+			default:
+				return 'other';
+		endswitch;
+	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_artist @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function is_person ()
+	{
+		return $this->type == 1;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ groups @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	
+	private $_groups = NULL;
+	/**
+	*
+	* @param int $pDepth = 1 -- currently ignored
+	* @return Zupal_Musicbrainz_Artist[]
+	*/
+	function groups($pDepth = 1, $pReload = FALSE)
+	{
+		if (!$this->isSaved()) return NULL;
+
+		if ($pReload || is_null($this->_groups)):
+			$cache = Zupal_Media_MusicBrainz_Cache::getInstance();
+
+			$key = 'artist_groups_' . $this->identity();
+
+			if (!$cache->test($key)):
+				$sql = 'SELECT laa.link1 AS id, laa.link_type AS link_type' .
+				' FROM l_artist_artist laa LEFT JOIN artist a ON a.id = link1 ' .
+				' WHERE (link0 = ?) and (a.type = 2) ORDER BY a.begindate';
+				error_log(__METHOD__ . ': ' . $sql);
+				$data = $this->table()->getAdapter()->fetchCol($sql, array($this->identity()));
+				$cache->save($data, $key);
+			endif;
+			$data = $cache->load($key);
+			$groups = array();
+			if ($data):
+				foreach($data as $keys):
+					extract($keys);
+					$artist = new Zupal_Musicbrainz_Artist($id);
+					$link = new Zupal_M
+				endforeach;
+			endif;
+			$this->_groups = $groups;
+		endif;
+		return $this->_groups;
+	}
+
+	/*
+	 *
+SELECT a1.name, lat.name, a2.name
+FROM l_artist_artist laa
+INNER JOIN `lt_artist_artist` lat ON laa.link_type = lat.id
+INNER JOIN artist a1 ON a1.id = link0
+INNER JOIN artist a2 ON a2.id = link1
+LIMIT 0 , 30
+	 */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ people @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_people = NULL;
+	function people($pDepth = 1, $pReload = FALSE)
+	{
+		if (!$this->isSaved()) return NULL;
+
+		if ($pReload || is_null($this->_people)):
+			$cache = Zupal_Media_MusicBrainz_Cache::getInstance();
+
+			$key = 'artist_people_' . $this->identity();
+
+			if (!$cache->test($key)):
+				$sql = 'SELECT link1 ' .
+				' FROM l_artist_artist LEFT JOIN artist a ON a.id = link1 ' .
+				' WHERE (link0 = ?) and (a.type = 1) ORDER BY a.begindate';
+				error_log(__METHOD__ . ': ' . $sql);
+				$data = $this->table()->getAdapter()->fetchCol($sql, array($this->identity()));
+				$cache->save($data, $key);
+			endif;
+			$data = $cache->load($key);
+			$people = array();
+			if ($data):
+				$rows = $this->table()->fetchAll('id IN (' . join(',', $data) . ')', 'sortname');
+				foreach($rows as $row):
+					$people[] = self::getInstance()->get($row);
+				endforeach;		// process
+			endif;
+			$this->_people = $people;
+		endif;
+		return $this->_people;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function is_group ()
+	{
+		return $this->type == 2;
+	}
 }
 
