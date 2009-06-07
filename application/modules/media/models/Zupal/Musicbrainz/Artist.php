@@ -64,7 +64,7 @@ implements Zupal_Grid_IGrid
 			
 			$select->limit($pRows, $pStart);
 			$fsql = $select->assemble();
-			error_log(__METHOD__ . ': '. $fsql);
+		//	error_log(__METHOD__ . ': '. $fsql);
 			
 			$rows = $this->table()->fetchAll($select);
 			$items = array();
@@ -190,7 +190,7 @@ implements Zupal_Grid_IGrid
 				$sql = 'SELECT laa.link1 AS id, laa.link_type AS link_type' .
 				' FROM l_artist_artist laa LEFT JOIN artist a ON a.id = link1 ' .
 				' WHERE (link0 = ?) and (a.type = 2) ORDER BY a.begindate';
-				error_log(__METHOD__ . ': ' . $sql);
+			//	error_log(__METHOD__ . ': ' . $sql);
 				$data = $this->table()->getAdapter()->fetchAssoc($sql, array($this->identity()));
 				$cache->save($data, $key);
 			endif;
@@ -239,7 +239,7 @@ LIMIT 0 , 30
 				$sql = 'SELECT laa.link0 AS id, laa.link_type AS link_type' .
 				' FROM l_artist_artist laa LEFT JOIN artist a ON a.id = link0 ' .
 				' WHERE (link1 = ?) and (a.type = 1) ORDER BY a.begindate';
-				error_log(__METHOD__ . ': ' . $sql);
+			//	error_log(__METHOD__ . ': ' . $sql);
 				$data = $this->table()->getAdapter()->fetchAssoc($sql, array($this->identity()));
 				$cache->save($data, $key);
 			endif;

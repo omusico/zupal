@@ -60,17 +60,24 @@ extends Zupal_Controller_Abstract
 		$beginswith = $this->_getParam('beginswith', NULL);
 		$type = $this->_getParam('type', 'artist');
 		$this->view->beginswith = $beginswith;
-		$this->view->type = $type;
 
+		error_log(__METHOD__ . ': type = ' . $type . ', bw = ' . $beginswith);
+		$this->view->type = $type;
+		$this->view->stop_reload = TRUE;
 		switch($type):
 		
 			case 'artist':
+
 				if (!is_null($beginswith)):
+					$this->view->stop_reload = FALSE;
 					$mba = Zupal_Musicbrainz_Artist::getInstance();
 					$select = $mba->table()->select()->order('id')
-					->limit(1000, $beginswith);
+					->limit(100, $beginswith * 100);
 
 					$this->view->artists = $mba->find($select);
+					if (!count($this->view->artists)):
+						$this->view->stop_reload = TRUE;
+					endif;
 				else:
 					$this->view->artists = array();
 				endif;

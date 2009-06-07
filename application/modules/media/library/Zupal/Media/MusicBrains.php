@@ -281,7 +281,7 @@ class Zupal_Media_MusicBrains
 			foreach($triplet as $i => $h):
 				$h = strtolower($h);
 				if (!array_key_exists($h, self::$_hue)):
-					error_log(__METHOD__ . ': no key for (' . $h . ')');
+				//	error_log(__METHOD__ . ': no key for (' . $h . ')');
 					continue 2;
 				endif;
 				 $triplet[$i] = self::$_hue[$h];
