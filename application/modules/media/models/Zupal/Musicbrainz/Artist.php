@@ -278,12 +278,12 @@ LIMIT 0 , 30
 	*
 	* @return string
 	*/
-	public function json ()
+	public function json ($pReload = FALSE)
 	{
 		$key = str_replace('-', '_', $this->gid);
 		$ac = Zupal_Media_MusicBrainz_Cache_Artists::getInstance();
 
-		if (!$ac->test($key)):
+		if ($pReload || !$ac->test($key)):
 			$ac->save(Zend_Json::encode($this->json_data()), $key);
 		endif;
 
