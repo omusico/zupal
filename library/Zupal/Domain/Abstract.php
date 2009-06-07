@@ -252,14 +252,20 @@ implements Zupal_Domain_IDomain
 		$rows = array();
 		if (is_numeric($pParams)):
 			$rows = $this->get($pParams);
-		 else:
+		 elseif (is_array($pParams)):
 			$select = $this->_select($pParams, $pSort);
 
 			$table_rows = $this->table()->fetchAll($select);
+		elseif ($pParams instanceof Zend_Db_Table_Select):
+		$table_rows = $this->table()->fetchAll($pParams);
+
+		endif;
+		if ($table_rows):
 			foreach($table_rows as $row):
 				$rows[] = $this->get($row);
 			endforeach;
 		endif;
+		
 		return $rows;
 	}
 

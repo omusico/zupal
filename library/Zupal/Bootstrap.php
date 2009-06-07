@@ -47,6 +47,14 @@ class Zupal_Bootstrap
         self::setupFrontController();
         self::setupModel();
         self::setupView();
+
+		$manager = Zupal_Module_Manager::getInstance();
+		$em = $manager->getEnabledModules();
+		foreach($em as $module):
+			foreach($module->plugins() as $plugin):
+		        self::$frontController->registerPlugin($plugin);
+			endforeach;
+		endforeach;
     }
     
     public static function prepareConsole() {
@@ -75,6 +83,7 @@ class Zupal_Bootstrap
         self::$frontController->returnResponse(true);
         self::$frontController->registerPlugin(new Zupal_Plugins_Pagerouter());
         self::$frontController->registerPlugin(new Zend_Controller_Plugin_ErrorHandler());
+
         self::$frontController->addModuleDirectory(ZUPAL_APPLICATION_PATH . DS . "modules");
         self::$frontController->setParam('registry', self::$registry);
 		if (self::$registry->configuration->baseurl):
