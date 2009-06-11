@@ -100,8 +100,14 @@ implements Zupal_Node_INode,
  * @param string $sort
  * @return Zend_Db_Table_Select
  */
-	protected function _select(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
+	protected function _select($searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
+		if ($pDomain && ($searchCrit instanceof Zend_Db_Table_Select)):
+			return $searchCrit;
+		elseif ($searchCrit instanceof Zend_Db_Select):
+			return $searcCrit;
+		endif;		
+
 		$table = $this->table();
 		$id_field = $table->idField();
 		$tn = $table->tableName();
@@ -152,7 +158,7 @@ implements Zupal_Node_INode,
 		);
 	}
 
-	public function find(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
+	public function find($searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
@@ -198,7 +204,7 @@ implements Zupal_Node_INode,
 	 * @param string $sort
 	 * @return Zupal_Content_IDomain
 	 */
-	public function findOne(array $searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
+	public function findOne($searchCrit = NULL, $sort = NULL, $pDomain = FALSE)
 	{
 		$table = $this->table();
 		$id_field = $table->idField();
