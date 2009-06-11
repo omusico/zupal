@@ -112,8 +112,14 @@ dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 public static function querygrid($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 'id', array $pParams = NULL)
 {
 	if (is_null($pStore_ID)) $pStore_ID = $pID . '_store';
+	$rows_per_page = 100;
+	$table_height = 400;
+	$table_width = 600;
+	if ($pParams && is_array($pParams)):
+		extract($pParams);
+	endif;
 ?>
-<table id="<?= $pID ?>"  rowsPerPage="400" style=" height: 400px" jsId="<?= $pID ?>"
+<table id="<?= $pID ?>"  rowsPerPage="<?= $rows_per_page ?>" style=" height: <?= $table_height ?>px; width: <?= $table_width ?>px" jsId="<?= $pID ?>"
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>
@@ -151,7 +157,7 @@ dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
     </script>
     <script type="dojo/method" event="getRowCount">
         // should return total count (fetch from server), not "rowsPerPage"
-        return 400;
+        return <?= $rows_per_page ?>;
     </script>
     <script type="dojo/method" event="sort" args="colIndex">
         // clears old data to force loading of new, then requests new rows

@@ -38,8 +38,8 @@ extends Zend_Cache
 	public static function cache_dir($pReload = FALSE)
 	{
 		if ($pReload || is_null(self::$_cache_dir)):
-			$value = ZUPAL_ROOT_DIR . DS . Zupal_Bootstrap::$registry->configuration->cache->path . DS . 'mb';
-
+			$value = ZUPAL_ROOT_DIR . DS . Zupal_Bootstrap::$registry->configuration->cache->path . DS . 'modules/media/musicbrainz/artists_list';
+			error_log(__METHOD__ . ': ' . $value);
 			if (!is_dir($value)):
 				mkdir($value, 775, TRUE);
 			endif;

@@ -115,7 +115,7 @@ extends Zupal_Controller_Abstract
 				$ac = Zupal_Media_MusicBrainz_Cache_Artists::getInstance();
 
 				if (!$ac->test($key)):
-					$artist = Zupal_Media_Musicbrains_Artists::getInstance()->findOne(array('gid' => $gid));
+					$artist = Zupal_Musicbrainz_Artist::getInstance()->findOne(array('gid' => $gid));
 					$json = $artist->json(); // handles caching
 				else:
 					$json = $ac->load($key);
@@ -132,6 +132,7 @@ extends Zupal_Controller_Abstract
 	*/
 	public function artistsdataAction ()
 	{
+		try{
         $this->_helper->layout->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
 		$artist = Zupal_Musicbrainz_Artist::getInstance();
@@ -147,6 +148,11 @@ extends Zupal_Controller_Abstract
 				$this->_getParam('start', 0), 
 				$this->_getParam('rows', 100),
 				$this->_getParam('sort', 'name'));
+
+		} catch(Exception $e){
+			error_log(print_r($e, 1));
+			echo '{}';
+		}
 
 	}
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ artistAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

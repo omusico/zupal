@@ -38,7 +38,8 @@ extends Zend_Cache
 	public static function cache_dir($pReload = FALSE)
 	{
 		if (is_null(self::$_cache_dir)):
-			$dir = ZUPAL_PUBLIC_PATH . DS . join(DS, array('modules','media', 'musicbrainz', 'artists'));
+			$dir = ZUPAL_ROOT_DIR . DS . Zupal_Bootstrap::$registry->configuration->cache->path . DS
+				. join(DS, array('modules','media', 'musicbrainz', 'artists'));
 			self::$_cache_dir = $dir;
 		endif;
 

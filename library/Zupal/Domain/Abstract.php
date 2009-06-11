@@ -247,7 +247,7 @@ implements Zupal_Domain_IDomain
 	 * NOTE: cannot handle joins -- use find_from_sql with table = false for join based results.
 	 */
 	
-	public function find(array $pParams = NULL, $pSort = NULL)
+	public function find($pParams = NULL, $pSort = NULL)
 	{
 		$rows = array();
 		if (is_numeric($pParams)):
@@ -281,7 +281,7 @@ implements Zupal_Domain_IDomain
 	/**
 	 * @return Zupal_Domain_Abstract
 	 */
-	public function findOne(array $pParams = NULL, $pSort = NULL)
+	public function findOne($pParams = NULL, $pSort = NULL)
 	{
 		$select = $this->_select($pParams, $pSort);
 		$row = $this->table()->fetchRow($select);

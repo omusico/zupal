@@ -80,7 +80,7 @@ implements Zupal_Grid_IGrid
 			$data = new Zend_Dojo_Data('id', $items, 'name');
 			$data->setMetadata('numRows', $count);
 
-			$cache->save($key, $data);
+			$cache->save($data, $key);
 		endif;
 
 		return $cache->load($key);
@@ -295,12 +295,14 @@ LIMIT 0 , 30
 		
 		$data = array();
 		if ($pBrief):
-			$data['id'] = $this->identity();
+			$data['gid'] = $this->gid;
 			$data['name'] = $this->name;
 			$data['type'] = $this->type();
+			$data['begin'] = $this->begindate;
+			$data['end'] = $this->enddate;
 
 			if ($this->is_group()):
-			$data['people'] = array();
+				$data['people'] = array();
 				foreach($this->people() as $person_data):
 					if ($person_data->type->is_type(1)): // musical
 						$data['people'][] = $person_data->artist->json_data(1);
@@ -309,27 +311,27 @@ LIMIT 0 , 30
 			endif;
 		else:
 
-		$data['artist'] = $this->toArray();
+			$data['artist'] = $this->json_data(TRUE);
 
-		$data['groups'] = array();
+			$data['groups'] = array();
 
-		if ($this->is_person()):
-			foreach($this->groups() as $group):
-				$data['groups'][] = array_merge(
-					$group->artist->json_data(1),
-					array('type_text' => $group->type->linkphrase(TRUE))
-				);
+			if ($this->is_person()):
+				foreach($this->groups() as $group):
+					$data['groups'][] = array_merge(
+						$group->artist->json_data(1),
+						array('type_text' => $group->type->linkphrase(TRUE))
+					);
+				endforeach;
+			endif;
+
+			$data['people'] = array();
+
+			foreach($this->people() as $person):
+				$data['people'][] = array_merge(
+						$person->artist->json_data(1),
+						array('type_name' => $person->type->linkphrase())
+					);
 			endforeach;
-		endif;
-
-		$data['people'] = array();
-
-		foreach($this->people() as $person):
-			$data['people'][] = array_merge(
-					$person->artist->json_data(1),
-					array('type_name' => $person->type->linkphrase())
-				);
-		endforeach;
 		endif;
 		return $data;
 	}

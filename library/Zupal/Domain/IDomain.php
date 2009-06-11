@@ -37,7 +37,7 @@ interface Zupal_Domain_IDomain {
 	 * @return Zupal_Content_IDomain[]
 	 */
 
-	public function find(array $searchCrit = NULL, $sort = NULL);
+	public function find($searchCrit = NULL, $sort = NULL);
 
 	/**
 	 * returns a single record matching the search crit. 
@@ -47,7 +47,7 @@ interface Zupal_Domain_IDomain {
 	 * @param string $sort 
 	 * @return Zupal_Content_IDomain
 	 */
-	public function findOne(array $searchCrit = NULL, $sort = NULL);
+	public function findOne($searchCrit = NULL, $sort = NULL);
 
 	public function findAll($pSort = NULL);
 
