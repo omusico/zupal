@@ -15,7 +15,7 @@ extends Zend_Controller_Plugin_Abstract
 				$artist = new Zupal_Musicbrainz_Artist($key);
 				$key = $artist->gid;
 			endif;
-
+			error_log(__METHOD__ . ': ' . $key);
 			$request->setRequestUri(ZUPAL_BASEURL . '/media/musicbrainz/data/type/artist/gid/'. $key);
 		endif;
     }

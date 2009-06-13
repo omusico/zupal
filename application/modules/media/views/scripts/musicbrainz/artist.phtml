@@ -5,97 +5,16 @@
 	->requireModule('dijit.layout.ContentPane')
 	->requireModule('dojo.parser')
 	->enable();
+
+	$this->headScript()->appendFile(ZUPAL_BASEURL . '/modules/media/musicbrainz/scripts/artist.js');
 	$this->headScript()->captureStart();
 ?>
-dojo.provide('zupal.media.musicbrainz.Artist');
-zupal.media.musicbrainz.Artist =
-{
-	loadArtist: function(artist_json)
-	{
-		alert('got it');
-		var artist_info_name = dijit.byId('artist_info_name');
-		artist_info_name.attr('content', artist_json.artist.name);
-
-		dojo.query('.person_row').forEach(dojo.destroy);
-
-		var artist_info_artist = dojo.byId('artist_info_artist');
-		for(i = 0; i < artist_json.people.length; ++i)
-		{
-			dojo.place(this.peopleRow(artist_json.people[i]), artist_info_artist, 'last');
-		}
-
-		dojo.query('.group_row').forEach(dojo.destroy);
-
-		var artist_info_groups = dojo.byId('artist_info_groups');
-		for(i = 0; i < artist_json.groups.length; ++i)
-		{
-			dojo.place(this.groupRow(artist_json.groups[i]), artist_info_groups, 'last');
-		}
-	}
-	,
-	peopleRow: function(person)
-	{
-		/*var new_row = document.createElement('tr');
-		var type_cell = document.createElement('td');
-		type_cell.innerHTML =  person.type_name;
-		dojo.place(type_cell, new_row, 'last');
-
-		var person_cell = document.createElement('td');
-		person_cell.innerHTML =  this.peopleLink(person);
-		dojo.place(person_cell, new_row, 'last');
-		return new_row;*/
-
-		return this.tableRow(person.type_name, this.peopleLink(person), 'people_row');
-	},
-
-	tableRow: function(cell1, cell2, rowClass)
-	{
-		var new_row = document.createElement('tr');
-		dojo.addClass(new_row, rowClass);
-		
-		var type_cell = document.createElement('td');
-		dojo.place(type_cell, new_row, 'last');
-		type_cell.innerHTML =  cell1;
-
-		var person_cell = document.createElement('td');
-		dojo.place(person_cell, new_row, 'last');
-		person_cell.innerHTML =  cell2;
-
-		return new_row;
-	},
-
-	peopleLink: function(person)
-	{
-		return '<a href="javascript: void()" onClick="zupal.media.musicbrainz.Artist.fetchArtist(\'' + person.gid + '\')">' + person.name + '</a>';
-	},
-
-	groupRow: function(group)
-	{
-		var person_text = '';
-		for(i = 0; i < group.people.length; ++i)
-		{
-			person = group.people[i];
-			person_text += this.peopleLink(person) + '<br />';
-		}
-		return tableRow(group.name, person_text, 'group_row');
-	},
-
-	fetchArtist: function(gid)
-	{
-		dojo.xhrPost(
-			{
-				url: '<?= ZUPAL_BASEURL ?>/mb/artist/'  + gid,
-				load: dojo.hitch(zupal.media.musicbrainz.Artist, function(response){this.loadArtist(response);}),
-				handleAs: 'json'
-			}
-		);
-	}
-}
 
 dojo.addOnLoad(
 	function ()
 	{
-		zupal.media.musicbrainz.Artist.fetchArtist('<?= $this->artist->gid ?>');
+		zupal.media.musicbrainz.Artist.base = '<?= ZUPAL_BASEURL ?>';
+		zupal.media.musicbrainz.Artist.fetchArtist( '<?= $this->artist->gid ?>');
 	}
 );
 <?
