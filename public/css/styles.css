@@ -217,6 +217,8 @@ a:hover .iconv .label
 	background-color: white;
 	padding: 7px;
 	font-size: 100%;
+	color: black;
+	margin-top: 5px
 }
 
 .menu h1,
@@ -346,9 +348,11 @@ ul, li {
 	font-size: 100%;
 	font-weight: normal;
 	border-bottom: none;
-	background: #333 url('../img/cake.icon.gif') no-repeat left;
+	background: #333 url('../img/zupal.icon.gif') no-repeat left;
 	color: #fff;
 	padding: 0px 30px;
+	height: 100px;
+	padding-left: 120px;
 }
 #header h1 a {
 	color: #fff;
