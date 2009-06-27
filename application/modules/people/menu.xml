@@ -9,7 +9,7 @@
 		</employees>
 		<seventh>
 			<module>people</module>
-			<controller>user</controller>
+			<controller>users</controller>
 			<action>index</action>
 			<label>Users</label>
 		</seventh>

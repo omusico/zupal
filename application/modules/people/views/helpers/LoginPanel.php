@@ -13,7 +13,7 @@ class Zupal_People_Helper_LoginPanel extends Zend_View_Helper_Abstract
 ?>
 <div class="panel">
 Logged in as <b>%s</b><br />
-<?= new Zupal_Control_Link('Log Out', array('controller' =>'user', 'module' =>'people', 'action' => 'logout')) ?>
+<?= new Zupal_Control_Link('Log Out', array('controller' =>'users', 'module' =>'people', 'action' => 'logout')) ?>
 </div>
 			<?
 				$cache->save( ob_get_clean(), 'people_login_panel_logged_in');
