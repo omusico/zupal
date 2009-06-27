@@ -56,8 +56,8 @@ implements Zupal_Grid_IGrid
 		if (!$cache->test($key)):
 			$count_sql = sprintf('SELECT count(id) FROM `%s`', $this->table()->tableName());
 			if ($name):
-				$pParams['name'] = "%$name%";
-				$count_sql .= " WHERE `name` LIKE '%$name%'";
+				$pParams['name'] = "$name%";
+				$count_sql .= " WHERE `name` LIKE '$name%'";
 			endif;
 			error_log(__METHOD__ . ': count = '. $count_sql);
 			$select = $this->_select($pParams, $pSort);
@@ -98,13 +98,8 @@ implements Zupal_Grid_IGrid
 		Zupal_Grid_Maker::prep_view($pView);
 
 		$columns = array();
-		//	'artist_view' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_view'),
-		//	'artist_edit' => array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_edit'));
 
 		foreach($pColumns as $k => $v) $columns[$k] = $v;
-
-	//	$columns['artist_delete'] = array('width' => 25, 'label' => '&nbsp;', 'get' => 'artist_delete');
-
 
 		return Zupal_Grid_Maker::querygrid($pID, $pStore_ID, $columns, 'id', array('onRowClick' => 'artist_row_click')); //, array('onRowClick' => 'artist_row_click'));
 	}

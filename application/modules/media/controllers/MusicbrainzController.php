@@ -46,7 +46,7 @@ extends Zupal_Controller_Abstract
 	/**
 	*
 	*/
-	public function artistsAction ()
+	 public function artistsAction ()
 	{
 		$this->view;
 	}

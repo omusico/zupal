@@ -114,7 +114,7 @@ implements Zupal_Grid_IGrid
 
 //	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns);
 
-	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns)
+	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns )
 	{
 		
 		Zupal_Grid_Maker::prep_view($pView);
@@ -122,32 +122,13 @@ implements Zupal_Grid_IGrid
 		$identifier = $this->table()->idField();
 		$cache = Zupal_Bootstrap::$registry->cache;
 		if (!$cache->test('people_grid')):
-?>
-	<table id="igrid_<?= $pID ?>_people_node"  rowsPerPage="10" style=" height: 400px" jsId="igrid_<?= $pID ?>" dojoType="dojox.grid.DataGrid" clientSort="true"
-	   query="{ <?= $identifier ?> : '*' }" store="<?= $pStore ?>">
-	<thead>
-		<tr>
-			<th get="people_view" width="25">&nbsp;</th>
-			<th get="people_edit"  width="25">&nbsp;</th>
-<? foreach($pColumns as $key => $column): ?>
-	<? if (is_array($column)): ?>
-		<?= $this->render_array_column($key, $column) ?>
-<? elseif (is_string($column)): ?>
-			<th field="<?= $key ?>"><?= $column ?></th>
-<? elseif (is_object($column)): // must have a __toString() method
-?>
-			<?= $column ?>
-<? endif; ?>
-<? endforeach; ?>
-			<th get="people_delete" width="25" >&nbsp;</th>
 
-		</tr>
-	</thead>
-</table>
+		ob_start();
 
-<?
+		Zupal_grid_Maker::grid($pID, $pStore_ID, $pColumns, $this->table()->idField());
+
+		$cache->save(ob_get_clean(), 'people_grid');
 		endif;
-
 		return $cache->load('people_grid');
 	}
 

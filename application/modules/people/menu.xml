@@ -9,9 +9,9 @@
 		</employees>
 		<seventh>
 			<module>people</module>
-			<controller>employees</controller>
-			<action>seventh</action>
-			<label>7th highest</label>
+			<controller>user</controller>
+			<action>index</action>
+			<label>Users</label>
 		</seventh>
 	</menu>
 </configdata>

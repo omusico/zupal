@@ -441,7 +441,7 @@ implements Zupal_Grid_IGrid
 				$items[] = $data;
 			endforeach;
 
-			$cache->save(new Zend_Dojo_Data('node_id', $items, 'performs_as'));
+			$cache->save(new Zend_Dojo_Data('node_id', $items, 'performs_as'), 'artist_data');
 		endif;
 
 		return $cache->load('artist_data');

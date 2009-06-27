@@ -40,14 +40,15 @@ implements Zend_Auth_Adapter_Interface
      */
     public function authenticate()
     {
-    	$stub = new Zupal_People(Zupal_Domain::STUB);
+		$stub = Zupal_People::getInstance();
 		$user = $stub->find_one(
     		array( 'username' => array($this->get_username(), 'LIKE'))
     	);
-    	
+    	$encrypted = Zupal_People::encrypt_password($this->get_password(), $user->identity());
+
 		if ($user && $user->is_saved() &&
-			Zupal_Poeple::encrypt_password($this->get_password(), $user->identity()) == $user->password):
-    		$result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $user);
+			$this->get_password() == $user->password): // TODO: incorpoprate encryption
+    		$result = new Zend_Auth_Result(Zend_Auth_Result::SUCCESS, $user->toArray());
     	else:
     		$result = new Zend_Auth_Result(Zend_Auth_Result::FAILURE, NULL);
     	endif;

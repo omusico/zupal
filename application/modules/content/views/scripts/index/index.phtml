@@ -1,5 +1,25 @@
+<table border="1" cellpadding="3">
+
+
 <?
 
 $this->placeholder('page_title')->set('Content');
 
+$first = false;
+foreach($this->content as $row):
+if (!$first):
+$first = TRUE;
 ?>
+<tr>
+<th>
+
+<?= join('</th><th>', array_keys($row->toArray())) ?>
+</th>
+</tr>
+<? endif; ?>
+<tr>
+<td>
+<?= join('</td><td>', $row->toArray()) ?>
+</td>
+</tr>
+<? endforeach; ?>

@@ -3,6 +3,16 @@
 class People_UserController extends Zupal_Controller_Abstract
 {
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function indexAction ()
+	{
+		$this->view->form = new Zupal_User_Form();
+		$this->view->user_form = new Zupal_User_Finder();
+	}
+	
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logoutAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	public function logoutAction()
@@ -29,22 +39,18 @@ class People_UserController extends Zupal_Controller_Abstract
 	 */
 	public function loginvalidateAction()
 	{
-		$login_form = new Zupal_Forms_Users_Login();
+		$login_form = new Zupal_People_Loginform();
 		if ($login_form->isValid($this->_getAllParams()))
 		{
 			$values = $login_form->getValues();
-			$authorizer = new Zupal_Authorizer(
+			$authorizer = new Zupal_People_Authorizer(
 				$values['username'], $values['password']
 			);
 
 			$auth = Zend_Auth::getInstance();
 			$result = $auth->authenticate($authorizer);
 
-			if ($result->isValid())
-			{
-				$this->_forward('index', 'index', NULL, array('message' => 'Welcome!'));
-			}
-			else
+			if (!$result->isValid())
 			{
 				$this->_forward('login', 'user', NULL, array('message' => 'Sorry, bad login'));
 			}
