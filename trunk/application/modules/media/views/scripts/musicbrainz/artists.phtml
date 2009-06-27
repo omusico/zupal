@@ -42,7 +42,7 @@ $this->headScript()->captureEnd();
 </form>
 
 <?
-echo $artist_domain->render_store('artist_store', '/media/musicbrainz/artistsdata', 'id');
+echo $artist_domain->render_store('artist_store', ZUPAL_BASEURL . '/media/musicbrainz/artistsdata', 'id');
 
 $artist_domain->render_grid(
 	$this,'list', 'artist_store',
