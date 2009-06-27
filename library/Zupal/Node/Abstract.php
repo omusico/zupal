@@ -123,7 +123,7 @@ implements Zupal_Node_INode,
 			foreach($searchCrit as $key => $crit):
 				if (is_array($crit)):
 					call_user_func_array(array($select, 'where'), $crit);
-				elseif (preg_match('~(=|LIKE|>|<)~', $crit)):
+				elseif (preg_match('~(=|LIKE|>|<)~', $crit) || is_numeric($key)):
 					$select->where($crit);
 				elseif (is_numeric($crit)):
 					$select->where("$key = ?", $crit);
@@ -173,6 +173,7 @@ implements Zupal_Node_INode,
 			$cond .= sprintf(' AND (`%s`.%s = `%s`.version)', $table->tableName(), $id_field, $node_stub->table()->tableName());
 			//@TODO: cache this expression?
 			$select->join($node_stub->table()->tableName(), $cond, array());
+			$sql = $select->assemble();
 			$rows = $table->getAdapter()->fetchAll($select, array(), Zend_Db::FETCH_OBJ);
 
 			// transfer data into domain objects.

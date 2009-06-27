@@ -34,11 +34,11 @@ class Zupal_Grid_Maker {
 	{
 
 		$pView->dojo()
-			->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/scaffold.js.uncompressed.js')
-			->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/nls/scaffold_en-us.js')
+		//	->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/scaffold.js.uncompressed.js')
+		//	->addLayer(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/nls/scaffold_en-us.js')
 			->requireModule('dojox.data.QueryReadStore')
-           //  ->requireModule('dojox.grid.DataGrid')
-           //  ->requireModule('dojo.data.ItemFileReadStore')
+             ->requireModule('dojox.grid.DataGrid')
+            ->requireModule('dojo.data.ItemFileReadStore')
 			->addStyleSheet(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojox/grid/resources/Grid.css')
 			->enable();
 	}
@@ -82,7 +82,7 @@ public static function grid ($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 
 {
 	if (is_null($pStore_ID)) $pStore_ID = $pID . '_store';
 ?>
-<table id="<?= $pID ?>"  rowsPerPage="10" style=" height: 400px" jsId="<?= $pID ?>"
+<table rowsPerPage="10" style=" height: 400px" 
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>
