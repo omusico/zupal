@@ -1,0 +1,38 @@
+<?php
+
+	$this->placeholder('page_title')->set('People');
+
+	$this->headScript()->captureStart();
+	$mi->render_script('list');
+	$this->headScript()->captureEnd();
+	
+	$ps = Zupal_Users::getUserInstance();
+//	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns);
+?>
+<?= $ps->render_store('users_store', ZUPAL_BASEURL . '/people/users/data' ) ?>
+<?= $ps->render_grid($this,'users_list', 'users_store',
+	 array(
+			'person_id' => array('label' => 'ID', 'width' => 40),
+			'gender' => array('label' => 'G', 'width' => 20),
+			'name_first' => array('label' => 'First Name', 'width' => 80),
+			'name_last' =>  array('label' => 'Last Name', 'width' => 100),
+			'username' => array('label' => 'User', 'width' => 120),
+			'email' => array('label' => 'eMail', 'width' => 200)
+		),
+		array('onRowClick' => 'artist_row_click') ) ?>
+
+<table width="100%">
+<tr>
+
+	<td width="1*"  valign="top">
+	<h2>Add User</h2>
+
+<?= $this->form->render() ?>
+	</td>
+	<td width="1*" valign="top">
+	<h2>Find User</h2>
+
+<?= $this->user_form->render() ?>
+	</td>
+</tr>
+</table>

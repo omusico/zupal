@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-class Zupal_People_Finder
+class Zupal_User_Finder
 extends Zend_Form
 {
 	public function __construct()

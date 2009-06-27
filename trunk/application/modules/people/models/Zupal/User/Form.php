@@ -1,6 +1,6 @@
 <?php
 
-class Zupal_People_Form
+class Zupal_User_Form
 extends Zupal_Form_Abstract
 {
 	public function __construct(Zupal_People $pPeople = NULL)
@@ -45,7 +45,6 @@ extends Zupal_Form_Abstract
 		$this->name_last->addErrorMessage('Must have this OR');
 		$this->username->addErrorMessage('Must have this OR');
 		$this->email->addErrorMessage('Must have this');
-
 
 		return false;
 	}

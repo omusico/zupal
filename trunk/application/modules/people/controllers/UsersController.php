@@ -1,7 +1,18 @@
 <?
 
-class People_UserController extends Zupal_Controller_Abstract
+class People_UsersController extends Zupal_Controller_Abstract
 {
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function dataAction ()
+	{
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender();
+		echo Zupal_Users::getUserInstance()->render_data(array(), 'username');
+	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
@@ -52,12 +63,12 @@ class People_UserController extends Zupal_Controller_Abstract
 
 			if (!$result->isValid())
 			{
-				$this->_forward('login', 'user', NULL, array('message' => 'Sorry, bad login'));
+				$this->_forward('login', NULL, NULL, array('message' => 'Sorry, bad login'));
 			}
 		}
 		else
 		{
-			$this->_forward('login', 'user', NULL, array('message' => 'Sorry, bad login'));
+			$this->_forward('login', NULL, NULL, array('message' => 'Sorry, bad login'));
 		}
 	}
 }
