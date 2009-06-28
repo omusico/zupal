@@ -2,11 +2,12 @@
 
 	$this->placeholder('page_title')->set('People');
 
+	$ps = Zupal_Users::getUserInstance();
+	
 	$this->headScript()->captureStart();
-	$mi->render_script('list');
+	$ps->render_script('users_list');
 	$this->headScript()->captureEnd();
 	
-	$ps = Zupal_Users::getUserInstance();
 //	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns);
 ?>
 <?= $ps->render_store('users_store', ZUPAL_BASEURL . '/people/users/data' ) ?>
@@ -17,7 +18,8 @@
 			'name_first' => array('label' => 'First Name', 'width' => 80),
 			'name_last' =>  array('label' => 'Last Name', 'width' => 100),
 			'username' => array('label' => 'User', 'width' => 120),
-			'email' => array('label' => 'eMail', 'width' => 200)
+			'email' => array('label' => 'eMail', 'width' => 200),
+			'view' => array('label' => '&nbsp;', 'width' => '20', 'get' => 'user_view')
 		),
 		array('onRowClick' => 'artist_row_click') ) ?>
 
