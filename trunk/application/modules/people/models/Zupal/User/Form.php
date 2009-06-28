@@ -3,30 +3,36 @@
 class Zupal_User_Form
 extends Zupal_Form_Abstract
 {
-	public function __construct(Zupal_People $pPeople = NULL)
+	public function __construct($pUser = NULL)
 	{
 		
-		$ini_path = dirname(__FILE__) . DS . 'Form.ini';
-		$config = new Zend_Config_Ini($ini_path, 'fields');
 		
-		parent::__construct($config);
+		$root = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . 'people' . DS . 'users';
 
-		$root = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . 'people' . DS . 'item';
-
-		if (is_null($pPeople)) $pPeople = new Zupal_People();
-		$this->set_domain($pPeople);
+		if (is_numeric($pUser)) {
+			$pUser = new Zupal_Users($pUser);
+		}
+		elseif (is_null($pUser))
+		{
+			$pUser = new Zupal_Users();
+		}
 		
-		if ($pPeople->identity())
+		if ($pUser->identity())
 		{
 			$this->setAction($root . DS . 'updatevalidate');
 		}
 		else
 		{
 			$this->setAction($root . DS . 'addvalidate');
-			$this->submit->setLabel('Create Person');
+			$this->submit->setLabel('Create User');
 		}
 		
+		$ini_path = dirname(__FILE__) . DS . 'Form.ini';
+		$config = new Zend_Config_Ini($ini_path, 'fields');
 		$this->setMethod('post');
+		parent::__construct($config);
+		$this->set_domain($pUser);
+
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ isValid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -67,6 +73,6 @@ extends Zupal_Form_Abstract
 	*/
 	public function domain_fields ()
 	{
-		return array('name_first', 'name_last', 'email', 'username', 'gender', 'title', 'password');
+		return array('person_id', 'name_first', 'name_last', 'email', 'username', 'gender', 'title', 'password');
 	}
 }

@@ -4,6 +4,15 @@ class Zupal_Users
 extends Zupal_People
 {
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_script @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return void;
+	*/
+	public function render_script ($pID, array $pParams = NULL)
+	{
+		include_once(dirname(__FILE__) . DS . 'user_grid_script.php');
+	}
 
 	public function render_grid(Zend_View $pView, $pID, $pStore_ID, array $pColumns )
 	{
@@ -16,7 +25,7 @@ extends Zupal_People
 
 		ob_start();
 
-		Zupal_grid_Maker::grid($pID, $pStore_ID, $pColumns, $this->table()->idField());
+		Zupal_Grid_Maker::grid($pID, $pStore_ID, $pColumns, $this->table()->idField());
 
 		$cache->save(ob_get_clean(), 'user_grid');
 		endif;
@@ -33,13 +42,11 @@ extends Zupal_People
 			endif;
 
 			$select = $this->_select($pParams, $pSort);
-			$sql = $select->assemble;
-			
+						
 			$rows = $this->table()->fetchAll($select);
 			$items = array();
 
 			foreach($rows as $row):
-				if ($row == 'password') continue;
 				$items[] = $row->toArray();
 			endforeach;
 

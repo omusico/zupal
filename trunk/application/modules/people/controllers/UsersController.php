@@ -3,6 +3,41 @@
 class People_UsersController extends Zupal_Controller_Abstract
 {
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ viewAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function viewAction ()
+	{
+		$this->view->user = new Zupal_Users($this->_getParam('id'));
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ updatevalidateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function updatevalidateAction ()
+	{
+		$form = new Zupal_User_Form($this->_getParam('person_id'));
+		if ($form->is_valid($this->_getAllParams())):
+			$form->save();
+			$this->_redirect('view', NULL, NULL, array('message' => 'User saved',
+			'id' => $form->get_domain()->identity()));
+		else:
+			$this->_redirect('edit', NULL, NULL, array('error' => 'Cannot save user', 'reload' => true));
+		endif;
+	}
+	
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ editAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function editAction ()
+	{
+		$this->view->user = new Zupal_Users($this->_getParam('id'));
+		$this->view->form = new Zupal_User_form($this->_getParam('id'));
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dataAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
