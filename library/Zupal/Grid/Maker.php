@@ -55,6 +55,16 @@ jsId="<?= $pStore_ID ?>" url="<?= $pURL ?>/rand/<?= rand(0, 100000) ?>" />
 <?
 }
 
+public static function query_store($pStore_ID, $pURL)
+{
+?>
+<div dojoType="dojox.data.QueryReadStore"
+    jsId="<?= $pStore_ID ?>"
+    url="<?= $pURL ?>"
+    doClientPaging="false" />
+<?
+}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ params @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -82,7 +92,7 @@ public static function grid ($pID, $pStore_ID = NULL, $pColumns, $pIdentifier = 
 {
 	if (is_null($pStore_ID)) $pStore_ID = $pID . '_store';
 ?>
-<table rowsPerPage="10" style=" height: 400px" 
+<table rowsPerPage="10" style=" height: 400px" id="<?= $pID ?>"  
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>
