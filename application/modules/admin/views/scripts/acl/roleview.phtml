@@ -1,0 +1,25 @@
+<?php
+
+	$this->placeholder('page_title')->set('View Role &quot;' . $this->role->label . '&quot;');
+
+?>
+
+<dl>
+
+<dt>ID</dt>
+<dd><?= $this->role->id ?></dd>
+
+<dt>Label</dt>
+<dd><?= $this->role->label ?></dd>
+
+</dl>
+<?= new Zupal_Control_IconLink('edit.gif', 'Edit Role', array('module' => 'admin',
+		'controller' => 'acl',
+		'action' => 'editrole',
+		'id' => $this->role->id
+	)) ?>
+<?= new Zupal_Control_IconLink('x.gif', 'Delete Role', array('module' => 'admin',
+		'controller' => 'acl',
+		'action' => 'deleterole',
+		'id' => $this->role->id
+	)) ?>

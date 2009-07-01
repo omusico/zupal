@@ -7,24 +7,35 @@
 			<action>index</action>
 			<label>Modules</label>
 		</modules>
+		
 		<create>
 			<module>admin</module>
 			<controller>item</controller>
 			<action>create</action>
 			<label>Create Module</label>
 		</create>
+
 		<find>
 			<module>admin</module>
 			<controller>item</controller>
 			<action>find</action>
 			<label>Find</label>
 		</find>
+
 		<mm>
 			<module>admin</module>
 			<controller>modules</controller>
 			<action>formmaker</action>
 			<label>Form Maker</label>
 		</mm>
+
+		<perm>
+			<module>admin</module>
+			<controller>acl</controller>
+			<action>index</action>
+			<label>Permisions</label>
+		</perm>
+
 		<tabledef>
 			<module>admin</module>
 			<controller>modules</controller>
