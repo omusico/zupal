@@ -1,0 +1,22 @@
+<?php
+$this->placeholder('page_title')->set('Permissions');
+
+$roles = Zupal_Roles::getInstance();
+
+$this->headScript()->captureStart();
+$roles->render_script('role_list');
+$this->headScript()->captureEnd();
+
+$roles->render_store('role_store', ZUPAL_BASEURL . '/admin/acl/roledata');
+
+$roles->render_grid(
+	$this,'role_list', 'role_store',
+	 array(
+			'id' => array('label' => 'ID', 'width' => 300),
+			'label' => array('label' => 'Label', 'width' => 300),
+		),
+		array('onRowClick' => 'role_row_click')
+	);
+
+echo new Zupal_Role_form();
+?>
