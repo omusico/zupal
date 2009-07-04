@@ -12,14 +12,21 @@
 <dt>Label</dt>
 <dd><?= $this->role->label ?></dd>
 
+<dt>Note</dt>
+<dd><?= $this->role->notes ?></dd>
+
+<dt>Parent</dt>
+<dd><?= $this->role->parent()->label ?></dd>
+
 </dl>
+
 <?= new Zupal_Control_IconLink('edit.gif', 'Edit Role', array('module' => 'admin',
 		'controller' => 'acl',
-		'action' => 'editrole',
+		'action' => 'roleedit',
 		'id' => $this->role->id
 	)) ?>
 <?= new Zupal_Control_IconLink('x.gif', 'Delete Role', array('module' => 'admin',
 		'controller' => 'acl',
-		'action' => 'deleterole',
+		'action' => 'roledelete',
 		'id' => $this->role->id
 	)) ?>
