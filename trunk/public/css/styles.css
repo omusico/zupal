@@ -508,6 +508,16 @@ label {
 }
 dd label {display: inline-block }
 
+form dd label
+{
+	border: 1px solid #999;
+	border-left-color: #EEE;
+	border-top-color: #EEE;
+	margin-right: 5px;
+	font-weight: bold;
+	background-color: #FFC;
+	padding-left: 5px;
+}
 input, textarea {
 	clear: both;
 	font-size: 140%;
@@ -599,13 +609,13 @@ input[type=submit] {
 	padding: 2px 5px;
 	width: auto;
 	vertical-align: bottom;
-	border: 2px solid #0c0;
+	border: 1px solid #0c0;
 	border-bottom-color: #090;
-	background: #E1FFE1;
+	background: #9F6;
 	color: black;
     font-weight: bold;
-    border-top-color: #ccff99;
-    border-left-color: #ccff99;
+    border-top-color:  #E1FFE1;
+    border-left-color: #E1FFE1;
 }
 
 input[type=button] {

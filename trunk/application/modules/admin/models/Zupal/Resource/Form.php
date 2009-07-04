@@ -1,6 +1,6 @@
 <?
 
-class Zupal_Role_Form
+class Zupal_Resource_Form
 extends Zupal_Form_Abstract
 {
 
@@ -15,41 +15,24 @@ extends Zupal_Form_Abstract
 		$root = Zend_Controller_Front::getInstance()->getBaseUrl() . DS . 'admin' . DS . 'acl' . DS;
 
 		if (is_null($pRole)):
-			$pRole = new Zupal_Roles();
+			$pRole = new Zupal_Resources();
 		elseif (is_string($pRole)):
-			$pRole = new Zupal_Roles($pRole);
+			$pRole = new Zupal_Resources($pRole);
 		endif;
 
 		$this->set_domain($pRole);
 
 		if ($pRole->identity())
 		{
-			$this->setAction($root . 'roleupdatevalidate');
+			$this->setAction($root . 'resupdatevalidate');
 		}
 		else
 		{
-			$this->setAction($root  . 'roleaddvalidate');
-			$this->submit->setLabel('Create Role');
+			$this->setAction($root  . 'resaddvalidate');
+			$this->submit->setLabel('Create Resource');
 		}
 
-		$this->load_parents();
-
 		$this->setMethod('post');
-	}
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_parents @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-	/**
-	*
-	* @return <type>
-	*/
-	public function load_parents ()
-	{
-		$stub = Zupal_Roles::getInstance();
-		$parents = $stub->find(array(), 'id');
-
-		foreach ($parents as $parent):
-			$this->parent->addMultiOption($parent->identity(), $parent->label);
-		endforeach;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -1,6 +1,8 @@
 <?php
 
-class Zupal_Roles extends Zupal_Domain_Abstract
+class Zupal_Roles
+extends Zupal_Domain_Abstract
+implements Zupal_Grid_IGrid
 {
 
     protected static $_Instance = null;
@@ -32,8 +34,8 @@ class Zupal_Roles extends Zupal_Domain_Abstract
 	{
 		parent::save();
 		$cache = Zupal_Bootstrap::$registry->cache->remove('roles');
-
 	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Grid Implementation @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
@@ -46,7 +48,7 @@ class Zupal_Roles extends Zupal_Domain_Abstract
 	 * @param unknown_type $pRows
 	 * @param unknown_type $pSort
 	 */
-	public function render_data()
+	public function render_data(array $pParams, $pStart = 0, $pRows = 30, $pSort = NULL)
 	{
 		$cache = Zupal_Bootstrap::$registry->cache;
 		$key = 'roles';
@@ -109,6 +111,18 @@ class Zupal_Roles extends Zupal_Domain_Abstract
 	private function store_url()
 	{
 		return ZUPAL_BASEURL . '/admin/acl/roledata';
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ parent @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @return <type>
+	*/
+	public function parent ()
+	{
+		$p = $this->find_one(array('id' => $this->parent));
+		if (!$p) $p = $this->get('all');
+		return $p;
 	}
 }
 
