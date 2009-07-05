@@ -701,3 +701,26 @@ pre {
 	padding: 1em;
 }
 
+table.grid
+{
+	border: 1px solid #999;
+	margin: 5px;
+	padding: 0px;
+}
+
+table.grid th,
+table.grid td
+{
+	padding: 5px;
+	border-bottom:  1px solid #999;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 1em;
+	text-align: left;
+	vertical-align: top;
+}
+
+table.grid th
+{
+	font-weight: bold;
+	padding-right: 10px;
+}
