@@ -42,7 +42,8 @@ abstract class Zupal_Control_Abstract {
 			$url[] = $k;
 			$url[] = $v;
 		endforeach;
-		return join(DS, $url);
+		$url_string = join(DS, $url);
+		return $url_string;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ tag @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

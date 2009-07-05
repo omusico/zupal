@@ -124,5 +124,53 @@ implements Zupal_Grid_IGrid
 		if (!$p) $p = $this->get('all');
 		return $p;
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grants @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_grants = NULL;
+	function grants($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_grants)):
+			$this->_grants = Zupal_Grants::getInstance()->find(array('role' => $this->identity()), 'role');
+		endif;
+		return $this->_grants;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grant @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	/**
+	*
+	* @param Zupal_Resources | String $pResource
+	* @return boesourcean | NULL
+	*/
+	
+	public function grant ($pResource)
+	{
+		if ($pResource instanceof Zupal_Resources):
+			$pResource = $pResource->identity();
+		endif;
+
+		$grant = NULL;
+
+		foreach($this->grants() as $grant):
+			if ($g->resource == $pResource):
+				$grant = $g;
+				break;
+			endif;
+		endforeach;
+		return $grant ? $grant->allow : NULL;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ acl_role @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_acl_role = NULL;
+	function as_acl_role($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_acl_role) || ($this->_acl_role->getRoleId() != $this->identity())):
+			$value = new Zend_Acl_Role($this->identity());
+			$this->_acl_role = $value;
+		endif;
+		return $this->_acl_role;
+	}
 }
 

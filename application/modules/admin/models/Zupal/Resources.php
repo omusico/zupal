@@ -112,5 +112,52 @@ implements Zupal_Grid_IGrid
 	{
 		return ZUPAL_BASEURL . '/admin/acl/resdata';
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ acl_resource @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_acl_resource = NULL;
+	function as_acl_resource($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_acl_resource) || ($this->identity() != $this->_acl_resource->getResourceId())):
+			$value = new Zend_Acl_Resource($this->identity());
+			$this->_acl_resource = $value;
+		endif;
+		return $this->_acl_resource;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grants @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+	private $_grants = NULL;
+	function grants($pReload = FALSE)
+	{
+		if ($pReload || is_null($this->_grants)):
+			$this->_grants = Zupal_Grants::getInstance()->find(array('resource' => $this->identity()), 'resource');
+		endif;
+		return $this->_grants;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grant @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	* @param Zupal_Roles | String $pRole
+	* @return boolean | NULL
+	*/
+	public function grant ($pRole)
+	{
+		if ($pRole instanceof Zupal_Roles):
+			$pRole = $pRole->identity();
+		endif;
+
+		$grant = NULL;
+
+		foreach($this->grants() as $g):
+			if ($g->role == $pRole):
+				$grant = $g;
+				break;
+			endif;
+		endforeach;
+		return $grant ? $grant->allow : NULL;
+	}
+
 }
 

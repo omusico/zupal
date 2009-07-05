@@ -36,6 +36,13 @@
 			<label>Permisions</label>
 		</perm>
 
+		<grant>
+			<module>admin</module>
+			<controller>acl</controller>
+			<action>grants</action>
+			<label>Grants</label>
+		</grant>
+
 		<tabledef>
 			<module>admin</module>
 			<controller>modules</controller>
