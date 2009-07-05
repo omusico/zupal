@@ -13,6 +13,71 @@ extends Zupal_Controller_Abstract
 		
 	}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grantAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function grantAction ()
+	{
+		$res_id = $this->_getParam('res');
+		$role_id = $this->_getParam('role');
+		$grant = Zupal_Grants::getInstance()->findOne(array('resource' => $res_id, 'role' => $role_id));
+		
+		switch($this->_getParam('mode')):
+			case ('choose'):
+				$this->view->res = $res = new Zupal_Resources($res_id);
+				$this->view->role = $role = new Zupal_Roles($role_id);
+				$this->view->from = $this->_getParam('from');
+				$this->view->form = new Zupal_Grant_Form($res_id, $role_id);
+			break;
+
+			case 'unlocked':
+				$grant->allow = 0;
+				$grant->save();
+				$this->_forward('grants');
+			break;
+
+			case 'locked':
+				$grant->allow = 1;
+				$grant->save();
+				$this->_forward('grants');
+			break;
+
+			case 'delete':
+				$grant->delete();
+				$this->_forward('grants');
+			break;
+
+		endswitch;
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grantvalidateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function grantvalidateAction ()
+	{
+		$res = $this->_getParam('res');
+		$role = $this->_getParam('role');
+		$allow = $this->_getParam('allow');
+
+		$grant = Zupal_Grants::getInstance()->findOne(array('resource' => $res, 'role' => $role));
+		if (!$grant):
+			$grant = new Zupal_Grants();
+			$grant->resource = $res;
+			$grant->role = $role;
+		endif;
+
+		if (strcasecmp('null', $allow)):
+			$grant->allow = $allow;
+			$grant->save();
+		else:
+			$grant->delete();
+		endif;
+
+		$this->_forward('grants');
+	}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ reseditAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -29,6 +94,16 @@ extends Zupal_Controller_Abstract
 	public function roleeditAction ()
 	{
 		$this->view->form = new Zupal_Role_Form($this->_getParam('id'));
+	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grantAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+	/**
+	*
+	*/
+	public function grantsAction ()
+	{
+		$this->view->res = Zupal_Resources::getInstance()->findAll(NULL, 'id');
+		$this->view->roles = Zupal_Roles::getInstance()->findAll(NULL, 'id');
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ resaddvalidateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

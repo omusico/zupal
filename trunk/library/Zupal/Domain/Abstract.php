@@ -256,9 +256,8 @@ implements Zupal_Domain_IDomain
 			$select = $this->_select($pParams, $pSort);
 
 			$table_rows = $this->table()->fetchAll($select);
-		elseif ($pParams instanceof Zend_Db_Table_Select):
-		$table_rows = $this->table()->fetchAll($pParams);
-
+		elseif (is_null($pParams) || ($pParams instanceof Zend_Db_Table_Select)):
+			$table_rows = $this->table()->fetchAll($pParams, $pSort);
 		endif;
 		if ($table_rows):
 			foreach($table_rows as $row):
