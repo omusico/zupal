@@ -8,75 +8,36 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 
 	public function init()
 	{
-		$this->view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
-		
-		Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
 
-		$layout = $this->_helper->layout;
-		$root = realpath(dirname(__FILE__) . '/../../../');
-		$layout->setLayoutPath(ZUPAL_LAYOUT_PATH);
-		$layout->setLayout('default');
-
-		$this->view->placeholder('base_path') ->set($this->getFrontController()->getBaseUrl());
-		// note -- deprecated, using ZUPAL_BASEURL constant.
-	//	$this->view->dojo()
-	//		->setLocalPath(ZUPAL_BASEURL . DS . 'scripts/Dojo/dojo/dojo.js')
-			//->requireModule('dijit.form.Form')
-    //         ->setDjConfigOption('dojoBlankHtmUrl', '/blank.html');
 	}
 
 	public function preDispatch()
 	{
-		$menu = new Zupal_Menu('Modules');
-		
-		$active_module = Zend_Controller_Front::getInstance()->getRequest()->getModuleName();
+            $module = $this->getRequest()->getModuleName();
+            $config = array(
+                'basePath' => APPLICATION_PATH . '/library/' . $module,
+                'namespace' => ucfirst($module)
+            );
 
-		foreach(Zupal_Module_Manager::getInstance()->getModuleNames() as $module)
-		{
-			$item = new Zupal_Menu_Item(ucfirst($module), $module, 'index', 'index');
-			$menu->set_item($item);
-			if (!strcasecmp($module, $active_module)):
-				$item->list_class = 'active';
-				$module_def = Zupal_Module_Manager::getInstance()->get($module);
-				$menu_file = $module_def->info()->menu;
-				if ($menu_file):
-					$menu_path = $module_def->directory() . DS . $menu_file;
-					if (file_exists($menu_path)):
-						$config = FALSE;
-						switch (pathinfo($menu_path, PATHINFO_EXTENSION )):
-							case 'xml':
-								$config = new Zend_Config_Xml($menu_path, 'menu');
-							break;
+            $loader = new Zend_Loader_Autoloader_Resource($config);
+            $pages = APPLICATION_PATH . '/modules/' .  $module . '/views/pages.ini';
 
-							case 'ini';
-								$config = new Zend_Config_Ini($menu_path);
-							break;
+            if (file_exists($pages)):
+                $module_pages = new Zend_Config_Ini($pages, 'module');
+                if (count($module_pages)):
+                    $this->view->module_pages = new Zend_Navigation($module_pages);
+                    foreach($this->view->module_pages as $page):
+                        if ($page instanceof Zend_Navigation_Page_Mvc):
+                            if (strcasecmp($page->getController(), $this->getRequest()->getControllerName())):
+                                $page->removePages();
+                            endif;
+                        endif;
+                    endforeach;
+                else:
+                    $this->view->module_pages = FALSE;
+                endif;
+            endif;
 
-						endswitch;
-						
-						if ($config):
-							$submenu = new Zupal_Menu('', $config);
-							$item->submenu = $submenu;
-						endif;
-					else:
-						$module_item = Zupal_Module_Manager::getInstance()->get($module);
-						if ($module_item->has('library' . DS . str_replace('_', DS, $menu_file). '.php')):
-							$item->submenu = new $menu_file();
-						endif;
-					endif;
-				endif;
-			endif;
-		}
-
-		$this->view->placeholder('nav')->set($menu);
-
-		foreach(array('message', 'error') as $property):
-			$v = $this->_getParam($property, '');
-			if ($v):
-				error_log(__METHOD__ . ': ' . $property . ' = ' . $v);
-				$this->view->placeholder($property)->set($v);
-			endif;
-		endforeach;
 	}
 
 	public function postDispatch()

@@ -1,0 +1,37 @@
+body
+{
+    background-color: yellow;
+    margin: 0px;
+    padding: 0px;
+    color: red;
+}
+
+div#menu
+{
+    float: left;
+    width: 200px;
+    border: 2px solid black;
+    margin: 4pt;
+}
+
+div#menu ul,
+div#menu li
+{
+    margin: 0px;
+    padding: 0px;
+}
+div#menu li
+{
+    padding-left: 1em;
+}
+
+
+div#menu li a,
+div#menu li a.link,
+div#menu li a.visited
+{
+    font-family: Arial;
+    color: Blue;
+    font-weight: bold;
+    text-decoration: none;
+}

@@ -1,17 +1,18 @@
 <?php
 
-class IndexController extends Zupal_Controller_Abstract
+class IndexController extends Zend_Controller_Action
 {
 
+    public function init()
+    {
+        /* Initialize action controller here */
+    }
 
     public function indexAction()
     {
-		$this->view->params = $this->_getAllParams();
+        // action body
     }
 
+
 }
-
-
-
-
 
