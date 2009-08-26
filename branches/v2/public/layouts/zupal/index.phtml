@@ -1,0 +1,35 @@
+<?php echo $this->doctype() ?>
+<?
+error_log(print_r(get_include_path(), 1));
+$zn = Zupal_Nav::getInstance();
+?>
+<html>
+<head>
+    <link href="<?= $this->baseUrl() ?><?= preg_replace('~^' . ZUPAL_PUBLIC_PATH . '~', '', dirname(__FILE__)) ?>/style.css"
+          media="all" rel="stylesheet" type="text/css" />
+    <?php echo $this->headTitle() ?>
+    <?php echo $this->headMeta() ?>
+    <?php echo $this->headLink() ?>
+    <?php echo $this->headStyle() ?>
+    <?php echo $this->headScript() ?>
+    <base href="/" />
+</head>
+
+<body>
+    <div id="menu">
+        <?= $this->navigation()->menu()->renderMenu(
+            $zn->core_pages(),
+            $zn->core_page_options()
+            )
+            ?>
+<? 
+if ($this->module_pages):
+?>
+        <?= $this->navigation()->menu()->renderMenu($this->module_pages) ?>
+<? endif; ?>
+    </div>
+    <h1><?= $this->placeholder('page_title' )?></h1>
+    <?php echo $this->layout()->content ?>
+</body>
+
+</html>
