@@ -22,12 +22,8 @@ class Administer_ModulesController extends Zupal_Controller_Abstract
  *
  */
     public function indexAction () {
-        $modules_table = new Administer_Model_DbTable_Modules();
-
         $m = Administer_Model_Modules::getInstance();
         $m->update_from_filesystem();
-        $this->view->modules = $modules_table->fetchAll(NULL, 'folder');
-        
-        
+        $this->view->modules = $m->table()->fetchAll(NULL, 'folder');        
     }
 }

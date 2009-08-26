@@ -14,6 +14,7 @@ class Administer_IndexController extends Zupal_Controller_Abstract
  */
     public function init () {
         $this->_helper->layout->setLayout('admin');
+        parent::init();
     }
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
