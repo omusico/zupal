@@ -25,7 +25,6 @@ implements Zupal_Domain_IDomain
 			$this->_row = $pID;
 		elseif (!strcasecmp($pID, self::STUB)):
 			$this->asStub();
-			$this->newRow();
 		elseif ($pID):
 			$this->load($pID);
 		else:
@@ -36,7 +35,7 @@ implements Zupal_Domain_IDomain
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ new @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	protected function newRow($pData = NULL)
-	{		
+	{
 		$this->_row = $this->table()->fetchNew();
 		$row = $this->_row;
 		if ($pData):
@@ -53,7 +52,7 @@ implements Zupal_Domain_IDomain
 				endforeach;
 			endif;
 		endif;
-		
+
 		return $row;
 	}
 
@@ -67,9 +66,9 @@ implements Zupal_Domain_IDomain
 		if ($data):
 			extract($data);
 			$id = $this->__get($local_key);
-			
+
 			extract($data); // should return $class, $local_key, $value = NULL
-			
+
 			if ($id):
 				if ($value):
 					if ($value->identity() != $id):
@@ -105,7 +104,7 @@ implements Zupal_Domain_IDomain
 			return $new;
 		else:
 			return NULL;
-		endif; 
+		endif;
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -132,7 +131,7 @@ implements Zupal_Domain_IDomain
 	public function identity()
 	{
 		if ($this->isStub()) return NULL;
-		//@NOTE: elaborate retrieval for debugging purposes -- should be simplified for production. 
+		//@NOTE: elaborate retrieval for debugging purposes -- should be simplified for production.
 		$id_field = $this->table()->idField();
 	/*	if ($this->_row instanceof stdClass ):
 			if (property_exists($this->_row, $id_field)):
@@ -165,7 +164,7 @@ implements Zupal_Domain_IDomain
 
 		if ($pID):
 			$hits = $this->table()->find($pID);
-			if ($hits): 
+			if ($hits):
 				$this->_row = $hits->current();
 			else:
 			$log = Zupal_Module_Manager::getInstance()->get('people')->logger();
@@ -246,7 +245,7 @@ implements Zupal_Domain_IDomain
 	 *
 	 * NOTE: cannot handle joins -- use find_from_sql with table = false for join based results.
 	 */
-	
+
 	public function find($pParams = NULL, $pSort = NULL)
 	{
 		$rows = array();
@@ -264,7 +263,7 @@ implements Zupal_Domain_IDomain
 				$rows[] = $this->get($row);
 			endforeach;
 		endif;
-		
+
 		return $rows;
 	}
 
@@ -294,7 +293,7 @@ implements Zupal_Domain_IDomain
 	* @return Zend_Db_Table_Select
 	*/
 	protected function _select ($pParams, $pSort = NULL)
-	{		
+	{
 		$select = $this->table()->select();
 		if (is_array($pParams) && count($pParams)):
 			foreach($pParams as $field => $value):
@@ -326,46 +325,35 @@ implements Zupal_Domain_IDomain
 	 *
 	 * @return Zupal_Domain_IDomain
 	 */
-	public abstract function get ($pID);
+	public abstract function get ($pID = NULL, $pField_Values = NULL);
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-	/**
-	 * This is a "Magic Method" passthrough to the row object/array
-	 * @TODO: should work simplified -- only Zend_DB_Table_Rows used a sa possible row value. 
-	 */
 	public function __get ($pField)
 	{
-		if (is_object($this->_row)):
-		 	if ($this->_row instanceof stdClass):
-		 		if (property_exists($this->_row, $pField)):
-		 			return $this->_row->$pField;
-		 		else:
-		 			throw new Exception(__METHOD__ . ": mock field $pField missing from " . get_class($this) . '(' . print_r($this->_row, 1) . ')');
-		 		endif;
-			elseif($this->_row instanceof Zend_Db_Table_Row_Abstract):
-				return $this->_row->__get($pField);
-			else:
-				throw new Exception(__METHOD__ . ': bad row object (' . get_class($this->_row) . ') polled for field ' . $pField);
-		 	endif;
-		elseif (is_array($this->_row)):
-			if (! array_key_exists($pField, $this->_row)):
-				throw new Exception(__METHOD__ . ': no ' . $pField . ' in keys (' . join(',', array_keys($this->_row)) . ')');
-
-				endif;
-			return $this->_row[$pField];
-		else:
-			throw new Exception(__METHOD__ . ': bad row polled for field ' . $pField);
-		endif;
+            return $this->_row->__get($pField);
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	public function __set($pField, $pValue)
 	{
-		//@NOTE: __get accepts array data but this method presumes row object. One or the other direction needs to be solid. 
-		$this->_row->$pField = $pValue;
+		//@NOTE: __get accepts array data but this method presumes row object. One or the other direction needs to be solid.
+		$this->_row->__set($pField, $pValue);
 	}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+        /**
+         *
+         * @param <type> $pFields
+         * @return <type>
+         */
+        public function set_fields ($pFields) {
+
+            foreach($pFields as $f => $v):
+                $this->_row->$f = $v;
+            endforeach;
+        }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -391,7 +379,7 @@ implements Zupal_Domain_IDomain
 				print_r($this->_row);
 				throw new Exception('Cannot save ' . print_r($this->_row, 1));
 			endif;
-			
+
 			$this->_row->save();
 
 		else:
@@ -424,7 +412,7 @@ implements Zupal_Domain_IDomain
 	{
 		return $this->_row->toArray();
 	}
-	
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_from_sql @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 	/**
