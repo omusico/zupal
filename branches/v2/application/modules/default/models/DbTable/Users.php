@@ -1,6 +1,6 @@
 <?php
 
-class Model_Table_Users
+class Model_DbTable_Users
 extends Zupal_Table_Abstract
 {
     protected $_name = 'zupal_users';
