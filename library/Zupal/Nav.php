@@ -37,22 +37,65 @@ class Zupal_Nav
      *
      * @return <type>
      */
-    public function core_pages () {
-        $config = new Zend_Config_Ini(dirname(__FILE__) . '/core_pages.ini', 'pages');
-        return new Zend_Navigation($config);
-        $out = array();
-        foreach($config as $page):
-            $out[] = Zend_Navigation_Page::factory($page);
+    public function pages ($pModule) {
+        $pages = array();
+        $req = Zend_Controller_front::getInstance()->getRequest();
+        $active_module = $req->getModuleName();
+        $active_controller = $req->getControllerName();
+
+        $sql = array('(required = 1) OR (active = 1)', 'sort_by');
+        $modules = Administer_Model_Modules::getInstance()->find_from_sql($sql, TRUE, FALSE);
+        foreach($modules as $module):
+            $module->menu();
+            $module_names[] = '"' . $module->folder . '"';
         endforeach;
+
+
+        $module_is_active = sprintf(' (module = "%s") ', $active_module);
+
+        $mm = Model_Menu::getInstance();
+
+        $sql = sprintf('(module in (%s)) AND (parent = 0)', join(',', $module_names));
+        //// at this point have selected all the menus of this module
+
+        $sql .= sprintf(' AND ((if_module = 0) OR (%s)) ', $module_is_active);
+        // if the menu only viewable in the context of the current menu,
+        // require the module to be current
+
+        error_log(__METHOD__ . ': menu sql = ' . $sql);
+
+        foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
+            $new_pages = $menu->pages();
+            $pages = array_merge($pages,  $new_pages);
+        endforeach;
+       return new Zend_Navigation($pages);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ filter @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pPages,
+     * @param string $pModule
+     * @param string $pController
+     * @return <type>
+     */
+    public function filter ($pPages, $pModule, $pController) {
+        $out = array();
+        foreach($pPages as $key => $page):
+            if ($page instanceof Zend_Navigation_Page_Mvc):
+                $active = !(strcasecmp($page->getModule(), $pModule) || strcasecmp($page->getController(), $pController));
+                if ($page->ifactive && (!$active)):
+                    continue;
+                endif;
+            endif;
+            $subpages = $page->getPages();
+            if (count($subpages)):
+                $page->setPages($this->filter($subpages, $pModule, $pController));
+            endif;
+            $out[] = $page;
+        endforeach;
+        
         return $out;
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ core_page_options @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @return <type>
-     */
-    public function core_page_options () {
-        return array();
-    }
 }

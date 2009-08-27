@@ -20,24 +20,8 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
             );
 
             $loader = new Zend_Loader_Autoloader_Resource($config);
-            $pages = APPLICATION_PATH . '/modules/' .  $module . '/views/pages.ini';
 
-            if (file_exists($pages)):
-                $module_pages = new Zend_Config_Ini($pages, 'module');
-                if (count($module_pages)):
-                    $this->view->module_pages = new Zend_Navigation($module_pages);
-                    foreach($this->view->module_pages as $page):
-                        if ($page instanceof Zend_Navigation_Page_Mvc):
-                            if (strcasecmp($page->getController(), $this->getRequest()->getControllerName())):
-                                $page->removePages();
-                            endif;
-                        endif;
-                    endforeach;
-                else:
-                    $this->view->module_pages = FALSE;
-                endif;
-            endif;
-
+            $this->view->addHelperPath(APPLICATION_PATH . '/modules/default/views/helpers/Zupal', 'Zupal_Helper');
 	}
 
 	public function postDispatch()
