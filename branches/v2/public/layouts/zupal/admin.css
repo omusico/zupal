@@ -1,9 +1,7 @@
 body
 {
     background-color: #CCC;
-    margin: 0px;
-    padding: 0px;
-    color: #000;
+    color: black;
 }
 
 div#menu
@@ -13,18 +11,6 @@ div#menu
     border: 2px solid black;
     margin: 4pt;
 }
-
-div#menu ul,
-div#menu li
-{
-    margin: 0px;
-    padding: 0px;
-}
-div#menu li
-{
-    padding-left: 1em;
-}
-
 
 div#menu li a,
 div#menu li a.link,

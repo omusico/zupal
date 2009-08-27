@@ -14,15 +14,20 @@ div#menu
     margin: 4pt;
 }
 
-div#menu ul,
-div#menu li
+div#user_menu ul,
+div#menu ul
 {
     margin: 0px;
     padding: 0px;
 }
+
+div#user_menu li,
 div#menu li
 {
+    margin: 0px;
+    padding: 0px;
     padding-left: 1em;
+    list-style: none
 }
 
 
@@ -34,4 +39,23 @@ div#menu li a.visited
     color: white;
     font-weight: bold;
     text-decoration: none;
+}
+
+div#user_menu h1
+{
+    font-size: 100%;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 1em;
+}
+
+div#user_menu ul.navigation,
+div#user_menu ul.navigation li
+{
+    display: inline;
+}
+
+div#main
+{
+    float: left; 
 }

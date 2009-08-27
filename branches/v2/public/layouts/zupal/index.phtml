@@ -1,8 +1,12 @@
 <?php echo $this->doctype() ?>
+<?
+error_log(print_r(get_include_path(), 1));
+?>
 <html>
 <head>
-    <link href="<?= $this->baseUrl() ?><?= preg_replace('~^' . ZUPAL_PUBLIC_PATH . '~', '', dirname(__FILE__)) ?>/style.css"
-          media="all" rel="stylesheet" type="text/css" />
+<?
+    $this->zupallayoutcss('style.css', __FILE__);
+?>
     <?php echo $this->headTitle() ?>
     <?php echo $this->headMeta() ?>
     <?php echo $this->headLink() ?>
@@ -15,8 +19,11 @@
     <div id="menu">
         <?= $this->zupalmenus() ?>
     </div>
+    <?= $this->zupalusermenu() ?>
+    <div id="main">
     <h1><?= $this->placeholder('page_title' )?></h1>
     <?php echo $this->layout()->content ?>
+    </div>
 </body>
 
 </html>
