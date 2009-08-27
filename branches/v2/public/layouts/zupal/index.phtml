@@ -1,8 +1,4 @@
 <?php echo $this->doctype() ?>
-<?
-error_log(print_r(get_include_path(), 1));
-$zn = Zupal_Nav::getInstance();
-?>
 <html>
 <head>
     <link href="<?= $this->baseUrl() ?><?= preg_replace('~^' . ZUPAL_PUBLIC_PATH . '~', '', dirname(__FILE__)) ?>/style.css"
@@ -17,16 +13,7 @@ $zn = Zupal_Nav::getInstance();
 
 <body>
     <div id="menu">
-        <?= $this->navigation()->menu()->renderMenu(
-            $zn->core_pages(),
-            $zn->core_page_options()
-            )
-            ?>
-<? 
-if ($this->module_pages):
-?>
-        <?= $this->navigation()->menu()->renderMenu($this->module_pages) ?>
-<? endif; ?>
+        <?= $this->zupalmenus() ?>
     </div>
     <h1><?= $this->placeholder('page_title' )?></h1>
     <?php echo $this->layout()->content ?>
