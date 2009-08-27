@@ -6,19 +6,49 @@ $this->placeholder('page_title')->set('Modules');
     <tr>
         <?
         $mm = $this->modules[0];
-        foreach (array_keys($mm->toArray()) as $t): ?>
+        foreach (array_diff(array_keys($mm->toArray()), array('active', 'required')) as $t): ?>
         <th><?= $t ?></th>
         <? endforeach; ?>
-
+        <th>Required</th>
+        <th>Present</th>
+        <th>Active</th>
     </tr>
 
-<? foreach ($this->modules as $m): ?>
+<? foreach ($this->modules as $m):
+    $data = $m->toArray();
+
+    unset($data['active']);
+    unset($data['required']);
+?>
     <tr>
         <td>
-            <?= join($m->toArray(), '</td><td>') ?>
+            <?= join($data, '</td><td>') ?>
         </td>
 
+        <td>
+            <? if($m->required): ?>
+            <img src="/images/icons/ok.gif" />
+            <? endif; ?>
+        </td>
+
+        <td>
+            <? if($m->present()): ?>
+            <img src="/images/icons/ok.gif" />
+            <? endif; ?>
+        </td>
+
+        <td>
+            <? if (!$m->present()): ?>
+            <img src="/images/icons/locked.gif" />
+            <? elseif($m->required): ?>
+            <img src="/images/icons/ok.gif" />
+            <? elseif ($m->active): ?>
+            <a href="/administer/modules/activate/on/0/module_name/<?= $m->folder ?>"><img src="/images/icons/okb.gif" border="0"/></a>
+            <? else: ?>
+            <a href="/administer/modules/activate/on/1/module_name/<?= $m->folder ?>"><img src="/images/icons/xb.gif" border="0"/></a>
+            <? endif; ?>
+        </td>
     </tr>
-        <? endforeach; ?>
+<? endforeach; ?>
 
 </table>

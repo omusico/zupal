@@ -9,9 +9,10 @@ extends Zupal_Domain_Abstract {
  * @see CPF_Formset_Domain::get_table_class()
  */
     public function tableClass () {
-        return preg_replace('~^Model_~', 'Model_Table_', get_class($this));
+        return self::TABLE_CLASS;
     }
-
+    const TABLE_CLASS = 'Model_Table_Users';
+    
     /**
      * @see CPF_Formset_Domain::get()
      *
@@ -19,8 +20,12 @@ extends Zupal_Domain_Abstract {
      * @return CPF_Formset_Domain
      *
      */
-    public function get ($pID) {
-        return new self($pID);
+    public function get ($pID = null, $pLoad_Fields = NULL) {
+        $out = new self($pID);
+        if ($pLoad_Fields && is_array($pLoad_Fields)):
+            $out->set_fields($pLoad_Fields);
+        endif;
+        return $out;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -54,10 +59,10 @@ extends Zupal_Domain_Abstract {
     private static $_current_user = NULL;
     public static function current_user($pReload = FALSE) {
         if ($pReload || is_null(self::$_current_user)):
-        // process
-            self::$_current_user = $value;
+        //@TODO: load from session
+            self::$_current_user = NULL;
         endif;
-        return $this->_current_user;
+        return self::$_current_user;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ role @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
