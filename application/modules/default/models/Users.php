@@ -11,7 +11,7 @@ extends Zupal_Domain_Abstract {
     public function tableClass () {
         return self::TABLE_CLASS;
     }
-    const TABLE_CLASS = 'Model_Table_Users';
+    const TABLE_CLASS = 'Model_DbTable_Users';
     
     /**
      * @see CPF_Formset_Domain::get()
