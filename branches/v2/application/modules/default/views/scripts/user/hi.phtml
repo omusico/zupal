@@ -1,0 +1,23 @@
+<?php
+
+$this->placeholder('page_title')->set('Sign In');
+$loginform = new Form_Userlogin();
+$registerform = new Form_Userregister();
+?>
+<table>
+    <tr>
+        <td width="50%" valign="top">
+            <p>Sign In to site: </p>
+
+            <?= $loginform->render() ?>
+
+        </td>
+
+        <td width="50%" valign="top">
+            <p>Register as a new user: </p>
+
+            <?= $registerform ?>
+        </td>
+
+    </tr>
+</table>

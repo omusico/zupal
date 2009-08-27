@@ -1,6 +1,6 @@
 <?php
 
-class ErrorController extends Zend_Controller_Action
+class ErrorController extends Zupal_Controller_Abstract
 {
 
     public function errorAction()
