@@ -4,7 +4,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     protected function _initAutoload() {
         $autoloader = new Zend_Application_Module_Autoloader(array(
             'namespace' => '',
-            'basePath'  => dirname(__FILE__),
+            'basePath'  => dirname(__FILE__) . '/modules/default',
         ));
         return $autoloader;
     }
@@ -23,6 +23,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 	    return $db;
     }
 */
+    
     protected function _initDefaultLoader() {
 
         $loader = Zend_Loader_Autoloader::getInstance();

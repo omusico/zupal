@@ -64,7 +64,7 @@ extends Zupal_Domain_Abstract {
                 $new_module_record->load_definitions();
                 $new_module_record->save();
                 $indexed_module_records[$folder] = $new_module_record;
-            endif;
+        endif;
         endforeach;
 
         return $indexed_module_records;
@@ -77,14 +77,14 @@ extends Zupal_Domain_Abstract {
      */
     public function module_folders () {
 
-	$di = new DirectoryIterator(APPLICATION_PATH . '/modules');
+        $di = new DirectoryIterator(APPLICATION_PATH . '/modules');
 
-	$modules = array();
-	foreach($di as $fi):
-	    if ((!$fi->isDot()) && $fi->isDir() && (!preg_match('~^\.~', $fi->getFilename()))):
-		$modules[] = $fi->getFilename();
-	    endif;
-	endforeach;
+        $modules = array();
+        foreach($di as $fi):
+            if ((!$fi->isDot()) && $fi->isDir() && (!preg_match('~^\.~', $fi->getFilename()))):
+                $modules[] = $fi->getFilename();
+        endif;
+        endforeach;
 
         return $modules;
     }
@@ -101,7 +101,7 @@ extends Zupal_Domain_Abstract {
         endforeach;
         return $out;
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_definitions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -112,23 +112,19 @@ extends Zupal_Domain_Abstract {
 
             $table_def = Zend_Db_Table::getDefaultAdapter()->describeTable($this->table()->tableName());
             $info = $this->get_info();
-            $skip = array('id', 'folder');
+            $skip = array('id', 'folder', 'active');
 
             foreach(array_diff(array_keys($table_def), $skip) as $field):
                 if (in_array($field, $skip)) continue;
                 if (array_key_exists($field, $info)):
                     $this->$field = $info[$field];
-                endif;
+            endif;
             endforeach;
-
-            $this->save();
         endif;
 
-        if (!is_dir($this->module_path(''))):
-            
-        endif;
+        $this->save();
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module_path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -152,17 +148,52 @@ extends Zupal_Domain_Abstract {
         return file_exists($path) ? $path : FALSE;
     }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ info @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    
+
     const CONFIG_INFO = 'configuration/info.ini';
-    
+
     private $_info = NULL;
     function get_info($pReload = FALSE) {
-        if (($pReload || is_null($this->_info)) && ($path = $this->path_exists(self::CONFIG_INFO))):
+        if (($pReload || is_null($this->_info)) &&
+                ($path = $this->path_exists(self::CONFIG_INFO))):
             $ini = new Zend_Config_Ini($path, 'info');
             $info_data = $ini->toArray();
-        // process
+            // process
             $this->_info = $info_data;
         endif;
         return $this->_info;
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ present @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function present () {
+        return $this->path_exists('');
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pMode = 'global'
+     * @return <type>
+     */
+    public function load_menu () {
+        $req = Zend_Controller_front::getInstance()->getRequest();
+        $active_module = $req->getModuleName();
+        $active_controller = $req->getControllerName();
+
+        $mm = Model_Menu::getInstance();
+        if (1 || !$this->menu_loaded):
+            $mm->table()->delete(sprintf('module = "%s"', $this->folder));
+            $path = $this->path_exists('configuration/info.ini');
+            if ($path):
+                $config = new Zend_Config_Ini($path, 'menu');
+                $mm->add_menus($config->toArray(), $this->folder);
+        endif;
+    //     $this->menu_loaded = TRUE;
+    //    $this->save();
+    endif;
+    }
+
 }
