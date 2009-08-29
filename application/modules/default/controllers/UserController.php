@@ -43,6 +43,13 @@ class UserController extends Zupal_Controller_Abstract
             $email = $this->_getParam('email');
             $username = $this->_getParam('username');
             $password = $this->_getParam('password');
+            $pw2 = $this->_getParam('password2');
+
+            if ($password != $pw2):
+                $comment = array('error' => 'Passwords mismatch');
+                return $this->_forward('hi', NULL, NULL, $comment);
+            endif;
+
             $pwmp5 = md5($password);
 
             $found = $ut->findOne(array('email' => $email));
@@ -60,6 +67,10 @@ class UserController extends Zupal_Controller_Abstract
                 'email' => $email);
             $user = $ut->get(NULL, $data);
             $user->save();
+            $user->password = Zupal_Authorizer::encrypt_password(
+                $password, $user->identity());
+            $user->save();
+
             $this->_forward(
                'hi', NULL, NULL, array('message' => 'User Registered.')
             );
@@ -87,10 +98,10 @@ class UserController extends Zupal_Controller_Abstract
      *
      */
     public function loginAction() {
-	$login_form = new Form_Login();
+	$login_form = new Form_Userlogin();
 	if ($login_form->isValid($this->_getAllParams())) {
 	    $authorizer = new Zupal_Authorizer(
-		$login_form->username->getValue(), $loginform->password->getValue()
+		$login_form->username->getValue(), $login_form->password->getValue()
 	    );
 
 	    $auth = Zend_Auth::getInstance();
@@ -100,7 +111,7 @@ class UserController extends Zupal_Controller_Abstract
 		$this->_forward('me', NULL, NULL, array('message' => 'Logged In'));
 	    }
 	    else {
-		$this->_forward('hi', NULL, NULL, array('message' => 'Sorry, bad login'));
+		$this->_forward('hi', NULL, NULL, array('message' => 'Sorry, bad password'));
 	    }
 	}
 	else {

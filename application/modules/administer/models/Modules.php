@@ -178,7 +178,7 @@ extends Zupal_Domain_Abstract {
      * @param <type> $pMode = 'global'
      * @return <type>
      */
-    public function load_menu () {
+    public function load_menus () {
         $req = Zend_Controller_front::getInstance()->getRequest();
         $active_module = $req->getModuleName();
         $active_controller = $req->getControllerName();

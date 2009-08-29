@@ -59,3 +59,54 @@ div#main
 {
     float: left; 
 }
+
+table.frame
+{
+    border: 2px solid gray;
+    margin: 1em;
+    background-color: #990000;
+
+}
+
+div#main table.frame td,
+div#main table.frame th
+{
+    margin: 0px;
+    padding: 0.5em;
+    text-align: left;
+    vertical-align: top;
+}
+div#main table.frame th
+{
+    background-color: #600;
+    color: white;
+    font-weight: bold;
+}
+
+div#main table.frame th.r,
+div#main table.frame td.r
+{
+    border-right: 1px solid gray;
+}
+
+a.linkbutton,
+a.linkbutton:link,
+a.linkbutton:visited
+{
+    display: inline-block;
+    padding: 2px;
+    border: 1px solid gray;
+    margin: 2px;
+    margin-left: 4px;
+    margin-right: 4px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #006;
+    background-color: #F66;
+}
+
+a.linkbutton:hover
+{
+    background-color: black;
+    color: white;
+}

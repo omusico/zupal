@@ -1,5 +1,5 @@
 <?
-    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules');
+    $this->placeholder('page_title')->set('Meta Modules');
 Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
 $this->dojo()
                  ->addStyleSheet('/scripts/dijit/themes/tundra/tundra.css')
@@ -7,6 +7,8 @@ $this->dojo()
              ->setDjConfigOption('parseOnLoad', true);
 
 $rand = '/rand/' . rand(0, 10000);
+
+$mvc = new Administer_Meta_MVC();
 
 ?>
 <h2>Modules</h2>
@@ -19,14 +21,33 @@ $this->tabContainer(
     array('style' => 'width: 800px; height: 400px; border: 1px;'),
     array('dojoType'=>"dijit.layout.TabContainer" )); ?>
 
-<? foreach($this->modules as $module): ?>
+<? foreach($this->modules as $module):
+$params = array(
+    'module' => 'administer',
+    'controller' => 'meta',
+    'action' => 'addformcreate',
+    'params' => array('meta_module' => $this->domain_module),
+        'rand' => $rand
+);
+?>
 <? $this->contentPane()->captureStart($module, array('title' => $module)) ?>
-	<dl>
-	    <dt><?= $this->link('Add Domain Class', 'meta/adddomain/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
-	    <dt><?= $this->link('Add Domain Form', 'meta/addform/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
-	    <dt><?= $this->link('Add Action', 'meta/addaction/module_action/' . $module . $rand, TRUE, 'control') ?></dt>
-	    <dt><?= $this->link('Add Entry Action', 'meta/addformentry/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
-	</dl>
+<? foreach(array('Add Domain Class' => 'adddomain',
+                'Add Domain Form' => 'addform',
+                'Add Action' => 'addaction',
+                'Add Entry Action' => 'addformentry'
+            ) as $title => $action):
+        $params['action'] = $action;
+?>
+    <a href="<?= new Zend_Navigation_Page_Mvc($params) ?>" class="linkbutton"><?= $title ?></a>
+<? endforeach; ?>
+    <h2>Controllers</h2>
+    <ul>
+    <? foreach ($mvc->controllers($module, TRUE) as $controller => $info): ?>
+        <li><?= $controller ?></li>
+    <? endforeach; ?>
+    </ul>
+ 
+
 <?= $this->contentPane()->captureEnd($module); ?>
 <? endforeach; ?>
 <?= $this->tabContainer()->captureEnd('modules') ?>

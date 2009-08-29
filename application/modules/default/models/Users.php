@@ -58,11 +58,24 @@ extends Zupal_Domain_Abstract {
 
     private static $_current_user = NULL;
     public static function current_user($pReload = FALSE) {
-        if ($pReload || is_null(self::$_current_user)):
-        //@TODO: load from session
-            self::$_current_user = NULL;
+        if ($pReload || !(self::$_current_user)):
+                $auth = Zend_Auth::getInstance();
+                if ($auth->hasIdentity()):
+                        $identity = $auth->getIdentity();
+                        self::$_current_user = self::getInstance()->get($identity->identity());
+                else:
+                        self::$_current_user = FALSE;
+                endif;
+                // process
         endif;
         return self::$_current_user;
+    }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ clear_current_user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function clear_current_user () {
+        self::$_current_user = NULL;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ role @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

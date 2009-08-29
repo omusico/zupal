@@ -15,6 +15,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract
  */
     public function init () {
         $this->_helper->layout->setLayout('admin');
+        parent::init();
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -28,9 +29,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ activateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     */
+    
     public function activateAction () {
         $module_name = $this->_getParam('module_name');
 

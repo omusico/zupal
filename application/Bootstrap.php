@@ -8,21 +8,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         ));
         return $autoloader;
     }
-    /*
-    protected function _initDb()
-    {  
-	    $options = $this->getOptions();
-	    $db = $options['resources']['db'];
-	    $adapter = Zend_Db::factory($db['adapter'], $db['params']);
-	    Zend_Db_Table_Abstract::setDefaultAdapter($adapter); 
-/*
-	    $db = Zend_Db::factory(Zend_Registry::get('config')->db);
-	    Zend_Db_Table_Abstract::setDefaultAdapter($db);
-	    Zend_Registry::set('db', $db); *
-
-	    return $db;
-    }
-*/
     
     protected function _initDefaultLoader() {
 

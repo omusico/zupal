@@ -8,11 +8,9 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
 
 	public function init()
 	{
+            $this->view->placeholder('message')->set($this->_getParam('message', ''));
+            $this->view->placeholder('error')->set($this->_getParam('error', ''));
 
-	}
-
-	public function preDispatch()
-	{
             $module = $this->getRequest()->getModuleName();
             $config = array(
                 'basePath' => APPLICATION_PATH . '/library/' . $module,
@@ -22,10 +20,13 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action
             $loader = new Zend_Loader_Autoloader_Resource($config);
 
             $this->view->addHelperPath(APPLICATION_PATH . '/modules/default/views/helpers/Zupal', 'Zupal_Helper');
+            $this->view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
+
+            parent::init();
 	}
 
 	public function postDispatch()
 	{
-		$this->view->headTitle($this->view->placeholder('page_title'));
+		$this->view->headTitle()->set($this->view->placeholder('page_title'));
 	}
 }
