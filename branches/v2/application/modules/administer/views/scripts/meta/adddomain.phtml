@@ -1,13 +1,18 @@
 <?
-    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules: Add Domain');
+    $this->placeholder('title')->set('Add Domain');
     $break = 0;
 ?>
 <h2>Create Domain for Table... in module <?= $this->domain_module ?> </h2>
 <table class="layout_table button_table">
 <tr>
 <? foreach($this->tables as $table): ?>
-    <td><?= $this->link($table  ,
-    'meta/adddomaincreate/module_domain/' . $this->domain_module . '/table/' . $table, TRUE, 'control') ?>
+    <td><a href="<?= new Zend_Navigation_Page_Mvc(array(
+    'module' => 'administer',
+    'controller' => 'meta',
+    'action' => 'adddomaincreate',
+    'params' => array('module_domain' => $this->domain_module),
+        'table' => $table
+)) ?>"><?= $table ?></a>
     </td>
 <?
     ++$break;

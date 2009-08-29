@@ -21,3 +21,17 @@ div#menu li a.visited
     font-weight: bold;
     text-decoration: none;
 }
+
+
+a.linkbutton,
+a.linkbutton:link,
+a.linkbutton:visited
+{
+    background-color: #E1E1E1
+}
+
+a.linkbutton:hover
+{
+    background-color: black;
+    color: white;
+}

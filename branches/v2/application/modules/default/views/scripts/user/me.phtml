@@ -1,0 +1,22 @@
+<?php
+$user = Model_Users::current_user();
+
+$this->placeholder('page_title')->set($user->username . ' Profile');
+?>
+<dl>
+    <dt>
+        Username
+    </dt>
+    <dd>
+        <?= $user->username ?>
+    </dd>
+
+    <dt>
+        Email
+    </dt>
+
+    <dd>
+        <?= $user->email ?>
+    </dd>
+    
+</dl>

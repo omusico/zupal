@@ -67,7 +67,7 @@ class Model_Menu extends Zupal_Domain_Abstract {
         $menu = $this->get(NULL, array('parent' => $pParent,
                 'name' => $pName,
                 'sort_by' => 10,
-                'module_creator' => $pModule_creator));
+                'created_by_module' => $pModule_creator));
         $subs = FALSE;
         foreach($pPage as $field => $value):
 
