@@ -1,0 +1,14 @@
+<?
+    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules: Add Domain');
+?>
+<p>Created Domain Code (or already have it) </p>
+<pre>
+<?= htmlentities(file_get_contents($this->domain->get_domain_path())) ?>
+</pre>
+<p>In file &quot;<?= $this->domain->get_domain_path() ?>&quot;</p>
+
+<p>Created Table Code (or already have it) </p>
+<pre>
+<?= htmlentities(file_get_contents($this->domain->get_table_path())) ?>
+</pre>
+<p>In file &quot;<?= $this->domain->get_table_path() ?>&quot;</p>
