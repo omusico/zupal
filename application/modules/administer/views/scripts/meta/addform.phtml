@@ -1,0 +1,19 @@
+<?
+    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules: Add Form');
+    $break = 0;
+?>
+<h2>Create Form for Table... in module <?= $this->domain_module ?> </h2>
+<table class="layout_table button_table">
+<tr>
+<? foreach($this->tables as $table): ?>
+    <td><?= $this->link($table  ,
+    'meta/addformcreate/module_domain/' . $this->domain_module . '/table/' . $table, TRUE, 'control') ?>
+    </td>
+<?
+    ++$break;
+    if ($break == 3){ echo '</tr><tr>';
+    $break = 0; }
+?>
+<? endforeach; ?>
+</tr>
+</table>

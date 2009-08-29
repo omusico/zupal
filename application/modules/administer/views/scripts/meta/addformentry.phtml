@@ -1,0 +1,42 @@
+<?php
+$this->placeholder('title')->set( $this->link('Meta','meta', TRUE) . ' : Add Form Entry Page');
+?>
+<h2>Controllers in <?= $this->entry_module ?>:</h2>
+<p><?= $this->controller_dir ?></p>
+<ul>
+<? foreach($this->controllers as $controller):
+    $cp = new Zend_Navigation_Page_Mvc(
+    array(
+	'module' => 'admin',
+	'controller' => 'meta',
+	'action' => 'addformentrycreate',
+	'params' => array(
+	    'entry_module' => $this->entry_module,
+	    'entry_controller' => $controller
+
+	),
+	'label' => $controller
+
+    )); ?>
+    <li><a href="<?= $cp->getHref() ?>"><?= $controller ?></a></li>
+<? endforeach; ?>
+</ul>
+<h2>Or enter a new controller</h2>
+<form method="post" action="/admin/meta/addformentrycreate">
+    <dl>
+	<dt><label>Controller </label></dt>
+	<dd>
+    <input type="text" name="new_controller" />
+	</dd>
+
+	<dt><label>Action</label>
+	</dt>
+	<dd>
+	    <input type="text" name="new_action" value="index" />
+	</dd>
+
+	<dt>
+    <input type="submit" value="Create" />
+	</dt>
+    </dl>
+</form>

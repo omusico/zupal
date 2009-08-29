@@ -1,0 +1,32 @@
+<?
+    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules');
+Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
+$this->dojo()
+                 ->addStyleSheet('/scripts/dijit/themes/tundra/tundra.css')
+                 ->addStyleSheet('/scripts/dojo/resources/dojo.css')
+             ->setDjConfigOption('parseOnLoad', true);
+
+$rand = '/rand/' . rand(0, 10000);
+
+?>
+<h2>Modules</h2>
+
+
+<?
+$this->tabContainer(
+)->captureStart(   'modules',
+    array('dojoType'=>"dijit.layout.TabContainer" ),
+    array('style' => 'width: 800px; height: 400px; border: 1px;'),
+    array('dojoType'=>"dijit.layout.TabContainer" )); ?>
+
+<? foreach($this->modules as $module): ?>
+<? $this->contentPane()->captureStart($module, array('title' => $module)) ?>
+	<dl>
+	    <dt><?= $this->link('Add Domain Class', 'meta/adddomain/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
+	    <dt><?= $this->link('Add Domain Form', 'meta/addform/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
+	    <dt><?= $this->link('Add Action', 'meta/addaction/module_action/' . $module . $rand, TRUE, 'control') ?></dt>
+	    <dt><?= $this->link('Add Entry Action', 'meta/addformentry/module_domain/' . $module . $rand, TRUE, 'control') ?></dt>
+	</dl>
+<?= $this->contentPane()->captureEnd($module); ?>
+<? endforeach; ?>
+<?= $this->tabContainer()->captureEnd('modules') ?>

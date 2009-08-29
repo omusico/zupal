@@ -1,0 +1,15 @@
+<?
+    $this->placeholder('title')->set($this->placeholder('admin_link'). ': Meta/Modules: Add Form');
+?>
+<p>Created Form INI file (or already have it) </p>
+<pre>
+<?= htmlentities(file_get_contents($this->domain->get_form_ini_path())) ?>
+</pre>
+<p>In file &quot;<?= $this->domain->get_form_ini_path() ?>&quot;</p>
+
+<p>Created Form file (or already have it) </p>
+<pre>
+<?= htmlentities(file_get_contents($this->domain->get_form_path())) ?>
+</pre>
+<p>In file &quot;<?= $this->domain->get_form_path() ?>&quot;</p>
+
