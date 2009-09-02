@@ -1,0 +1,42 @@
+<?
+    $this->placeholder('title')->set('Action Created');
+?>
+<form action="<?= $this->placeholder('base_path')?>/administer/meta/addactionafter" method="post">
+<p>The controller below has been updated.</p>
+<dl>
+    <dt>
+	<label><input type="radio" name="change_source" value="accept" checked="checked" selected="selected" />Accept the version that has been saved</label>
+    </dt>
+    <dd>
+	<textarea rows="10" cols="80"  name="new_text">
+<?= htmlentities($this->diff['new']) ?>
+	</textarea>
+    </dd>
+    <dt>
+	<label><input type="radio" name="change_source" value="reject" />Revert to the previous version</label>
+    </dt>
+    <dd>
+	<textarea rows="10" cols="80"  name="old_text">
+<?= htmlentities($this->diff['old']) ?>
+	</textarea>
+    </dd>
+       <dt>
+	<label><input type="radio" name="change_source" value="custom" />Roll Your Own</label>
+    </dt>
+    <dd>
+	<textarea rows="10" cols="80"  name="custom_text">
+<?= htmlentities($this->diff['new']) ?>
+	</textarea>
+    </dd>
+</dl>
+<input type="submit" value="Finish" />
+<input type="reset" value="Reset Fields" />
+<input type="hidden" name="controller_path" value="<?= $this->diff['controller_path'] ?>" />
+</form>
+
+<h2>Difference</h2>
+<pre>
+<?
+echo $this->diff['diff'];
+?>
+</pre>

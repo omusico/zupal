@@ -1,0 +1,74 @@
+<?
+$this->add_module;
+$this->add_controller;
+
+$this->placeholder('title')->set('Add List Action');
+Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
+
+$this->dojo()
+                 ->addStyleSheet('/scripts/dijit/themes/tundra/tundra.css')
+                 ->addStyleSheet('/scripts/dojo/resources/dojo.css')
+             ->setDjConfigOption('parseOnLoad', true)
+?>
+<h2>Add List Action into controller in module &quot;<?= $this->module_action ?>&quot;</h2>
+<style>
+    #controller_tabset .dijitTabInnerContent,
+    #controller_tabset .dijitTabInnerDiv
+    {
+	padding: 0px;
+	margin: 0px;
+    }
+    #controller_tabset .dijitTab
+    {
+	padding: 1px;
+	margin-top: 0px;
+	margin-bottom: -1px;
+	width: 150px
+    }
+
+    #controller_tabset .tabLabel
+    {
+	padding: 1px;
+	margin: 0px;
+	font-size: 10px;
+	font-weight: bold
+    }
+
+</style>
+
+<?
+$this->tabContainer(
+)->captureStart(   'controller_tabset',
+    array('id' => 'controller_tabset',
+	'dojoType'=>"dijit.layout.TabContainer",
+	'tabPosition' => "left-h",
+    'minSize' => '300px'),
+    array('style' => 'width: 800px; height: 500px; border: 1px;'),
+    array('dojoType'=>"dijit.layout.TabContainer" )); ?>
+
+<? foreach($this->mvc->controllers() as $controller): ?>
+<? $this->contentPane()->captureStart($controller, array('title' => $controller)) ?>
+<h2>Add List Action</h2>
+<?
+    $form = new Administer_Form_Addlistaction('/administer/meta/addlistactionexecute');
+    $form->add_module->setValue($this->module_action);
+    $form->add_controller->setValue(strtolower($controller));
+
+    echo $form->render();
+?>
+   <p>Actions in <?= $controller ?></p>
+   <?
+   $cn = $this->mvc->controller_class_name($controller, $this->module_action);
+   $class = $this->mvc->controller_reflection($controller, $this->module_action)->getClass($cn); ?>
+<ul>
+   <? foreach($class->getMethods() as $function):
+   if (preg_match('~^(.*)Action$~',  $function->getName(), $match)):
+    $fname = $match[1];
+   ?>
+   <li><?= $fname ?></li>
+   <? endif; ?>
+    <? endforeach; ?>
+</ul>
+<?= $this->contentPane()->captureEnd($controller); ?>
+<? endforeach; ?>
+<?= $this->tabContainer()->captureEnd('controller_tabset') ?>

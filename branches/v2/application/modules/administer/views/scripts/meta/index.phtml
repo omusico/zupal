@@ -31,11 +31,11 @@ $params = array(
 );
 ?>
 <? $this->contentPane()->captureStart($module, array('title' => $module)) ?>
-<? foreach(array('Add Domain Class' => 'adddomain',
-                'Add Domain Form' => 'addform',
-                'Add Action' => 'addaction',
-                'Add Entry Action' => 'addformentry'
-            ) as $title => $action):
+<? foreach(array('adddomain' => 'Add Domain Class',
+               'addform' => 'Add Domain Form',
+               'addaction' => 'Add Action',
+              'addformentry' => 'Add Entry Action',
+               'addactionlist' => 'Add List Action') as $action => $title):
         $params['action'] = $action;
         $page = new Zend_Navigation_Page_Mvc($params);
 ?>
