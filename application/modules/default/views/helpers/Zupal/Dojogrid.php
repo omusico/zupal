@@ -7,6 +7,20 @@
  */
 class Zupal_Helper_Dojogrid {
 
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ view @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public $view = null;
+    /**
+     * @return class;
+     */
+
+    public function getView() { return $this->_view; }
+
+    public function setView($pValue) { $this->_view = $pValue; }
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ grid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -16,22 +30,28 @@ class Zupal_Helper_Dojogrid {
 	* @return string $pIdentifier -- the name of the identity column of the dataset
 	* 
 	*/
-public static function dojogrid ($pID, $pStore_ID = NULL,
-    $pColumns, $pIdentifier = 'id', array $pParams = NULL)
+public function dojogrid ($pID, $pStore_ID = NULL,
+    $pColumns, $pIdentifier = 'id', array $pParams = NULL, array $pOptions = NULL)
 {
+    $this->prep_view();
+    $height = 400;
+    $width = 600;
+    if ($pOptions):
+        export($pOptions);
+    endif;
     ob_start();
 	if (is_null($pStore_ID)):
 	    $pStore_ID = $pID . '_store';
 	endif;
 ?>
-<table rowsPerPage="10" style=" height: 400px" id="<?= $pID ?>"
+<table rowsPerPage="10" style="height: <?= $height ?>px; width: <?=$width ?>px" id="<?= $pID ?>"
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>
 		<tr>
 <? foreach($pColumns as $key => $column): ?>
 	<? if (is_array($column)): ?>
-		<?= self::array_column($key, $column) ?>
+		<?= self::array_column($column) ?>
 	<? elseif (is_string($column)): ?>
 			<th field="<?= $key ?>"><?= $column ?></th>
 	<? elseif (is_object($column)): // must have a __toString() method
@@ -46,26 +66,21 @@ dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 return ob_get_clean();
 	}
 
-	public static function array_column($pKey, $pColumn)
+	public static function array_column($pColumn)
 	{
-		if (array_key_exists('field', $pColumn)):
-			$field = $pColumn['field'];
-			unset($pColumn['field']);
-		endif;
-		?><th field="<?= $pKey ?>" <?
-		if (array_key_exists('label', $pColumn)): // Is a keyed set of parameters.
-			$label = $pColumn['label'];
-			unset($pColumn['label']);
-		else: // IS NOT a keyed set of parameters
-			$label = array_shift($pColumn);
-			if (count($pColumn)): // take next parameter as width -- tranform it to named parameter.
-				$width = array_shift($pColumn);
-				$pColumn['width'] = $width;
-			endif;
-		endif; // end parameter loop
-		foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
+            if (array_key_exists('label', $pColumn)):
+                $label = $pColumn['label'];
+                unset($pColumn['label']);
+            else:
+                $label = ucfirst($pColumn['field']);
+            endif;
+
+            ob_start();
+		?><th 
+<? foreach($pColumn as $key => $value): ?> <?= $key ?>="<?= $value ?>" <? endforeach; // parameter loop
 ?> ><?= $label ?></th>
 <?
+    return ob_get_clean();
 	}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ prep_view @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -74,28 +89,15 @@ return ob_get_clean();
 	* @param Zend_View $pView
 	* @return void
 	*/
-	public static function prep_view (Zend_View $pView)
+	public function prep_view ()
 	{
 
-		$pView->dojo()
-			->addLayer(ZUPAL_BASEURL . DS . 'scripts/dojo/grid_layer.js')
-			->addStyleSheet(ZUPAL_BASEURL . DS . 'scripts/dojox/grid/resources/Grid.css')
-			->enable();
+		$this->getView()->dojo()
+			->addLayer( $this->getView()->baseUrl() . '/scripts/dojo/grid_layer.js')
+			->addStyleSheet($this->getView()->baseUrl() .  '/scripts/dojox/grid/resources/Grid.css')
+             ->setDjConfigOption('parseOnLoad', TRUE)
+			->enable(); 
 	}
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-/**
-* a datastore for the grid. Could also be used for other store based widgets.
-*/
-public static function store ( $pStore_ID, $pURL) 
-{
-    ob_start();
-?>
-<span dojoType="dojo.data.ItemFileReadStore"
-jsId="<?= $pStore_ID ?>" url="<?= $pURL ?>/rand/<?= rand(0, 100000) ?>" />
-<?
-    return ob_get_clean();
-}
 
 public static function query_store($pStore_ID, $pURL)
 {

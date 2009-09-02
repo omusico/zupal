@@ -1,0 +1,20 @@
+<?
+$this->placeholder('page_title')->set('Users : Resources');
+
+$this->headScript()->captureStart();
+?>
+function resources_grid_edit_formatter(p)
+{
+    return '<a href="<?= $this->baseUrl() ?>/administer/users/resourcesedit/resource_id/'
+        + p + '"><img src="<?= $this->baseUrl() ?>/images/icons/edit.gif" border="0"/></a>';
+}
+
+<?
+    $this->headScript()->captureEnd();
+    $columns = new Zend_Config_Ini(dirname(__FILE__) . '/reouurces_grid.ini','columns');
+?>
+
+<?= $this->dojostore('resources_store', $this->baseUrl() . '/administer/users/resourcesstore') ?>
+<?= $this->dojogrid('resources', 'resources_store', $columns->toArray(), 'resource_id') ?>
+
+<a href="<?= $this->baseUrl() ?>/administer/users/resourcesnew" class="linkbutton">Add Resource</a>

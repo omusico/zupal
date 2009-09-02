@@ -186,8 +186,34 @@ class Administer_Lib_Meta_MVC {
      */
     public function create_action ($pAction = NULL, $pParams = NULL) {
 	$action = $pAction ? $pAction : $this->get_action();
-
-
+        if ($pParams && (array_key_exists('view_body', $pParams))):
+            $view_body = $pParams['view_body'];
+            unset($pParams['view_body']);
+        else:
+            $view_body = '';
+            if ($pParams && is_array($pParams) && count($pParams)):
+                foreach($pParams as $param):
+                    if (is_array($param)):
+                        list($name, $alias, $default) = $param;
+                            $default = trim($default);
+                    elseif (!trim($param)):
+                        continue;
+                    else:
+                        $name = $alias = trim($param);
+                        $default = NULL;
+                    endif;
+                    $name = trim($name);
+                    if (!$name):
+                        continue;
+                    endif;
+                    ob_start(); ?>
+    $this-><?= $name ?>;
+<?
+                    $view_body .= ob_get_clean();
+                endforeach;
+            endif;
+        endif;
+        
 	$file = $this->controller_reflection();
 	$c = $file->getClass($this->controller_class_name());
 
@@ -197,7 +223,6 @@ class Administer_Lib_Meta_MVC {
 	if (!$class->hasMethod($aname)):
 	    $body = '';
 	    $reflect = '';
-	    $view_body = '';
 
 	    if ($pParams && is_array($pParams) && count($pParams)):
 		ob_start();
@@ -219,17 +244,10 @@ class Administer_Lib_Meta_MVC {
 <? printf('$%s = $this->_getParam("%s", %s); ', $name, $alias, is_null($default) ? ' NULL ' : "'$default'" ); ?>
 <? ob_start(); ?>
 <? printf('$this->view->%s = $%s;', $name, $name); ?>
-
 <? $reflect .= ob_get_clean(); ?>
-
-<? ob_start(); ?>
-$this-><?= $name ?>;
-
-<? $view_body .= ob_get_clean(); ?>
     <?
 		endforeach;
-		echo $reflect;
-		$body = ob_get_clean();
+		$body = $reflect . ob_get_clean();
 	    endif;
 
 	    $old = $this->backup_controller();

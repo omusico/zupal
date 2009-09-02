@@ -8,9 +8,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-/**
- *
- */
+
     public function indexAction () {
 
 	$di = new DirectoryIterator(APPLICATION_PATH . '/modules');
@@ -24,12 +22,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ adddomainAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *	protected function get_table_class ()
-	{
-		return 'Table_Incentivesmanual';
-	}
-     */
+
     public function adddomainAction () {
 	$module = $this->_getParam('module_domain');
 
@@ -57,12 +50,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ adddomainAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *	protected function get_table_class ()
-	{
-		return 'Table_Incentivesmanual';
-	}
-     */
+
     public function addformAction () {
 	$module = $this->_getParam('module_domain');
 
@@ -157,11 +145,13 @@ class Administer_MetaController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _make_form_entry @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param <type> $pModule
-     * @return <type>
-     */
+/**
+ *
+ * @param string $pModule
+ * @param string $pController
+ * @param string $pAction
+ * @return string
+ */
     private function _make_form_entry ($pModule, $pController, $pAction) {
 	$mmvc = new Administer_Lib_Meta_MVC($pModule, $pController);
 	$mmvc->add_action($pAction);
@@ -171,8 +161,8 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _find_or_make @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pPath
-     * @return <type>
+     * @param string $pPath
+     * @return string
      */
     public function _find_or_make ($pPath) {
 	if (is_dir($pPath)):
@@ -189,11 +179,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _find_or_make @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param <type> $pPath
-     * @return <type>
-     */
+
     public function _find_or_make_Module ($pModule) {
 	$root = APPLICATION_PATH . '/modules/' . $pModule;
 
@@ -242,22 +228,58 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 	$this->view->diff = $mvc->create_action( $action, $params);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ addactionexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function addlistactionexecuteAction () {
+	$module = $this->_getParam('add_module');
+	$controller = $this->_getParam('add_controller');
+	$action = $this->_getParam('add_action');
+        $params = array(
+            'grid_name' => $this->_getParam('grid_name'),
+            'grid_file' => $this->_getParam('grid_file'),
+            'grid_store' => $this->_getParam('grid_store'),
+            'grid_url' => $this->_getParam('grid_url'),
+            'grid_identifier' => $this->_getParam('grid_identifier')
+        );
+
+        $params['view_body'] = <<<PHP_BLOCK
+<?
+$this->placeholder('page_title')->set('');
+
+$this->headScript()->captureStart();
+?>
+// any formatting functions
+<?
+    $this->headScript()->captureEnd();
+    $columns = new Zend_Config_Ini(dirname(__FILE__) . '/' . $this->grid_file . '.ini','columns');
+?>
+
+<?= $this->dojostore($this->grod_store, $this->baseUrl() . $this->grid_url ) ?>
+<?= $this->dojogrid($this->grid_name, $this->grid_store, $columns->toArray(), $this->grid_identifier) ?>
+
+PHP_BLOCK;
+        
+	$mvc = new Administer_Lib_Meta_MVC($module, $controller, $action);
+
+	$this->view->diff = $mvc->create_action($action, $params);
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ addactionafterAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      */
     public function addactionafterAction () {
 	$mode = $this->_getParam('change_source');
-	
+
 	$cp = trim($this->_getParam('controller_path'));
 	if (!$cp):
 	    throw new Exception(__METHOD__ . ': Cannot find controller path');
 	endif;
-	
+
 	switch($mode):
 	    case 'accept':
 	     break;
-	     
+
 	     case 'reject':
 		 file_put_contents($cp, stripslashes($this->_getParam('old_text')));
 	     break;
@@ -266,7 +288,14 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 		 file_put_contents($cp, stripslashes($this->_getParam('custom_text')));
 	     break;
 	endswitch;
-	
+
 	return $this->_forward('index');
     }
+    
+    public function addactionlistAction()
+    {        
+	$this->view->module_action = $ma = $this->_getParam('meta_module');
+	$this->view->mvc = new Administer_Lib_Meta_MVC($ma);
+    }
+
 }
