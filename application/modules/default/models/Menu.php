@@ -138,7 +138,7 @@ class Model_Menu extends Zupal_Domain_Abstract {
         $children = array();
 
         foreach($this->children() as $menu):
-            $children += $menu->pages();
+            $children = array_merge($children, $menu->pages());
         endforeach;
         $page->setPages($children);
         return array($page);

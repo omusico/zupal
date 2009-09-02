@@ -12,18 +12,22 @@ const ROLE_ANONYMOUS = 'anonymous';
  * @see CPF_Formset_Domain::get_table_class()
  */
     public function tableClass () {
-        return preg_replace('~^Model_~', 'Model_Table_', get_class($this));
+        return 'Model_DbTable_Roles';
     }
 
     /**
      * @see CPF_Formset_Domain::get()
      *
      * @param unknown_type $pID
-     * @return CPF_Formset_Domain
+     * @return Zupal_Domain_Abstract
      *
      */
-    public function get ($pID) {
-        return new self($pID);
+    public function get ($pID = null, $pLoad_Fields = NULL) {
+        $out = new self($pID);
+        if ($pLoad_Fields && is_array($pLoad_Fields)):
+            $out->set_fields($pLoad_Fields);
+        endif;
+        return $out;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

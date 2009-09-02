@@ -28,7 +28,7 @@ defined('APPLICATION_ENV')
 defined('ZUPAL_LIBRARY_PATH') ||
 	define('ZUPAL_LIBRARY_PATH', ZUPAL_ROOT_DIR . DS . 'library');
 
-error_log('ZLP: ' . ZUPAL_LIBRARY_PATH);
+//error_log('ZLP: ' . ZUPAL_LIBRARY_PATH);
 
 defined('ZUPAL_MODULE_PATH') ||
 	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DS . 'modules');
@@ -43,7 +43,7 @@ if (!defined('ZEND_FRAMEWORK_LIBRARY')):
         // best practice -- define the ZF path in your Apache Env.
     else:
         $zend_framework_library = realpath('../../ZendFramework/library');
-        error_log('looking for ZF at ' . $zend_framework_library);
+       // error_log('looking for ZF at ' . $zend_framework_library);
         if (is_dir($zend_framework_library)):
             define('ZEND_FRAMEWORK_LIBRARY', $zend_framework_library);
             // a "good guess" as to where the framework is.
@@ -59,7 +59,6 @@ $includes =  array(
     ZUPAL_LIBRARY_PATH,
     get_include_path()
 );
-error_log('ip: ' . print_r($includes, 1));
 
 set_include_path(implode(PATH_SEPARATOR,$includes));
 

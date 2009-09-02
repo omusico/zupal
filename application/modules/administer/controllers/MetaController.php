@@ -42,7 +42,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module  ' . $module));
 	endif;
 
-	$target_dir .= 'models/' . CPF_Meta_Domain::TABLE_FOLDER . '/';
+	$target_dir .= 'models/' . Administer_Meta_Domain::TABLE_FOLDER . '/';
 
 	if (!$this->_find_or_make($target_dir)):
 	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module MODEL directory ' . $target_dir));
@@ -91,7 +91,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      *
      */
     public function adddomaincreateAction () {
-	$domain = new CPF_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
+	$domain = new Administer_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
 	if (!file_exists($domain->get_domain_path())):
 	    $domain->create_domain();
 	endif;
@@ -108,7 +108,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      *
      */
     public function addformcreateAction () {
-	$domain = new CPF_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
+	$domain = new Administer_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
 	if (!file_exists($domain->get_form_ini_path())):
 	    $domain->create_form_ini();
 	endif;
@@ -163,7 +163,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      * @return <type>
      */
     private function _make_form_entry ($pModule, $pController, $pAction) {
-	$mmvc = new CPF_Meta_MVC($pModule, $pController);
+	$mmvc = new Administer_Lib_Meta_MVC($pModule, $pController);
 	$mmvc->add_action($pAction);
 	return $out;
     }
@@ -214,7 +214,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      *
      */
     public function addactionAction () {
-	$this->view->mvc = new CPF_Meta_MVC($ma = $this->_getParam('module_action'));
+	$this->view->mvc = new Administer_Lib_Meta_MVC($ma = $this->_getParam('meta_module'));
 	$this->view->module_action = $ma;
     }
 
@@ -237,7 +237,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 	else:
 	    $params = array();
 	endif;
-	$mvc = new CPF_Meta_MVC($module, $controller, $action, $params);
+	$mvc = new Administer_Lib_Meta_MVC($module, $controller, $action, $params);
 
 	$this->view->diff = $mvc->create_action( $action, $params);
     }
