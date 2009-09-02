@@ -1,6 +1,6 @@
 <?
 
-class Administer_Meta_Domain
+class Administer_Lib_Meta_Domain
 {
 
     const TABLE_FOLDER = 'DbTable';

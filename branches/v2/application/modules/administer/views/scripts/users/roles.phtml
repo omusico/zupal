@@ -1,0 +1,7 @@
+<?
+$this->placeholder('title')->set('Users : Roles');
+
+$columns = new Zend_Config_Ini(dirname(__FILE__) . '/roles_grid.ini','columns');
+?>
+<?= $this->dojogrid->store('roles_store', $this->baseUrl() . '/administer/user/rolesstore') ?>
+<?= $this->dojogrid('roles', 'roles_store', $columns->toArray()) ?>

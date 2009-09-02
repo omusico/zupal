@@ -8,7 +8,7 @@ $this->dojo()
 
 $rand = '/rand/' . rand(0, 10000);
 
-$mvc = new Administer_Meta_MVC();
+$mvc = new Administer_Lib_Meta_MVC();
 
 ?>
 <h2>Modules</h2>
@@ -26,7 +26,7 @@ $params = array(
     'module' => 'administer',
     'controller' => 'meta',
     'action' => 'addformcreate',
-    'params' => array('meta_module' => $this->domain_module),
+    'params' => array('meta_module' => $module),
         'rand' => $rand
 );
 ?>
@@ -37,12 +37,13 @@ $params = array(
                 'Add Entry Action' => 'addformentry'
             ) as $title => $action):
         $params['action'] = $action;
+        $page = new Zend_Navigation_Page_Mvc($params);
 ?>
-    <a href="<?= new Zend_Navigation_Page_Mvc($params) ?>" class="linkbutton"><?= $title ?></a>
+    <a href="<?=  $page->getHref() ?>" class="linkbutton"><?= $title ?></a>
 <? endforeach; ?>
     <h2>Controllers</h2>
     <ul>
-    <? foreach ($mvc->controllers($module, TRUE) as $controller => $info): ?>
+    <? foreach ($mvc->controllers($module, TRUE) as $controller): ?>
         <li><?= $controller ?></li>
     <? endforeach; ?>
     </ul>

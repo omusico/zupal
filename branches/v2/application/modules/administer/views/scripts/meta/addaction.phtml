@@ -47,43 +47,12 @@ $this->tabContainer(
 <? $this->contentPane()->captureStart($controller, array('title' => $controller)) ?>
 <h2>Add Action</h2>
 <?
-    $props = array(
-	'action' => '/admin/meta/addactionexecute',
-	'method' => 'post',
-	'elements' => array(
-	    'add_action' => array(
-		'type' => 'text'
-	    ),
-	    'action_params' => array(
-		'type' => 'textarea',
-		'options' => array(
-		    'rows' => 5,
-		    'cols' => 40,
-		    'label' => 'Parameters'
-		)
-	    ),
-	    'submit' => array(
-		'type' => 'submit',
-		'options' => array(
-		    'label' => 'Make Action'
-		)
-	    ),
-	    'add_controller' => array(
-		'type' => 'hidden',
-		'options' => array('value' => $controller)
-	    ),
-	    'add_module' => array(
-		'type' => 'hidden',
-		'options' => array('value' => $this->module_action)
-	    )
-	)
-    );
-    $form = new Zend_Form($props);
-    echo preg_replace('~<[^>]*>&nbsp;</[^>]*>~', '', $form->render());
+    $form = new Administer_Form_Addaction('/administer/meta/addactionexecute');
+    $form->add_module->setValue($this->module_action);
+    $form->add_controller->setValue(strtolower($controller));
 
+    echo $form->render();
 ?>
-
-
    <p>Actions in <?= $controller ?></p>
    <? 
    $cn = $this->mvc->controller_class_name($controller, $this->module_action);

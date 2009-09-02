@@ -1,0 +1,8 @@
+<?
+
+$identifier = Model_Roles::getInstance()->table()->idField();
+$items = $this->roles;
+$label = 'name';
+$data = new Zend_Dojo_Data($identifier, $items, $label);
+
+echo $data->toJson();
