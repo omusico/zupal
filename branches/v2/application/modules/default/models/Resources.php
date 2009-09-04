@@ -1,11 +1,11 @@
 <?php
 
-class Model_Zupalresources extends Zupal_Domain_Abstract
+class Model_Resources extends Zupal_Domain_Abstract
 {
 
     public function tableClass()
     {
-        return 'Model_DbTable_Zupalresources';
+        return 'Model_DbTable_Resources';
     }
 
     public function get ($pID = null, $pLoad_Fields = NULL) {

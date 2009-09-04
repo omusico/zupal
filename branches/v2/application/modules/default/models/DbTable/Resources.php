@@ -1,6 +1,6 @@
 <?php
 
-class Model_DbTable_Zupalresources extends Zupal_Table_Abstract
+class Model_DbTable_Resources extends Zupal_Table_Abstract
 {
 
     protected $_name = 'zupal_resources';

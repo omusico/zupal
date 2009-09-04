@@ -22,7 +22,7 @@ class Administer_Form_Zupalresources extends Zupal_Form_Abstract
 
     protected function get_domain_class()
     {
-        return "Model_Zupalresources";
+        return "Model_Resources";
     }
 
 
