@@ -208,6 +208,7 @@ class Administer_Lib_Meta_MVC {
                     endif;
                     ob_start(); ?>
     $this-><?= $name ?>;
+    
 <?
                     $view_body .= ob_get_clean();
                 endforeach;
@@ -244,6 +245,7 @@ class Administer_Lib_Meta_MVC {
 <? printf('$%s = $this->_getParam("%s", %s); ', $name, $alias, is_null($default) ? ' NULL ' : "'$default'" ); ?>
 <? ob_start(); ?>
 <? printf('$this->view->%s = $%s;', $name, $name); ?>
+    
 <? $reflect .= ob_get_clean(); ?>
     <?
 		endforeach;

@@ -36,28 +36,29 @@ a.linkbutton:hover
     color: white;
 }
 
-dl.zend_form dt{
+#main dl.zend_form dt{
     float: left;
     width: 120px;
     clear: both;
     margin-bottom: 0.25em;
     height: 1.25em;
     overflow:hidden;
-    font-weight: bold;
-    padding-top: 5px;
-    display: block;
 }
 
-dl.zend_form dd{
+#main dl.zend_form dd{
     margin-bottom: 0.25em;
+    font-family: Arial,Helvetica,sans-serif;
+    width: 405px;
 }
 
-dl.zend_form{
+#main dl.zend_form{
+    font-family: Arial,Helvetica,sans-serif;
+    width: 700px;
 }
 
-dl.zend_form input,
-dl.zend_form textarea,
-dl.zend_form select
+#main dl.zend_form input,
+#main dl.zend_form textarea,
+#main dl.zend_form select
 {
     width: 400px;
     border: 1px solid #CCC;
@@ -67,14 +68,14 @@ dl.zend_form select
 
 }
 
-dl.zend_form input[type="checkbox"],
-dl.zend_form input[type="radio"]
+#main dl.zend_form input[type="checkbox"],
+#main dl.zend_form input[type="radio"]
 {
     width: auto;
 }
 
-dl.zend_form input[type="button"],
-dl.zend_form input[type="submit"]
+#main dl.zend_form input[type="button"],
+#main dl.zend_form input[type="submit"]
 {
     border-bottom: 2px solid black;
     background-color: #666;
@@ -83,15 +84,15 @@ dl.zend_form input[type="submit"]
     margin-left: 120px; */
 }
 
-fieldset.ticket
+#main fieldset.ticket
 {
-    border: 3px solid #CCC;
+    border: 3px solid white;
     width: auto;
     padding: 1em;
 
 }
 
-fieldset.ticket legend
+#main fieldset.ticket legend
 {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 125%;
@@ -102,10 +103,15 @@ fieldset.ticket legend
     right: 2em;
 }
 
+fieldset.ticket  dt label{
+    font-family: Arial,Helvetica,sans-serif;
+}
+
 fieldset.ticket  dt{
     float: left;
     width: 120px;
-    clear: both;
+    clear: left;
+    font-family: Arial,Helvetica,sans-serif;
     margin-bottom: 0.25em;
     height: 1.25em;
     overflow:hidden;
@@ -150,4 +156,56 @@ fieldset.ticket ol li a:visited
     padding-right: 4px;
     font-weight: bold;/*
     margin-left: 120px; */
+}
+
+
+table.layout_table
+{
+	border: none;
+}
+
+table.layout_table td,
+table.layout_table th
+{
+	border: none;
+	padding: 2px;
+}
+
+table.button_table a.control
+{
+    margin: 2px;
+    font-size: 80%;
+}
+.control_list li
+{
+	list-style-type: none;
+	display: inline-block;
+}
+
+.control_list a:link,
+.control_list a:visited,
+a.control:link,
+a.control:visited,
+a.edit:link,
+a.edit:visited
+{
+	border: 2px solid #666;
+	padding: 4px;
+	text-decoration: none;
+	color: black;
+	font-weight: bold;
+	text-align: center;
+	margin: 8px;
+	display: inline-block;
+}
+
+div.control,
+.control_list a:hover,
+a.control:hover,
+a.edit:hover
+{
+	background-color: #FFFF99;
+	color: blue;
+	border: 2px solid black;
+	text-align: center;
 }

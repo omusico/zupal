@@ -5,15 +5,21 @@
 <h2>Create Domain for Table... in module <?= $this->domain_module ?> </h2>
 <table class="layout_table button_table">
 <tr>
-<? foreach($this->tables as $table): ?>
-    <td><a href="<?= new Zend_Navigation_Page_Mvc(array(
+<? 
+$page_data = array(
     'module' => 'administer',
     'controller' => 'meta',
+    'class' => 'linkbutton',
     'action' => 'adddomaincreate',
-    'params' => array('module_domain' => $this->domain_module),
-        'table' => $table
-)) ?>"><?= $table ?></a>
-    </td>
+    'params' => array('module_domain' => $this->domain_module)
+);
+
+foreach($this->tables as $table):
+$page_data['label'] = $table;
+$page_data['params']['table'] = $table;
+$page = Zend_Navigation_Page::factory($page_data);
+?>
+    <td><?= $this->navigation()->htmlify($page) ?> </td>
 <?
     ++$break;
     if ($break == 3){ echo '</tr><tr>';

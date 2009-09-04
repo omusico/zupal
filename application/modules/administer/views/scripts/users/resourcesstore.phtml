@@ -1,0 +1,8 @@
+<?
+
+$identifier = Model_Zupalresources::getInstance()->table()->idField();
+$items = $this->resources;
+$label = 'title';
+$data = new Zend_Dojo_Data($identifier, $items, $label);
+
+echo $data->toJson();
