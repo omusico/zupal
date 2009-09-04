@@ -27,7 +27,7 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
 
     public function resourcesstoreAction() {
         $this->_helper->layout->disableLayout();
-        $mr = Model_Zupalresources::getInstance();
+        $mr = Model_Resources::getInstance();
         $this->view->resources = $mr->findAll(array('module', 'rank'));
         foreach($this->view->resources as $i => $role) $this->view->resources[$i] = $role->toArray();
     }
@@ -56,7 +56,28 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
         $id = $this->_getParam("id",  NULL );
         
         $this->view->id = $id;
-        $this->view->resource = Model_Zupalresources::getInstance()->get($id);;
+        $this->view->resource = Model_Resources::getInstance()->get($id);;
+    }
+	
+    public function aclAction()
+    {
+        $orientation = $this->_getParam("orientation",  NULL );    
+        $resource = $this->_getParam("resource",  NULL );     
+        $role = $this->_getParam("role",  NULL );
+
+        $this->view->orientation = $orientation;    
+        $this->view->resource = $resource;    
+        $this->view->role = $role;    
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ aclstoreAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function aclstoreAction () {
+        $this->_helper->layout->disableLayout();
+        $this->roles = Model_Resources::getInstance()->findAll('resource_id');
+        $this->resources = Model
+    }
 }
+	
