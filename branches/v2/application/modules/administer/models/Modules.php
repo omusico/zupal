@@ -4,7 +4,7 @@ class Administer_Model_Modules
 extends Zupal_Domain_Abstract {
 
 /**
- * @see CPF_Formset_Domain::get()
+ * @see Zupal_Formset_Domain::get()
  *
  * @param unknown_type $pID
  * @return Zupal_Domain_Abstract
@@ -36,7 +36,7 @@ extends Zupal_Domain_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
-     * @see CPF_Formset_Domain::get_table_class()
+     * @see Zupal_Formset_Domain::get_table_class()
      *
      */
     public function tableClass () {

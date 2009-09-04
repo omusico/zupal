@@ -9,14 +9,14 @@ const ROLE_ANONYMOUS = 'anonymous';
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /**
- * @see CPF_Formset_Domain::get_table_class()
+ * @see Zupal_Formset_Domain::get_table_class()
  */
     public function tableClass () {
         return 'Model_DbTable_Roles';
     }
 
     /**
-     * @see CPF_Formset_Domain::get()
+     * @see Zupal_Formset_Domain::get()
      *
      * @param unknown_type $pID
      * @return Zupal_Domain_Abstract

@@ -1,5 +1,5 @@
 <?
-    $this->placeholder('title')->set('Add Action');
+    $this->placeholder('page_title')->set('Add Action');
 Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
 
 $this->dojo()
@@ -7,7 +7,6 @@ $this->dojo()
                  ->addStyleSheet('/scripts/dojo/resources/dojo.css')
              ->setDjConfigOption('parseOnLoad', true)
 ?>
-<h2>Add </h2>
 <style>
     #controller_tabset .dijitTabInnerContent,
     #controller_tabset .dijitTabInnerDiv
@@ -33,6 +32,7 @@ $this->dojo()
 
 </style>
 
+<h2>Add Action in module &quot;<?= $this->module_action ?>&quot;</h2>
 <?
 $this->tabContainer(
 )->captureStart(   'controller_tabset',
@@ -45,7 +45,6 @@ $this->tabContainer(
 
 <? foreach($this->mvc->controllers() as $controller): ?>
 <? $this->contentPane()->captureStart($controller, array('title' => $controller)) ?>
-<h2>Add Action</h2>
 <?
     $form = new Administer_Form_Addaction('/administer/meta/addactionexecute');
     $form->add_module->setValue($this->module_action);

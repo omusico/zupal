@@ -103,14 +103,13 @@ class Administer_Lib_Meta_Domain
      * @return <type>
      */
     public function mif () {
-	return $this->get_module() ? ucfirst($this->get_module()) . '_' : '';
+	return ($this->get_module() && strcasecmp($this->get_module(), 'default')) ? ucfirst($this->get_module()) . '_' : '';
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ create @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
-     * @param <type> $pTable, $pModule
-     * @return <type>
+     * @param string $pTable, $pModule
+     * @return string
      */
     public function create_domain () {
 	
@@ -118,20 +117,44 @@ class Administer_Lib_Meta_Domain
 	    'classes' => array(
 		new Zend_CodeGenerator_Php_Class(array(
 		    'name'    => $this->domain_class(),
-		    'extendedClass' => 'CPF_Domain_Abstract',
+		    'extendedClass' => 'Zupal_Domain_Abstract',
+		    'properties' => array(
+		    array(
+			'name' => '_instance',
+			'visibility' => 'private',
+                        'static' => true,
+			'defaultValue' => $this->get_table()
+		    )),
 		    'methods' => array(
 			new Zend_CodeGenerator_Php_Method(
 			    array(
-			    'name' => 'get_table_class',
+			    'name' => 'tableClass',
 			    'body' => " return '{$this->table_class()}';",
 			    )),
 			new Zend_CodeGenerator_Php_Method(
 			    array(
 			    'name' => 'get',
-			    'body' => " return new self(\$pID);",
-			    'parameters' => array(array('name' => 'pID'))
-			    )),
+			    'body' => '     $out = new self($pID);
+    if ($pLoad_Fields && is_array($pLoad_Fields)):
+        $out->set_fields($pLoad_Fields);
+    endif;
+    return $out;',
+			    'parameters' => array(
+                                array('name' => 'pID', 'defaultValue' => 'NULL'),
+                                array('pLoad_Fields' => 'NULL')
+                            )
+			    ))
 			),
+			new Zend_CodeGenerator_Php_Method(
+			    array(
+			    'name' => 'getInstance',
+			    'body' => '
+    if ($pReload || is_null(self::$_Instance)):
+    // process
+        self::$_Instance = new self();
+    endif;
+    return self::$_Instance;',
+			    )),
 		    )),
 		)
 	    ));
@@ -153,7 +176,7 @@ class Administer_Lib_Meta_Domain
 	    'classes' => array(
 		new Zend_CodeGenerator_Php_Class(array(
 		    'name'    => $this->table_class(),
-		    'extendedClass' => 'CPF_Domain_Table_Abstract',
+		    'extendedClass' => 'Zupal_Table_Abstract',
 		    'properties' => array(
 		    array(
 			'name' => '_name',
@@ -208,43 +231,29 @@ class Administer_Lib_Meta_Domain
 	    $body .= '$this->dtf("' . $field . '");' . "\n";
 	endforeach;
 
-	$domain_to_form = new Zend_CodeGenerator_Php_Method(
+	$body = 'return array("' . join('","', array_keys($data)) . '");';
+
+	$domain_fields = new Zend_CodeGenerator_Php_Method(
 	    array(
-	    'name' => 'domain_to_form',
+	    'name' => 'domain_fields',
 	    'body' => $body,
 	    'visibility' => 'public'));
 
-
-	$body = '';
-	foreach(array_keys($data) as $field):
-	    $body .= '$this->ftd("' . $field . '");' . "\n";
-	endforeach;
-
-	$form_to_domain = new Zend_CodeGenerator_Php_Method(
-	    array(
-	    'name' => 'form_to_domain',
-	    'body' => $body,
-	    'visibility' => 'public'));
-
-	    $get_domain_class = new Zend_CodeGenerator_Php_Method(
-		array(
-		    'name' => 'get_domain_class',
-		    'body' => 'return "' . $this->domain_class() . '";',
-		    'visibility' => 'protected'
-		)
-		
-	    );
-
+        $get_domain_class = new Zend_CodeGenerator_Php_Method(
+            array(
+                'name' => 'get_domain_class',
+                'body' => 'return "' . $this->domain_class() . '";',
+                'visibility' => 'protected'
+            ));
 
 	$file = new Zend_CodeGenerator_Php_File(array(
 	    'classes' => array(
 		new Zend_CodeGenerator_Php_Class(array(
 		    'name'    => $this->form_class(),
-		    'extendedClass' => 'CPF_Form_Abstract',
+		    'extendedClass' => 'Zupal_Form_Abstract',
 		    'methods' => array(
 			$construct,
-			$domain_to_form,
-			$form_to_domain,
+			$domain_fields,
 			$get_domain_class
 		    )
 		))
@@ -275,7 +284,8 @@ class Administer_Lib_Meta_Domain
 	    else:
 		$element = array(
 		    'type' => 'text',
-		    'label' => $this->field_label($field),
+		    'options' => array('label' => $this->field_label($field)),
+                    'value' => array_key_exists('DEFAULT', $values) ? $values['DEFAULT'] : 0
 		);
 
 		if (preg_match('~enum\((.*)\)~', $values['DATA_TYPE'], $matches)):

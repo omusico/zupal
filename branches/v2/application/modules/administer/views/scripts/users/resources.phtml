@@ -11,7 +11,7 @@ function resources_grid_edit_formatter(p)
 
 <?
     $this->headScript()->captureEnd();
-    $columns = new Zend_Config_Ini(dirname(__FILE__) . '/reouurces_grid.ini','columns');
+    $columns = new Zend_Config_Ini(dirname(__FILE__) . '/resources_grid.ini','columns');
 ?>
 
 <?= $this->dojostore('resources_store', $this->baseUrl() . '/administer/users/resourcesstore') ?>

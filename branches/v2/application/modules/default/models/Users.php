@@ -6,7 +6,7 @@ extends Zupal_Domain_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /**
- * @see CPF_Formset_Domain::get_table_class()
+ * @see Zupal_Formset_Domain::get_table_class()
  */
     public function tableClass () {
         return self::TABLE_CLASS;
@@ -14,10 +14,10 @@ extends Zupal_Domain_Abstract {
     const TABLE_CLASS = 'Model_DbTable_Users';
     
     /**
-     * @see CPF_Formset_Domain::get()
+     * @see Zupal_Formset_Domain::get()
      *
      * @param unknown_type $pID
-     * @return CPF_Formset_Domain
+     * @return Zupal_Formset_Domain
      *
      */
     public function get ($pID = null, $pLoad_Fields = NULL) {

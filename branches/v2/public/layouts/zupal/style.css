@@ -57,7 +57,8 @@ div#user_menu ul.navigation li
 
 div#main
 {
-    float: left; 
+    float: left;
+    width: 800px;
 }
 
 table.frame

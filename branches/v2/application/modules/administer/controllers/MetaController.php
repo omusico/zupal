@@ -24,35 +24,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ adddomainAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function adddomainAction () {
-	$module = $this->_getParam('module_domain');
-
-	if (!$module):
-	    return $this->_forward('error', NULL, NULL, array('error' => 'No Module Requested'));
-	endif;
-
-
-	if (!$this->_find_or_make_module($module)):
-	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module  ' . $module));
-	endif;
-
-	$target_dir .= 'models/' . Administer_Meta_Domain::TABLE_FOLDER . '/';
-
-	if (!$this->_find_or_make($target_dir)):
-	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module MODEL directory ' . $target_dir));
-	endif;
-
-	$this->view->tables = array();
-
-	$adapter = CPF_data::get_adapter();
-
-	$this->view->tables = $adapter->fetchCol('SHOW TABLES');
-	$this->view->domain_module = $module;
-    }
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ adddomainAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
-    public function addformAction () {
-	$module = $this->_getParam('module_domain');
+	$module = $this->_getParam('meta_module');
 
 	if (!$module):
 	    return $this->_forward('error', NULL, NULL, array('error' => 'No Module Requested'));
@@ -61,15 +33,44 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 	$target_dir = APPLICATION_PATH . '/modules/' . $module . '/';
 
 	if (!$this->_find_or_make_module($module)):
-	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module directory ' . $target_dir));
+	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module  ' . $module));
+	endif;
+
+	$target_dir .= 'models/' . Administer_Lib_Meta_Domain::TABLE_FOLDER . '/';
+
+	if (!$this->_find_or_make($target_dir)):
+	    return $this->_forward('error', NULL, NULL, array('error' => 'Cannot make module MODEL directory ' . $target_dir));
+	endif;
+
+	$this->view->tables = array();
+
+	$adapter = Zend_Db_Table::getDefaultAdapter();
+
+	$this->view->tables = $adapter->fetchCol('SHOW TABLES');
+	$this->view->domain_module = $module;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ adddomainAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function addformAction () {
+	$module = $this->_getParam('meta_module');
+
+	if (!$module):
+	    return $this->_forward('error', NULL, 'default', array('error' => 'No Module Requested'));
+	endif;
+
+	$target_dir = APPLICATION_PATH . '/modules/' . $module . '/';
+
+	if (!$this->_find_or_make_module($module)):
+	    return $this->_forward('error', NULL, 'default', array('error' => 'Cannot make module directory ' . $target_dir));
 	endif;
 
 	// note -- find or make module should also crate a forms folder
 
 	$this->view->tables = array();
 
-	$adapter = CPF_data::get_adapter();
-
+	$adapter = Zend_DB_Table::getDefaultAdapter();
+        
 	$this->view->tables = $adapter->fetchCol('SHOW TABLES');
 	$this->view->domain_module = $module;
     }
@@ -79,7 +80,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      *
      */
     public function adddomaincreateAction () {
-	$domain = new Administer_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
+	$domain = new Administer_Lib_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
 	if (!file_exists($domain->get_domain_path())):
 	    $domain->create_domain();
 	endif;
@@ -96,7 +97,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
      *
      */
     public function addformcreateAction () {
-	$domain = new Administer_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
+	$domain = new Administer_Lib_Meta_Domain($this->_getParam('table'), $this->_getParam('module_domain'));
 	if (!file_exists($domain->get_form_ini_path())):
 	    $domain->create_form_ini();
 	endif;
@@ -169,7 +170,7 @@ class Administer_MetaController extends Zupal_Controller_Abstract
 	    return TRUE;
 	endif;
 
-	mkdir($pPath, NULL, TRUE);
+	mkdir($pPath, 0775, TRUE);
 
 	if (is_dir($pPath)):
 	    return TRUE;
