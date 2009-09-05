@@ -1,9 +1,50 @@
+<style>
+    #acls th
+    {
+        font-size: 8pt;
+    }
+</style>
 <?
-$this->placeholder('title')->set('');
+$this->placeholder('page_title')->set('Permissions');
     $this->orientation;
     
     $this->resource;
     
     $this->role;
-    
+    $this->dojo()->requireModule('dojox.grid.cells.dijit');
 
+    $columns = array(
+        array(
+            'label' => 'Resource',
+            'width' => '120px',
+            'field' => 'resource_title'
+        )
+    );
+
+    foreach($this->roles as $role):
+        $columns[] = array(
+           'label' => $role->title_head(6, 3),
+           'width' => '75px',
+           'field' => $role->role_id,
+           'cellType' => "dojox.grid.cells.Select",
+           'options' => "Allow,Deny,--",
+           'values' => "Y,N,-",
+           'editable' => 'true'
+
+        );
+    endforeach;
+ob_start(); ?>
+dojo.xhrPost({
+    url: '/administer/users/aclset',
+    content: {resource: item.resource_id,
+    role: attribute,
+    allow: newValue}
+});
+<? $write = ob_get_clean() ?>
+<!-- DOJO WRITE STORE -->
+<?= $this->dojowritestore('acl_store', $this->baseUrl() . '/administer/users/aclstore', $write) ?>
+<!-- END DOJO WRITE STORE -->
+<?= $this->dojogrid('acls', 'acl_store', $columns, 'resource_id') ?>
+
+<a href="<?= $this->baseUrl() ?>/administer/users/resourcesnew" class="linkbutton">Add Resource</a>
+<a href="<?= $this->baseUrl() ?>/administer/users/rolenew" class="linkbutton">Add Role</a>

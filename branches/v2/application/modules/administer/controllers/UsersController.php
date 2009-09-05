@@ -16,6 +16,7 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
     }
 
     public function rolesAction() {
+        $this->view->stub = "stub";
     }
 
     public function rolesstoreAction() {
@@ -61,13 +62,20 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
 	
     public function aclAction()
     {
-        $orientation = $this->_getParam("orientation",  NULL );    
-        $resource = $this->_getParam("resource",  NULL );     
-        $role = $this->_getParam("role",  NULL );
-
+        $orientation = $this->_getParam("orientation",  NULL );  
         $this->view->orientation = $orientation;    
-        $this->view->resource = $resource;    
-        $this->view->role = $role;    
+        $this->view->roles = Model_Roles::getInstance()->findAll(array('rank', 'role_id'));
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ aclsetAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function aclsetAction () {
+        $this->_helper->layout->disableLayout();
+       extract($this->_getAllParams());
+
+       Model_Acl::getInstance()->set_acl($resource, $role, $allow);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ aclstoreAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -76,8 +84,9 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
      */
     public function aclstoreAction () {
         $this->_helper->layout->disableLayout();
-        $this->roles = Model_Resources::getInstance()->findAll('resource_id');
-        $this->resources = Model
+        $this->view->roles = Model_Roles::getInstance()->findAll('role_id');
+        $this->view->resources = Model_Resources::getInstance()->findAll('resource_id');
     }
+    
 }
 	
