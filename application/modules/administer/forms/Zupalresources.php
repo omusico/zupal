@@ -11,7 +11,7 @@ class Administer_Form_Zupalresources extends Zupal_Form_Abstract
         
         	if ($pDomain):
         	    $this->set_domain($pDomain);
-        	    $this->domain_to_form();
+        	    $this->domain_to_fields();
         	endif;
     }
 
