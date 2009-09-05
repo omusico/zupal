@@ -29,7 +29,24 @@ const ROLE_ANONYMOUS = 'anonymous';
         endif;
         return $out;
     }
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ title_head @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pMax_chars = 5
+     * @return <type>
+     */
+    public function title_head ($pMax_chars = 5, $pMax_Words = 3) {
+        $out = split(' ', $this->title);
+        foreach($out as $i => $v):
+            if ($i >= $pMax_Words):
+                break;
+            endif;
+            if (strlen($v) > $pMax_chars):
+                $out[$i] = substr($v, 0, $pMax_chars - 1) . '.';
+            endif;
+        endforeach;
+        return join(' ', $out);
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;

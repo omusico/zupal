@@ -1,0 +1,13 @@
+<?
+$res_rows = array();
+foreach($this->resources as $res):
+    $row = array('resource_id' => $res->identity(), 'resource_title' => $res->title);
+    foreach($this->roles as $role):
+        $row[$role->identity()] = Model_Acl::getInstance()->find_acl($res, $role);
+    endforeach;
+    $res_rows[]  = $row;
+endforeach;
+
+$data = new Zend_Dojo_Data('resource_id', $res_rows, 'resource_id');
+
+echo $data;
