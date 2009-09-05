@@ -10,11 +10,11 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controllers @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pParam
-     * @return <type>
+     * @param string $pParam
+     * @return string
      */
     public function controllers ($pModule = NULL) {
-	$module = $pModule ? $pModule : $this->get_module();
+	$module = $pModule ? $pModule : $this->get_module() ? $this->get_module() : 'default';
 
 	$cont = APPLICATION_PATH . '/modules/' . $module . '/controllers/';
 
@@ -34,8 +34,8 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ actions @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pController = NULL, $pModule = NULL
-     * @return <type>
+     * @param string $pController = NULL, $pModule = NULL
+     * @return string
      */
     public function controller_reflection ($pController = NULL, $pModule = NULL) {
 	$controller = $pController ? $pController : $this->get_controller();
@@ -98,8 +98,8 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_controller_file @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pParam
-     * @return <type>
+     * @param string $pParam
+     * @return string
      */
     public function get_controller_class_object () {
 
@@ -129,7 +129,7 @@ class Administer_Lib_Meta_MVC {
     /**
      *
      *
-     * @return <type>
+     * @return string
      */
     public function controller_class_name ($pController = NULL, $pModule = NULL) {
 	$controller = $pController ? $pController : $this->get_controller();
@@ -145,7 +145,7 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function controller_path () {
 	return APPLICATION_PATH . '/modules/' . $this->get_module() . '/controllers/' . $this->get_controller_file();
@@ -155,8 +155,8 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ backup_controller @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type>
-     * @return <type>
+     * @param string
+     * @return string
      */
      private $_backup_path;
 
@@ -181,8 +181,8 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_action @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pAction
-     * @return <type>
+     * @param string $pAction
+     * @return string
      */
     public function create_action ($pAction = NULL, $pParams = NULL) {
 	$action = $pAction ? $pAction : $this->get_action();
@@ -249,7 +249,7 @@ class Administer_Lib_Meta_MVC {
 <? $reflect .= ob_get_clean(); ?>
     <?
 		endforeach;
-		$body = $reflect . ob_get_clean();
+		$body =  ob_get_clean() . "\n" . $reflect;
 	    endif;
 
 	    $old = $this->backup_controller();
@@ -287,8 +287,8 @@ class Administer_Lib_Meta_MVC {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ view_path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type>
-     * @return <type>
+     * @param string
+     * @return string
      */
     public function view_path ($pAction = NULL) {
 	$action = $pAction ? $pAction : $this->get_action();

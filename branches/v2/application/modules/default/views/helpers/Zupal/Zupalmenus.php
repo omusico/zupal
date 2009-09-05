@@ -40,7 +40,7 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
             ->find_from_sql($sql, TRUE, FALSE);
             
         foreach($modules as $module):
-            if (1 || !$module->menu_loaded) :
+            if (!$module->menu_loaded) :
                 $module->load_menus();
             endif;
             
