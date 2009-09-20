@@ -1,7 +1,9 @@
 <?
 
 class Model_Roles
-extends Zupal_Domain_Abstract {
+extends Zupal_Domain_Abstract
+implements Zend_Acl_Role_Interface
+{
 
 const ROLE_ADMIN = 'admin';
 const ROLE_ANONYMOUS = 'anonymous';
@@ -73,7 +75,13 @@ const ROLE_ANONYMOUS = 'anonymous';
         return self::$_fields;
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ current_user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ interface @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    /**
+     * Returns the string identifier of the Role
+     *
+     * @return string
+     */
+    public function getRoleId(){ return $this->identity(); }
 
 }

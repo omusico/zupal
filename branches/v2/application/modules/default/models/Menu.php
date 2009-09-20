@@ -119,7 +119,12 @@ class Model_Menu extends Zupal_Domain_Abstract {
 
             $config = array(
                 'label' => $this->label,
-                'href' => $this->href);
+                'href' => $this->href
+            );
+
+            if ($this->resource):
+                $config['resource'] = $this->resource;
+            endif;
 
             $page = new Zend_Navigation_Page_Uri($config);
 
@@ -131,6 +136,10 @@ class Model_Menu extends Zupal_Domain_Abstract {
                 'action' => $this->action
             );
 
+            if ($this->resource):
+                $config['resource'] = $this->resource;
+            endif;
+            
             $page = new Zend_Navigation_Page_Mvc($config);
 
         endif;
@@ -142,6 +151,23 @@ class Model_Menu extends Zupal_Domain_Abstract {
         endforeach;
         $page->setPages($children);
         return array($page);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages_tree @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function pages_tree () {
+        $data = $this->toArray();
+
+        $data['children'] = array();
+
+        foreach($this->children() as $menu):
+            $data['children'][] = $menu->pages_tree();
+        endforeach;
+
+        return $data;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ children @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

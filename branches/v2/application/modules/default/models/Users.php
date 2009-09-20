@@ -74,7 +74,8 @@ extends Zupal_Domain_Abstract {
     /**
      *
      */
-    public function clear_current_user () {
+    public static function clear_current_user () {
+        Zend_Auth::getInstance()->clearIdentity();
         self::$_current_user = NULL;
     }
 
@@ -88,4 +89,33 @@ extends Zupal_Domain_Abstract {
         endif;
         return $this->_role;
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ can @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pResource
+     * @return boolean
+     */
+    public function can ($pResource) {
+        if (!$this->get_role()):
+            return FALSE;
+        else:
+            return Model_Acl::acl()->isAllowed($this->role, $pResource);
+        endif;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ current_user_can @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pResource
+     * @return boolean
+     */
+    public function current_user_can ($pResource) {
+        if (self::current_user()):
+            return self::current_user()->can($pResource);
+        else:
+            return Model_Acl::acl()->isAllowed('anonymous', $pResource);
+        endif;
+    }
+
 }

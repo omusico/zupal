@@ -1,6 +1,7 @@
 <?php
 
 class Model_Resources extends Zupal_Domain_Abstract
+implements Zend_Acl_Resource_Interface
 {
 
     public function tableClass()
@@ -16,7 +17,6 @@ class Model_Resources extends Zupal_Domain_Abstract
         return $out;
     }
 
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;
@@ -28,6 +28,18 @@ class Model_Resources extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ResourceId @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    /**
+     * Returns the string identifier of the Resource
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return $this->identity();
+    }
+    
 }
+
 

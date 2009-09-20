@@ -29,7 +29,14 @@ class UserController extends Zupal_Controller_Abstract
     public function hiAction () {
     }
 
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ byeAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function byeAction () {
+        Model_Users::getInstance()->clear_current_user();
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ registerAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -83,13 +90,6 @@ class UserController extends Zupal_Controller_Abstract
             $this->_forward('hi', NULL, NULL, $comment);
 
         endif;
-    }
-
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ goodbyeAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     */
-    public function goodbyeAction () {
     }
 
     /**

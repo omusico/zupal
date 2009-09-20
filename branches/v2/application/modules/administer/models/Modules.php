@@ -184,16 +184,16 @@ extends Zupal_Domain_Abstract {
         $active_controller = $req->getControllerName();
 
         $mm = Model_Menu::getInstance();
-        if (1 || !$this->menu_loaded):
+        if (!$this->menu_loaded):
             $mm->table()->delete(sprintf('module = "%s"', $this->folder));
             $path = $this->path_exists('configuration/info.ini');
             if ($path):
                 $config = new Zend_Config_Ini($path, 'menu');
                 $mm->add_menus($config->toArray(), $this->folder);
+            endif;
+        //     $this->menu_loaded = TRUE;
+        //    $this->save();
         endif;
-    //     $this->menu_loaded = TRUE;
-    //    $this->save();
-    endif;
     }
 
 }

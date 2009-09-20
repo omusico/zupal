@@ -26,7 +26,13 @@ class Administer_ErrorController extends Zend_Controller_Action
         $this->view->request   = $errors->request;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ insecureAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function insecureAction () {
 
+    }
 }
 
 	

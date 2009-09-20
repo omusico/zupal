@@ -6,6 +6,22 @@
 
 class Administer_IndexController extends Zupal_Controller_Abstract
 {
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @return <type>
+ */
+    public function preDispatch () {
+        $u = Model_Users::current_user();
+
+        if (!$u || ! $u->can('site_admin')):
+            $param = array('error' => 'This area is reserved for administrators');
+            $this->_forward('insecure', 'error', 'administer', $param);
+        endif;
+    }
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
