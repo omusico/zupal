@@ -43,8 +43,10 @@ class Model_Acl extends Zupal_Domain_Abstract
             else:
                 return $acl->allow;
             endif;
-        else:
+        elseif($acl):
             return $acl;
+        else:
+            return FALSE;
         endif;
     }
 
@@ -94,6 +96,43 @@ class Model_Acl extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ acl @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * This is the Zend_Acl gateway class. 
+     * 
+     */
+    private static $_acl = NULL;
+
+    /**
+     *
+     * @param boolean $pReload
+     * @return Zend_Acl
+     */
+    public static function acl($pReload = FALSE) {
+        if ($pReload || is_null(self::$_acl)):
+            $acl = new Zend_Acl();
+            foreach(Model_Resources::getInstance()->find_all() as $res):
+                $acl->add($res);
+            endforeach;
+
+            foreach(Model_Roles::getInstance()->find_all() as $role):
+                $acl->addRole($role);
+            endforeach;
+
+            foreach(self::getInstance()->find_all() as $grant):
+                if ($grant->allow):
+                    $acl->allow( $grant->role, $grant->resource);
+                else:
+                    $acl->deny( $grant->role, $grant->resource);
+                endif;
+            endforeach;
+
+            self::$_acl = $acl;
+        endif;
+
+        return self::$_acl;
+    }
 
 }
 

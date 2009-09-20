@@ -1,14 +1,21 @@
 <?php
 class Administer_ModulesController extends Zupal_Controller_Abstract {
+    
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
- * @return string
  *
- *
+ * @return <type>
  */
-    public function init() {
+    public function preDispatch () {
         $this->_helper->layout->setLayout('admin');
-        parent::init();
+        $u = Model_Users::current_user();
+
+        if (!$u || ! $u->can('site_admin')):
+            $param = array('error' => 'This area is reserved for administrators');
+            return $this->_forward('insecure', 'error', 'administer', $param);
+        endif;
     }
+
     /**
      *
      */
@@ -34,5 +41,32 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
     }
 
     public function menustoreAction() {
+        $pages = array();
+
+        $modules = Administer_Model_Modules::getInstance()
+            ->find_all('sort_by');
+
+        $mm = Model_Menu::getInstance();
+
+        $module_names = array();
+
+        foreach($modules as $module):
+            $module_names[] = $module->identity();
+        endforeach;
+
+        $sql = sprintf('(module in ("%s")) AND (parent = 0)', join('","', $module_names));
+        // at this point have selected all the menus of all active modules
+
+        // return a tree of pages from each top level page sorted by sort_by and label
+
+        foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
+            $new_pages = $menu->pages_tree();
+            $pages[] = $new_pages;
+        endforeach;
+
+        $this->view->data = new Zend_Dojo_Data('id', $pages, 'label');
+
+        $this->_helper->layout->disableLayout();
+
     }
 }

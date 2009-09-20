@@ -8,7 +8,17 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
     }
 
     public function zupalmenus() {
-        return $this->getView()->navigation()->menu()->renderMenu($this->pages());
+        $menu = $this->getView()->navigation()->menu();
+        $menu->setAcl(Model_Acl::acl());
+        $pages = $this->pages();
+        
+        if (Model_Users::current_user()):
+            $menu->setRole(Model_Users::current_user()->role);
+        else:
+            $menu->setRole('anonymous');
+        endif;
+        
+        return $menu->renderMenu($pages);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -65,7 +75,8 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
             $pages = array_merge($pages,  $new_pages);
         endforeach;
 
-        return new Zend_Navigation($pages);
+        $pages = new Zend_Navigation($pages);
+        return $pages;
     }
 
 }

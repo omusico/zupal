@@ -1,3 +1,27 @@
 <?
-$this->placeholder('menu_title')->set('Edit Menu');
+$this->placeholder('page_title')->set('Edit Menu');
+$this->dojo()->requireModule('dojo.data.ItemFileReadStore')
+->requireModule('dijit.tree.ForestStoreModel')
+->requireModule('dijit.Tree')
+->requireModule('dojo.parser')
+->setDjConfigOption('parseOnLoad', TRUE)
+?>
 
+<div dojoType="dojo.data.ItemFileReadStore"
+     url="<?=$this->baseUrl() ?>/administer/modules/menustore"
+     jsId="menu_tree_data"
+     >
+</div>
+
+<div dojoType="dijit.tree.ForestStoreModel"
+     rootLabel="Menus"
+     rootId="0"
+     store="menu_tree_data"
+     childrenAttrs="children"
+     jsId="menu_tree_model"
+     >
+</div>
+
+<div dojoType="dijit.Tree" id="menu_tree"
+     model="menu_tree_model">
+</div>
