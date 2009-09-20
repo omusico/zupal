@@ -196,4 +196,12 @@ extends Zupal_Domain_Abstract {
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ title @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function title () {
+        return $this->title ? $this->title : ucwords($this->folder);
+    }
 }
