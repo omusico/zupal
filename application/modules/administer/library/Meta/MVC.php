@@ -15,7 +15,9 @@ class Administer_Lib_Meta_MVC {
      */
     public function controllers ($pModule = NULL) {
 	$module = $pModule ? $pModule : $this->get_module() ? $this->get_module() : 'default';
-
+        if (!$module):
+            throw new Exception(__METHOD__ . ': attempt to find controllers of blank module');
+        endif;
 	$cont = APPLICATION_PATH . '/modules/' . $module . '/controllers/';
 
 	$di = new DirectoryIterator($cont);
