@@ -44,7 +44,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
             array('_layout' => 'admin'));
         $front->getRouter()->addRoute('admin', $route);
     }
-    
+
+    protected function _initRoutes()
+    {
+
+        $frontController = Zend_Controller_Front::getInstance();
+        $router = $frontController->getRouter();
+        $options = new Zend_Config_Ini(APPLICATION_PATH . DS . 'configs' . DS . 'application.ini', APPLICATION_ENV);
+        $router->addConfig($options, 'routes');
+    }
 
 }
 

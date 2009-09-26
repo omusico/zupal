@@ -37,27 +37,39 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
      *
      * @return Zend_Navigation_Pages[]
      */
-    public function pages () {
+    public function pages ($pPanel = 'main') {
         $pages = array();
+        
         $req = Zend_Controller_front::getInstance()->getRequest();
         $active_module = $req->getModuleName();
         $active_controller = $req->getControllerName();
-
-        // retrieve a list of the active modules
-
+            
         $sql = array('(required = 1) OR (active = 1)', 'sort_by');
-        $modules = Administer_Model_Modules::getInstance()
-            ->find_from_sql($sql, TRUE, FALSE);
-            
+        $modules = Administer_Model_Modules::getInstance()->find_from_sql($sql, TRUE, FALSE);
+
         foreach($modules as $module):
-            if (!$module->menu_loaded) :
-                $module->load_menus();
-            endif;
-            
+            $module->load_menus();
             $module_names[] = '"' . $module->folder . '"';
         endforeach;
 
         $mm = Model_Menu::getInstance();
+        foreach($mm->find(array('panel' => $pPanel, 'parent' => 0), 'sort_by') as $menu):
+            if ($new_page = $menu->page($active_module, $active_controller)):
+               $pages[] = $new_page;
+            endif;
+        endforeach;
+        /*
+
+        // retrieve a list of the active modules
+
+
+            
+        foreach($modules as $module):
+                $module->load_menus();
+            
+            $module_names[] = '"' . $module->folder . '"';
+        endforeach;
+
 
         $sql = sprintf('(module in (%s)) AND (parent = 0)', join(',', $module_names));
         //// at this point have selected all the menus of all active modules
@@ -73,10 +85,9 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
             $new_pages = $menu->pages();
             $pages = array_merge($pages,  $new_pages);
-        endforeach;
+        endforeach; */
 
-        $pages = new Zend_Navigation($pages);
-        return $pages;
+        return new Zend_Navigation($pages);
     }
 
 }

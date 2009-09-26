@@ -175,33 +175,51 @@ extends Zupal_Domain_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pMode = 'global'
-     * @return <type>
+     * @return void
      */
-    public function load_menus () {
-        $req = Zend_Controller_front::getInstance()->getRequest();
-        $active_module = $req->getModuleName();
-        $active_controller = $req->getControllerName();
-
-        $mm = Model_Menu::getInstance();
-        if (!$this->menu_loaded):
-            $mm->table()->delete(sprintf('module = "%s"', $this->folder));
-            $path = $this->path_exists('configuration/info.ini');
-            if ($path):
-                $config = new Zend_Config_Ini($path, 'menu');
-                $mm->add_menus($config->toArray(), $this->folder);
+    public function load_menus ($pReload = FALSE) {
+        if ($pReload || !$this->menu_loaded):
+            if ($config = $this->menu_data()):
+                $mm = Model_Menu::getInstance();
+                $crit = $mm->table()->getAdapter()->quoteInto('created_by_module = ?', $this->folder);
+                $mm->table()->delete($crit);
+                $data = $config->toArray();
+                $mm->add_menus($data, $this->folder);
             endif;
-        //     $this->menu_loaded = TRUE;
-        //    $this->save();
+            $this->menu_loaded = TRUE;
+            $this->save();
         endif;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ menu_data @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Zend_Config_Ini
+     */
+    public function menu_data () {
+        $path = $this->path_exists('configuration/info.ini');
+        if ($path):
+            $config = new Zend_Config_Ini($path, 'menu');
+            return $config;
+        endif;
+        return NULL;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ title @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function title () {
         return $this->title ? $this->title : ucwords($this->folder);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_active @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * whether the module is on / accessible. 
+     * @return boolean
+     */
+    public function is_active () {
+        return $this->required || $this->active;
     }
 }
