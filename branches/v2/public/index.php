@@ -31,7 +31,7 @@ defined('ZUPAL_LIBRARY_PATH') ||
 //error_log('ZLP: ' . ZUPAL_LIBRARY_PATH);
 
 defined('ZUPAL_MODULE_PATH') ||
-	define('ZUPAL_MODULE_PATH', ZUPAL_APPLICATION_PATH . DS . 'modules');
+	define('ZUPAL_MODULE_PATH', APPLICATION_PATH . DS . 'modules');
 
 
 defined('ZUPAL_LAYOUT_PATH') ||

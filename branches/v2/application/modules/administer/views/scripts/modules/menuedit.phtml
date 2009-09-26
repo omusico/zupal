@@ -12,6 +12,7 @@ $this->dojo()->requireModule('dojo.data.ItemFileReadStore')
 $form = new Administer_Form_Zupalmenus();
 $form->setAttrib('id', 'menu_form');
 $form->setName('menu_form');
+$form->setAction($this->baseUrl() . DS . 'administer' . DS . 'modules' . DS . 'menueditexecute');
 
 $this->headScript()->appendFile('/scripts/multiple-select-functions.js');
 ?>
@@ -91,6 +92,16 @@ $this->headScript()->captureStart();
     font-size: 80%;
 }
 
+#main #form_panel dl.zend_form
+{
+    width: 450px;
+}
+
+#main #form_panel dl.zend_form dd
+{
+    width: 255px;
+}
+
 #main #form_panel dl.zend_form input,
 #main #form_panel dl.zend_form textarea,
 #main #form_panel dl.zend_form select
@@ -99,6 +110,34 @@ $this->headScript()->captureStart();
     border: 1px solid #999;
     background-color: white;
     width: 250px;
+}
+
+#menu_tree .dijitLeaf
+{
+
+background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet.gif);
+
+}
+
+#menu_tree .dijitFolderOpened
+{
+
+background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet_opened.gif);
+
+}
+
+#menu_tree .dijitTreeLabel
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 80%;
+}
+
+#menu_tree .dijitFolderClosed
+{
+
+background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet_closed.gif);
+
 }
 <? $this->headStyle()->captureEnd(); ?>
 </style>
@@ -133,12 +172,12 @@ $this->headScript()->captureStart();
     <div dojoType="dijit.layout.ContentPane" region="right" style="width: 60%"   id="form_panel">
 
             <div dojoType="dijit.form.Button">
-                Edit Selected Menu
+                Add Submenu
                 <script type="dojo/method" event="onClick" args="evt">
                     if (last_menu_selected)
                         {
                             f =
-                            alert("selected " + last_menu_selected.id);
+                            alert("adding submenu to " + last_menu_selected.id);
                         }
                 </script>
             </div>

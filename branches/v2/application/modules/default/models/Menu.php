@@ -50,11 +50,15 @@ class Model_Menu extends Zupal_Domain_Abstract {
      * @return <type>
      */
     public function add_menus (array $pConfig, $pModule_creator) {
-        $index = 0;
+        
+        $new_menus = array();
+
         foreach($pConfig as $name => $page):
             $menu = $this->add_menu($page, $name, 0, $pModule_creator);
-            $menu->save();
+            $new_menus[] = $menu;
         endforeach;
+
+        return $new_menus;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_module_menu @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -64,10 +68,17 @@ class Model_Menu extends Zupal_Domain_Abstract {
      * @return <type>
      */
     public function add_menu ($pPage, $pName, $pParent = 0, $pModule_creator = '') {
-        $menu = $this->get(NULL, array('parent' => $pParent,
+        $menu = $this->get(NULL, array(
+                'parent' => $pParent,
                 'name' => $pName,
                 'sort_by' => 10,
+                'panel' => 'main',
                 'created_by_module' => $pModule_creator));
+
+        if ($pName == 'home'):
+           error_log('home');
+        endif;
+
         $subs = FALSE;
         foreach($pPage as $field => $value):
 
@@ -76,6 +87,7 @@ class Model_Menu extends Zupal_Domain_Abstract {
                 case 'href':
                 case 'resource':
                 case 'module':
+                case 'panel':
                 case 'controller':
                 case 'action':
                 case 'if_controller':
@@ -92,6 +104,7 @@ class Model_Menu extends Zupal_Domain_Abstract {
 
         endforeach;
 
+        $menu->set_path();
         $menu->save();
 
         if ($subs):
@@ -105,16 +118,83 @@ class Model_Menu extends Zupal_Domain_Abstract {
 
         return $menu;
     }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ parent @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    
+    private $_parent = NULL;
+    function parent($pReload = FALSE) {
+        if ($pReload || is_null($this->_parent)):
+        // process
+            $value = $this->parent? $this->get($this->parent) : FALSE;
+            $this->_parent = $value;
+        endif;
+        return $this->_parent;
+    }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_path @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type>
+     * @param <type> 
      * @return <type>
      */
-    public function pages () {
-        $out = array();
+    public function set_path () {
+        if ($parent = $this->parent()):
+            $root = $parent->path;
+        else:
+            $root = array();
+            if ($this->module) $root[] = $this->module;
+            if ($this->panel != $nav) $root[] = $this->panel;
+            $root = join('-', $root);
+        endif;
+        $this->path = $root . self::PATH_SEPARATOR .  $this->name;
+    }
 
+    const PATH_SEPARATOR = ':';
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_module = NULL;
+    function module($pReload = FALSE) {
+        if ($pReload || is_null($this->_module)):
+            $module = NULL;
+
+            if ($this->module):
+                $module = Administer_Model_Modules::getInstance()->get($this->module);
+            elseif ($this->created_by_module):
+                $module = Administer_Model_Modules::getInstance()->get($this->created_by_module);
+            endif;
+
+        // process
+            $this->_module = $module;
+        endif;
+        return $this->_module;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/**
+ *
+ * @param string $pModule
+ * @param string $pController
+ * @return Zend_Navigation_Page
+ */
+    public function page ($pModule = NULL, $pController = NULL) {
+        $module = $this->module();
+
+        if ($module):
+            if (!$module->is_active()):
+                return array();
+            endif;
+
+            if ($this->if_module && $pModule && ($pModule != $this->module)):
+                return array();
+            endif;
+
+            if ($this->if_controller && $pModule && ($pModule != $this->module) && $pController && ($pController != $this->controller)):
+                return array();
+            endif;
+
+        endif;
+        
         if($this->href):
 
             $config = array(
@@ -147,16 +227,20 @@ class Model_Menu extends Zupal_Domain_Abstract {
         $children = array();
 
         foreach($this->children() as $menu):
-            $children = array_merge($children, $menu->pages());
+            if ($c_page = $menu->page($pModule, $pController)):
+                $children[] = $c_page;
+            endif;
         endforeach;
-        $page->setPages($children);
-        return array($page);
+        if ($children):
+            $page->setPages($children);
+        endif;
+        return $page;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages_tree @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @returnarray
      */
     public function pages_tree () {
         $data = $this->toArray();
