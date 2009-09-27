@@ -40,14 +40,13 @@ $params = array(
         $page = new Zend_Navigation_Page_Mvc($params);
 ?>
     <a href="<?=  $page->getHref() ?>" class="linkbutton"><?= $title ?></a>
-<? endforeach; ?>
-    <h2>Controllers</h2>
+ <? endforeach; ?>
+    <h2><?= ucwords($module) ?> Controllers</h2>
     <ul>
     <? foreach ($mvc->controllers($module, TRUE) as $controller): ?>
         <li><?= $controller ?></li>
     <? endforeach; ?>
     </ul>
- 
 
 <?= $this->contentPane()->captureEnd($module); ?>
 <? endforeach; ?>

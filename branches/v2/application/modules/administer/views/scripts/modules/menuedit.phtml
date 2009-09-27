@@ -25,6 +25,15 @@ $this->headScript()->captureStart();
     function update_menu_form(item)
     {
         var f = document.forms['menu_form'];
+        var w = dojo.byId;
+        if (item.created_by_module)
+        {
+            w.innerHTML = 'This menu item was added by module ' . item.created_by_module;
+        }
+        else
+        {
+            w.innerHTML = '';
+        }
 
         f.elements['id'].value = item.id;
         f.elements['label'].value = item.label;
@@ -181,7 +190,8 @@ background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bulle
                         }
                 </script>
             </div>
-
+        <div id="created_by_module_note" style="font-family: Arial, Helvetica, sans-serif; color: #FF000">
+        </div>
             <?= $form ?>
     </div>
 
