@@ -51,7 +51,9 @@ $this->tabContainer(
     $form->add_controller->setValue(strtolower($controller));
 
     echo $form->render();
+
 ?>
+<br clear="all" />
    <p>Actions in <?= $controller ?></p>
    <? 
    $cn = $this->mvc->controller_class_name($controller, $this->module_action);
