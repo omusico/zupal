@@ -60,33 +60,29 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
         $this->_helper->layout->disableLayout();
     }
 
-    public function menueditAction()
-    {
-    }
-
-    public function menustoreAction()
-    {
-        $pages = array();
-                $modules = Administer_Model_Modules::getInstance()
-                    ->find_all('sort_by');
-                $mm = Model_Menu::getInstance();
-                $module_names = array();
-                foreach($modules as $module):
-                    $module_names[] = $module->identity();
-                endforeach;
-                $sql = sprintf('(module in ("%s")) AND (parent = 0)', join('","', $module_names));
-                // at this point have selected all the menus of all active modules
-                // return a tree of pages from each top level page sorted by sort_by and label
-                foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
-                    $new_pages = $menu->pages_tree();
-                    $pages[] = $new_pages;
-                endforeach;
-                $this->view->data = new Zend_Dojo_Data('id', $pages, 'label');
-                $this->_helper->layout->disableLayout();
-    }
-
     public function menueditexecuteAction()
     {
+        
+        $data = array(
+            'if_controller' => $this->_getParam('if_controller'),
+            'if_module' => $this->_getParam('if_module'),
+            'controller' => $this->_getParam('controller'),
+            'action' => $this->_getParam('action'),
+            'module' => $this->_getParam('module'),
+            'name' => $this->_getParam('name'),
+            'label' => $this->_getParam('label'),
+            'resource' => (int) $this->_getParam('resource'),
+            'href' => $this->_getParam('href'),
+            'parameters' => $this->_getParam('parameters'),
+            'parent' => $this->_getParam('parent')        
+        );
+
+        $id = (int) $this->_getParam('id', 0);
+        $menu = Model_Menu::getInstance()->get($id, $data);
+        if (!$menu->panel) $menu->panel = 'main';
+        $menu->save();
+        $params = array('message' => $data->label . ' updated');
+        $this->_forward('menuedit', NULL, NULL, $params);
     }
 
 }

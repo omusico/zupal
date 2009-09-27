@@ -58,34 +58,6 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
                $pages[] = $new_page;
             endif;
         endforeach;
-        /*
-
-        // retrieve a list of the active modules
-
-
-            
-        foreach($modules as $module):
-                $module->load_menus();
-            
-            $module_names[] = '"' . $module->folder . '"';
-        endforeach;
-
-
-        $sql = sprintf('(module in (%s)) AND (parent = 0)', join(',', $module_names));
-        //// at this point have selected all the menus of all active modules
-
-        $module_is_active = sprintf(' (module = "%s") ', $active_module);
-
-        $sql .= sprintf(' AND ((if_module = 0) OR (%s)) ', $module_is_active);
-        // if the menu only viewable in the context of the current menu,
-        // require the module to be current
-
-        // return a tree of pages from each top level page sorted by sort_by and label
-
-        foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
-            $new_pages = $menu->pages();
-            $pages = array_merge($pages,  $new_pages);
-        endforeach; */
 
         return new Zend_Navigation($pages);
     }

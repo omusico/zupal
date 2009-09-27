@@ -25,10 +25,10 @@ $this->headScript()->captureStart();
     function update_menu_form(item)
     {
         var f = document.forms['menu_form'];
-        var w = dojo.byId;
+        var w = dojo.byId('created_by_module_note');
         if (item.created_by_module)
         {
-            w.innerHTML = 'This menu item was added by module ' . item.created_by_module;
+            w.innerHTML = '<font color=#FF0000">This menu item was added by module ' + item.created_by_module + '</font>';
         }
         else
         {
@@ -185,12 +185,35 @@ background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bulle
                 <script type="dojo/method" event="onClick" args="evt">
                     if (last_menu_selected)
                         {
-                            f =
-                            alert("adding submenu to " + last_menu_selected.id);
+                            var f = document.forms['menu_form'];
+                            var w = dojo.byId('created_by_module_note');
+                            w.innerHTML = 'Add new menu item under item ' + last_menu_selected.label;
+
+                            var id = last_menu_selected.id;
+                            f.elements['id'].value = 0;
+                            f.elements['label'].value = '';
+                            f.elements['name'].value = '';
+                            f.elements['parent'].value = id;
+                            f.elements['controller'].value = '';
+                            f.elements['action'].value = '';
+                            f.elements['href'].value = '';
+                            f.elements['parameters'].value = '';
+                            f.elements['callback_class'].value = '';
+
+                            dojo.query('#if_module').forEach(
+                            function(i){i.checked = false; }
+                            ); //
+                            dojo.query('#if_controller').forEach(
+                            function(i){i.checked = false; }
+                            ); 
+                            var res_select = f.elements['resource'];
+                            res_select.selectedIndex = 0;
+                            var mod_select = f.elements['module'];
+                            mod_select.selectedIndex = 0;
                         }
                 </script>
             </div>
-        <div id="created_by_module_note" style="font-family: Arial, Helvetica, sans-serif; color: #FF000">
+        <div id="created_by_module_note" style="color: #FF000; font-family: Arial, Helvetica, sans-serif; font-size: 80%">
         </div>
             <?= $form ?>
     </div>
