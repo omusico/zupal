@@ -1,6 +1,6 @@
 <?
 $this->placeholder('page_title')->set('Edit Menu');
-$this->dojo()->requireModule('dojo.data.ItemFileReadStore')
+$this->dojo()->requireModule('dojo.data.ItemFileWriteStore')
 ->requireModule('dijit.tree.ForestStoreModel')
 ->requireModule('dijit.Tree')
 ->requireModule('dijit.form.Button')
@@ -51,6 +51,16 @@ $this->headScript()->captureStart();
         dojo.query('#if_controller').forEach(
         function(i){i.checked = item.if_controller[0] ? true : false; }
         ); //
+
+        var parent_select = f.elements['parent'];
+        if (item.parent)
+        {
+
+        } else
+        {
+            FM.findOption(parent_select, item.panel);
+        }
+
         var found = 0;
         var res_select = f.elements['resource'];
         
@@ -73,8 +83,6 @@ $this->headScript()->captureStart();
 </script>
 <style>
     <? $this->headStyle()->captureStart(); ?>
-#parent-label,
-#parent-element,
 #id-label,
 #id-element,
 #created_by_module-label,
@@ -163,6 +171,9 @@ background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bulle
      store="menu_tree_data"
      childrenAttrs="children"
      jsId="menu_tree_model"
+
+     DNDMode="both"
+     DNDAcceptTypes="['myNewTreeWidget']"
      >
 </div>
 <div dojoType="dijit.layout.BorderContainer" style="width: 800px; height: 600px" gutters="false" id="menu_edit_frame">
