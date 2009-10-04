@@ -18,40 +18,67 @@
   dojo.require('dijit.form.TextBox');
   var proxy;
   function setup() {
-    var smdURL = 'api.php';
+    var smdURL = '/hgm/server/api.php';
     proxy = new dojo.rpc.JsonService({serviceUrl: smdURL ,
     methods: [
         {
             name: 'addurl',
             parameters: [{name: 'url'}]
         }
-    ]});
+    ],
+    timeout: 10000}
+    );
   }
 
   function addurlBack(result) {
-      alert(result);
+      console.debug(result);
   }
 
-  function addurl() {
-     proxy.addurl(dojo.byId('url_field').value).addCallback(addurlBack);
+  function scan_url() {
+     if (!(url = dojo.byId('url_field').value))
+     {
+         if (!(url = url_value)) return;
+     }
+     console.debug("scanning " + url);
+     proxy.addurl(url).addCallback(addurlBack);
   }
 
   dojo.addOnLoad(setup);
+
+  function update_watch()
+  {
+      console.debug(dojo.byId('url_frame').src);
+  }
+
+var url_value;
 
   function view_url()
   {
       source = dojo.byId('url_field');
       console.debug('changing source to ' + source.value);
 
+      if (!source.value) 
+      {
+          return;
+      }
+
       dojo.byId('url_frame').src = source.value;
       dojo.style('url_frame', 'display', 'block');
+      dojo.byId('url_echo').innerHTML = url_value = source.value;
+      source.value = '';
+      dojo.style(dijit.byId('scan_button').domNode, 'display', 'block');
   }
+
 
   function apply_url(source)
   {
       if (source.id == 'url_field')
           {
               view_url();
+          }
+      else if (source.id == 'url_frame')
+          {
+              dojo.byId('url_field').value = source.src;
           }
       else
           {
@@ -66,7 +93,26 @@
           font-family: Arial, Helvetica, sans-serif;
           font-weight: bold;
           width: 50px;
+          float: left;
           height: 20px;
+      }
+
+      #url_echo
+      {
+          font-family: Verdana, Arial, Helvetica, sans-serif;
+          color: #999;
+          text-align: left;
+          padding: 3px;
+          font-weight: bold;
+          width: 300px;
+          font-size: 80%;
+          float: left
+      }
+
+      #url_field
+      {
+          float: left;
+          width: 400px
       }
   </style>
 </head>
@@ -78,25 +124,28 @@
        	<div id="submission">
         <input type="text" id="url_field" name="url_field"
                dojoType="dijit.form.TextBox" 
-               style="float: left; width: 400px"
                onChange="apply_url(this)"
                onDrop="apply_url(this)"
                onBlur="apply_url(this)"/>
-        <button id="view" style="width: 50px; float: left" class="view_button"
+        <button id="view_button"
+                class="view_button"
                 onClick="view_url()"
-                dojoType="dijit.form.Button">View</button>
-        <button id="scan" style="width: 50px; float: left" class="scan_button"
-                dojoType="dijit.form.Button">Scan</button> <br clear="all" />
+                dojoType="dijit.form.Button">View</button><br clear="all" />
         <iframe id="url_frame"
                 width="400px"
                 height="300px"
                 border="1px"
                 style="font-size: 50%; display: none"
-                src="new_frame_start.html"
-                onLoad="apply_url(this)">
+                src="new_frame_start.html">
         Drag a URL from your browser or bookmarks to this window
-        </iframe>
-        </div>
+        </iframe><br clear="all" />
+            <div id="url_echo">
+            </div>
+        <button id="scan_button" style="width: 50px; float: left; display: none"
+                class="scan_button"
+                onClick="scan_url"
+                dojoType="dijit.form.Button">Scan</button> 
+        <br clear="all" /></span>
     </fieldset>
 </body>
 </html>

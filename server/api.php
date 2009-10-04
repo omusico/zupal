@@ -1,4 +1,5 @@
 <?
+include_once 'init.php';
 
 $server = new Zend_Json_Server();
 
