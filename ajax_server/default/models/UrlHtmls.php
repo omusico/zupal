@@ -81,5 +81,16 @@ extends Xtractlib_Domain_Abstract
             throw new Exception(__METHOD__ . ': cannot get ' . print_r($pHTML, 1));
         endif;
     }
-    
+
+   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param Xtract_Model_Url | int | string$pFrom
+ * @param Xtract_Model_Url | int | string $pTo
+ * @param Xtract_Model_UrlHtmls | int $pHtml
+ * @return Xtract_Model_UrlLinks
+ */
+    public static function link ($pFrom, $pTo, $pHtml) {
+        Xtractlib_Html_Link::link($pFrom, $pTo, $pHtml);
+    }
 }
