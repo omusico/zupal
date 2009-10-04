@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+  <title>JSON-RPC DOJO example</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/dojo.xd.js"
+       djConfig="parseOnLoad: true"></script>
+<style type="text/css">
+<!--
+    @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
+-->
+</style>
+
+  <script type="text/javascript">
+  //  djConfig.usePlainJson = true;
+  dojo.require('dojo.rpc.JsonService');
+  dojo.require('dijit.form.Button');
+  dojo.require('dijit.form.TextBox');
+  var proxy;
+  function setup() {
+    var smdURL = 'api.php';
+    proxy = new dojo.rpc.JsonService({serviceUrl: smdURL ,
+    methods: [
+        {
+            name: 'addurl',
+            parameters: [{name: 'url'}]
+        }
+    ]});
+  }
+
+  function addurlBack(result) {
+      alert(result);
+  }
+
+  function addurl() {
+     proxy.addurl(dojo.byId('url_field').value).addCallback(addurlBack);
+  }
+
+  dojo.addOnLoad(setup);
+
+  function view_url()
+  {
+      source = dojo.byId('url_field');
+      console.debug('changing source to ' + source.value);
+
+      dojo.byId('url_frame').src = source.value;
+      dojo.style('url_frame', 'display', 'block');
+  }
+
+  function apply_url(source)
+  {
+      if (source.id == 'url_field')
+          {
+              view_url();
+          }
+      else
+          {
+              console.debug('apply_url(' + source.id + ') passthrough');
+          }
+  }
+</script>
+  <style>
+      .view_button,
+      .scan_button
+      {
+          font-family: Arial, Helvetica, sans-serif;
+          font-weight: bold;
+          width: 50px;
+          height: 20px;
+      }
+  </style>
+</head>
+
+<body>
+    <fieldset id="window_fieldset">
+        <label>Open windows</label>
+       	<h2>Choose A Url</h2>
+       	<div id="submission">
+        <input type="text" id="url_field" name="url_field"
+               dojoType="dijit.form.TextBox" 
+               style="float: left; width: 400px"
+               onChange="apply_url(this)"
+               onDrop="apply_url(this)"
+               onBlur="apply_url(this)"/>
+        <button id="view" style="width: 50px; float: left" class="view_button"
+                onClick="view_url()"
+                dojoType="dijit.form.Button">View</button>
+        <button id="scan" style="width: 50px; float: left" class="scan_button"
+                dojoType="dijit.form.Button">Scan</button> <br clear="all" />
+        <iframe id="url_frame"
+                width="400px"
+                height="300px"
+                border="1px"
+                style="font-size: 50%; display: none"
+                src="new_frame_start.html"
+                onLoad="apply_url(this)">
+        Drag a URL from your browser or bookmarks to this window
+        </iframe>
+        </div>
+    </fieldset>
+</body>
+</html>

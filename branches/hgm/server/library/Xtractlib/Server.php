@@ -24,6 +24,6 @@ class Xtractlib_Server
 
     public function domains()
     {
-        $domains = Xtract_Model_UrlDomains::getInstance()->
+        $domains = Xtract_Model_UrlDomains::getInstance()->findAll('host');
     }
 }

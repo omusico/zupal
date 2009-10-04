@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+<head>
+  <title>JSON-RPC DOJO example</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.3/dojo/dojo.xd.js"></script>
+<style type="text/css">
+<!--
+    @import "http://ajax.googleapis.com/ajax/libs/dojo/1.3/dijit/themes/tundra/tundra.css";
+-->
+</style>
+
+  <script type="text/javascript">
+  //  djConfig.usePlainJson = true;
+  dojo.require('dojo.rpc.JsonService');
+  dojo.require('dijit.form.Button');
+  dojo.require('dijit.form.TextBox');
+  var proxy;
+  function setup() {
+    var smdURL = 'api.php';
+    proxy = new dojo.rpc.JsonService({serviceUrl: smdURL ,
+    methods: [
+        {
+            name: 'addurl',
+            parameters: [{name: 'url'}]
+        }
+    ]});
+  }
+
+  function addurlBack(result) {
+      alert(result);
+  }
+
+  function addurl() {
+     proxy.addurl(dojo.byId('url_field').value).addCallback(addurlBack);
+  }
+
+  dojo.addOnLoad(setup);
+</script>
+
+</head>
+
+<body>
+    <fieldset id="window_fieldset">
+        <label>Open windows</label>
+       	<h2>Drag A Url Into The Frame below</h2>
+       	<div id="submission">
+        <input type="text" id="url_field" name="url_field" dojoType="dijit.form.TextBox" style="width: 300px" /><br />
+        <iframe width="300px" height="300px" border="1px" src="new_frame_start.html">
+        Drag a URL from your browser or bookmarks to this window
+        </iframe>
+        </div>
+    </fieldset>
+</body>
+</html>
