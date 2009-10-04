@@ -1,6 +1,6 @@
 <?
 
-class Xtractlib_Scan
+class Xtractlib_Html_Scan
 {
     public static function scan(Xtract_UrlHtml $html)
     {
