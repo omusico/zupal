@@ -82,7 +82,7 @@ extends Xtractlib_Domain_Abstract
         endif;
     }
 
-   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
  * @param Xtract_Model_Url | int | string$pFrom
@@ -90,7 +90,7 @@ extends Xtractlib_Domain_Abstract
  * @param Xtract_Model_UrlHtmls | int $pHtml
  * @return Xtract_Model_UrlLinks
  */
-    public static function link ($pFrom, $pTo, $pHtml) {
-        Xtractlib_Html_Link::link($pFrom, $pTo, $pHtml);
+    public static function make_link ($pFrom, $pTo, $pHtml) {
+        Xtractlib_Html_Link::link_to($pFrom, $pTo, $pHtml);
     }
 }
