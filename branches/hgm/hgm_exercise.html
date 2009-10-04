@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>High Gear media exercise</title>
+
+
+        <link rel="stylesheet" type="text/css" href="css/hgm_exercise.css">
+            <script language="javascript" src="scripts/jquery.js"></script>
+
+            <script language="javascript" src="scripts/hgm_exercise.js"></script>
+
+    </head>
+
+    <body>
+
+        <div id="wrapper">
+
+            <div id="bubble">
+
+                <div id="left_border">
+                    <div id="right_border">
+                        <div id="bottom_border">
+                            <div id="bottom_left_corner">
+                                <div id="bottom_right_corner">
+                                    <div id="top_border">
+                                        <div id="top_left_corner">
+                                            <div id="top_right_corner">
+                                                <div id="bubble_content">
+
+                                                    <!-- bubble content -->
+                                                    <div id="product_info">
+                                                        <img src="img/info-icon.gif" />
+                                                        <p><span>X-tractor</span> is a tool for extracting links and images from HTML.</p>
+                                                        <p>Either input the URL of a web page in the text field, or paste some HTML in the text box below.</p>
+                                                    </div>
+
+
+
+                                                </div><!-- end bubble content -->
+                                            </div><!-- end top_right_corner -->
+                                        </div><!-- top_left_corner -->
+                                    </div><!-- end top border -->
+                                </div><!-- end bottom_right_corner -->
+                            </div><!-- end bottom left corner -->
+                        </div><!-- end bottom border -->
+                    </div><!-- end bottom right border -->
+                </div><!-- end bottom left border -->
+
+            </div><!-- end bubble -->
+
+
+
+            <div id="input_form">
+                <form id="d_form" name="d_form">
+                    <table>
+                        <tr>
+                            <td>URL</td>
+                            <td><input type="text" id="input_url" name="input_url" size="25" /></td>
+                        </tr>
+                        <tr>
+                            <td>HTML</td>
+                            <td><textarea id="input_html" name="input_html"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="checkbox" id="input_checkbox_links" name="input_checkbox_links" /> x-tract links</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="checkbox" id="input_checkbox_images"  name="input_checkbox_images" /> x-tract images</td>
+                        </tr>
+                    </table>
+                </form>
+                <span id="error_msg"></span>
+                <div id="submit_form">
+                    <a id="process_form" href="#"><img src="img/go-button.gif" />Go!</a>
+                </div>
+
+            </div><!-- end input_form -->
+
+
+
+            <div id="results">
+
+                <h2 id="results_link_text">found <span id="links_counter">0</span> links</h2>
+
+                <ul id="result_link">
+                </ul>
+
+                <h2 id="results_pics_text">found <span id="pics_counter">0</span> images</h2>
+
+                <ul id="result_pics">
+                </ul>
+
+
+            </div>
+      <p><small>NOTE: please configure database, zend path in
+                    ajax_server/index.php
+                    and ajax_server/configs/application.ini</snall></p>
+            <p><a href="ajax_server/init.php">Requires Zend Framework 1.9.*</a></p>
+
+
+        </div><!-- end wrapper -->
+      
+    </body>
+</html>
