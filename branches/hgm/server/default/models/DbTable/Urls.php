@@ -26,9 +26,10 @@ extends Xtractlib_Table_Abstract
   `id` int(10) unsigned NOT NULL auto_increment,
   `url` varchar(255) NOT NULL,
   `title` varchar(50) NOT NULL,
-  `domain` varchar(100) NOT NULL,
+  `domain` int(100) NOT NULL,
   `path` varchar(255) NOT NULL,
+  `query` varchar(255) NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=68 ;";
 }
