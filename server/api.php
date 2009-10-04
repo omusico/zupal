@@ -1,7 +1,5 @@
 <?
 
-require_once (dirname(__FILE__)) .  '/index.php';
-
 $server = new Zend_Json_Server();
 
 $server->setClass('Xtractlib_Server');
