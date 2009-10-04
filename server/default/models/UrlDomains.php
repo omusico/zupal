@@ -81,6 +81,11 @@ extends Xtractlib_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Xtract_Model_UrlDomains
+     */
     public static function getInstance($pReload = FALSE) {
         if ($pReload || is_null(self::$_Instance)):
         // process

@@ -1,5 +1,18 @@
 <?php
-define ('ZF_LIB', '/users/bingomanatee/documents/sites/ZendFramework/library');
+
+foreach(array( 
+            'production' => '/users/bingomanatee/documents/sites/ZendFramework/library',
+            'cybercockroach' => '/home/bingoman/public_html/cybercockroach.com/ZendFramework/library'
+        ) as $env => $lib):
+    if (is_dir($lib)):
+        define ('ZF_LIB', $lib);
+        define ('APPLICATION_ENV', $env);
+    endif;
+endforeach;
+
+if (!defined('ZF_LIB')):
+    die('No Zend Framework Library');
+endif;
 
 set_include_path(ZF_LIB . PATH_SEPARATOR
     . dirname(__FILE__) . '/library' . PATH_SEPARATOR
@@ -9,7 +22,6 @@ error_log(__FILE__ . ': includes = '
     . str_replace(PATH_SEPARATOR, "\n: ", get_include_path()));
 
 define('APPLICATION_PATH', dirname(__FILE__));
-define ('APPLICATION_ENV', 'production');
 
 /** Zend_Application */
 require_once 'Zend/Application.php';
