@@ -46,4 +46,36 @@ extends Xtractlib_Domain_Abstract
         endif;
         return self::$_Instance;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ to_url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_to_url = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Xtract_Model_Urls
+     */
+    function get_to_url($pReload = FALSE) {
+        if ($pReload || is_null($this->_to_url)):
+        // process
+            $this->_to_url = Xtract_Model_Urls::get_url($this->to_url);
+        endif;
+        return $this->_to_url;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ from_url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_from_url = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Xtract_Model_Urls
+     */
+    function get_from_url($pReload = FALSE) {
+        if ($pReload || is_null($this->_from_url)):
+        // process
+            $this->_from_url = Xtract_Model_Urls::get_url($this->from_url);
+        endif;
+        return $this->_from_url;
+    }
 }

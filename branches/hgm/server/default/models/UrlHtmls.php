@@ -70,12 +70,12 @@ extends Xtractlib_Domain_Abstract
      * @return Xtract_Model_UrlHtmls
      */
     public static function get_html ($pHTML) {
-        error_log(__METHOD__);
+        Xtractlib_Log::message(__METHOD__);
         if ($pHTML instanceof Xtract_Model_UrlHtmls):
-            error_log(__METHOD__ . ': returning  object id = ' . $pHTML->identity());
+            Xtractlib_Log::message(__METHOD__ . ': returning  object id = ' . $pHTML->identity());
             return $pHTML;
         elseif (is_numeric($pHTML)):
-            error_log(__METHOD__ . ': getting object for id ' . $pHTML);
+            Xtractlib_Log::message(__METHOD__ . ': getting object for id ' . $pHTML);
             return self::getInstance()->get($pHTML);
         else:
             throw new Exception(__METHOD__ . ': cannot get ' . print_r($pHTML, 1));

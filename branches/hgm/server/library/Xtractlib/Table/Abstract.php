@@ -38,7 +38,7 @@ abstract class Xtractlib_Table_Abstract extends Zend_Db_Table_Abstract
 	{
 		$adapter = Zend_Db_Table::getDefaultAdapter();
 		$out = $adapter->fetchOne(sprintf('SHOW TABLES LIKE "%s"', $this->tableName()));
-		//error_log(__METHOD__ . ': finding ' . $this->tableName() . ': ' . print_r($out, 1));
+		//Xtractlib_Log::message(__METHOD__ . ': finding ' . $this->tableName() . ': ' . print_r($out, 1));
 
 		return $out;
 	}

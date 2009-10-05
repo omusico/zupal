@@ -58,13 +58,13 @@ extends Xtractlib_Domain_Abstract
     /**
      */
     public function parse () {
-        error_log(__METHOD__);
+        Xtractlib_Log::message(__METHOD__);
         if (!($content = file_get_contents($this->url))):
             throw new Xtractlib_Exception('Cannot get file', $this->url);
         endif;
-        error_log(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
+        Xtractlib_Log::message(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
         $this->save();
-        error_log(__METHOD__ . '************');
+        Xtractlib_Log::message(__METHOD__ . '************');
         
         $html = Xtract_Model_UrlHtmls::getInstance()->findOne(array('in_url' => $this->identity()));
         if (!$html):
