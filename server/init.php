@@ -18,8 +18,6 @@ set_include_path(ZF_LIB . PATH_SEPARATOR
     . dirname(__FILE__) . '/library' . PATH_SEPARATOR
     . get_include_path());
 
-Xtractlib_Log::message(__FILE__ . ': includes = '
-    . str_replace(PATH_SEPARATOR, "\n: ", get_include_path()));
 
 define('APPLICATION_PATH', dirname(__FILE__));
 
