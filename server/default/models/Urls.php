@@ -56,14 +56,14 @@ extends Xtractlib_Domain_Abstract
     /**
      */
     public function parse ($content = NULL) {
-        error_log(__METHOD__);
+        Xtractlib_Log::message(__METHOD__);
         if (!($content || ($content = file_get_contents($this->url)))):
             throw new Xtractlib_Exception('Cannot get file', $this->url);
         endif;
         
-        error_log(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
+        Xtractlib_Log::message(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
         $this->save();
-        error_log(__METHOD__ . '************');
+        Xtractlib_Log::message(__METHOD__ . '************');
 
         $ht = Xtract_Model_UrlHtmls::getInstance();
         $html = $ht->findOne(array('in_url' => $this->identity()));
@@ -74,8 +74,7 @@ extends Xtractlib_Domain_Abstract
         $html->in_url  = $this->identity();
         $html->html = $content;
         $html->save();
-        $html->scan();
-        return $content;
+        return $html->scan();
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -132,14 +131,33 @@ extends Xtractlib_Domain_Abstract
      * @return <type>
      */
     public function parse_url () {
-        error_log(__METHOD__);
+        Xtractlib_Log::message(__METHOD__);
         $uri = Zend_Uri::factory($this->url);
-        error_log(print_r($uri, 1));
+        Xtractlib_Log::message(print_r($uri, 1));
         $this->path = $uri->getPath();
         $this->query = $uri->getQuery();
         $this->set_domain($uri->getHost());
 
         parent::save();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ absolute_url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function absolute_url () {
+        if (preg_match('~^http(s?):~', $this->url)):
+            return $this->url;
+        elseif (preg_match('~^/~', $this->url)):
+            return $this->get_domain()->host . $this->url;
+        else:
+            $out = $this->get_domain()->host . '/' . $this->url;
+            while($out != ($new_out = preg_replace('~/[\w]+/../~', $out))):
+                $out = $new_out;
+            endwhile;
+            return $out;
+        endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

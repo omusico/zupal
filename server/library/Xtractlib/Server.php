@@ -17,9 +17,7 @@ class Xtractlib_Server
 
         $urls = new Xtract_Model_Urls(Xtractlib_Domain_Abstract::STUB);
         $url = $urls->get_url($pURL);
-        $url->parse();
-        
-        return $url->toArray();
+        return $url->parse();
     }
 
     public function domains()

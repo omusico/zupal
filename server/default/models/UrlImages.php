@@ -64,6 +64,17 @@ extends Xtractlib_Domain_Abstract
         return $this->_url;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ href_url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_href_url = NULL;
+    function get_href_url($pReload = FALSE) {
+        if ($pReload || is_null($this->_href_url)):
+        // process
+            $this->_href_url = Xtract_Model_Urls::get_url($this->href_url);
+        endif;
+        return $this->_href_url;
+    }
+
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ html @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_html = NULL;
@@ -79,7 +90,8 @@ extends Xtractlib_Domain_Abstract
 /**
  *
  * @param id | string | Xtract_Model_Urls $pURL
- * @param string $pHref 
+ * @param string $pHref
+ * @return Xtract_Model_Images
  */
     public static function make ($pURL, $pHref) {
         $url = Xtract_Model_Urls::get_url($pURL);
@@ -105,7 +117,7 @@ extends Xtractlib_Domain_Abstract
             if (preg_match('~^/~', $this->href)):
                 $domain = $this->url()->get_domain();
                 $abs_string = 'http://' . $domain->host . $this->href;
-                error_log(__METHOD__ . ': abs_string = '.  $abs_string);
+                Xtractlib_Log::message(__METHOD__ . ': abs_string = '.  $abs_string);
 
                 $href_url = Xtract_Model_Urls::get_url(
                     $abs_string
