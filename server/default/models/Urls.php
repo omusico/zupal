@@ -33,10 +33,9 @@ extends Xtractlib_Domain_Abstract
     /**
      *
      * @param string $pURL
-     * @return Xtractlib_Domain_Abstract
-     */
-     
-    public static function get_url ($pURL) {
+     * @return Xtract_Model_Urls
+     */     
+    public static function get_url ($pURL, $pHTML = NULL) {
         if (is_numeric($pURL)):
             return self::getInstance()->get($pURL);
         elseif ($pURL instanceof Xtract_Model_Urls):
@@ -49,7 +48,6 @@ extends Xtractlib_Domain_Abstract
             $url = new self();
             $url->url = $pURL;
         endif;
-        $url->save();
 
         return $url;
     }
@@ -57,11 +55,12 @@ extends Xtractlib_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      */
-    public function parse () {
+    public function parse ($content = NULL) {
         error_log(__METHOD__);
-        if (!($content = file_get_contents($this->url))):
+        if (!($content || ($content = file_get_contents($this->url)))):
             throw new Xtractlib_Exception('Cannot get file', $this->url);
         endif;
+        
         error_log(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
         $this->save();
         error_log(__METHOD__ . '************');
