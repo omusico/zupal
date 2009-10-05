@@ -10,7 +10,7 @@ class Xtractlib_Log
  * @return void
  */
     public static function message ($pParam) {
-        if (defined('APPLICATION_ENV') && strcasecmp(APPLICATION_ENV, 'production')):
+        if (defined('APPLICATION_ENV') && !strcasecmp(APPLICATION_ENV, 'production')):
             error_log($pParam);
         endif;
     }
