@@ -14,6 +14,8 @@ class Xtractlib_Html_Scan
         endforeach;
 
         error_log("\n\n\n ************** \n\n\n" . __METHOD__ . ': url = ' . $html->in_url);
+        
+        try {
         foreach($links as $link):
             if (!($href =  $link->getAttribute('href'))):
                 continue;
@@ -23,8 +25,14 @@ class Xtractlib_Html_Scan
             $url = $html->url();
             Xtractlib_Html_Link::link_to($url, $href, $html);
         endforeach;
+        } catch (Exception $e)
+        {
+            error_log(__METHOD__ . ': links - ' . print_r($e, 1));
+        }
+
         $images = $dom->query('img');
 
+        try {
         foreach($images as $img):
             error_log(__METHOD__ . ': image');
 
@@ -35,5 +43,9 @@ class Xtractlib_Html_Scan
             error_log('IMAGE: ' . $src);
             Xtract_Model_UrlImages::make($html->url(), $src, $html);
         endforeach;
+        } catch (Exception $e)
+        {
+            error_log(__METHOD__ . ': images - ' . print_r($e, 1));
+        }
     }
 }

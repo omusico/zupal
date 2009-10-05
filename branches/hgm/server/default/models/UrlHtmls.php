@@ -50,7 +50,7 @@ extends Xtractlib_Domain_Abstract
      * @return void
      */
     public function scan () {
-        Xtractlib_Html_Scan::scan($this);
+        return Xtractlib_Html_Scan::scan($this);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

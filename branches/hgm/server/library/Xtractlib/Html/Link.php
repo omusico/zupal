@@ -16,11 +16,26 @@ class Xtractlib_Html_Link
             'found_in_html' => $html->identity()
         );
 
-        if (!($link = Xtract_Model_UrlLinks::getInstance()->findOne($params))):
+        $link = FALSE;
+        try {
+            $link = Xtract_Model_UrlLinks::getInstance()->findOne($params);
+        }
+        catch(Exception $e)
+        {
+            error_log(__METHOD__ . ': finding old link: params = ' . print_r($params, 1));
+            $params['linked'] = -1;
+            $link = FALSE;
+        }
+
+        try {
+        if (!$link):
             $link = Xtract_Model_UrlLinks::getInstance()->get(NULL, $params);
             $link->save();
         endif;
-
+        } catch(Exception $e)
+        {
+            error_log(__METHOD__ . ': inserting ' . print_r($params, 1));
+        }
         return $link; 
     }
     

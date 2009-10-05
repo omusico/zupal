@@ -12,7 +12,7 @@ class Xtractlib_Server
      * @param string $pURL
      * @return array
      */
-    public function addurl ($pURL)
+    public function addurl ($pURL, $pHTML)
     {
 
         $urls = new Xtract_Model_Urls(Xtractlib_Domain_Abstract::STUB);
