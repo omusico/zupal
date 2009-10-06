@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * The location of your zend framework will determine the config node in configs/app.ink
+ */
 foreach(array( 
             'production' => '/users/bingomanatee/documents/sites/ZendFramework/library',
             'cybercockroach' => '/home/bingoman/public_html/cybercockroach.com/ZendFramework/library'

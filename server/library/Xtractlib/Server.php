@@ -10,9 +10,9 @@ class Xtractlib_Server
      * adds a URL to the search registry
      *
      * @param string $pURL
-     * @return array
+     * @return application/json
      */
-    public function addurl ($pURL, $pHTML)
+    public function addurl ($pURL)
     {
 
         $urls = new Xtract_Model_Urls(Xtractlib_Domain_Abstract::STUB);

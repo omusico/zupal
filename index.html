@@ -24,10 +24,11 @@
     methods: [
         {
             name: 'addurl',
-            parameters: [{name: 'url'}]
+            parameters: [{name: 'url'}],
+            handleAs: 'json'
         }
     ],
-    timeout: 10000}
+    timeout: 100000}
     );
   }
 
@@ -48,8 +49,9 @@ serialized = elem.xml;
 return serialized;
 }
 
-  function addurlBack(result) {
+  function scan_url_result(result) {
       addurlBack("Done scanning");
+      dojo.byId('scan_results').innerHTML = result;
       console.debug(result);
   }
 
@@ -60,7 +62,7 @@ return serialized;
      }
      console.debug("scanning " + url);
      
-     proxy.addurl(url).addCallback(addurlBack);
+     proxy.addurl(url).addCallback(scan_url_result);
   }
 
   dojo.addOnLoad(setup);
@@ -166,6 +168,9 @@ var url_value;
                 onClick="scan_url"
                 dojoType="dijit.form.Button">Scan</button> 
         <br clear="all" /></span>
+        <div><h3>Results</h3></div>
+        <div id="scan_results">
+        </div>
     </fieldset>
 </body>
 </html>
