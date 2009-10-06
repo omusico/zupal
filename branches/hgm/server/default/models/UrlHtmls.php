@@ -53,6 +53,16 @@ extends Xtractlib_Domain_Abstract
         return Xtractlib_Html_Scan::scan($this);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scan_html @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pSource
+     * @return array
+     */
+    public function scan_html ($pSource) {
+        Xtractlib_Html_Scan::scan_html($pSource);
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_url = NULL;

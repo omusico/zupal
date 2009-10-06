@@ -2,6 +2,60 @@
 
 class Xtractlib_Html_Scan
 {
+    /**
+     * Note -- scan_html takes a text input -- becuase its source is not 
+     * truly internet baed its not saved to database. 
+     * 
+     * 
+     * @param string $html
+     * @return array
+     */
+    public static function scan_html($html)
+    {
+
+        $dom = new Zend_Dom_Query($html);
+
+        $data = array('links' => array(), 'images' => array());
+
+        $links = $dom->query('a');
+
+        Xtractlib_Log::message("\n\n\n ************** \n\n\n" . __METHOD__ . ': url = ' . $html->in_url);
+
+        try {
+        foreach($links as $link):
+            if (!($href =  $link->getAttribute('href'))):
+                continue;
+            endif;
+            $href_url = $href;
+
+            $data['links'][] = $href;
+        endforeach;
+        } catch (Exception $e)
+        {
+            Xtractlib_Log::message(__METHOD__ . ': links - ' . print_r($e, 1));
+        }
+
+        $images = $dom->query('img');
+
+        foreach($images as $img):
+            Xtractlib_Log::message(__METHOD__ . ': image');
+
+            if (!($src = $img->getAttribute('src'))):
+                continue;
+            endif;
+
+            $data['images'][] = $src;
+        endforeach;
+
+        $data['images'] = array_unique($data['images']);
+        sort($data['images']);
+
+        $data['links'] = array_unique($data['links']);
+        sort($data['links']);
+
+        return $data;
+    }
+
     public static function scan(Xtract_Model_UrlHtmls $html)
     {
 
@@ -9,11 +63,11 @@ class Xtractlib_Html_Scan
         $html->save();
 
         $domain = $html->url()->get_domain();
-        
+
         $dom = new Zend_Dom_Query($html->html);
-        
+
         $data = array('links' => array(), 'images' => array());
-               
+
         $links = $dom->query('a');
 
         foreach(Xtract_Model_UrlLinks::getInstance()->find(array('from_url'  => $html->in_url)) as $link):
@@ -21,7 +75,7 @@ class Xtractlib_Html_Scan
         endforeach;
 
         Xtractlib_Log::message("\n\n\n ************** \n\n\n" . __METHOD__ . ': url = ' . $html->in_url);
-        
+
         try {
         foreach($links as $link):
             if (!($href =  $link->getAttribute('href'))):
@@ -64,14 +118,14 @@ class Xtractlib_Html_Scan
             }
             $data['images'][] = $img_src_url;
         endforeach;
-        
+
         $data['images'] = array_unique($data['images']);
         sort($data['images']);
-        
+
         $data['links'] = array_unique($data['links']);
         sort($data['links']);
 
         return $data;
     }
-    
+
 }
