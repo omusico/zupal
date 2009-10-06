@@ -82,8 +82,8 @@
                 <span id="error_msg"></span>
                 <div id="submit_form">
 
-        <span id="process_form" 
-                onClick="scan_url"><img src="img/go-button.gif" />G0!</span>
+        <a id="process_form" href="#"
+                onClick="scan_url()"><img src="img/go-button.gif" />G0!</a>
                 </div>
 
             </div><!-- end input_form -->
@@ -91,22 +91,24 @@
 
 
             <div id="results">
-
+                <span class="result_frame">
                 <h2 id="results_link_text">found <span id="links_counter">0</span> links</h2>
 
-                <ul id="result_link">
+                <ul id="result_links">
                 </ul>
-
+                </span>
+                <span class="result_frame">
                 <h2 id="results_pics_text">found <span id="pics_counter">0</span> images</h2>
 
                 <ul id="result_pics">
                 </ul>
-
+                </span>
 
             </div>
-      <p><small>NOTE: please configure database, zend path in ajax_server/init.php
-                    and ajax_server/configs/application.ini</snall></p>
-            <p><a href="server/init.php">Requires Zend Framework 1.9.*</a></p>
+            <br clear="all" />
+      <p><small><b>NOTE</b>: please configure database, zend path in ajax_server/init.php
+                    and add a valid mySql user and database to ajax_server/configs/app.ini</snall></p>
+            <p>Requires Zend Framework 1.9.*</p>
 
 
         </div><!-- end wrapper -->
