@@ -31,5 +31,5 @@ extends Xtractlib_Table_Abstract
   `query` varchar(255) NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=68 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=76 ;";
 }

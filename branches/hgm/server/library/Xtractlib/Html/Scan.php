@@ -66,7 +66,7 @@ class Xtractlib_Html_Scan
         $data['links'] = array_unique($data['links']);
         sort($data['links']);
 
-        return Zend_Json::encode($data);
+        return $data;
     }
     
 }

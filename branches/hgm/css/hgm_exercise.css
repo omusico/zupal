@@ -118,6 +118,15 @@ body {
 	margin-right: 15px;
 }
 
+#process_form{
+    vertical-align: middle;
+    font-weight: bold;
+        display:inline-block;
+        width: 200px;
+        font-size: 150%;
+            color: #090;
+}
+
 #product_info p{
 	font-size: .8em;
 }

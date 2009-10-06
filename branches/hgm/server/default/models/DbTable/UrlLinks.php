@@ -27,6 +27,7 @@ extends Xtractlib_Table_Abstract
   `from_url` int(11) NOT NULL,
   `to_url` int(11) NOT NULL,
   `found_in_html` int(11) NOT NULL,
+  `linked` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=487 ;";
 }

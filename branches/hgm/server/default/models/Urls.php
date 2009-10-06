@@ -55,11 +55,8 @@ extends Xtractlib_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      */
-    public function parse ($content = NULL) {
+    public function parse () {
         Xtractlib_Log::message(__METHOD__);
-        if (!($content || ($content = file_get_contents($this->url)))):
-            throw new Xtractlib_Exception('Cannot get file', $this->url);
-        endif;
         
         Xtractlib_Log::message(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
         $this->save();
@@ -72,7 +69,7 @@ extends Xtractlib_Domain_Abstract
         endif;
 
         $html->in_url  = $this->identity();
-        $html->html = $content;
+        $html->html = file_get_contents($this->url);
         $html->save();
         return $html->scan();
     }
