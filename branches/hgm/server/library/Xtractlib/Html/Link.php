@@ -10,6 +10,7 @@ class Xtractlib_Html_Link
         $to   = Xtract_Model_Urls::get_url($pTo);
         $html = Xtract_Model_UrlHtmls::get_html($pHtml);
 
+        error_log(__METHOD__ . ': to = ' . $to->identity());
         $params = array(
             'from_url'      => $from->identity(),
             'to_url'        => $to->identity(),

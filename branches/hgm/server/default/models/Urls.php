@@ -35,20 +35,37 @@ extends Xtractlib_Domain_Abstract
      * @param string $pURL
      * @return Xtract_Model_Urls
      */     
-    public static function get_url ($pURL, $pHTML = NULL) {
+    public static function get_url ($pURL, $pDomain = NULL) {
         if (is_numeric($pURL)):
             return self::getInstance()->get($pURL);
         elseif ($pURL instanceof Xtract_Model_Urls):
             return $pURL;
         endif;
+        
 
-        $url = self::getInstance()->findOne(array('url' => $pURL));
+        if (preg_match('~^http(s?):~', $pURL)):
+            $params = array('url' => $pURL);
+            $url = self::getInstance()->findOne($params);
 
-        if (!$url):
-            $url = new self();
-            $url->url = $pURL;
+            if (!$url):
+                $url = self::getInstance()->get(NULL, $params); // don't worry about the domain it will be parsed out
+                $url->save();
+            endif;
+        else:
+            $domain = $pDomain? Xtract_Model_UrlDomains::get_domain($pDomain) : NULL;
+            if ($domain):
+                $params = array('url' => $pURL, 'domain' => $domain->identity());
+                if (!$url = self::getInstance()->findOne($params)):
+                    $url = self::getInstance()->get(NULL, $params);
+                    $url->save();
+                endif;
+            else:
+                $url = new self();
+                $url->url = $pURL;
+                $url->save();
+            endif;
         endif;
-
+        
         return $url;
     }
 
@@ -128,14 +145,17 @@ extends Xtractlib_Domain_Abstract
      * @return <type>
      */
     public function parse_url () {
+        try {
         Xtractlib_Log::message(__METHOD__);
-        $uri = Zend_Uri::factory($this->url);
+        $uri = Zend_Uri::factory($this->absolute_url());
         Xtractlib_Log::message(print_r($uri, 1));
         $this->path = $uri->getPath();
         $this->query = $uri->getQuery();
         $this->set_domain($uri->getHost());
-
-        parent::save();
+        } catch(Exception $e)
+        {
+            error_log(__METHOD__ . ': error = ' . $e->getMessage());
+        }
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ absolute_url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -144,16 +164,16 @@ extends Xtractlib_Domain_Abstract
      * @return string
      */
     public function absolute_url () {
-        if (preg_match('~^http(s?):~', $this->url)):
+        if (preg_match('~^http(s?):~', $this->url)): // url is already absolute
             return $this->url;
-        elseif (preg_match('~^/~', $this->url)):
-            return $this->get_domain()->host . $this->url;
-        else:
-            $out = $this->get_domain()->host . '/' . $this->url;
-            while($out != ($new_out = preg_replace('~/[\w]+/../~', $out))):
+        elseif ($this->get_domain()):
+            $out = $this->get_domain()->host . '/' . ltrim($this->url, '/');
+            while($out != ($new_out = preg_replace('~/[\w]+/../~', '', $out))):
                 $out = $new_out;
             endwhile;
             return $out;
+        else: // cannot figure out the absolute url; not enough information. 
+            return $this->url;
         endif;
     }
 
@@ -171,8 +191,8 @@ extends Xtractlib_Domain_Abstract
 
     private $_domain = NULL;
     function get_domain($pReload = FALSE) {
-        if ($pReload || is_null($this->_domain)):
-            $this->parse_url();
+        if ($pReload || is_null($this->_domain) && $this->domain):
+            $this->_domain = Xtract_Model_UrlDomains::getInstance()->get($this->domain);
         endif;
         return $this->_domain;
     }

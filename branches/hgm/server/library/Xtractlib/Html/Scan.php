@@ -2,9 +2,14 @@
 
 class Xtractlib_Html_Scan
 {
-    public static function scan(Xtract_UrlHtml $html)
+    public static function scan(Xtract_Model_UrlHtmls $html)
     {
+
+
         $html->save();
+
+        $domain = $html->url()->get_domain();
+        
         $dom = new Zend_Dom_Query($html->html);
         
         $data = array('links' => array(), 'images' => array());
@@ -26,10 +31,10 @@ class Xtractlib_Html_Scan
             Xtractlib_Log::message('LINK: ' . $href);
             try {
                 $url = $html->url();
-                $link = Xtractlib_Html_Link::link_to($url, $href, $html);
+                $link = Xtractlib_Html_Link::link_to($url, Xtract_Model_Urls::get_url($href_url, $domain), $html);
                 $href_url = $link->get_to_url()->absolute_url();
             } catch (Exception $e) {
-                Xtractlib_Log::message(__METHOD__ . ': adding link ' . $href);
+                Xtractlib_Log::message(__METHOD__ . ': error adding link ' . $href . ': ' . $e->getMessage());
             }
             $data['links'][] = $href_url;
         endforeach;

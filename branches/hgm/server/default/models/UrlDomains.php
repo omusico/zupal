@@ -54,29 +54,7 @@ extends Xtractlib_Domain_Abstract
         return $url;
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     */
-    public function parse () {
-        Xtractlib_Log::message(__METHOD__);
-        if (!($content = file_get_contents($this->url))):
-            throw new Xtractlib_Exception('Cannot get file', $this->url);
-        endif;
-        Xtractlib_Log::message(__METHOD__ . ': scanning ' . $this->url . ' = ' . substr($content, 0, 100));
-        $this->save();
-        Xtractlib_Log::message(__METHOD__ . '************');
-        
-        $html = Xtract_Model_UrlHtmls::getInstance()->findOne(array('in_url' => $this->identity()));
-        if (!$html):
-            $html = new Xtract_Model_UrlHtmls();
-        endif;
 
-        $html->in_url  = $this->identity();
-        $html->html = $content;
-        $html->save();
-        $html->scan();
-        return $content;
-    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
