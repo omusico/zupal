@@ -48,6 +48,14 @@
               var a = dojo.create('a', {href: new String(links[i]), innerHTML: new String(links[i]), target: '_blank'}, li, 'last');
           }
      // console.debug(result);
+
+     cl = dojo.byId('input_checkbox_links');
+
+     dojo.style('links_frame', 'display', cl.checked ? 'block' : 'none');
+
+     cp = dojo.byId('input_checkbox_images');
+
+     dojo.style('images_frame', 'display', cp.checked ? 'block' : 'none');
   }
 
   function scan_url() {
