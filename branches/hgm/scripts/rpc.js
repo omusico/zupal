@@ -9,8 +9,13 @@
     proxy = new dojo.rpc.JsonService({serviceUrl: smdURL ,
     methods: [
         {
-            name: 'addurl',
+            name: 'add_url',
             parameters: [{name: 'url'}],
+            handleAs: 'json'
+        },
+        {
+            name: 'scan_html',
+            parameters: [{name: 'html'}],
             handleAs: 'json'
         }
     ],
@@ -61,11 +66,21 @@
   function scan_url() {
      if (!(url = dojo.byId('input_url').value))
      {
-         if (!(url = url_value)) return;
+        return;
      }
      console.debug("scanning " + url);
 
-     proxy.addurl(url).addCallback(scan_url_result);
+     proxy.add_url(url).addCallback(scan_url_result);
+  }
+
+  function scan_html() {
+     if (!(html = dojo.byId('input_html').value))
+     {
+         return;
+     }
+     console.debug("scanning " + html);
+
+     proxy.scan_html(html).addCallback(scan_url_result);
   }
 
 var url_value;

@@ -60,7 +60,7 @@ extends Xtractlib_Domain_Abstract
      * @return array
      */
     public function scan_html ($pSource) {
-        Xtractlib_Html_Scan::scan_html($pSource);
+        return Xtractlib_Html_Scan::scan_html($pSource);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ url @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
