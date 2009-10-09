@@ -64,10 +64,16 @@
                         <tr>
                             <td>URL</td>
                             <td><input type="text" id="input_url" name="input_url" size="25" /></td>
+                            <td><a id="process_form" href="#"
+                onClick="scan_url()"><img src="img/go-button.gif" />G0!</a>
+                           </td>
                         </tr>
                         <tr>
                             <td>HTML</td>
                             <td><textarea id="input_html" name="input_html"></textarea></td>
+                                                        <td><a id="process_form" href="#"
+                onClick="scan_html()"><img src="img/go-button.gif" />G0!</a>
+                           </td>
                         </tr>
                         <tr>
                             <td></td>
@@ -80,11 +86,7 @@
                     </table>
                 </form>
                 <span id="error_msg"></span>
-                <div id="submit_form">
 
-        <a id="process_form" href="#"
-                onClick="scan_url()"><img src="img/go-button.gif" />G0!</a>
-                </div>
 
             </div><!-- end input_form -->
 

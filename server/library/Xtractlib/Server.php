@@ -28,9 +28,11 @@ class Xtractlib_Server
     {
 
         $htmls = Xtract_Model_UrlHtmls::getInstance();
-        return $html->scan_html($pHTML);
+        return $htmls->scan_html($pHTML);
     }
-
+/**
+ * 
+ */
     public function domains()
     {
         $domains = Xtract_Model_UrlDomains::getInstance()->findAll('host');

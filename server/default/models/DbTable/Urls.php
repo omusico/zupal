@@ -22,7 +22,8 @@ extends Xtractlib_Table_Abstract
             $this->getAdapter()->query(self::CREATE);
         }
 
-        const CREATE = "CREATE TABLE `urls` (
+        const CREATE = "DROP TABLE IF EXISTS `urls`;
+CREATE TABLE `urls` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `url` varchar(255) NOT NULL,
   `title` varchar(50) NOT NULL,
@@ -31,5 +32,5 @@ extends Xtractlib_Table_Abstract
   `query` varchar(255) NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=76 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=39 ;";
 }
