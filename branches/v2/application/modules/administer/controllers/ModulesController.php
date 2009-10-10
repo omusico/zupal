@@ -40,21 +40,27 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
     public function menueditAction() {
     }
 
+/**
+ * NOTE: this is a resource for menu editing; therefore ALL menus of ALL modules
+ * are listed, and are parented to panels.
+ */
     public function menustoreAction() {
+        $panel_pages = array();
+        $menut = Model_Menu::getInstance();
+        $panel_names = $menut->panels();
         $pages = array();
-        $modules = Administer_Model_Modules::getInstance()
-            ->find_all('sort_by');
-        $mm = Model_Menu::getInstance();
-        $module_names = array();
-        foreach($modules as $module):
-            $module_names[] = $module->identity();
-        endforeach;
-        $sql = sprintf('(module in ("%s")) AND (parent = 0)', join('","', $module_names));
+
         // at this point have selected all the menus of all active modules
         // return a tree of pages from each top level page sorted by sort_by and label
-        foreach($mm->find_from_sql(array($sql, array('sort_by','label'))) as $menu):
-            $new_pages = $menu->pages_tree();
-            $pages[] = $new_pages;
+        foreach($panel_names as $panel):
+            $panel_data = array('id' => $panel, 'label' => ucwords(str_replace('_', ' ', $panel)),
+                'children' => array());
+
+            foreach($menut->find(array('panel' => $panel, 'parent' => 0), 'sort_by') as $menu):
+                $panel_data['children'][] = $menu->pages_tree();
+            endforeach;
+
+            $pages[] = $panel_data;
         endforeach;
         $this->view->data = new Zend_Dojo_Data('id', $pages, 'label');
         $this->_helper->layout->disableLayout();
@@ -77,7 +83,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
             'parent' => $this->_getParam('parent')        
         );
 
-        $id = (int) $this->_getParam('id', 0);
+        $id = (int) $this->_getParam('id', NULL);
         $menu = Model_Menu::getInstance()->get($id, $data);
         if (!$menu->panel) $menu->panel = 'main';
         $menu->save();

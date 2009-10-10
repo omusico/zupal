@@ -3,6 +3,7 @@ $this->placeholder('page_title')->set('Edit Menu');
 $this->dojo()->requireModule('dojo.data.ItemFileWriteStore')
 ->requireModule('dijit.tree.ForestStoreModel')
 ->requireModule('dijit.Tree')
+->requireModule('dijit._tree.dndSource')
 ->requireModule('dijit.form.Button')
 ->requireModule('dijit.layout.BorderContainer')
 ->requireModule('dijit.layout.ContentPane')
@@ -15,151 +16,14 @@ $form->setName('menu_form');
 $form->setAction($this->baseUrl() . DS . 'administer' . DS . 'modules' . DS . 'menueditexecute');
 
 $this->headScript()->appendFile('/scripts/multiple-select-functions.js');
+$this->headScript()->appendFile('/scripts/administer/menu_edit.js');
+
+$this->headLink()->appendStylesheet($this->baseUrl() . '/style/administer/menu_style.css');
 ?>
-<script language="javascript">
-<? 
-$this->headScript()->captureStart();
-?>
-    var last_menu_selected = false;
-
-    function update_menu_form(item)
-    {
-        var f = document.forms['menu_form'];
-        var w = dojo.byId('created_by_module_note');
-        if (item.created_by_module)
-        {
-            w.innerHTML = '<font color=#FF0000">This menu item was added by module ' + item.created_by_module + '</font>';
-        }
-        else
-        {
-            w.innerHTML = '';
-        }
-
-        f.elements['id'].value = item.id;
-        f.elements['label'].value = item.label;
-        f.elements['name'].value = item.name;
-        f.elements['parent'].value = item.parent;
-        f.elements['module'].value = item.module;
-        f.elements['controller'].value = item.controller;
-        f.elements['action'].value = item.action;
-        f.elements['href'].value = item.href;
-        f.elements['parameters'].value = item.parameters;
-        f.elements['callback_class'].value = item.callback_class;
-        dojo.query('#if_module').forEach(
-        function(i){i.checked = item.if_module[0] ? true : false; }
-        ); //
-        dojo.query('#if_controller').forEach(
-        function(i){i.checked = item.if_controller[0] ? true : false; }
-        ); //
-
-        var parent_select = f.elements['parent'];
-        if (item.parent)
-        {
-
-        } else
-        {
-            FM.findOption(parent_select, item.panel);
-        }
-
-        var found = 0;
-        var res_select = f.elements['resource'];
-        
-        if (item.resource != "")
-        {
-            found = FM.findOption(res_select, item.resource);
-         //   alert(item.resource + " found at " + found);
-        }
-        res_select.selectedIndex = found;
-        found = 0;
-        var mod_select = f.elements['module'];
-        if (item.module != "")
-        {
-            found = FM.findOption(mod_select, item.module);
-          //  alert("found " + item.module + " at " + found);
-        }
-        mod_select.selectedIndex = found;
-    }
-<? $this->headScript()->captureEnd(); ?>
-</script>
-<style>
-    <? $this->headStyle()->captureStart(); ?>
-#id-label,
-#id-element,
-#created_by_module-label,
-#created_by_module-element,
-#sort_by-label,
-#sort_by-element
-{
-    display: none;
-}
-
-#main #form_panel .zend_form input[type="button"],
-#main #form_panel .zend_form input[type="submit"]
-{
-    border-bottom: 2px solid black;
-    background-color: #666;
-    color: white;
-    font-weight: bold;/*
-    margin-left: 120px; */
-}
-
-#main #form_panel label
-{
-    font-weight: normal;
-    font-size: 80%;
-}
-
-#main #form_panel dl.zend_form
-{
-    width: 450px;
-}
-
-#main #form_panel dl.zend_form dd
-{
-    width: 255px;
-}
-
-#main #form_panel dl.zend_form input,
-#main #form_panel dl.zend_form textarea,
-#main #form_panel dl.zend_form select
-{
-    font-size: 80%;
-    border: 1px solid #999;
-    background-color: white;
-    width: 250px;
-}
-
-#menu_tree .dijitLeaf
-{
-
-background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet.gif);
-
-}
-
-#menu_tree .dijitFolderOpened
-{
-
-background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet_opened.gif);
-
-}
-
-#menu_tree .dijitTreeLabel
-{
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 80%;
-}
-
-#menu_tree .dijitFolderClosed
-{
-
-background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bullet_closed.gif);
-
-}
-<? $this->headStyle()->captureEnd(); ?>
-</style>
-
-<div dojoType="dojo.data.ItemFileReadStore"
+<?php $this->headStyle()->captureStart() ?>
+<?= str_replace('[BASE_URL]', $this->baseUrl(), file_get_contents(realpath(dirname(__FILE__) .'/../../../style/menu_style.css'))) ?>
+<?php $this->headStyle()->captureEnd() ?>
+<div dojoType="dojo.data.ItemFileWriteStore"
      url="<?=$this->baseUrl() ?>/administer/modules/menustore"
      jsId="menu_tree_data"
      >
@@ -176,9 +40,11 @@ background-image: url(<?= $this->baseUrl() ?>/images/administer/icons:menu_bulle
      DNDAcceptTypes="['myNewTreeWidget']"
      >
 </div>
-<div dojoType="dijit.layout.BorderContainer" style="width: 800px; height: 600px" gutters="false" id="menu_edit_frame">
+<div dojoType="dijit.layout.BorderContainer" style="width: 800px; height: 600px"
+     gutters="false" id="menu_edit_frame">
     <div dojoType="dijit.layout.ContentPane" region="center" style="width: 40%">
-<div dojoType="dijit.Tree" id="menu_tree"
+<div dojoType="dijit.Tree" 
+     id="menu_tree"
      model="menu_tree_model">
     <script type="dojo/method" event="onClick" args="item">
         last_menu_selected = item;

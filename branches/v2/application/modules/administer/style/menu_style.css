@@ -1,0 +1,73 @@
+#id-label,
+#id-element,
+#created_by_module-label,
+#created_by_module-element,
+#sort_by-label,
+#sort_by-element
+{
+    display: none;
+}
+
+#main #form_panel .zend_form input[type="button"],
+#main #form_panel .zend_form input[type="submit"]
+{
+    border-bottom: 2px solid black;
+    background-color: #666;
+    color: white;
+    font-weight: bold;/*
+    margin-left: 120px; */
+}
+
+#main #form_panel label
+{
+    font-weight: normal;
+    font-size: 80%;
+}
+
+#main #form_panel dl.zend_form
+{
+    width: 450px;
+}
+
+#main #form_panel dl.zend_form dd
+{
+    width: 255px;
+}
+
+#main #form_panel dl.zend_form input,
+#main #form_panel dl.zend_form textarea,
+#main #form_panel dl.zend_form select
+{
+    font-size: 80%;
+    border: 1px solid #999;
+    background-color: white;
+    width: 250px;
+}
+
+#menu_tree .dijitLeaf
+{
+
+background-image: url([BASE_URL]/images/administer/icons:menu_bullet.gif);
+
+}
+
+#menu_tree .dijitFolderOpened
+{
+
+background-image: url([BASE_URL]/images/administer/icons:menu_bullet_opened.gif);
+
+}
+
+#menu_tree .dijitTreeLabel
+{
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 80%;
+}
+
+#menu_tree .dijitFolderClosed
+{
+
+background-image: url([BASE_URL]/images/administer/icons:menu_bullet_closed.gif);
+
+}
