@@ -16,6 +16,7 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
 
         $this->load_resources();
         $this->load_modules();
+        $this->load_parents();
     }
 
     public function domain_fields()
@@ -28,11 +29,73 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
         return "Administer_Model_Zupalmenus";
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_parents @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * //@TODO: have an acutal panel abstract
+     *
+     * @return void
+     */
+    public function load_parents () {
+        $mt = Model_Menu::getInstance();
+
+        $sql = sprintf('SELECT DISTINCT panel FROM `%s` ORDER BY panel;', $mt->table()->tableName());
+
+        $panels = $mt->table()->getAdapter()->fetchCol($sql);
+
+        foreach($panels as $panel):
+            $this->parent->addMultiOption($panel, ucwords($panel));
+            foreach($this->_parent_menu($panel) as $k => $v):
+                $this->parent->addMultiOption($k, $v);
+            endforeach;
+        endforeach;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _parent_menu @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return void
+     */
+    public function _parent_menu ($panel, $parent = NULL, $pDepth = 0) {
+        $out = array();
+
+        if ($parent):
+            $mt = new Model_Menu($parent);
+            $found = $mt->children();
+        else:
+            $mt = Model_Menu::getInstance();
+
+            $params = array('parent' => 0, 'panel' => $panel);
+            $found = $mt->find($params, 'sort_by');
+        endif;
+
+        foreach($found as $m):
+            $out[$m->identity() . '_' . $panel] = $this->_pm_prefix($pDepth) . $m->label;
+            foreach($this->_parent_menu($panel, $m->identity(), $pDepth + 1) as $k => $v):
+                $out[$k] = $v;
+            endforeach;
+        endforeach;
+
+        return $out;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _pm_prefix @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pDepth
+     * @return string
+     */
+    
+    public function _pm_prefix($pDepth)
+    {
+        return str_repeat(' |', $pDepth) . ' |_ ';
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_resources @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      *
-     * @return <type>
+     * @return void
      */
     public function load_resources () {
         $options = array(0 => '(none)');

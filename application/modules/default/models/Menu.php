@@ -22,7 +22,7 @@ class Model_Menu extends Zupal_Domain_Abstract {
     /**
      *
      * @param boolean $pReload
-     * @return Zupal_Domain_Abstract
+     * @return Model_Menu
      */
     static function getInstance($pReload = FALSE) {
         if ($pReload || is_null(self::$_Instance)):
@@ -255,33 +255,54 @@ class Model_Menu extends Zupal_Domain_Abstract {
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ children @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    
     /**
-     *
-     * @param <type>
-     * @return <type>
+     * @return Model_Menu[]
      */
     public function children () {
-        if ($this->name):
-            $options = array(
-                'module' => $this->module,
-                'parent' => $this->identity()
-            );
-            $children = $this->find($options, 'sort_by');
-        else:
-            return array();
-        endif;
-
-        $req = Zend_Controller_front::getInstance()->getRequest();
-        $active_module = $req->getModuleName();
-        $active_controller = $req->getControllerName();
-
-        foreach($children as $i => $menu):
-            if (($menu->if_module) && ($menu->module != $active_module)):
-                unset($children[$i]);
-            endif;
-        endforeach;
+        $options = array(
+            'parent' => $this->identity()
+        );
+        $children = $this->find($options, 'sort_by');
 
         return $children;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ panels @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return String[]
+     */
+    public function panels () {
+        $sql = sprintf('SELECT distinct `panel` FROM `%s` ORDER BY `panel`',
+            $this->table()->tableName());
+        return $this->table()->getAdapter()->fetchCol($sql);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function save () {
+        parent::save();
+
+        if (func_num_args() && func_get_arg(0)):
+        // if there is a true first paremeter skip the resort script.
+        // should break recursion
+            return;
+        endif;
+
+        if ($this->parent()):
+            $siblings = $this->parent()->children();
+        else:
+            $params = array('panel' => $this->panel, 'parent' => 0);
+            $siblings = $this->find($params, 'sort_by');
+        endif;
+        
+        foreach ($siblings as $new_sort_by => $menu):
+            $menu->save(TRUE);
+        endforeach;
+        
+    }
 }
