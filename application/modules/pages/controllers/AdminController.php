@@ -24,7 +24,12 @@ extends Zupal_Controller_Abstract {
         foreach($pages as $page):
             $row = $page->toArray();
             if ($atom = $page->atom(TRUE)):
-                $row = array_merge($row, Zupal_Util_Array::mod_keys($atom, 'a_'));
+                if ($publish_status = $page->get_publish_status()):
+                    $psa = Zupal_Util_Array::mod_keys($publish_status->toArray(), 'ps_');
+                else:
+                    $psa = array();
+                endif;
+                $row = array_merge($row, Zupal_Util_Array::mod_keys($atom, 'a_'), $psa);
             endif;
             $data[] = $row;
         endforeach;
