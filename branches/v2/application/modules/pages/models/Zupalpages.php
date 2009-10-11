@@ -36,6 +36,17 @@ class Pages_Model_Zupalpages extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ publish_status @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_publish_status = NULL;
+    function get_publish_status($pReload = FALSE) {
+        if ($pReload || is_null($this->_publish_status)):
+            $value = Pages_Model_Zupalpagestatuses::getInstance()->get($this->publish_status);
+        // process
+            $this->_publish_status = $value;
+        endif;
+        return $this->_publish_status;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
