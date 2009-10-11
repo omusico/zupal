@@ -68,6 +68,18 @@ class Model_Zupalatoms extends Zupal_Domain_Abstract
         return self::$_Instance;
     }
 
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_new @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Model_Zupalatoms
+     */
+    public static function get_new () {
+        $za = new self();
+        $za->save();
+        $za->atomic_id = $za->identity();
+        $za->version = 1;
+        $za->save();
+        return $za;
+    }
 }
 

@@ -34,6 +34,10 @@ public function dojogrid ($pID, $pStore_ID = NULL,
     $pColumns, $pIdentifier = 'id', array $pParams = NULL, array $pOptions = NULL)
 {
     $this->prep_view();
+    if ($pColumns instanceof Zend_Config_Ini):
+        $pColumns = $pColumns->toArray();
+    endif;
+
     $height = 400;
     $width = 600;
     if ($pOptions):

@@ -2,7 +2,7 @@
 
 $this->placeholder('page_title')->set('Page Admin');
 
-echo $this->dojostore('page_store', $this->baseUrl() . '/admin/pages/admin/pagesstore');
+echo $this->dojostore('page_store', $this->baseUrl() . '/admin/pages/store');
 
 echo $this->dojogrid('page_grid', 'page_store'
     , new Zend_Config_Ini(dirname(__FILE__) . '/page_grid.ini', 'columns'));
