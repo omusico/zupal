@@ -12,12 +12,12 @@ $this->headScript()->captureStart()
 ?>
 function page_grid_edit_formatter(id)
 {
-    return '<a href="admin/pages/admin/edit/id/"' + id + '><img src="/images/icons/edit.gif"" border="0"></a>';
+    return '<a href="/admin/pages/edit/id/' + id + '"><img src="/images/icons/edit.gif" border="0" width="20" height="20"></a>';
 }
 
 function page_grid_delete_formatter(id)
 {
-    return '<a href="admin/pages/admin/delete/id/"' + id + '"><img src="/images/icons/x.gif" border="0"></a>';
+    return '<a href="/admin/pages/delete/id/' + id + '"><img src="/images/icons/x.gif" border="0" width="20" height="20"></a>';
 }
 
 <? $this->headScript()->captureEnd();

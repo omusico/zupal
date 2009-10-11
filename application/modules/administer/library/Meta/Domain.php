@@ -206,7 +206,7 @@ class Administer_Lib_Meta_Domain
 
 	if ($pDomain):
 	    $this->set_domain($pDomain);
-	    $this->domain_to_form();
+	    $this->domain_to_fields();
 	endif;
 <?
 	$body = ob_get_clean();
@@ -297,7 +297,7 @@ class Administer_Lib_Meta_Domain
 	    $elements[$field] = $element;
 	endforeach;
 	$elements['save_button'] = array(
-	    'label' => 'Save',
+	    'options' => array('label' => 'Save'),
 	    'type' => 'submit'
 	);
 
