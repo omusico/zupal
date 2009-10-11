@@ -130,7 +130,11 @@ class Administer_MetaController extends Zupal_Controller_Abstract {
     endif;
     }
     public function _find_or_make_Module($module) {
-        $root = APPLICATION_PATH . '/modules/' . $pModule;
+        if (!$module):
+            throw new Exception(__METHOD__ . ': no module ' . $module);
+        endif;
+
+        $root = APPLICATION_PATH . '/modules/' . $module;
         if ($this->_find_or_make($root)):
             foreach(array('controllers', 'views', 'models', 'forms') as $dir):
                 if (!$this->_find_or_make("$root/$dir")):
