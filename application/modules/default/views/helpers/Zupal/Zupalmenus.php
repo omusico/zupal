@@ -11,14 +11,15 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         $menu = $this->getView()->navigation()->menu();
         $menu->setAcl(Model_Acl::acl());
         $pages = $this->pages();
-        
+
         if (Model_Users::current_user()):
             $menu->setRole(Model_Users::current_user()->role);
         else:
             $menu->setRole('anonymous');
         endif;
         
-        return $menu->renderMenu($pages);
+        $router = Zend_Controller_Front::getInstance()->getRouter();
+        return $menu->renderMenu($pages, array('router' => $router));
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -35,7 +36,7 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return Zend_Navigation_Pages[]
+     * @return Zend_Navigation
      */
     public function pages ($pPanel = 'main') {
         $pages = array();
@@ -58,7 +59,10 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
                $pages[] = $new_page;
             endif;
         endforeach;
-
+        $router = Zend_Controller_Front::getInstance()->getRouter();
+        $fake_route = new Zend_Controller_Request_Http();
+        $fake_route->setRequestUri('/');
+        $router->route($fake_route);
         return new Zend_Navigation($pages);
     }
 

@@ -31,39 +31,45 @@ class Zupal_Helper_Dojogrid {
 	* 
 	*/
 public function dojogrid ($pID, $pStore_ID = NULL,
-    $pColumns, $pIdentifier = 'id', array $pParams = NULL, array $pOptions = NULL)
+    $pRows, $pIdentifier = 'id', array $pParams = NULL, array $pOptions = NULL)
 {
-    $this->prep_view();
-    if ($pColumns instanceof Zend_Config_Ini):
-        $pColumns = $pColumns->toArray();
+    if ($pRows instanceof Zend_Config_Ini):
+        $pRows = $pRows->toArray();
     endif;
 
+    $this->prep_view();
     $height = 400;
     $width = 600;
+    $query = array($pIdentifier => '*' );
     if ($pOptions):
-        export($pOptions);
+        extract($pOptions);
     endif;
     ob_start();
 	if (is_null($pStore_ID)):
 	    $pStore_ID = $pID . '_store';
 	endif;
 ?>
-<table rowsPerPage="10" style="height: <?= $height ?>px; width: <?=$width ?>px" id="<?= $pID ?>"
+<table rowsPerPage="10" 
+       id="<?= $pID ?>"
+
+       style="<?= $this->sprop('height', $height, 'px') ?> <?= $this->sprop('width', $width, 'px') ?>"
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
-	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
+query="<?= str_replace('"', "'", (is_string($query) ? $query : Zend_Json::encode($query))) ?>" store="<?= $pStore_ID ?>">
 	<thead>
-		<tr>
-<? foreach($pColumns as $key => $column): ?>
+<? foreach($pRows as $columns): ?>
+	    <tr>
+<? foreach($columns as $key => $column): ?>
 	<? if (is_array($column)): ?>
 		<?= self::array_column($column) ?>
 	<? elseif (is_string($column)): ?>
-			<th field="<?= $key ?>"><?= $column ?></th>
+			<th field="<?= trim($key) ?>"> <?= $column ?></th>
 	<? elseif (is_object($column)): // must have a __toString() method
 	?>
 			<?= $column ?>
 	<? endif; ?>
 <? endforeach; ?>
 		</tr>
+<? endforeach; ?>
 	</thead>
 </table>
 <?
@@ -97,6 +103,8 @@ return ob_get_clean();
 	{
 
 		$this->getView()->dojo()
+                       // ->requireModule('dojox.grid.DataGrid')
+                       // ->requireModule('dojo.Data.ItemFileReadStore')
 			->addLayer( $this->getView()->baseUrl() . '/scripts/dojo/grid_layer.js')
 			->addStyleSheet($this->getView()->baseUrl() .  '/scripts/dojox/grid/resources/Grid.css')
              ->setDjConfigOption('parseOnLoad', TRUE)
@@ -132,6 +140,22 @@ public static function params ($pParam)
 	return $out;
 }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ sprop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param string $pProperty
+ * @param int | string $value,
+ * @param string $pUnit
+ * @return string
+ */
+public function sprop ($pProperty, $value, $pUnit='px') {
+    if (is_numeric($value)):
+        $value = "$value$pUnit";
+    endif;
+
+    return "$pProperty: $value; ";
+}
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ querygrid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 	/**
 	*
@@ -149,7 +173,9 @@ public static function querygrid($pID, $pStore_ID = NULL, $pColumns, $pIdentifie
 		extract($pParams);
 	endif;
 ?>
-<table id="<?= $pID ?>"  rowsPerPage="<?= $rows_per_page ?>" style=" height: <?= $table_height ?>px; width: <?= $table_width ?>px" jsId="<?= $pID ?>"
+<table id="<?= $pID ?>"  rowsPerPage="<?= $rows_per_page ?>"
+       style="<?= $this->sprop('height', $table_height, 'px') ?>
+       <?= $this->sprop('width', $table_width, 'px') ?>" jsId="<?= $pID ?>"
 dojoType="dojox.grid.DataGrid" clientSort="true" <?= self::params($pParams) ?>
 	   query="{ <?= $pIdentifier ?> : '*' }" store="<?= $pStore_ID ?>">
 	<thead>

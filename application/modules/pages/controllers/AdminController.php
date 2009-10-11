@@ -37,4 +37,12 @@ extends Zupal_Controller_Abstract {
         $this->_store('id', $data, 'a_title');
 
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ deleteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function deleteAction () {
+        $this->view->id = $this->_getParam('id');
+    }
 }
