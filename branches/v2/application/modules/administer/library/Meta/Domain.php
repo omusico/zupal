@@ -141,7 +141,7 @@ class Administer_Lib_Meta_Domain
     return $out;',
 			    'parameters' => array(
                                 array('name' => 'pID', 'defaultValue' => 'NULL'),
-                                array('pLoad_Fields' => 'NULL')
+                                array('name' => 'pLoad_Fields', 'defaultValue' => 'NULL')
                             )
 			    ))
 			),
