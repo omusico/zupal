@@ -18,7 +18,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         return $loader;
     }
-
+/*
     public function _initAdminRoute() {
         $this->_bootstrap('frontController');
 
@@ -43,7 +43,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
             'admin',
             array('_layout' => 'admin'));
         $front->getRouter()->addRoute('admin', $route);
-    }
+    } */
 
     protected function _initRoutes()
     {
