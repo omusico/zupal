@@ -1,0 +1,8 @@
+<?
+$page = Pages_Model_Zupalpages::getInstance()->get($this->id);
+
+$this->placeholder('title')->set('Edit Page ' . $page->atom()->title);
+    
+$form = new Pages_Form_Zupalpages($page);
+
+echo $form;

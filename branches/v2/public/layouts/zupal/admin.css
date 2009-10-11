@@ -213,3 +213,29 @@ a.edit:hover
 	border: 2px solid black;
 	text-align: center;
 }
+
+.dojoxGrid
+{
+    font-size: 8pt;
+    font-family: Verdana, Helvetica, sans-serif;
+    background-color: transparent;
+}
+
+.dojoxGridRowTable,
+.dojoxGridHeader,
+.dojoxGridMasterHeader
+{
+    background-color: transparent;
+}
+
+.dojoxGridHeader .dojoxGridCell
+{
+    background-color: transparent;
+    border: none;
+    background-image: none;
+}
+
+.dojoxGridCell
+{
+    border: none;
+}
