@@ -66,5 +66,6 @@ class Pages_Model_Zupalpages extends Zupal_Domain_Abstract
         endif;
         return $this->atomic_id ? Model_Zupalatoms::latest($this->atomic_id, $pAs_array) : NULL;
     }
+    
 }
 
