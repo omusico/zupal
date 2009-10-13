@@ -17,11 +17,27 @@ extends Zend_Form {
         return $this->_domain;
     }
 
-    public function set_domain(Zupal_Domain_IDomain $value) {
+    public function set_domain($value) {
+        if ($value):
+            if (!is_object($value)):
+                $class = $this->get_domain_class();
+                $value = new $class($value);
+            endif;
+        else:
+            $value = NULL;
+        endif;
+        
         $this->_domain = $value;
         $this->domain_to_fields();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    protected abstract function get_domain_class ();
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ translation @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
