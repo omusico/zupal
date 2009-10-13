@@ -81,5 +81,29 @@ class Model_Zupalatoms extends Zupal_Domain_Abstract
         $za->save();
         return $za;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ revise @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param  array $pParams
+     * @return Model_Zupalatoms
+     */
+    public function revise (array $pParams) {
+        $change = FALSE;
+        $pParams['atomic_id'] = $this->atomic_id;
+
+        foreach($params as $f => $v):
+            if ($this->$f != $v):
+                $change = TRUE;
+            endif;
+        endforeach;
+
+        if ($change):
+            $pParams = array_merge($this->toArray(), $pParams);
+            unset($pParams[$this->table()->idField()]);
+            $pParams['version'] = $this->version + 1;
+            return $this->get(NULL, $pParams);
+        endif;
+    }
 }
 

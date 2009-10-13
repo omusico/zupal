@@ -10,6 +10,7 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
         	parent::__construct($config);
 
                 $this->_init_resources_menu();
+                $this->_init_status_menu();
 
         	if ($pDomain):
         	    $this->set_domain($pDomain);
@@ -37,10 +38,35 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
      *
      * @return <type>
      */
-    public function _init_resources_menu () {
+    protected function _init_resources_menu () {
         foreach(Model_Resources::getInstance()->findAll('resource_id') as $resource):
             $this->resource->addMultiOption($resource->identity(), $resource->title);
         endforeach;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init_status_menu @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    protected function _init_status_menu () {
+        foreach(Pages_Model_Zupalpagestatuses::getInstance()->findAll('rank') as $status):
+            $this->publish_status->addMultiOption($status->identity(), $status->title);
+        endforeach;
+    }
+
+    protected function save()
+    {
+        $atom_data = array(
+            'content' => $this->content->getValue(),
+            'title' => $this->title->getValue(),
+            'lead' => $this->lead->getValue(),
+            'status' => $this->publish_status->getValue()
+        );
+
+        parent::save();
+
+        $this->get_domain()->atom()->revise($atom_data);
     }
 }
 
