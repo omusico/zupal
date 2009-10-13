@@ -68,15 +68,15 @@ extends Zupal_Controller_Abstract {
      */
     public function editexecuteAction () {
         $form = new Pages_Form_Zupalpages($this->_getParam('id'));
-        if ($form->isValid($this->getAllParams())):
+        if ($form->isValid($this->_getAllParams())):
             $form->save();
         else:
             $params = $this->_getAllParams();
             $params['reload'] = TRUE;
             $params['error'] = 'cannot save page';
-            $this->_forward('edit', NULL, NULL, $params);
+            return $this->_forward('edit', NULL, NULL, $params);
         endif;
-        $this->_forward('view');
+        $this->_forward('view', 'index', NULL, $this->_getParam('id'));
     }
     
 }
