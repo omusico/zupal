@@ -4,8 +4,9 @@
  */
 foreach(array( 
             'production' => '/users/bingomanatee/documents/sites/ZendFramework/library',
-            'cybercockroach' => '/home/bingoman/public_html/cybercockroach.com/ZendFramework/library'
-        ) as $env => $lib):
+            'cybercockroach' => '/home/bingoman/public_html/cybercockroach.com/ZendFramework/library',
+	    'cpf' => '/Users/daveedelhart/Documents/ZendFrameworkSVN/library'
+    ) as $env => $lib):
     if (is_dir($lib)):
         define ('ZF_LIB', $lib);
         define ('APPLICATION_ENV', $env);
