@@ -163,6 +163,20 @@ extends Zupal_Domain_Abstract {
         return $this->_info;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ info @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_load = NULL;
+    function get_load($pReload = FALSE) {
+        if (($pReload || is_null($this->_load)) &&
+                ($path = $this->path_exists(self::CONFIG_INFO))):
+            $ini = new Zend_Config_Ini($path, 'load');
+            $load_data = $ini->toArray();
+            // process
+            $this->_load = $load_data;
+        endif;
+        return $this->_load;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ present @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -220,6 +234,15 @@ extends Zupal_Domain_Abstract {
      * @return boolean
      */
     public function is_active () {
-        return $this->required || $this->active;
+        return $this->required || $this->active ? TRUE : FALSE;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ is_loaded @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return boolean
+     */
+    public function is_loaded () {
+        return $this->loaded ? TRUE : FALSE;
     }
 }
