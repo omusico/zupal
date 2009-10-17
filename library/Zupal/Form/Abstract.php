@@ -67,7 +67,10 @@ extends Zend_Form {
         endif;
         endforeach;
     }
-
+/**
+ *
+ * @param array $pFields
+ */
     protected function fields_to_domain(array $pFields = NULL) {
         $object = $this->get_domain();
 

@@ -95,9 +95,9 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
         $data = array(
             'if_controller' => $this->_getParam('if_controller'),
             'if_module' => $this->_getParam('if_module'),
-            'controller' => $this->_getParam('controller'),
-            'action' => $this->_getParam('action'),
-            'module' => $this->_getParam('module'),
+            'controller' => $this->_getParam('menucontroller'),
+            'action' => $this->_getParam('menuaction'),
+            'module' => $this->_getParam('menumodule'),
             'name' => $this->_getParam('name'),
             'label' => $this->_getParam('label'),
             'resource' => (int) $this->_getParam('resource'),

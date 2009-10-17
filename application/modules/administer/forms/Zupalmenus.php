@@ -11,7 +11,7 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
 
         if ($pDomain):
             $this->set_domain($pDomain);
-            $this->domain_to_form();
+            $this->domain_to_fields();
         endif;
 
         $this->load_resources();
@@ -21,7 +21,7 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
 
     public function domain_fields()
     {
-        return array("id","name","label","created_by_module","resource","parent","module","controller","action","href","callback_class","parameters","if_module","if_controller","sort_by");
+        return array("id","name","label","created_by_module","resource","parent","href","callback_class","parameters","if_module","if_controller","sort_by");
     }
 
     protected function get_domain_class()
@@ -119,7 +119,34 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
             $options[$res->identity()] = $res->title();
         endforeach;
 
-        $this->module->setMultiOptions($options);
+        $this->menumodule->setMultiOptions($options);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain_to_form @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pMenu
+     * @return void
+     */
+    public function domain_to_fields (array $pFields = NULL) {
+
+
+        parent::domain_to_fields($pFields);
+        $this->menumodule->setValue($this->get_domain()->module);
+        $this->menucontroller->setValue($this->get_domain()->controller);
+        $this->menuaction->setValue($this->get_domain()->action);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ fields_to_domain @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return void
+     */
+    public function fields_to_domain (array $pFields = NULL) {
+        parent::fields_to_domain($pFields);
+        $this->domain()->module = $this->menumodule->getValue();
+        $this->domain()->controller = $this->menucontroller->getValue();
+        $this->domain()->action = $this->menuaction->getValue();
     }
 }
 

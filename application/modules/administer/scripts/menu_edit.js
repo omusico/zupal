@@ -17,9 +17,9 @@ function update_menu_form(item)
     f.elements['label'].value = item.label;
     f.elements['name'].value = item.name;
     f.elements['parent'].value = item.parent;
-    f.elements['module'].value = item.module;
-    f.elements['controller'].value = item.controller;
-    f.elements['action'].value = item.action;
+    f.elements['menumodule'].value = item.module;
+    f.elements['menucontroller'].value = item.controller;
+    f.elements['menuaction'].value = item.action;
     f.elements['href'].value = item.href;
     f.elements['parameters'].value = item.parameters;
     f.elements['callback_class'].value = item.callback_class;
@@ -43,7 +43,7 @@ function update_menu_form(item)
     }
     res_select.selectedIndex = found;
     found = 0;
-    var mod_select = f.elements['module'];
+    var mod_select = f.elements['menumodule'];
     if (item.module != "")
     {
         found = FM.findOption(mod_select, item.module);

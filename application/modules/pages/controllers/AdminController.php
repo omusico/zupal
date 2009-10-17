@@ -78,6 +78,16 @@ extends Zupal_Controller_Abstract {
         endif;
         $this->_forward('view', 'index', NULL, $this->_getParam('id'));
     }
-    
+
+    public function createAction()
+    {
+        $parent = $this->_getParam("parent",  0 );
+        $this->view->form = new Pages_Form_Zupalpages();
+
+        $this->view->form->parent->setValue($parent);
+        
+    }
+
+
 }
 
