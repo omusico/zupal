@@ -1,6 +1,6 @@
 <?
 
-class Form_Userregister extends Zend_Form
+class Form_Userregister extends Zend_Dojo_Form
 {
     public function __construct()
     {

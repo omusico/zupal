@@ -22,7 +22,30 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
     public function indexAction() {
         $m = Administer_Model_Modules::getInstance();
         $m->update_from_filesystem();
-        $this->view->modules = $m->findAll('folder');
+        $this->view->modules = $modules = $m->findAll('folder');
+
+        foreach($modules as $module):
+            if ($module->is_active() != $module->is_loaded()):
+                $this->_load($module);
+            endif;
+        endforeach;
+    }
+
+    private function _load(Administer_Model_Modules $m)
+    {
+        $load_data = $m->get_load();
+        if ($load_data):
+            foreach($load_data as $class => $options):
+                switch($class):
+                    case 'resource':
+                        Model_Resources::getInstance()->load($options, $m->folder, $m->is_active());
+                    break;
+
+                    default:
+                        throw new Exception("can't load resource $class");
+                endswitch;
+            endforeach;
+        endif;
     }
 
     public function activateAction() {

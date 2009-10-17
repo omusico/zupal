@@ -1,16 +1,14 @@
 body
 {
-    background-color: red;
     margin: 0px;
     padding: 0px;
-    color: yellow;
 }
 
 div#menu
 {
     float: left;
     width: 200px;
-    border: 2px solid white;
+    border: 2px solid gray;
     margin: 4pt;
 }
 
@@ -36,7 +34,6 @@ div#menu li a.link,
 div#menu li a.visited
 {
     font-family: Arial;
-    color: white;
     font-weight: bold;
     text-decoration: none;
 }
@@ -80,7 +77,6 @@ div#main table.frame th
 div#main table.frame th
 {
     background-color: #600;
-    color: white;
     font-weight: bold;
 }
 
@@ -110,5 +106,5 @@ a.linkbutton:visited
 a.linkbutton:hover
 {
     background-color: black;
-    color: white;
+    color: black;
 }
