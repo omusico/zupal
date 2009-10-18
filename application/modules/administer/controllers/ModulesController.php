@@ -102,6 +102,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
             'label' => $this->_getParam('label'),
             'resource' => (int) $this->_getParam('resource'),
             'href' => $this->_getParam('href'),
+            'resource' => $this->_getParam('resource'),
             'parameters' => $this->_getParam('parameters'),
             'parent' => $this->_getParam('parent')        
         );

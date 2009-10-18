@@ -179,7 +179,7 @@ implements Zupal_Domain_IDomain {
     public function isSaved() {
         $id_field = $this->table()->idField();
         $table_name = $this->table()->tableName();
-        $id = $this->$id_field;
+        $id = $this->identity();
         
         if (!$id):
             

@@ -20,6 +20,11 @@ implements Zend_Acl_Resource_Interface
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Model_Resources
+     */
     public static function getInstance($pReload = FALSE) {
         if ($pReload || is_null(self::$_Instance)):
         // process

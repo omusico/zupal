@@ -21,7 +21,7 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
 
     public function domain_fields()
     {
-        return array("id","name","label","created_by_module","resource","parent","href","callback_class","parameters","if_module","if_controller","sort_by");
+        return array("id","name","label",'resource', "created_by_module","resource","parent","href","callback_class","parameters","if_module","if_controller","sort_by");
     }
 
     protected function get_domain_class()
@@ -110,7 +110,7 @@ class Administer_Form_Zupalmenus extends Zupal_Form_Abstract
     /**
      *
      *
-     * @return <type>
+     * @return void
      */
     public function load_modules () {
         $options = array(0 => '(none)');

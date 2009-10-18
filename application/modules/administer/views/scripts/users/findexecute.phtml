@@ -1,0 +1,20 @@
+<?
+$this->placeholder('page_title')->set('Users : Found');
+
+$this->headScript()->captureStart();
+?>
+function user_grid_edit_formatter(p)
+{
+    return '<a href="<?= $this->baseUrl() ?>/administer/users/edit/id/'
+        + p + '"><img src="<?= $this->baseUrl() ?>/images/icons/edit.gif" height="20" width="20" border="0"/></a>';
+}
+
+<?
+    $this->headScript()->captureEnd();
+
+    $columns = new Zend_Config_Ini(dirname(__FILE__) . '/found_users_grid.ini','columns');
+?>
+
+<?= $this->dojostore('user_store', $this->baseUrl() . '/administer/users/findstore/search/' . $this->search) ?>
+
+<?= $this->dojogrid('user', 'user_store', $columns->toArray(), 'id', NULL, array('width' => '600px')) ?>

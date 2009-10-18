@@ -15,6 +15,11 @@ interface Zupal_Domain_IDomain {
 	 * True in two cases: the record has not been saved, or it has been deleted.
 	 */
 
+        public function isSaved();
+        /**
+         * A test to determine if the current row's id is in the database.
+         */
+         
 	public function delete();
 
 	/**
