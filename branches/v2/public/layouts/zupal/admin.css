@@ -38,10 +38,10 @@ a.linkbutton:hover
 
 #main dl.zend_form dt{
     float: left;
-    width: 120px;
+    width: 150px;
+    font-size: 90%;
     margin-bottom: 0.25em;
     height: 1.25em;
-    overflow:hidden;
     clear: left;
 }
 
@@ -68,7 +68,7 @@ a.linkbutton:hover
     border: 1px solid #CCC;
     background-color: #E1E1E1;
     font-family: Arial, sans-serif;
-    font-size: 125%;
+    font-size: 100%;
 
 }
 

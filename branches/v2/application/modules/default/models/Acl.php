@@ -26,7 +26,7 @@ class Model_Acl extends Zupal_Domain_Abstract
      * @param $pRole
      * @return Model_ACL | NULL
      */
-    public function find_acl ($pResource, $pRole, $pString = TRUE) {
+    public static function find_acl ($pResource, $pRole, $pString = TRUE) {
         if ($pResource instanceof Model_Resources):
             $pResource = $pResource->identity();
         endif;
@@ -34,8 +34,9 @@ class Model_Acl extends Zupal_Domain_Abstract
         if ($pRole instanceof Model_Roles):
             $pRole = $pRole->identity();
         endif;
-
-        $acl = $this->findOne(array('resource' => $pResource, 'role' => $pRole));
+        error_log(__METHOD__ . ': finding role = ' . $pRole . ', res = ' . $pResource);
+        
+        $acl = self::getInstance()->findOne(array('resource' => $pResource, 'role' => $pRole));
 
         if ($pString):
             if (!$acl):
