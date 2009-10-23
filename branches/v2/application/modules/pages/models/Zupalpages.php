@@ -1,6 +1,8 @@
 <?php
 
-class Pages_Model_Zupalpages extends Zupal_Domain_Abstract
+class Pages_Model_Zupalpages
+extends Model_Zupalatomdomain
+implements Model_ZupalatomIF
 {
 
     private static $_instance = 'zupal_pages';
@@ -19,6 +21,11 @@ class Pages_Model_Zupalpages extends Zupal_Domain_Abstract
             return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_atomic_id (){
+        return $this->atomic_id;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -47,25 +54,6 @@ class Pages_Model_Zupalpages extends Zupal_Domain_Abstract
         endif;
         return $this->_publish_status;
     }
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param boolean $pAs_array
-     * @return Model_Zupalatoms || array;
-     */
-    public function atom ($pAs_array = false) {
-        if (!$this->atomic_id):
-            $atom = Model_Zupalatoms::get_new();
-            $this->atomic_id = $atom->atomic_id;
-            $this->save();
-            if ($pAs_array):
-                return $atom->toArray();
-            else:
-                return $atom;
-           endif;
-        endif;
-        return $this->atomic_id ? Model_Zupalatoms::latest($this->atomic_id, $pAs_array) : NULL;
-    }
-    
+
 }
 
