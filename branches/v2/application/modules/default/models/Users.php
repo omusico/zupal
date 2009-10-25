@@ -57,6 +57,11 @@ extends Zupal_Domain_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ current_user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_current_user = NULL;
+    /**
+     *
+     * @param int $pReload
+     * @return Model_Users
+     */
     public static function current_user($pReload = FALSE) {
         if ($pReload || !(self::$_current_user)):
                 $auth = Zend_Auth::getInstance();

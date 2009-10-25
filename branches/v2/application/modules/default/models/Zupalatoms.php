@@ -26,19 +26,26 @@ implements  Model_ZupalatomIF {
 
     public function set_title($pValue) {
         $this->title = $pValue;
+        $this->save();
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ lead @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function get_lead() { return $this->lead; }
 
-    public function set_lead($pValue) { $this->lead = $pValue; }
+    public function set_lead($pValue) {
+        $this->lead = $pValue;
+        $this->save();
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function get_content() { return $this->content; }
 
-    public function set_content($pValue) { $this->content = $pValue; }
+    public function set_content($pValue) {
+        $this->content = $pValue;
+        $this->save();
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -63,7 +70,7 @@ implements  Model_ZupalatomIF {
             array('atomic_id' => $pAtomic_id,
             'version' => $pVersion)
             );
-    endif;
+        endif;
     }
 
     /**
@@ -77,11 +84,11 @@ implements  Model_ZupalatomIF {
      *   3) if a), is a Model_ZupalatomIF implementor
      *      and therefore has a for_atom_id implementation
      *      of its own to delegate to.
-     * 
+     *
      * @param int $pAtom_id
      * @return Model_ZupalatomIF
      */
-    public function for_atom_id ($pAtom_id){
+    public function for_atom_id ($pAtom_id) {
         $atom = $this->get_atom($pAtomic_id);
         if (!$atom):
             throw new exception(__METHOD__ . ': can\'t get ' . $pAtom_id);
@@ -94,7 +101,7 @@ implements  Model_ZupalatomIF {
         $stub = new $class;
         $stub->for_atom_id($pAtom_id);
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -104,7 +111,7 @@ implements  Model_ZupalatomIF {
     public function get_bonds ($pType = NULL,
         Model_ZupalatomIF $pTarget = NULL,
         Model_ZupalatomIF $bond_atom = NULL
-        ){
+    ) {
 
 
         $params = array(

@@ -61,7 +61,6 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
         $this->get_domain()->setLead($this->lead->getValue());
         $this->get_domain()->setContent($this->content->getValue());
         $this->get_domain()->save();
-
     }
 }
 

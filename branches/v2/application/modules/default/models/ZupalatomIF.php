@@ -33,14 +33,6 @@ extends Zupal_Domain_IDomain
      */
     public function get_model_class ();
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     * NOTE: this returns the low level atom object from the Model_Zupalatoms table.
-     * @param $pAtomic_id
-     * @return Model_Zupalatoms
-     */
-    public function get_atom ($pAtomic_id, $pVersion = NULL);
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atom_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      * This class returns the model that the atom reflects;
