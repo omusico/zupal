@@ -68,7 +68,7 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
             $form->save();
             $params = array('id' => $form->get_domain()->identity());
             $this->_forward('resourceview', NULL, NULL, $params);
-    endif;
+        endif;
     }
 
     public function resourceviewAction() {
@@ -181,6 +181,34 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
         $this->view->role = Model_Roles::getInstance()->get($id);
 
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ roleeditexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function roleseditexecuteAction () {
+        $id = $this->_getParam('role_id');
+        $params = array('role_id' => $id);
+
+        $form = new Administer_Form_Zupalroles($id);
+        if ($form->isValid($this->_getAllParams())):
+            $form->save();
+
+            foreach(Model_Resources::getInstance()->findAll() as $res):
+                $resid = $res->identity();
+                if ($resvalue = $this->_getParam("resource_$resid")):
+                    Model_Acl::getInstance()->set_acl($resid, $id, $resvalue);
+                endif;
+            endforeach;
+            $params['message'] = 'Role Saved';
+        else:
+            $params['error'] = 'Cannot save form';
+            $params['reload'] = TRUE;
+            $params = array_merge($this->_getAllParams(), $params);
+        endif;
+       $this->_forward('rolesedit', 'users', 'administer', $params);
+    }
+
 
 }
 

@@ -2,5 +2,7 @@
 $this->placeholder('title')->set('Edit Role');
 
 
-echo new Administer_Form_Zupalroles($this->role);
+$form = new Administer_Form_Zupalroles($this->role);
+$form->setAction($this->baseUrl() . '/administer/users/roleseditexecute/');
 
+echo $form;

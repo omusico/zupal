@@ -33,13 +33,13 @@ extends Zupal_Controller_Abstract {
         $data = array();
         foreach($pages as $page):
             $row = $page->toArray();
-            if ($atom = $page->atom(TRUE)):
+            if ($atom = $page->get_atom($page->atomic_id)):
                 if ($publish_status = $page->get_publish_status()):
                     $psa = Zupal_Util_Array::mod_keys($publish_status->toArray(), 'ps_');
                 else:
                     $psa = array();
                 endif;
-                $row = array_merge($row, Zupal_Util_Array::mod_keys($atom, 'a_'), $psa);
+                $row = array_merge($row, Zupal_Util_Array::mod_keys($atom->toArray(), 'a_'), $psa);
             endif;
             $data[] = $row;
         endforeach;
@@ -91,3 +91,4 @@ extends Zupal_Controller_Abstract {
 
 }
 
+	

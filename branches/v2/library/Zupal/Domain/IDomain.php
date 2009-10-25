@@ -23,13 +23,10 @@ interface Zupal_Domain_IDomain {
 	public function delete();
 
 	/**
-	 * A simple self-contained find method
-	 * that finds records from the governing table
-	 * based on a set of parameter/value matches
-	 * passed as an array.
+	 * A simple self-contained find method that finds records from the governing table
+	 * based on a set of parameter/value matches passed as an array.
 	 *
-	 * if the optional sort field is absent,
-	 * the results are returned in arbitrary order.
+	 * if the optional sort field is absent, the results are returned in arbitrary order.
 	 *
 	 * Compound criteria intersect ("AND").
 	 *

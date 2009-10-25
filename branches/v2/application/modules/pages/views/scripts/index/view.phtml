@@ -1,10 +1,10 @@
 <?
-$this->placeholder('page_title')->set($this->page->atom()->title); ?>
+$this->placeholder('page_title')->set($this->page->get_title()); ?>
 
 <blockquote>
-    <?= $this->page->atom()->lead ?>
+    <?= $this->page->get_lead() ?>
 </blockquote>
 <hr />
 
-<?= $this->page->atom()->content ?>
+<?= $this->page->get_content() ?>
 

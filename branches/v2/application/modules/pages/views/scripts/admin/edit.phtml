@@ -4,7 +4,7 @@ $page = Pages_Model_Zupalpages::getInstance()->get($this->id);
 $this->headScript()->appendFile($this->baseUrl() . '/ckeditor/ckeditor.js');
 //$this->headScript()->appendFile($this->baseUrl() . '/scripts/ckeditor/config.js');
 
-$this->placeholder('page_title')->set('Edit Page ' . $page->atom()->title);
+$this->placeholder('page_title')->set('Edit Page ' . $page->get_title());
     
 $form = new Pages_Form_Zupalpages($page);
 
