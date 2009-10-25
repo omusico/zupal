@@ -2,7 +2,7 @@
 
 class Pages_Model_Zupalpages
 extends Model_Zupalatomdomain
-implements Model_ZupalatomIF
+// implements Model_ZupalatomIF
 {
 
     private static $_instance = 'zupal_pages';
@@ -25,6 +25,16 @@ implements Model_ZupalatomIF
 
     public function get_atomic_id (){
         return $this->atomic_id;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pAtomic_id
+     * @return Pages_Model_Zupalpages
+     */
+    public function for_atom_id ($pAtomic_id) {
+        return $this->findOne(array('atomic_id' => $pAtomic_id));
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -14,12 +14,12 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
 
         if ($pDomain):
             $this->set_domain($pDomain);
+            $domain = $this->get_domain();
+
             $this->domain_to_fields();
-            if ($atom = $this->get_domain()->atom()):
-                $this->title->setValue($atom->title);
-                $this->lead->setValue($atom->lead);
-                $this->content->setValue($atom->content);
-            endif;
+            $this->title->setValue($domain->get_title());
+            $this->lead->setValue($domain->get_lead());
+            $this->content->setValue($domain->get_content());
         endif;
     }
 
@@ -57,16 +57,11 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
 
     public function save()
     {
-        $atom_data = array(
-            'content' => $this->content->getValue(),
-            'title' => $this->title->getValue(),
-            'lead' => $this->lead->getValue(),
-            'status' => $this->publish_status->getValue()
-        );
+        $this->get_domain()->setTitle($this->title->getValue());
+        $this->get_domain()->setLead($this->lead->getValue());
+        $this->get_domain()->setContent($this->content->getValue());
+        $this->get_domain()->save();
 
-        parent::save();
-
-        $this->get_domain()->atom()->revise($atom_data);
     }
 }
 

@@ -1,6 +1,7 @@
 <?php
 
-class Model_Zupalatoms extends Zupal_Domain_Abstract
+class Model_Zupalatoms
+extends Zupal_Domain_Abstract
 implements  Model_ZupalatomIF {
 
     private static $_instance = 'zupal_atoms';
@@ -33,11 +34,11 @@ implements  Model_ZupalatomIF {
 
     public function set_lead($pValue) { $this->lead = $pValue; }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@ body @@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_body() { return $this->body; }
+    public function get_content() { return $this->content; }
 
-    public function set_body($pValue) { $this->body = $pValue; }
+    public function set_content($pValue) { $this->content = $pValue; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -55,8 +56,8 @@ implements  Model_ZupalatomIF {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function get_atom ($pAtomic_id, $pVersion = NULL) {
-        if (is_null($pVersion)):
-            return Model_Zupalatoms::latest($pAtom_id);
+        if (empty($pVersion)):
+            return Model_Zupalatoms::latest($pAtomic_id);
         else:
             return $this->find(
             array('atomic_id' => $pAtomic_id,
@@ -65,6 +66,35 @@ implements  Model_ZupalatomIF {
     endif;
     }
 
+    /**
+     * This method presumes:
+     *   1) the model conatined in the atom's record
+     *      a) exists,
+     *      b) is missing, or
+     *      c) is self-referential
+     *   2) if a), contains a field 'atomic_id'. Note this is NOT enforced by the interface
+     *      because the interface only defines methods, not fields.
+     *   3) if a), is a Model_ZupalatomIF implementor
+     *      and therefore has a for_atom_id implementation
+     *      of its own to delegate to.
+     * 
+     * @param int $pAtom_id
+     * @return Model_ZupalatomIF
+     */
+    public function for_atom_id ($pAtom_id){
+        $atom = $this->get_atom($pAtomic_id);
+        if (!$atom):
+            throw new exception(__METHOD__ . ': can\'t get ' . $pAtom_id);
+        endif;
+
+        if (!$atom->model_class || $atom->model_class = get_class($atom)):
+            return $atom;
+        endif;
+        $class = $atom->model_class;
+        $stub = new $class;
+        $stub->for_atom_id($pAtom_id);
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -185,7 +215,7 @@ implements  Model_ZupalatomIF {
         endif;
 
         $row = $at->table()->getAdapter()->fetchRow(
-            ZUPALATOMS_GET_LATEST_SQL, $pAtom_id);
+            ZUPALATOMS_GET_LATEST_SQL, array($pAtom_id));
         if ($row):
             if ($pAs_Array):
                 return $row;

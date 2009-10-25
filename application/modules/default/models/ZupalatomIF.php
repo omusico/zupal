@@ -16,11 +16,11 @@ extends Zupal_Domain_IDomain
 
     public function set_lead($pValue);
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@ body @@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_body();
+    public function get_content();
 
-    public function set_body($pValue);
+    public function set_content($pValue);
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -40,6 +40,17 @@ extends Zupal_Domain_IDomain
      * @return Model_Zupalatoms
      */
     public function get_atom ($pAtomic_id, $pVersion = NULL);
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atom_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * This class returns the model that the atom reflects;
+     * some atoms are self-reflective (don't refer to another domain class)
+     * but others point towards another domain class that reflect the atomic class
+     *
+     * @param int $pAtom_id
+     * @return Model_ZupalatomIF
+     */
+    public function for_atom_id ($pAtom_id);
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
