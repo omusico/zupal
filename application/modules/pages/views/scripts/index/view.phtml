@@ -8,3 +8,8 @@ $this->placeholder('page_title')->set($this->page->get_title()); ?>
 
 <?= $this->page->get_content() ?>
 
+<? if (    $user = Model_Users::current_user()):
+if ($user->can('pages_admin')):
+    echo $this->partial('edit_page.phtml', array('page_id' => $this->page->identity()));
+endif;
+endif;

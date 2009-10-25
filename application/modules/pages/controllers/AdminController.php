@@ -12,6 +12,24 @@ extends Zupal_Controller_Abstract {
         $this->_helper->layout->setLayout('admin');
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ reviseAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function reviseAction () {
+        $id = $this->_getParam('id');
+
+        switch($this->_getParam('revision', 'edit')):
+            case 'edit':
+                return $this->_forward('edit', NULL, NULL, array('id' => $id));
+            break;
+
+            case 'addchild':
+                return $this->_forward('create', NULL, NULL, array('parent' => $id));
+            break;
+            
+        endswitch;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
@@ -81,11 +99,16 @@ extends Zupal_Controller_Abstract {
 
     public function createAction()
     {
-        $parent = $this->_getParam("parent",  0 );
-        $this->view->form = new Pages_Form_Zupalpages();
-
-        $this->view->form->parent->setValue($parent);
+        $parent = $this->_getParam("parent",  $this->_getParam('id', 0) );
+        if ($parent):
+            $this->view->parent = new Pages_Model_Zupalpages($parent);
+        else:
+            $this->view->parent = NULL;
+        endif;
         
+        $this->view->form = new Pages_Form_Zupalpages();
+        $this->view->form->publish_status->setValue('created');
+        $this->view->form->parent->setValue($parent);        
     }
 
 

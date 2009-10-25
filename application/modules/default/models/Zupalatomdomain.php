@@ -50,14 +50,19 @@ abstract class Model_Zupalatomdomain
         return $this->get_atom($this->get_atomic_id())->get_model_class();
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param $pAtomic_id
-     * @return Model_Zupalatom
-     */
-    public function get_atom ($pAtomic_id, $pVersion = NULL) {
-        return Model_Zupalatoms::getInstance()->get_atom($pAtomic_id, $pVersion);
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    protected $_atom = NULL;
+    function get_atom($pReload = FALSE) {
+        if (!$this->get_atomic_id(FALSE)):
+            $this->_atom = new Model_Zupalatoms();
+            $this->_atom->save();
+        elseif ($pReload || is_null($this->_atom)):
+        // process
+            $this->_atom = Model_Zupalatoms::getInstance()->get_atom($this->get_atomic_id());
+        endif;
+        return $this->_atom;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ /*/
@@ -94,4 +99,13 @@ abstract class Model_Zupalatomdomain
         throw new Exception(__METHOD__ . ' not implemented');
     }  
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function save () {
+        $this->get_atom($this->get_atomic_id())->save();
+        parent::save();
+    }
 }

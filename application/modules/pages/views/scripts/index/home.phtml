@@ -1,3 +1,6 @@
 <?
-$this->placeholder('title')->set('');
+
+echo $this->action('view', 'index', 'pages', array('id' => $this->page->identity()));
+
+
 

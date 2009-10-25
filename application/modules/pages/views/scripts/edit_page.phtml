@@ -1,0 +1,20 @@
+<style>
+    #edit_pages {
+        border: 1px solid #999;
+    }
+
+    #edit_pages dt,
+    #edit_pages dd
+    {
+        width: auto;
+        display: inline-block;
+    }
+
+</style>
+
+<fieldset id="edit_pages">
+    <legend>
+        Edit Page
+    </legend>
+    <?= new Pages_Form_EditCP($this->page_id) ?>
+</fieldset>

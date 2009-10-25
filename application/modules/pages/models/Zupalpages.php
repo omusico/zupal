@@ -2,7 +2,7 @@
 
 class Pages_Model_Zupalpages
 extends Model_Zupalatomdomain
-// implements Model_ZupalatomIF
+implements Model_ZupalatomIF
 {
 
     private static $_instance = 'zupal_pages';
@@ -23,7 +23,10 @@ extends Model_Zupalatomdomain
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_atomic_id (){
+    public function get_atomic_id ($pSpawn = TRUE){
+        if (!$this->atomic_id && $pSpawn):
+            $this->get_atom();
+        endif;
         return $this->atomic_id;
     }
 

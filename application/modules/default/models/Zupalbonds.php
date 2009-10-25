@@ -19,7 +19,6 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
             return $out;
     }
 
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;
@@ -51,7 +50,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
             throw new Exception(__METHOD__ . ': bad id passed: ' . print_r($pAtom, 1));
         endif;
 
-        $params = array('to_atom_id' => $pAtom);
+        $params = array('to_atom' => $pAtom);
         if ($pType):
             $params['type'] = $pType;
         endif;
