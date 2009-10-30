@@ -55,7 +55,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
             $params['type'] = $pType;
         endif;
 
-        return $this->_as($this->find($params, 'rank'), $pResultType . '_to');
+        return $this->_as($this->find($params, 'rank'), $pResultType);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds_to @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -88,14 +88,16 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
      * @return variant
      */
     public function _as ($pData, $pResultType = 'record') {
-        switch ($pResultType):            
+        switch ($pResultType):
+            case 'from_atom':
             case 'atom_from':
                 $out = array();
                 foreach($pData as $d):
                     $out[] = $d->from_atom();
                 endforeach;
             break;
-                
+
+            case 'to_atom':
             case 'atom_to':
                 $out = array();
                 foreach($pData as $d):
@@ -103,8 +105,6 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
                 endforeach;
             break;
             case 'record':
-            case 'record_from':
-            case 'record_to':
             default:                  
                 $out = $pData;
             break;
@@ -115,12 +115,23 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ from_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @return Model_ZupalatomIF
      */
     public function from_atom () {
         $t = $this->from_model_class;
         $m = new $t(Zupal_Domain_Abstract::STUB);
-        return $m->for_atomic_id($this->from_atom);
+        return $m->for_atom_id($this->from_atom);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ to_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Model_ZupalatomIF
+     */
+    public function to_atom () {
+        $t = $this->to_model_class;
+        $m = new $t(Zupal_Domain_Abstract::STUB);
+        return $m->for_atom_id($this->to_atom);
     }
 }
 

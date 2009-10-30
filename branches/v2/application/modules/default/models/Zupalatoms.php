@@ -49,7 +49,17 @@ implements  Model_ZupalatomIF {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_atomic_id () { return $this->atomic_id; }
+    public function get_atomic_id () {
+        if (!$this->atomic_id):
+            $sql = 'SELECT max(atomic_id) + 1 FROM ' . $this->table()->tableName();
+            $this->atomic_id = $this->table()->getAdapter()->fetchOne($sql);
+            $this->save();
+        endif;
+        return $this->atomic_id;
+
+    }
+
+    public function set_atomic_id($pValue) { $this->atomic_id = $pValue; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -64,7 +74,7 @@ implements  Model_ZupalatomIF {
 
     public function get_atom ($pAtomic_id, $pVersion = NULL) {
         if (empty($pVersion)):
-            return Model_Zupalatoms::latest($pAtomic_id);
+            return self::latest($pAtomic_id);
         else:
             return $this->find(
             array('atomic_id' => $pAtomic_id,

@@ -2,10 +2,8 @@
 
 class Pages_Model_Zupalpages
 extends Model_Zupalatomdomain
-implements Model_ZupalatomIF
+//implements Model_ZupalatomIF
 {
-
-    private static $_instance = 'zupal_pages';
 
     public function tableClass()
     {
@@ -23,11 +21,12 @@ implements Model_ZupalatomIF
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_atomic_id ($pSpawn = TRUE){
-        if (!$this->atomic_id && $pSpawn):
-            $this->get_atom();
-        endif;
+    public function get_atomic_id (){
         return $this->atomic_id;
+    }
+
+    public function set_atomic_id($pValue){
+        $this->atomic_id = $pValue;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -42,18 +41,18 @@ implements Model_ZupalatomIF
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    private static $_Instance = NULL;
+    private static $_instance = NULL;
     /**
      *
      * @param boolean $pReload
      * @return Pages_Model_Zupalpages
      */
     public static function getInstance($pReload = FALSE) {
-        if ($pReload || is_null(self::$_Instance)):
+        if ($pReload || is_null(self::$_instance)):
         // process
-            self::$_Instance = new self();
+            self::$_instance = new self();
         endif;
-        return self::$_Instance;
+        return self::$_instance;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ publish_status @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -67,6 +66,14 @@ implements Model_ZupalatomIF
         endif;
         return $this->_publish_status;
     }
-
+    
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**    
+     * @return string
+     *  
+     */
+    public function get_model_class () {
+        return get_class($this);
+    }
 }
 

@@ -19,5 +19,14 @@ function page_grid_delete_formatter(id)
 {
     return '<a href="/admin/pages/delete/id/' + id + '"><img src="/images/icons/x.gif" border="0" width="20" height="20"></a>';
 }
+function page_grid_view_formatter(id)
+{
+    return '<a href="/page/' + id + '"><img src="/images/icons/view.gif" border="0" width="20" height="20"></a>';
+}
 
+function page_grid_addlinked_formatter(id)
+{
+    return '<a href="/admin/pages/addlinked/id/' + id + '"><img src="/images/icons/add.gif" border="0" width="20" height="20"></a>';
+
+}
 <? $this->headScript()->captureEnd();

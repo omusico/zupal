@@ -7,6 +7,15 @@ $this->placeholder('page_title')->set($this->page->get_title()); ?>
 <hr />
 
 <?= $this->page->get_content() ?>
+<hr />
+<? if ($this->pages): ?>
+<ul>
+    <? foreach ($this->pages as $page): ?>
+    <li><?= $page->get_title() ?></li>
+    <? endforeach; ?>
+</ul>
+
+<? endif; ?>
 
 <? if (    $user = Model_Users::current_user()):
 if ($user->can('pages_admin')):

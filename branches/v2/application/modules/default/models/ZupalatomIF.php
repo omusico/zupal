@@ -25,7 +25,9 @@ extends Zupal_Domain_IDomain
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function get_atomic_id ();
-
+    
+    public function set_atomic_id($pValue);
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -42,6 +44,7 @@ extends Zupal_Domain_IDomain
      * @param int $pAtom_id
      * @return Model_ZupalatomIF
      */
+     
     public function for_atom_id ($pAtom_id);
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -55,7 +58,7 @@ extends Zupal_Domain_IDomain
         Model_ZupalatomIF $bond_atom = NULL
         );
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ bond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ bond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ *
     /**
      *
      * @param string $pType, $pSingular = TRUE, $pTarget
@@ -66,7 +69,7 @@ extends Zupal_Domain_IDomain
         $pSingular = TRUE,
         Model_ZupalatomIF $bond_atom = NULL);
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ unbond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ unbond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ *
     /**
      *
      * @param id | Model_ZupalatomIF $pTarget
