@@ -94,7 +94,7 @@ extends Zupal_Controller_Abstract {
             $params['error'] = 'cannot save page';
             return $this->_forward('edit', NULL, NULL, $params);
         endif;
-        $this->_forward('view', 'index', NULL, $this->_getParam('id'));
+        $this->_forward('view', 'index', NULL, array('id' =>  $form->get_domain()->identity()));
     }
 
     public function createAction()
