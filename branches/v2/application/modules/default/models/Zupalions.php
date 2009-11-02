@@ -9,7 +9,12 @@ class Model_Zupalions extends Zupal_Domain_Abstract
     {
         return 'Model_DbTable_Zupalions';
     }
-
+/**
+ *
+ * @param string $pID
+ * @param array $pLoad_Fields
+ * @return Model_Zupalions
+ */
     public function get($pID = 'NULL', $pLoad_Fields = 'NULL')
     {
         $out = new self($pID);

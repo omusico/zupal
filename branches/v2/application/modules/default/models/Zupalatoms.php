@@ -312,7 +312,7 @@ implements  Model_ZupalatomIF {
             extract($key);
         endif;
 
-        $params = array('key' => $key, 'value' => $value, 'atom_id' => $this->get_atomic_id());
+        $params = array('key' => $key, 'value' => $value, 'atomic_id' => $this->get_atomic_id());
 
         if (!$ion = Model_Zupalions::getInstance()->findOne($params)):
             $ion = Model_Zupalions::getInstance()->get(NULL, $params);
@@ -321,6 +321,24 @@ implements  Model_ZupalatomIF {
         return $ion;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pName
+     * @return Model_Zupalions
+     */
+    public function get_ion ($pName, $pValue = FALSE) {
+        $params = array('atomic_id' => $this->atomic_id(), 'name' => $pName);
+        $ion = Model_Zupalions::getInstance()->findOne($params);
+        if (!$ion->isSaved()):
+            return NULL;
+        elseif ($pValue):
+            return $ion->value;
+        else:
+            return $ion;
+        endif;
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

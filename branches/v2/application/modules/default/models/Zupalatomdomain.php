@@ -155,4 +155,25 @@ abstract class Model_Zupalatomdomain
         endif;
         return $ion;
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pName
+     * @param boolean $pValue
+     *     determines the return type -- domain or scalar.
+     * @return Model_Zupalions
+     */
+    public function get_ion ($pName, $pValue = FALSE) {
+        $params = array('atomic_id' => $this->atomic_id(), 'name' => $pName);
+        $ion = Model_Zupalions::getInstance()->findOne($params);
+        if (!$ion->isSaved()):
+            return NULL;
+        elseif ($pValue):
+            return $ion->value;
+        else:
+            return $ion;
+        endif;
+    }
+
 }
