@@ -1,8 +1,8 @@
 <?
 // note -- for_atomic_id is not implemented. 
 abstract class Model_Zupalatomdomain
- extends Zupal_Domain_Abstract
- implements Model_ZupalatomIF
+    extends Zupal_Domain_Abstract
+    implements Model_ZupalatomIF
 {
     
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ title @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -64,7 +64,6 @@ abstract class Model_Zupalatomdomain
             $this->_atom->save();
             $this->set_atomic_id($this->_atom->get_atomic_id());
         elseif ($pReload || is_null($this->_atom)):
-        // process
             $this->_atom = Model_Zupalatoms::getInstance()->get_atom($this->get_atomic_id());
         endif;
         return $this->_atom;
@@ -134,5 +133,26 @@ abstract class Model_Zupalatomdomain
     public function save () {
         $this->get_atom()->save();
         parent::save();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pKey
+     * @param string $pValue = NULL
+     * @return Model_Zupalions
+     */
+    public function add_ion ($name, $value = NULL) {
+        if (is_array($name)):
+            extract($name);
+        endif;
+
+        $params = array('name' => $name, 'value' => $value, 'atomic_id' => $this->get_atomic_id());
+
+        if (!$ion = Model_Zupalions::getInstance()->findOne($params)):
+            $ion = Model_Zupalions::getInstance()->get(NULL, $params);
+            $ion->save();
+        endif;
+        return $ion;
     }
 }

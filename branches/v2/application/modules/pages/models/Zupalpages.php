@@ -2,7 +2,7 @@
 
 class Pages_Model_Zupalpages
 extends Model_Zupalatomdomain
-//implements Model_ZupalatomIF
+implements Model_ZupalatomIF
 {
 
     public function tableClass()
