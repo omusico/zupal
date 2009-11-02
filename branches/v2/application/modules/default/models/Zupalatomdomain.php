@@ -165,9 +165,9 @@ abstract class Model_Zupalatomdomain
      * @return Model_Zupalions
      */
     public function get_ion ($pName, $pValue = FALSE) {
-        $params = array('atomic_id' => $this->atomic_id(), 'name' => $pName);
+        $params = array('atomic_id' => $this->get_atomic_id(), 'name' => $pName);
         $ion = Model_Zupalions::getInstance()->findOne($params);
-        if (!$ion->isSaved()):
+        if ((!$ion) || (!$ion->isSaved())):
             return NULL;
         elseif ($pValue):
             return $ion->value;

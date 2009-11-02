@@ -162,7 +162,18 @@ extends Zupal_Domain_Abstract {
         endif;
         return $this->_info;
     }
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ config_node @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *  @TODO: apply this method elsewhere. 
+     * @param string $pKey
+     * @return array
+     */
+    public function config_node ($pKey) {
+        $path = $this->path_exists(self::CONFIG_INFO);
+        $ini = new Zend_Config_Ini($path, $pKey);
+        $info_data = $ini->toArray();
+        return $info_data;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ info @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_load = NULL;

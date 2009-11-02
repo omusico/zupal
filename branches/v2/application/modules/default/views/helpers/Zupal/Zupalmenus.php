@@ -39,33 +39,7 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
      * @return Zend_Navigation
      */
     public function pages ($pPanel = 'main') {
-        $pages = array();
-        
-        $req = Zend_Controller_front::getInstance()->getRequest();
-        $active_module = $req->getModuleName();
-        $active_controller = $req->getControllerName();
-            
-        $sql = array('(required = 1) OR (active = 1)', 'sort_by');
-        $modules = Administer_Model_Modules::getInstance()->find_from_sql($sql, TRUE, FALSE);
-
-        foreach($modules as $module):
-            if (!$module->active) continue;
-
-            $module->load_menus();
-            $module_names[] = '"' . $module->folder . '"';
-        endforeach;
-
-        $mm = Model_Menu::getInstance();
-        foreach($mm->find(array('panel' => $pPanel, 'parent' => 0), 'sort_by') as $menu):
-            if ($new_page = $menu->page($active_module, $active_controller)):
-               $pages[] = $new_page;
-            endif;
-        endforeach;
-        $router = Zend_Controller_Front::getInstance()->getRouter();
-        $fake_route = new Zend_Controller_Request_Http();
-        $fake_route->setRequestUri('/');
-        $router->route($fake_route);
-        return new Zend_Navigation($pages);
+        return Model_Menu::getInstance()->pages($pPanel);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -171,23 +171,33 @@ class Administer_Lib_Meta_Domain
      * @return <type>
      */
     public function create_table () {
-
-	$file = new Zend_CodeGenerator_Php_File(array(
-	    'classes' => array(
-		new Zend_CodeGenerator_Php_Class(array(
-		    'name'    => $this->table_class(),
-		    'extendedClass' => 'Zupal_Table_Abstract',
-		    'properties' => array(
-		    array(
-			'name' => '_name',
-			'visibility' => 'protected',
-			'defaultValue' => $this->get_table()
-		    ))
-		))
-	    )));
-
-	$this->set_table_code($file->generate());
-
+        $properties = array(
+            array(
+            'name' => '_name',
+            'visibility' => 'protected',
+            'defaultValue' => $this->get_table()
+            )
+            );
+        $methods = array(
+            new Zend_CodeGenerator_Php_Method(
+            array(
+            'name' => 'create_table',
+            'body' => " \$sql = <<" . "<SQL\n\nSQL;\n\$this->getAdapter()->query(\$sql);;",
+            ))
+            );
+            
+        $file = new Zend_CodeGenerator_Php_File(array(
+            'classes' => array(
+            new Zend_CodeGenerator_Php_Class(array(
+            'name'    => $this->table_class(),
+            'extendedClass' => 'Zupal_Table_Abstract',
+            'properties' => $properties,
+            'methods' => $methods
+            ))
+        )));
+        
+        $this->set_table_code($file->generate());
+        
         file_put_contents($this->get_table_path(), $this->get_table_code());
     }
     
