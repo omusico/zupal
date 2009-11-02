@@ -87,4 +87,12 @@ extends Zupal_Domain_IDomain
      * @return Model_Zupalions
      */
     public function add_ion ($pKey, $pValue = NULL);
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @param string $pName
+     * @param boolean $pValue
+     *
+     */
+    public function get_ion ($pName, $pValue = FALSE);
 }

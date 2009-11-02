@@ -29,6 +29,34 @@ implements Model_ZupalatomIF
         $this->atomic_id = $pValue;
     }
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_content() {
+        $content = parent::get_content();
+        if (!$content):
+            if ($path = $this->get_ion('content_file', 1)):
+                $content = file_get_contents($path);
+                $this->set_content($value);
+                return $value;
+            endif;
+        endif;
+        return $content;
+    }
+
+    public function set_content($pValue) {
+        parent::set_content($pValue);
+
+        if ($path = $this->get_ion('content_file', 1)):
+            file_put_contents($path, $pValue);
+        endif;
+    }
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

@@ -8,7 +8,7 @@ if ($ion = Model_Zupalions::getInstance()->findOne($pParams)):
 else:
     $page = new Pages_Model_Zupalpages();
     $module = Administer_Model_Modules::getInstance()->get('ultimatum');
-    $page_path = $module->module_path('pages/intro.html');
+    $page_path = $module->module_path('pages/rules.html');
     $pc = file_get_contents($page_path);
     $page->set_content($pc);
     $page->set_title('Ultimatum!');
