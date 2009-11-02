@@ -7,7 +7,7 @@ extends Zupal_Domain_Abstract {
  * @see Zupal_Formset_Domain::get()
  *
  * @param unknown_type $pID
- * @return Zupal_Domain_Abstract
+ * @return Administer_Model_Modules
  */
     public function get ($pID = null, $pLoad_Fields = NULL) {
         $out = new self($pID);
@@ -23,7 +23,7 @@ extends Zupal_Domain_Abstract {
     /**
      *
      * @param boolean $pReload
-     * @return Zupal_Domain_Abstract
+     * @return Administer_Model_Modules
      */
     static function getInstance($pReload = FALSE) {
         if ($pReload || is_null(self::$_Instance)):
@@ -243,6 +243,6 @@ extends Zupal_Domain_Abstract {
      * @return boolean
      */
     public function is_loaded () {
-        return $this->loaded ? TRUE : FALSE;
+        return $this->resource_loaded ? TRUE : FALSE;
     }
 }

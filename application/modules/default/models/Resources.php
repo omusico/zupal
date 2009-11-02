@@ -44,7 +44,30 @@ implements Zend_Acl_Resource_Interface
     {
         return $this->identity();
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_resources @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pResources
+     * @return void
+     */
+    public static function add_resources ($pResources, $pModule, $pLoaded) {
+        foreach($pResources as $name => $res):
+            $key = $pModule . '_' . $name;
+            if ($old_resource = self::getInstance()->get($key)):
+                if ($old_resource->is_saved()):
+                    continue;
+                endif;
+            endif;
+            $resource = new self();
+
+            $resource->resource_id = $key;
+            $resource->title = $res['title'];
+            $resource->module = $pModule;
+            $resource->rank = (isset($res['rank'])) ? $res['rank'] : 1;
+            $resource->save();
+        endforeach;
+    }
 }
 
 

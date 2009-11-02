@@ -53,7 +53,7 @@ implements  Model_ZupalatomIF {
         if (!$this->atomic_id):
             $sql = 'SELECT max(atomic_id) + 1 FROM ' . $this->table()->tableName();
             $this->atomic_id = $this->table()->getAdapter()->fetchOne($sql);
-            $this->save();
+            parent::save();
         endif;
         return $this->atomic_id;
 
@@ -300,4 +300,34 @@ implements  Model_ZupalatomIF {
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pKey
+     * @param string $pValue = NULL
+     * @return Model_Zupalions
+     */
+    public function add_ion ($key, $value = NULL) {
+        if (is_array($key)):
+            extract($key);
+        endif;
+
+        $params = array('key' => $key, 'value' => $value, 'atom_id' => $this->get_atomic_id());
+
+        if (!$ion = Model_Zupalions::getInstance()->findOne($params)):
+            $ion = Model_Zupalions::getInstance()->get(NULL, $params);
+            $ion->save();
+        endif;
+        return $ion;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function save () {
+       parent::save();
+       $this->get_atomic_id();
+    }
 }

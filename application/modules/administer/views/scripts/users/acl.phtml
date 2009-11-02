@@ -33,6 +33,7 @@ $this->placeholder('page_title')->set('Permissions');
 
         );
     endforeach;
+    $rows = array('row_0' => $columns);
 ob_start(); ?>
 dojo.xhrPost({
     url: '/administer/users/aclset',
@@ -44,7 +45,7 @@ dojo.xhrPost({
 <!-- DOJO WRITE STORE -->
 <?= $this->dojowritestore('acl_store', $this->baseUrl() . '/administer/users/aclstore', $write) ?>
 <!-- END DOJO WRITE STORE -->
-<?= $this->dojogrid('acls', 'acl_store', $columns, 'resource_id') ?>
+<?= $this->dojogrid('acls', 'acl_store', $rows, 'resource_id') ?>
 
 <a href="<?= $this->baseUrl() ?>/administer/users/resourcesnew" class="linkbutton">Add Resource</a>
 <a href="<?= $this->baseUrl() ?>/administer/users/rolenew" class="linkbutton">Add Role</a>

@@ -77,5 +77,14 @@ extends Zupal_Domain_IDomain
      */
     public function unbond ($pTarget, $pType = NULL,
         Model_ZupalatomIF $bond_atom = NULL);
-    
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pKey
+     * @param string $pVallue
+     * @return Model_Zupalions
+     */
+    public function add_ion ($pKey, $pValue = NULL);
 }

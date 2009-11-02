@@ -49,6 +49,8 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         $modules = Administer_Model_Modules::getInstance()->find_from_sql($sql, TRUE, FALSE);
 
         foreach($modules as $module):
+            if (!$module->active) continue;
+
             $module->load_menus();
             $module_names[] = '"' . $module->folder . '"';
         endforeach;
@@ -66,4 +68,12 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         return new Zend_Navigation($pages);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return void
+     */
+    public function save () {
+        return parent::save();
+    }
 }

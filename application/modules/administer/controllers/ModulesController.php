@@ -25,7 +25,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
         $this->view->modules = $modules = $m->findAll('folder');
 
         foreach($modules as $module):
-            if ($module->is_active() != $module->is_loaded()):
+            if ($module->is_active()  && (! $module->is_loaded())):
                 $this->_load($module);
             endif;
         endforeach;
@@ -33,19 +33,33 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
 
     private function _load(Administer_Model_Modules $m)
     {
-        $load_data = $m->get_load();
-        if ($load_data):
-            foreach($load_data as $class => $options):
-                switch($class):
-                    case 'resource':
-                        Model_Resources::getInstance()->load($options, $m->folder, $m->is_active());
-                    break;
+        try {
+            $load_data = $m->get_load();
+            if ($load_data):
+                foreach($load_data as $class => $options):
+                    switch($class):
+                        case 'resource':
+                        case 'resources':
+                            Model_Resources::getInstance()->add_resources($options, $m->folder, $m->is_active());
+                        break;
 
-                    default:
-                        throw new Exception("can't load resource $class");
-                endswitch;
-            endforeach;
-        endif;
+                        case 'route':
+                        case 'routes':
+                            Model_Zupalroutes::getInstance()->add_routes($options, $m->folder, $m->is_active());
+                        break;
+
+                        default:
+                            throw new Exception("can't load resource $class");
+                    endswitch;
+                endforeach;
+            endif;
+            $m->resource_loaded = TRUE;
+            $m->save();
+        } catch(Exception $e)
+        {
+            error_log(__METHOD__ . ': error loading ' . $m->folder);
+            throw $e;
+        }
     }
 
     public function activateAction() {
