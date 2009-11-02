@@ -1,6 +1,8 @@
 <?
 $this->placeholder('page_title')->set('Create Page');
 
+$this->headScript()->appendFile($this->baseUrl() . '/ckeditor/ckeditor.js');
+
 if ($this->parent):
     echo '<h2>Create under ', $this->parent->get_title(), '</h2>';
 endif;

@@ -237,6 +237,41 @@ class Model_Menu extends Zupal_Domain_Abstract {
         return $page;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pPanel = 'main'
+     * @return Zend_Navigation
+     */
+    public function pages ($pPanel = 'main') {
+        $pages = array();
+
+        $req = Zend_Controller_front::getInstance()->getRequest();
+        $active_module = $req->getModuleName();
+        $active_controller = $req->getControllerName();
+
+        $sql = array('(required = 1) OR (active = 1)', 'sort_by');
+        $modules = Administer_Model_Modules::getInstance()->find_from_sql($sql, TRUE, FALSE);
+
+        foreach($modules as $module):
+            if (!$module->active) continue;
+
+            $module->load_menus();
+            $module_names[] = '"' . $module->folder . '"';
+        endforeach;
+
+        foreach($this->find(array('panel' => $pPanel, 'parent' => 0), 'sort_by') as $menu):
+            if ($new_page = $menu->page($active_module, $active_controller)):
+                $pages[] = $new_page;
+        endif;
+        endforeach;
+        $router = Zend_Controller_Front::getInstance()->getRouter();
+        $fake_route = new Zend_Controller_Request_Http();
+        $fake_route->setRequestUri('/');
+        $router->route($fake_route);
+        return new Zend_Navigation($pages);
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pages_tree @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

@@ -17,11 +17,10 @@ CREATE TABLE `zupal_pages` (
   `atomic_id` int(11) NOT NULL,
   `resource` varchar(100) collate utf8_bin NOT NULL,
   `author` int(11) NOT NULL,
-  `publish_status` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
-
-INSERT INTO `zupal_pages` VALUES(1, 1, '', 0, 100);
+  `publish_status` varchar(45) collate utf8_bin NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `atomic_id_2` (`atomic_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31 ;
 SQL_BLOCK;
         $this->getAdapter()->query($sql);
     }
