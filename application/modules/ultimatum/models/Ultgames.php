@@ -3,7 +3,7 @@
 class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
 {
 
-    private static $_Instance = 'ult_games';
+    private static $_Instance;
 
     public function tableClass()
     {
@@ -54,6 +54,16 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
     public function turn ($pAs_int = FALSE) {
         $turn = Ultimatum_Model_Ultgameturns::getInstance()->last_turn($this);
         return $pAs_int ? $turn->turn : $turn;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Model_User $pUser
+     * @return Ultimatum_Model_Ultplayer
+     */
+    public function add_user ($pUser) {
+        return Ultimatum_Model_Ultplayer::for_user_game($pUser, $this);
     }
 }
 

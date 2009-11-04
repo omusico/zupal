@@ -83,16 +83,14 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
      * @param string $pProperty
      * @return int
      */
-    public function get_size ($pProperty = NULL) {
-        
-        $params = array(
-            'group' => $this->group,
-            'game' => $this->game,
-            'activity' => $pProperty);
+    public function get_size ($pProperty) {
+        $game = $this->get_game();
 
-        $sizes = Ultimatum_Model_Ultplayergroupsize::getInstance();
-
-        $select =
+        if ($game):
+            return $this->get_group()->get_size($game, $pProperty);
+        else:
+            return 0;
+        endif;
     }
 
 }

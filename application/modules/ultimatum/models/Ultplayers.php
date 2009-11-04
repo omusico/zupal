@@ -7,7 +7,7 @@ class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
 
     public function tableClass()
     {
-        return 'Ultimatum_Model_DbTable_Ultplayer';
+        return 'Ultimatum_Model_DbTable_Ultplayers';
     }
 /**
  *
@@ -50,7 +50,7 @@ class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
         if (is_numeric($pGame)):
             $pGame = Ultimatum_Model_Ultgames::getInstance()->get($pGame);
         endif;
-        
+        //@TODO: better validation
 
         if (!$pUser || (!$pUser->is_saved())):
             throw new Exception(__METHOD__ . ': no user passed');
@@ -108,12 +108,18 @@ class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
      * @return scan
      */
     public function full_scan_group (Ultimatum_Model_Groups $pGroup) {
+        $scan = new Ultimatum_Model_Ultplayergroupknowledge();        
+        return $scan->full_scan($pGroup, $this);
+    }
 
-        $scan = new Ultimatum_Model_Ultplayergroupknowledge();
-        $scan->set_group($pGroup);
-        $scan->scan_full();
-        $scan->save();
-        return $scan;
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __call @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pMethod, $pArgs
+     * @return <type>
+     */
+    public function __call ($pMethod, $pArgs) {
+        return $this->get_game()->{$pMethod}($pArgs);
     }
 }
 

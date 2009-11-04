@@ -38,32 +38,24 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         if ($pPlayer) $this->set_player($Player);
         
         $game = $this->get_game();
+        $group = $this->get_group();
 
         foreach(Ultimatum_Model_Ultgroups::$_properties as $field):
             $scan_field = "group_$field";
             $this->$scan_field = $game->$field;
+
+            $size_field = "{$field}_size";
+            $this->$size_field = $group->get_size($game, $field);
         endforeach;
 
-        $params = array(
-            'game' => $game->identity(),
-            'group' => $this->group
-        );
-
-        if ($game_group = Ultimatum_Model_Ultplayergroup::getInstance()->find($params)):
-            $this->group_player = $game_group->player;
-            foreach(Ultimatum_Model_Ultgroups::$_properties as $field):
-                $scan_field = "{$field}_size";
-                $this->$scan_field = $game_group->get_size($field);
-            endforeach;
-        endif;
-        
-        return $out;
+        $this->save();
+        return $this;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function set_group($pValue) {
-        if ($pValue instanceof Ultimatum_Model_DbTable_Ultgroups):
+        if ($pValue instanceof Ultimatum_Model_Ultgroups):
             $pValue = $pValue->identity();
         elseif(!is_numeric($pValue)):
             throw new Exception(__METHOD__ . ': bad value passed : ' . print_r($pValue, 1));
@@ -75,10 +67,15 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_group = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Ultimatum_Model_Ultgroups
+     */
     function get_group($pReload = FALSE) {
         if ($pReload || is_null($this->_group)):
         // process
-            $this->_group = Ultimatum_Model_DbTable_Ultgroups::getInstance()->get($this->group);
+            $this->_group = Ultimatum_Model_Ultgroups::getInstance()->get($this->group);
         endif;
         return $this->_group;
     }
