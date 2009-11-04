@@ -51,7 +51,7 @@ implements  Model_ZupalatomIF {
 
     public function get_atomic_id () {
         if (!$this->atomic_id):
-            $sql = 'SELECT max(atomic_id) + 1 FROM ' . $this->table()->tableName();
+            $sql = 'SELECT max(atomic_id) + 1 FROM zupal_atoms;';
             $this->atomic_id = $this->table()->getAdapter()->fetchOne($sql);
             parent::save();
         endif;
@@ -348,4 +348,31 @@ implements  Model_ZupalatomIF {
        parent::save();
        $this->get_atomic_id();
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_status() { return $this->status; }
+
+    public function set_status($pValue) {
+        $this->status = $pValue;
+        $this->save();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ author @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_author() { return $this->author; }
+
+    public function set_author($pValue) {
+        $this->author = $pValue;
+        $this->save();
+   }
+
 }

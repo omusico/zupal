@@ -133,18 +133,10 @@ class Administer_Lib_Meta_Domain
 			    )),
 			new Zend_CodeGenerator_Php_Method(
 			    array(
-			    'name' => 'get',
-			    'body' => '     $out = new self($pID);
-    if ($pLoad_Fields && is_array($pLoad_Fields)):
-        $out->set_fields($pLoad_Fields);
-    endif;
-    return $out;',
-			    'parameters' => array(
-                                array('name' => 'pID', 'defaultValue' => 'NULL'),
-                                array('name' => 'pLoad_Fields', 'defaultValue' => 'NULL')
-                            )
-			    ))
-			),
+			    'name' => 'getInstance',
+                            'static' => true,
+			    'body' => " return '{$this->table_class()}';",
+			    )),
 			new Zend_CodeGenerator_Php_Method(
 			    array(
 			    'name' => 'getInstance',
@@ -155,6 +147,20 @@ class Administer_Lib_Meta_Domain
     endif;
     return self::$_Instance;',
 			    )),
+			new Zend_CodeGenerator_Php_Method(
+			    array(
+			    'name' => 'get',
+			    'body' => '     $out = new self($pID);
+    if ($pLoad_Fields && is_array($pLoad_Fields)):
+        $out->set_fields($pLoad_Fields);
+    endif;
+    return $out;',
+			))),
+			    'parameters' => array(
+                                array('name' => '_instance', 'defaultValue' => 'NULL', 'static' => true ),
+                                array('name' => 'pID', 'defaultValue' => 'NULL'),
+                                array('name' => 'pLoad_Fields', 'defaultValue' => 'NULL')
+                            )
 		    )),
 		)
 	    ));

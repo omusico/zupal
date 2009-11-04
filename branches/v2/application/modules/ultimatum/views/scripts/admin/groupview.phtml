@@ -1,0 +1,29 @@
+<?
+$this->placeholder('page_title')->set('Group &quot;' . $this->group->get_title() .'&quot;');
+?>
+<?= $this->group->get_lead() ?>
+<blockquote>
+   <?= $this->group->get_content() ?>
+</blockquote
+<hr>
+<table border="1">
+    <tr>
+        <th>Offense</th>
+        <th>Defense</th>
+        <th>Network</th>
+        <th>growth</th>
+    </tr>
+    <tr>
+        <td><?= $this->group->offense(TRUE) ?></td>
+        <td><?= $this->group->defense(TRUE) ?></td>
+        <td><?= $this->group->network(TRUE) ?></td>
+        <td><?= $this->group->growth(TRUE) ?></td>
+</table>
+
+<span class="button_link_list">
+    <ul>
+        <li><a href="<?= $this->baseUrl() ?>/admin/ultimatum/groups">List Groups</a></li>       
+        <li><a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupedit/id/<?= $this->group->identity() ?>" >Edit</a></li>
+        <li><a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupnew">Add New Group</a></li>
+    </ul>
+</span>

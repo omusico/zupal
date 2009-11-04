@@ -40,6 +40,7 @@ public function dojogrid ($pID, $pStore_ID = NULL,
     $this->prep_view();
     $height = 400;
     $width = 600;
+    $body = '';
     $query = array($pIdentifier => '*' );
     if ($pOptions):
         extract($pOptions);
@@ -71,6 +72,7 @@ query="<?= str_replace('"', "'", (is_string($query) ? $query : Zend_Json::encode
 		</tr>
 <? endforeach; ?>
 	</thead>
+        <?= $body ?>
 </table>
 <?
 return ob_get_clean();

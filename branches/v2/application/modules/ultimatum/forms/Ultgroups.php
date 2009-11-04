@@ -25,7 +25,7 @@ extends Zupal_Form_Abstract
 
     public function domain_fields()
     {
-        return array("id","atomic_id","resource","publish_status");
+        return array('id', "atomic_id","resource","publish_status", 'offense', 'defense', 'network', 'growth');
     }
 
     protected function get_domain_class()
@@ -57,6 +57,8 @@ extends Zupal_Form_Abstract
 
     public function save()
     {
+        parent::save();
+        
         $this->get_domain()->setTitle($this->title->getValue());
         $this->get_domain()->setLead($this->lead->getValue());
         $this->get_domain()->setContent($this->content->getValue());
