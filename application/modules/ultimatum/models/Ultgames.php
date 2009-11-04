@@ -63,7 +63,7 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
      * @return Ultimatum_Model_Ultplayer
      */
     public function add_user ($pUser) {
-        return Ultimatum_Model_Ultplayer::for_user_game($pUser, $this);
+        return Ultimatum_Model_Ultplayers::for_user_game($pUser, $this);
     }
 }
 
