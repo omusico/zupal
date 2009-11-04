@@ -46,5 +46,14 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
 
     public function set_title($pValue) { $this->title = $pValue; $this->save();}
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ turn @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function turn ($pAs_int = FALSE) {
+        $turn = Ultimatum_Model_Ultgameturns::getInstance()->last_turn($this);
+        return $pAs_int ? $turn->turn : $turn;
+    }
 }
 

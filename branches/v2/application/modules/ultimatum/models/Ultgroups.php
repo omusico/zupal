@@ -4,6 +4,7 @@ class Ultimatum_Model_Ultgroups
 extends Model_Zupalatomdomain
 {
 
+    public static $_properties = array('offense', 'defense', 'network', 'growth');
 
     public function tableClass()
     {

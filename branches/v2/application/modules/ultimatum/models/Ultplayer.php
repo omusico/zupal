@@ -83,14 +83,37 @@ class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
         return $this->_user;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_game = NULL;
+    function get_game($pReload = FALSE) {
+        if ($pReload || is_null($this->_game)):
+        // process
+            $this->_game = Ultimatum_Model_Ultgames::getInstance()->get($this->game);
+        endif;
+        return $this->_game;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ groups @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      * returns the players ownership wrapper for the groups they control.
      */
     public function groups () {
         return Ultimatum_Model_Ultplayergroup::for_player($this);
-
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ full_scan_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Ultimatum_Model_Groups $pGroup
+     * @return scan
+     */
+    public function full_scan_group (Ultimatum_Model_Groups $pGroup) {
+
+        $scan = new Ultimatum_Model_Ultplayergroupknowledge();
+        $scan->set_group($pGroup);
+        $scan->scan_full();
+        $scan->save();
+        return $scan;
+    }
 }
 
