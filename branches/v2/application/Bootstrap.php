@@ -8,7 +8,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         ));
         return $autoloader;
     }
-    
+
+    public function _initZendView () {
+
+        $this->bootstrap('view');
+        $view = $this->getResource('view');
+        $name = get_class($view);
+        Zend_Registry::set('view', $view);
+        return $view;
+    }
+
     protected function _initDefaultLoader() {
 
         $loader = Zend_Loader_Autoloader::getInstance();

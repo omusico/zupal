@@ -1,0 +1,26 @@
+<?
+$this->placeholder('page_title')->set('Play Ultimatum!');
+
+$m = Administer_Model_Modules::getInstance()->get('ultimatum');
+$pages = $m->module_path('pages');
+
+if ($this->nouser):
+    echo $this->filepage('ultima_game_nouser', "$pages/game/nouser.html");
+else:
+    echo $this->filepage('ultima_game_intro', "$pages/game/intro.html");
+endif;
+if (!$this->nouser):
+?>
+<ul>
+<? foreach($this->games as $game): ?>
+    <li><a href="<?= $this->baseUrl() ?>/ultimatum/game/run/<?= $game->identity() ?>">
+<?= $game->get_title() ?></a>
+<? endforeach; ?>
+</ul>
+<? if (count($this->games)): ?>
+<h2>... or start a new game </h2>
+<? else: ?>
+<h2>Start a new game</h2>
+<? endif; ?>
+<?= new Ultimatum_Form_Ultgames() ?>
+<? endif; ?>

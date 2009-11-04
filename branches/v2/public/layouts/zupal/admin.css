@@ -22,14 +22,32 @@ div#menu li a.visited
     text-decoration: none;
 }
 
+.button_link_list li
+{
+    link-style: none;
+    display: inline-block;
+    margin: 0.5em;
+    padding: 0px;
+}
+
+.button_link_lista,
+.button_link_list a:link,
+.button_link_list a:visited,
 
 a.linkbutton,
 a.linkbutton:link,
 a.linkbutton:visited
 {
-    background-color: #E1E1E1
+    background-color: white;
+    text-decoration: none;
+    padding: 2px;
+    display: inline-block;
+    border: 1px #999 solid;
+    font-family: Arial, sans-serif;
+    color: #006;
 }
 
+.button_link_list a:hover,
 a.linkbutton:hover
 {
     background-color: black;

@@ -96,7 +96,7 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
 
     public function groupsdeleteAction()
     {
-        $indexes = $this->_getParam("indexes",  NULL );
+        $indexes = $this->_getParam("grid_indexes",  NULL );
         foreach(explode(',', $indexes) as $index)
         {
             $group = Ultimatum_Model_Ultgroups::getInstance()->get($index);

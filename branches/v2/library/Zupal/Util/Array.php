@@ -189,14 +189,31 @@ class Zupal_Util_Array {
     endif;
     }
 
-    public static function random ($pArray, $pValues = 1) {
+    /**
+     * returns random elements from an array -- can return duplicates.
+     * @param array $pArray
+     * @param int $pValues
+     * @return array
+     */
+    public static function random (array $pArray, $pValues = 1) {
         $out = array();
         for ($i = 0; $i < $pValues; ++ $i) :
-            $keys = array_rand($pArray, 1);
-            $out[] = $pArray[array_pop($keys)];
+            $key = array_rand($pArray, 1);
+            $out[] = $pArray[$key];
         endfor;
         return $out;
     }
+
+    public static function random_set (array $pArray, $pValues = 1) {
+        $out = array();
+        $keys = array_rand($pArray, $pValues);
+        if(!is_array($key)) $key = array($key);
+        foreach($keys as $k):
+            $out[] = $pArray[$k];
+        endforeach;
+        return $out;
+    }
+
 /**
      * Test range is for situations in which being out of range is an automatic fatal error.
      *

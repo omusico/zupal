@@ -3,14 +3,15 @@
 class Ultimatum_IndexController extends Zupal_Controller_Abstract
 {
 
-    public function indexAction()    {        
+    public function indexAction()
+    {
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ rulesAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
+     * 
      */
-    public function rulesAction () {
+    public function rulesAction()
+    {
     }
 
 }

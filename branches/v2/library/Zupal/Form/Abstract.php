@@ -99,4 +99,23 @@ extends Zend_Form {
         $this->fields_to_domain();
         $this->get_domain()->save();
     }
+    
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ isValid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pParam
+     */
+    public function isValid ($pParam) {
+        return parent::isValid(stripslashes_deep($pParam));
+    }
+
+}
+
+function stripslashes_deep($value)
+{
+    $value = is_array($value) ?
+                array_map('stripslashes_deep', $value) :
+                stripslashes($value);
+
+    return $value;
 }
