@@ -51,6 +51,26 @@ abstract class Model_Zupalatomdomain
     }
 
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_status() { return $this->get_atom()->get_status(); }
+
+    public function set_status($pValue) { $this->get_atom()->set_status($pValue); }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ author @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_author() { return $this->get_atom()->get_author(); }
+
+    public function set_author($pValue) { $this->get_atom()->set_author($pValue); }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 /**
@@ -134,7 +154,22 @@ abstract class Model_Zupalatomdomain
         $this->get_atom()->save();
         parent::save();
     }
-
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return void;
+     */
+    public function delete () {
+        try {
+            $this->get_atom()->delete();
+        }
+        catch (Exception $e)
+        {
+            error_log(print_r($e, 1));
+        }
+        parent::delete();
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_ion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

@@ -274,7 +274,7 @@ class Administer_Lib_Meta_MVC {
 		    mkdir($dir, 0775, TRUE);
 		endif;
 
-		file_put_contents($view_path, "<?\n\$this->placeholder('title')->set('');\n$view_body\n");
+		file_put_contents($view_path, "<?\n\$this->placeholder('page_title')->set('');\n$view_body\n");
 	    endif;
 
 	    $exec = "diff {$this->_backup_path} {$this->controller_path()} ";

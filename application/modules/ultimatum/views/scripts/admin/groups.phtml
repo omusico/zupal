@@ -1,21 +1,65 @@
 <?
 $this->placeholder('page_title')->set('Ultimate Groups');
+$grid_options = array();
 
-        $filename = dirname(__FILE__) . '/group_grid.ini';
-        $col = new Zend_Config_Ini($filename, 'columns');
-        $this->columns = $col->toArray();
+$filename = dirname(__FILE__) . '/group_grid.ini';
+$col = new Zend_Config_Ini($filename, 'columns');
+$this->columns = $col->toArray();
+
+$this->dojo()->requireModule('dijit.form.Button');
 
 $this->headScript()->captureStart();
 ?>
-function groups_grid_edit_formatter(p)
+function group_grid_edit_formatter(p)
 {
-    return '<a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupdit/resource_id/'
+    return '<a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupedit/id/'
         + p + '"><img src="<?= $this->baseUrl() ?>/images/icons/edit.gif" height="20" width="20" border="0"/></a>';
+}
+
+function group_percent_formatter(p)
+{
+    return 10* p + '%';
+}
+
+var selected_indexes = {};
+var grid;
+
+function render_selection()
+{
+    var v = '';
+    for (p in selected_indexes)
+    {
+        v += selected_indexes[p].id + ",";
+    }
+
+    dojo.byId('selected_groups').value = v;
 }
 
 <?  $this->headScript()->captureEnd();   ?>
 
 <?= $this->dojostore('groups_store', $this->baseUrl() . '/admin/ultimatum/groupsstore') ?>
-<?= $this->dojogrid('groups', 'groups_store', $this->columns, 'id') ?>
+<?= $this->dojogrid('group_grid', 'groups_store', $this->columns, 'id', NULL, $grid_options) ?>
 
 <a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupnew" class="linkbutton">Add group</a>
+<br />
+<form id="delete_form" action="/admin/ultimatum/groupsdelete" method="post">
+    <button dojoType="dijit.form.Button">Delete Selected
+    <script type="dojo/method" event="onClick">
+        var groups = dijit.byId('group_grid').selection.getSelected();
+        var indexes = new Array();
+        for (var i = 0; i < groups.length; ++i)
+        {
+            indexes.push(groups[i].id);
+        }
+        console.debug(indexes);
+        if (indexes.length > 0)
+            {
+                alert('Delete Checked' + indexes.join(','));
+                dojo.byId('delete_grid_indexes').value = indexes.join(',');
+                dojo.byId('delete_form').submit();
+            }
+    </script>
+</button>
+        <input type="hidden" id="delete_grid_indexes" name="grid_indexes" />
+</form>
+<?= new Ultimatum_Form_Randgroups() ?>

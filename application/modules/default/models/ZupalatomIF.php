@@ -27,7 +27,29 @@ extends Zupal_Domain_IDomain
     public function get_atomic_id ();
     
     public function set_atomic_id($pValue);
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ author @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return Model_Users;
+     */
+
+    public function get_author();
+
+    public function set_author($pValue);
     
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_status();
+
+    public function set_status($pValue);
+
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
