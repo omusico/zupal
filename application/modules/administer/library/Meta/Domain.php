@@ -120,10 +120,9 @@ class Administer_Lib_Meta_Domain
 		    'extendedClass' => 'Zupal_Domain_Abstract',
 		    'properties' => array(
 		    array(
-			'name' => '_instance',
+			'name' => '_Instance',
 			'visibility' => 'private',
-                        'static' => true,
-			'defaultValue' => $this->get_table()
+                        'static' => true
 		    )),
 		    'methods' => array(
 			new Zend_CodeGenerator_Php_Method(
@@ -135,11 +134,6 @@ class Administer_Lib_Meta_Domain
 			    array(
 			    'name' => 'getInstance',
                             'static' => true,
-			    'body' => " return '{$this->table_class()}';",
-			    )),
-			new Zend_CodeGenerator_Php_Method(
-			    array(
-			    'name' => 'getInstance',
 			    'body' => '
     if ($pReload || is_null(self::$_Instance)):
     // process
@@ -150,6 +144,16 @@ class Administer_Lib_Meta_Domain
 			new Zend_CodeGenerator_Php_Method(
 			    array(
 			    'name' => 'get',
+                            'parameters' => array(
+                                array(
+                                    'name' => 'pID',
+                                    'defaultValue' => NULL
+                                ),
+                                array(
+                                    'name' => 'pLoadFields',
+                                    'defaultValue' => NULL
+                                )
+                            ),
 			    'body' => '     $out = new self($pID);
     if ($pLoad_Fields && is_array($pLoad_Fields)):
         $out->set_fields($pLoad_Fields);

@@ -72,10 +72,10 @@ extends Zupal_Domain_Abstract {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module_folders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
-     * @return <type>
+     * returns an array of the folders inside the modules path. 
+     * @return array
      */
-    public function module_folders () {
+    public static function module_folders () {
 
         $di = new DirectoryIterator(APPLICATION_PATH . '/modules');
 

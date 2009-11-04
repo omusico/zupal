@@ -6,7 +6,7 @@ error_log(print_r(get_include_path(), 1));
 <head>
 <?
     $this->zupallayoutcss('style.css', __FILE__);
-    if (1 || $this->dojo()->isEnabled()){
+    if ($this->dojo()->isEnabled()){
     $this->dojo()->setLocalPath('/scripts/dojo/dojo.js')// changing to root scripts
                  ->addStyleSheetModule('dijit.themes.tundra');
     echo $this->dojo();

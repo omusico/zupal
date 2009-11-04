@@ -150,7 +150,7 @@ implements Zupal_Domain_IDomain {
                 return;
             else:
                 throw new Exception(__METHOD__ . ': Non integer ' . print_r($pID, 1) . ' passed to ' . __CLASS__);
-        endif;
+            endif;
         endif;
         
         if ($pID):
@@ -160,7 +160,7 @@ implements Zupal_Domain_IDomain {
             else:
                 $log = Zupal_Module_Manager::getInstance()->get('people')->logger();
                 $log->error('cannot find ' . $pID . ' in ' . $this->tableClass());
-        endif;
+            endif;
         endif;
         if (!$this->_row) $this->_row = $this->table()->createRow();
     }
