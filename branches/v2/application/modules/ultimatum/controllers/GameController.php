@@ -20,9 +20,9 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             $game = new Ultimatum_Model_Ultgames();
             $game->set_title($title);
             $game->save();
-            $game->add_player($user);
+            $game->add_user($user);
             $params = array('id' => $game->identity(), 'message' => 'Created Game ' . $game->get_title());
-            $this->_forward('run', NULL, NULL, $params);
+            $this->_forward('start', NULL, NULL, $params);
         else:
             $params = array('error' => 'You must be logged in to start a game');
             $this->_forward('index', NULL, NULL, $params);
@@ -31,7 +31,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
 
     public function runAction()
     {        
-        $this->_prep();
+        if(!$this->_prep()) return;
 
         if (!count($this->view->player->groups())):
             return $this->_forward('start');
@@ -43,23 +43,23 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
      *
      */
     public function startAction () {
-        $this->_prep();
+        if (!$this->_prep()) return;
 
         //@TODO: make sure the groups are not already owned! hell is other players
         $t = Ultimatum_Model_Ultgroups::getInstance()->table();
         $sql = sprintf('SELECT %s FROM %s', $t->idField(), $t->tableName());
         $ids = $t->getAdapter()->fetchCol($sql);
 
-        $groups_ids = Zupal_Util_Array::random_set($ids, 4);
+        $group_ids = Zupal_Util_Array::random_set($ids, 4);
 
-        $groups = array();
 
         foreach($group_ids as $id):
             $groups[] = $group = Ultimatum_Model_Ultgroups::getInstance()->get($id);
-            $this->view->player->full_scan_group($group);
+            $scans[] = $this->view->player->full_scan_group($group);
         endforeach;
 
         $this->view->groups = $groups;
+        $this->view->scans = $scans;
 
 
     }
@@ -70,30 +70,36 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
      * @return void
      */
     public function _prep () {
-        if ($user = Model_Users::current_user()):
+        $user = Model_Users::current_user();
+        if (!$user):
             $params = array('error' => 'You must be logged in to run a game. ');
-            return $this->_forward('index', 'index', NULL, $params);
+            $this->_forward('index', 'index', NULL, $params);
+            return FALSE;
         endif;
 
         $id = $this->_getParam('id');
 
         if (!$id):
             $params = array('error' => 'no game selected');
-            return $this->_forward('index', NULL, NULL, $params);
+            $this->_forward('index', NULL, NULL, $params);
+            return FALSE;
         endif;
 
         $this->view->game = Ultimatum_Model_Ultgames::getInstance()->get($id);
 
         if (!$this->view->game):
             $params = array('errror' => 'Cannot find game ' . $id);
-            return $this->_forward('index', 'index', NULL, $params);
+            $this->_forward('index', 'index', NULL, $params);
+            return FALSE;
         endif;
 
         $this->view->player = Ultimatum_Model_Ultplayer::for_user_game($user, $id, FALSE);
 
         if (!$this->view->player):
             $params = array('errror' => 'You are not a player in game ' . $id);
-            return $this->_forward('index', 'index', NULL, $params);
+            $this->_forward('index', 'index', NULL, $params);
+            return FALSE;
         endif;
+        return TRUE;
     }
 }

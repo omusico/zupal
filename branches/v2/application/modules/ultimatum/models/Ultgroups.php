@@ -154,5 +154,37 @@ extends Model_Zupalatomdomain
         $letters = Zupal_Util_Array::random(self::$_alphabet, $letter_count);
         return join('. ', $letters) . '.';
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pGame, $pProperty
+     * @return <type>
+     */
+    public function get_size ($pGame, $pProperty) {
+        if ($pGame instanceof Ultimatum_Model_DbTable_Ultgames):
+            $pGame = $pGame->identity();
+        elseif (!is_numeric($pGame)):
+            throw new Exception(__METHOD__ . ' : bad value passed for game: ' . print_r($pGame, 1));
+        endif;
+
+        $sizes = Ultimatum_Model_Ultplayergroupsize::getInstance();
+
+        $select = $sizes->table()->select();
+        $select->columns(array(array('total_size' => 'SUM(size)')));
+
+        $params = array(
+            'group' => $this->identity(),
+            'game' => $pGame,
+            'activity' => $pProperty);
+
+        foreach($params as $f => $v):
+            $select->where("$f = ?", $v);
+        endforeach;
+        
+        $sql = $select->assemble();
+
+        return (int) $sizes->table()->getAdapter()->fetchOne($sql);
+    }
 }
 

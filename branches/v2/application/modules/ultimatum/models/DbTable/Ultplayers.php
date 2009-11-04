@@ -1,14 +1,14 @@
 <?php
 
-class Ultimatum_Model_DbTable_Ultplayer extends Zupal_Table_Abstract
+class Ultimatum_Model_DbTable_Ultplayers extends Zupal_Table_Abstract
 {
 
-    protected $_name = 'ult_player';
+    protected $_name = 'ult_players';
 
     public function create_table()
     {
                 $sql = <<<CT_SQL
-CREATE TABLE `ult_player` (
+CREATE TABLE `ult_playesr` (
   `id` int(11) NOT NULL auto_increment,
   `user` int(11) NOT NULL,
   `game` int(11) NOT NULL,
