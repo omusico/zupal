@@ -35,14 +35,14 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
      */
     public function full_scan ($pGroup = NULL, $pPlayer = NULL) {
         if ($pGroup) $this->set_group($pGroup);
-        if ($pPlayer) $this->set_player($Player);
+        if ($pPlayer) $this->set_player($pPlayer);
         
         $game = $this->get_game();
         $group = $this->get_group();
 
         foreach(Ultimatum_Model_Ultgroups::$_properties as $field):
             $scan_field = "group_$field";
-            $this->$scan_field = $game->$field;
+            $this->$scan_field = $group->$field;
 
             $size_field = "{$field}_size";
             $this->$size_field = $group->get_size($game, $field);
@@ -61,7 +61,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
             throw new Exception(__METHOD__ . ': bad value passed : ' . print_r($pValue, 1));
         endif;
 
-        $this->group = $pValue;
+        $this->group_id = $pValue;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -75,7 +75,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
     function get_group($pReload = FALSE) {
         if ($pReload || is_null($this->_group)):
         // process
-            $this->_group = Ultimatum_Model_Ultgroups::getInstance()->get($this->group);
+            $this->_group = Ultimatum_Model_Ultgroups::getInstance()->get($this->group_id);
         endif;
         return $this->_group;
     }
@@ -103,7 +103,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
     function get_player($pReload = FALSE) {
         if ($pReload || is_null($this->_player)):
         // process
-            $this->_player = Ultimatum_Model_Ultplayer::getInstance()->get($this->player);
+            $this->_player = Ultimatum_Model_Ultplayers::getInstance()->get($this->player);
         endif;
         return $this->_player;
     }

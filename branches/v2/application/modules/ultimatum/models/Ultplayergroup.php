@@ -50,11 +50,11 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
      * @return Ultimatum_Model_Ultplayer;
      */
     
-    public function get_player() { return Ultimatum_Model_Ultplayer::getInstance()->get($this->player); }
+    public function get_player() { return Ultimatum_Model_Ultplayers::getInstance()->get($this->player); }
     
     public function set_player($pValue) { 
         if (is_numeric($pValue)):
-            $player = Ultimatum_Model_Ultplayer::getInstance()->get($pValue); 
+            $player = Ultimatum_Model_Ultplayers::getInstance()->get($pValue); 
         elseif ($pValue instanceof Ultimatum_Model_Ultplayer):
             $player = $pValue;
         else:
@@ -72,7 +72,7 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
     function get_game($pReload = FALSE) {
         if ($pReload || is_null($this->_game)):
         // process
-            $this->_game = Ultimatum_Model_Ultplayer::getInstance()->get($this->game); ;
+            $this->_game = Ultimatum_Model_Ultplayers::getInstance()->get($this->game); ;
         endif;
         return $this->_game;
     }

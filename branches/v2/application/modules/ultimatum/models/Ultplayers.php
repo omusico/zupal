@@ -1,6 +1,6 @@
 <?php
 
-class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
+class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
 {
 
     private static $_Instance = null;
@@ -63,7 +63,7 @@ class Ultimatum_Model_Ultplayer extends Zupal_Domain_Abstract
 
         if (!$player = self::getInstance()->findOne($params)):
             if ($pSpawn):
-                $player = new Ultimatum_Model_Ultplayer();
+                $player = new Ultimatum_Model_Ultplayers();
                 $player->set_fields($params);
                 $player->save();
             endif;

@@ -162,7 +162,7 @@ extends Model_Zupalatomdomain
      * @return <type>
      */
     public function get_size ($pGame, $pProperty) {
-        if ($pGame instanceof Ultimatum_Model_DbTable_Ultgames):
+        if ($pGame instanceof Ultimatum_Model_Ultgames):
             $pGame = $pGame->identity();
         elseif (!is_numeric($pGame)):
             throw new Exception(__METHOD__ . ' : bad value passed for game: ' . print_r($pGame, 1));
@@ -170,11 +170,15 @@ extends Model_Zupalatomdomain
 
         $sizes = Ultimatum_Model_Ultplayergroupsize::getInstance();
 
-        $select = $sizes->table()->select();
-        $select->columns(array(array('total_size' => 'SUM(size)')));
+        $select = $sizes->table()->select()
+            ->from($sizes->table()->tableName(),
+                array(
+                    'SUM(size) as total_size'
+                    )
+            );
 
         $params = array(
-            'group' => $this->identity(),
+            'group_id' => $this->identity(),
             'game' => $pGame,
             'activity' => $pProperty);
 

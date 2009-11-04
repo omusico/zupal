@@ -6,7 +6,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         if ($user = Model_Users::current_user()):
             $this->view->nouser = false;
             $prop = array('user' => $user->identity());
-            $this->view->games = Ultimatum_Model_Ultplayer::getInstance()->find($prop);
+            $this->view->games = Ultimatum_Model_Ultplayers::getInstance()->find($prop);
         else:
             $this->view->nouser = true;
         endif;
@@ -93,7 +93,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             return FALSE;
         endif;
 
-        $this->view->player = Ultimatum_Model_Ultplayer::for_user_game($user, $id, FALSE);
+        $this->view->player = Ultimatum_Model_Ultplayers::for_user_game($user, $id, FALSE);
 
         if (!$this->view->player):
             $params = array('errror' => 'You are not a player in game ' . $id);
