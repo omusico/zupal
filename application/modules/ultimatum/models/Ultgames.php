@@ -35,6 +35,26 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
             return $out;
     }
 
+   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ players @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param boolean $pIDs
+     * @return
+     */
+    public function players ($pIDs) {
+        $pi = Ultimatum_Model_Ultplayers::getInstance();
+        if ($pIDs):
+            $columns = array('id');
+            $select = $pi->table()->select()
+                ->from($pi->table()->tableName(), $columns)
+                ->where('game = ?', $this->identity());
+                $sql = $select->assemble();
+                
+            return $pi->table()->getAdapter()->fetchCol($sql);
+        else:
+            return $pi->find(array('game' => $this->identity()));
+        endif;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ title @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -66,6 +86,26 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
         $player = Ultimatum_Model_Ultplayers::for_user_game($pUser, $this);
         $player->activate();
         return $player;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param boolean $pErase
+     * @return void
+     */
+    public function delete ($pErase = FALSE) {
+
+        foreach($this->players() as $player):
+            $player->delete($pErase);
+        endforeach;
+
+        if ($pErase):
+            return parent::delete();
+        endif;
+
+        $this->status = 'deleted';
+        $this->save();
     }
 }
 

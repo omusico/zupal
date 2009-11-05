@@ -3,6 +3,11 @@
 class Ultimatum_View_Helper_Groupscan
 extends Zend_View_Helper_Abstract
 {
+    public $view;
+
+    public function setView(Zend_View_Interface $view) {
+        $this->view = $view;
+    }
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ groupscan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
@@ -15,8 +20,8 @@ extends Zend_View_Helper_Abstract
         ob_start();
         ?>
 <fieldset>
-    <label><?= $group->get_title() ?> 
-        (as of turn <?= $pScan->get_game()->turn(TRUE) ?>)</label>
+    <legend><?= $group->get_title() ?>
+        (as of turn <?= $pScan->get_game()->turn(TRUE) ?>)</legend>
     <p><b><?= $group->get_lead() ?></b></p>
     <blockquote>
         <?= $group->get_content() ?>

@@ -1,13 +1,13 @@
 <?php
 
-class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
+class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
 {
 
     private static $_Instance = null;
 
     public function tableClass()
     {
-        return 'Ultimatum_Model_DbTable_Ultplayergroup';
+        return 'Ultimatum_Model_DbTable_Ultplayergroups';
     }
 
     public static function getInstance()
@@ -32,13 +32,17 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
     /**
      *
      * @param Ultimatum_Model_Ultplayer $pPlayer
-     * @return Ultimatum_Model_Ultplayergroup
+     * @return Ultimatum_Model_Ultplayergroups
      */
-    public static function for_player (Ultimatum_Model_Ultplayer $pPlayer) {
+    public static function for_player (Ultimatum_Model_Ultplayer $pPlayer, $pRoot_only = FALSE) {
         $params = array(
             'player' => $pPlayer->identity()
         );
-        $pg = self::getInstance()->find($parms);
+        if ($pRoot_only):
+            $params['controlling_group'] = 0;
+        endif;
+        
+        $pg = self::getInstance()->find($parms, 'on_turn');
 
         return $pg;
     }
@@ -72,7 +76,7 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
     function get_game($pReload = FALSE) {
         if ($pReload || is_null($this->_game)):
         // process
-            $this->_game = Ultimatum_Model_Ultplayers::getInstance()->get($this->game); ;
+            $this->_game = Ultimatum_Model_Ultgames::getInstance()->get($this->game); ;
         endif;
         return $this->_game;
     }
@@ -121,6 +125,18 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
         else:
             return 0;
         endif;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return void
+     */
+    public function save () {
+        foreach(Ultimatum_Model_Ultgroups::$_properties as $prop):
+            $this->$prop = $this->get_power($prop);
+        endforeach;
+        parent::save();
     }
 }
 

@@ -61,14 +61,18 @@ implements  Model_ZupalatomIF {
 
     public function set_atomic_id($pValue) { $this->atomic_id = $pValue; }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ model_class @@@@@@@@@@@@@@@@@@@@@@@@ */
+
     /**
-     *
-     * @return string
+     * @return class;
      */
-    public function get_model_class () {
-        return $this->model_class;
-    }
+
+    public function get_model_class() { return $this->model_class; }
+
+    public function set_model_class($pValue) { $this->model_class = $pValue; $this->save(); }
+
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -98,10 +102,10 @@ implements  Model_ZupalatomIF {
      * @param int $pAtom_id
      * @return Model_ZupalatomIF
      */
-    public function for_atom_id ($pAtom_id) {
+    public function for_atom_id ($pAtomic_id) {
         $atom = $this->get_atom($pAtomic_id);
         if (!$atom):
-            throw new exception(__METHOD__ . ': can\'t get ' . $pAtom_id);
+            throw new exception(__METHOD__ . ': can\'t get ' . $pAtomic_id);
         endif;
 
         if (!$atom->model_class || $atom->model_class = get_class($atom)):
@@ -109,7 +113,7 @@ implements  Model_ZupalatomIF {
         endif;
         $class = $atom->model_class;
         $stub = new $class;
-        $stub->for_atom_id($pAtom_id);
+        return $stub->for_atom_id($pAtomic_id);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -375,4 +379,12 @@ implements  Model_ZupalatomIF {
         $this->save();
    }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ parent @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+   /**
+    * note -- will return the parent of the LATEST VERSION of this record. 
+    * @return Model_ZupalatomIF
+    */
+   public function parent () {
+       return $this->for_atom_id($this->get_atomic_id());
+   }
 }

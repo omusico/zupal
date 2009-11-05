@@ -1,3 +1,9 @@
 <?
 $this->placeholder('page_title')->set('Ultimatum: playing game ' . $this->game->get_title());
+
+echo $this->filepage('ult_game_run', "game/run.html", NULL, 'ultimatum');
+
+foreach($this->player_groups as $pg):
+    echo ($this->networknode($pg));
+endforeach;
 ?>

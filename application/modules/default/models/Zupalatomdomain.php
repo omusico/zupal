@@ -50,6 +50,9 @@ abstract class Model_Zupalatomdomain
         return $this->get_atom()->get_model_class();
     }
 
+    public function set_model_class ($pValue) {
+        return $this->get_atom()->set_model_class($pValue);
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ status @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -80,13 +83,25 @@ abstract class Model_Zupalatomdomain
     protected $_atom = NULL;
     function get_atom($pReload = FALSE) {
         if (!$this->get_atomic_id()):
-            $this->_atom = new Model_Zupalatoms();
-            $this->_atom->save();
-            $this->set_atomic_id($this->_atom->get_atomic_id());
+            $this->_spawn_atom();
         elseif ($pReload || is_null($this->_atom)):
             $this->_atom = Model_Zupalatoms::getInstance()->get_atom($this->get_atomic_id());
+            if (!$this->_atom):
+                $this->_spawn_atom();
+            endif;
         endif;
         return $this->_atom;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _spawn_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function _spawn_atom () {
+        $this->_atom = new Model_Zupalatoms();
+        $this->_atom->set_model_class(get_class($this));
+        $this->set_atomic_id($this->_atom->get_atomic_id());
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ /*/
