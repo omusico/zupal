@@ -1,22 +1,5 @@
 <?
 $this->placeholder('page_title')->set('Ultimatum');
 
-$pParams = array('name' => 'tag',  'value' => 'ultimatum_homepage');
 
-if ($ion = Model_Zupalions::getInstance()->findOne($pParams)):
-    $page = Pages_Model_Zupalpages::getInstance()->for_atom_id($ion->get_atomic_id());
-else:
-    $page = new Pages_Model_Zupalpages();
-    $module = Administer_Model_Modules::getInstance()->get('ultimatum');
-    $page_path = $module->module_path('pages/rules.html');
-    $pc = file_get_contents($page_path);
-    $page->set_content($pc);
-    $page->set_title('Ultimatum!');
-    $page->save();
-
-    $page->add_ion($pParams);
-    $page->add_ion('content_file', $path);
-endif;
-
-$params = array('id' => $page->identity());
-echo $this->action('view', 'index', 'pages', $params);
+echo $this->filepage('ult_rules', 'rules.html', NULL, 'ultimatum');

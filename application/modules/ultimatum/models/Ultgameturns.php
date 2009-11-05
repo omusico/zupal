@@ -42,7 +42,7 @@ class Ultimatum_Model_Ultgameturns extends Zupal_Domain_Abstract
      * @return <type>
      */
     public function last_turn ($pGame) {
-        if (!is_numeric($pGame())):
+        if (!is_numeric($pGame)):
             if (!$pGame instanceof Ultimatum_Model_Ultgames):
                 throw new Exception(__METHOD__ . ': bad value passed');
             endif;

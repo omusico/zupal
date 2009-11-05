@@ -36,6 +36,22 @@ extends Model_Zupalatomdomain
         return (10 * (10 + $pOffset))/100;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ power @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return float | string
+     */
+    public static function power ($pSize, $pEff = 0, $pString = FALSE) {
+        if (is_null($pSize) || is_null($pEff)):
+            return $pString ? '(unknown)' : NULL;
+        endif;
+
+        $pSize += 100;
+        $pSize *= self::eff_factor($pEff);
+
+        return $pString ? number_format($pSize, 1) : $pSize;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private static $_Instance = NULL;
@@ -199,6 +215,21 @@ extends Model_Zupalatomdomain
         $sql = $select->assemble();
 
         return (int) $sizes->table()->getAdapter()->fetchOne($sql);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_power @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param $pGame, $pProperty
+     * @return float
+     */
+    public function get_power ($pGame, $pProperty, $pAsString = FALSE) {
+       if (!$pGame = $this->_as($pGame, 'Ultimatum_Model_Ultgames', FALSE)):
+            throw new Exception(__METHOD__ . ': bad game passed: ' . print_r($pGame, 1));
+       endif;
+
+       $size = $this->get_size($pGame, $pProperty);
+       return self::power($size, $pProperty, $pAsString);
     }
 }
 
