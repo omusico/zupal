@@ -20,8 +20,9 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             $game = new Ultimatum_Model_Ultgames();
             $game->set_title($title);
             $game->save();
-            $game->add_user($user);
-            $params = array('id' => $game->identity(), 'message' => 'Created Game ' . $game->get_title());
+            $game->add_user($user)->activate();
+            $params = array('game' => $game->identity(), 'message' => 'Created Game ' . $game->get_title());
+            
             $this->_forward('start', NULL, NULL, $params);
         else:
             $params = array('error' => 'You must be logged in to start a game');
@@ -64,6 +65,19 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
 
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ startexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function startexecuteAction () {
+        if (!$this->_prep()):
+            return;
+        endif;
+
+        $this->view->player->acquire($this->_getParam('group'));
+        
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _prep @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -77,29 +91,32 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             return FALSE;
         endif;
 
-        $id = $this->_getParam('id');
+        $game_id = $this->_getParam('game');
 
-        if (!$id):
-            $params = array('error' => 'no game selected');
-            $this->_forward('index', NULL, NULL, $params);
-            return FALSE;
+        // either actively select game or reactivate last played game
+        if ($game_id):
+            $game = Ultimatum_Model_Ultgames::getInstance()->get($game_id);
+            $player = Ultimatum_Model_Ultplayers::for_user_game($user, $game)->activate();
+        else:
+            $player = Ultimatum_Model_Ultplayers::user_active_player($user);
+            if (!$player):
+                $params = array('error' => 'cannot find active game');
+                $this->_forward('index', 'index', NULL, $params);
+                return FALSE;
+            endif;
+            $game = $player->get_game();
         endif;
+        
+        $this->view->game = $game;
 
-        $this->view->game = Ultimatum_Model_Ultgames::getInstance()->get($id);
-
-        if (!$this->view->game):
-            $params = array('errror' => 'Cannot find game ' . $id);
-            $this->_forward('index', 'index', NULL, $params);
-            return FALSE;
-        endif;
-
-        $this->view->player = Ultimatum_Model_Ultplayers::for_user_game($user, $id, FALSE);
-
-        if (!$this->view->player):
+       if (!$player):
             $params = array('errror' => 'You are not a player in game ' . $id);
             $this->_forward('index', 'index', NULL, $params);
             return FALSE;
         endif;
+
+        $this->view->player = $player;
+
         return TRUE;
     }
 }

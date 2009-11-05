@@ -1,13 +1,10 @@
 <?
 $this->placeholder('page_title')->set('Play Ultimatum!');
 
-$m = Administer_Model_Modules::getInstance()->get('ultimatum');
-$pages = $m->module_path('pages');
-
 if ($this->nouser):
-    echo $this->filepage('ultima_game_nouser', "$pages/game/nouser.html");
+    echo $this->filepage('ultima_game_nouser', "/game/nouser.html", NULL, 'ultimatum');
 else:
-    echo $this->filepage('ultima_game_intro', "$pages/game/intro.html");
+    echo $this->filepage('ultima_game_intro', "/game/intro.html", NULL, 'ultimatum');
 endif;
 if (!$this->nouser):
 ?>

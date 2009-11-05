@@ -76,7 +76,21 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
         endif;
         return $this->_game;
     }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    private $_group = NULL;
+    /**
+     *
+     * @param <type> $pReload
+     * @return Ultimatum_Model_Ultgroups
+     */
+    function get_group($pReload = FALSE) {
+        if ($pReload || is_null($this->_group)):
+        // process
+            $this->_group = Ultimatum_Model_Ultgroups::getInstance()->get($this->group_id);
+        endif;
+        return $this->_group;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -93,5 +107,20 @@ class Ultimatum_Model_Ultplayergroup extends Zupal_Domain_Abstract
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_power @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pProperty
+     * @return <type>
+     */
+    public function get_power ($pProperty) {
+        $game = $this->get_game();
+
+        if ($game):
+            return $this->get_group()->get_power($game, $pProperty);
+        else:
+            return 0;
+        endif;
+    }
 }
 

@@ -9,13 +9,14 @@ extends Zend_View_Helper_Abstract
  * @param Ultimatum_Model_Ultplayergroupknowledge $pScan
  * @return string
  */
-    public function groupscan (Ultimatum_Model_Ultplayergroupknowledge $pScan) {
-        $group = $scan->get_group();
+    public function groupscan (Ultimatum_Model_Ultplayergroupknowledge $pScan, $pContent = NULL) {
+        $group = $pScan->get_group();
 
         ob_start();
         ?>
 <fieldset>
-    <label><?= $group->get_title() ?> (as of turn <?= $pScan->get_game()->turn(TRUE) ?></label>
+    <label><?= $group->get_title() ?> 
+        (as of turn <?= $pScan->get_game()->turn(TRUE) ?>)</label>
     <p><b><?= $group->get_lead() ?></b></p>
     <blockquote>
         <?= $group->get_content() ?>
@@ -23,18 +24,19 @@ extends Zend_View_Helper_Abstract
 <table>
 <tr>
     <th>Value</th>
-    <td>Size</th>
+    <th>Size</th>
     <th>Efficiency</th>
     <th>Effect</th>
     <? foreach(Ultimatum_Model_Ultgroups::$_properties as $property): ?>
     <tr>
         <td><?= ucfirst($property) ?></td>
-        <td><?= $scan->get_size($property) ?></td>
-        <td><?= $scan->get_efficiency($property) ?></td>
-        <td><?= $scan->get_effect($property) ?></td>
+        <td><?= $pScan->get_size($property, TRUE) ?></td>
+        <td><?= $pScan->get_efficiency($property, TRUE) ?></td>
+        <td><?= $pScan->get_power($property, TRUE) ?></td>
     </tr>
     <? endforeach ?>
 </table>
+    <? if ($pContent) echo $pContent; ?>
 </fieldset>
         <?
         return ob_get_clean();

@@ -11,7 +11,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     }
 /**
  *
- * @return Ultimatum_Model_Ultplayer
+ * @return Ultimatum_Model_Ultplayers
  */
     public static function getInstance()
     {
@@ -25,7 +25,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
  *
  * @param scalar $pID
  * @param array $pLoadFields
- * @return Ultimatum_Model_Ultplayer
+ * @return Ultimatum_Model_Ultplayers
  */
     public function get($pID = 'NULL', $pLoadFields = 'NULL')
     {
@@ -36,17 +36,32 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
             return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ user_active_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Model_Users $pUser = NULL
+     * @return Ultimatum_Model_Ultplayers
+     */
+    public function user_active_player ($pUser = NULL) {
+        if (!$pUser) $pUser = Model_Users::current_user();
+
+        $params = array('user' => $pUser->identity(), 'active' => 1);
+
+        $game = self::getInstance()->findOne($params);
+
+        return $game;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param ariant $pParam
-     * @return Ultimatum_Model_Ultplayer
+     * @return Ultimatum_Model_Ultplayers
      */
     public static function for_user_game ($pUser, $pGame, $pSpawn = TRUE) {
         if(is_numeric($pUser)):
             $pUser = Model_Users::getInstance()->get($pUser);
         endif;
-        
+
         if (is_numeric($pGame)):
             $pGame = Ultimatum_Model_Ultgames::getInstance()->get($pGame);
         endif;
@@ -70,6 +85,47 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
         endif;
 
         return $player;
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param ariant $pParam
+     * @return Ultimatum_Model_Ultplayer
+     */
+    public static function for_user ($pUser) {
+        if(is_numeric($pUser)):
+            $pUser = Model_Users::getInstance()->get($pUser);
+        endif;
+
+        //@TODO: better validation
+
+        if (!$pUser || (!$pUser->is_saved())):
+            throw new Exception(__METHOD__ . ': no user passed');
+        endif;
+
+        $params = array(
+            'user' => $pUser->identity()
+        );
+
+        $players = self::getInstance()->find($params, 'id');
+
+        return $players;
+    }
+
+
+    public function activate () {
+
+        foreach( self::for_user($this->get_user($pReload)) as $player):
+            $player->active = $player->game == 0;
+            $player->save();
+        endforeach;
+
+        $this->active = 1;
+        $this->save();
+        return $this;
+        
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ user @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -125,6 +181,24 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
      */
     public function __call ($pMethod, $pArgs) {
         return $this->get_game()->{$pMethod}($pArgs);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ acquire @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pGroup
+     * @return <type>
+     */
+    public function acquire ($pGroup) {
+        if (!($pGroup = $this->_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE))):
+            throw new Exception(__METHOD__ . ': bad gorup passed : ' . print_r($pGroup, 1));
+        endif;
+
+        $pg = new Ultimatum_Model_Ultplayergroup();
+        $pg->game = $this->get_game()->identity();
+        $pg->player = $this->identity();
+        $pg->on_turn = $this->get_game()->turn(TRUE);
+        $pg->save();
     }
 }
 

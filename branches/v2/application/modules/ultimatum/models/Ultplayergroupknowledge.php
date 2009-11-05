@@ -59,7 +59,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
      * @return int
      */
     public function get_size ($pProperty, $pString = FALSE) {
-        $size = $this->__get("{$Property}_size");
+        $size = $this->__get("{$pProperty}_size");
         if (is_null($size)):
             return $pString ? '(unknown)' : NULL;
         else:
@@ -80,7 +80,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
             return $pString ? '(unknown)' : NULL;
         else:
             return ($pString) ? Zupal_Util_Format::percent(
-                Ultimatum_Model_Ultgroups::eff_factor($eff)
+                Ultimatum_Model_Ultgroups::eff_factor($eff), FALSE
             ) : $eff;
         endif;
     }
@@ -91,22 +91,19 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
      * @param <type> $pProperty
      * @return <type>
      */
-    public function get_effect ($pProperty, $pString = FALSE) {
+    public function get_power ($pProperty, $pString = FALSE) {
 
         $eff = $this->get_efficiency($pProperty);
         if (is_null($eff)):
             return $pString ? '(unknown)' : NULL;
         endif;
 
-        $size = $this->get_size($pProperty)
+        $size = $this->get_size($pProperty);
         if (is_null($size)):
             return $pString ? '(unknown)' : NULL;
-        endif
+        endif;
 
-        $size += 100;
-        $size *= Ultimatum_Model_Ultgroups::eff_factor($eff);
-
-        return $pString ? number_format($size) : $size;
+        return Ultimatum_Model_Ultgroups::power($size, $eff, $pString);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@ */
