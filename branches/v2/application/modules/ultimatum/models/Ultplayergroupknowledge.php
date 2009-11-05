@@ -52,6 +52,63 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         return $this;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pProperty
+     * @return int
+     */
+    public function get_size ($pProperty, $pString = FALSE) {
+        $size = $this->__get("{$Property}_size");
+        if (is_null($size)):
+            return $pString ? '(unknown)' : NULL;
+        else:
+            return $pString ? $size + 100 : $size;
+        endif;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pProperty
+     * @return int | string
+     */
+    public function get_efficiency ($pProperty, $pString = FALSE) {
+        $eff = $this->__get("group_$pProperty");
+
+        if (is_null($eff)):
+            return $pString ? '(unknown)' : NULL;
+        else:
+            return ($pString) ? Zupal_Util_Format::percent(
+                Ultimatum_Model_Ultgroups::eff_factor($eff)
+            ) : $eff;
+        endif;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pProperty
+     * @return <type>
+     */
+    public function get_effect ($pProperty, $pString = FALSE) {
+
+        $eff = $this->get_efficiency($pProperty);
+        if (is_null($eff)):
+            return $pString ? '(unknown)' : NULL;
+        endif;
+
+        $size = $this->get_size($pProperty)
+        if (is_null($size)):
+            return $pString ? '(unknown)' : NULL;
+        endif
+
+        $size += 100;
+        $size *= Ultimatum_Model_Ultgroups::eff_factor($eff);
+
+        return $pString ? number_format($size) : $size;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function set_group($pValue) {
@@ -98,7 +155,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
     private $_player = NULL;
 
     /**
-     * @return Ultimatum_Model_Ultplayer;
+     * @return Ultimatum_Model_Ultplayers;
      */
     function get_player($pReload = FALSE) {
         if ($pReload || is_null($this->_player)):

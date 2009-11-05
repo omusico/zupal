@@ -25,6 +25,16 @@ extends Model_Zupalatomdomain
         return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ eff_factor @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pOffset
+     * @return float
+     */
+    public static function eff_factor ($pOffset) {
+        $pOffset = (int) $pOffset;
+        return (10 * (10 + $pOffset))/100;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
