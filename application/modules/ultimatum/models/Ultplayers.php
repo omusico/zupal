@@ -86,6 +86,11 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_game = NULL;
+    /**
+     *
+     * @param <type> $pReload
+     * @return Ultimatum_Model_Ultgames
+     */
     function get_game($pReload = FALSE) {
         if ($pReload || is_null($this->_game)):
         // process
