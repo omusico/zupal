@@ -16,6 +16,30 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
     public function indexAction() {
     }
 
+    public function gamesAction() {
+    }
+
+    /**
+     *
+     */
+
+    public function gamesstoreAction() {
+        $pt = Ultimatum_Model_Ultgames::getInstance();
+        $status = $this->_getParam('status', 'started');
+        $games = $pt->find(array('status' => $status), 'id');
+        $data = array();
+        foreach($games as $game):
+            $row = $game->toArray();
+            $players = $game->players(TRUE);
+            $turn = $game->turn(TRUE);
+            $row['players'] = count($players);
+            $row['turn'] = $turn;
+            $data[] = $row;
+        endforeach;
+        ksort($data);
+        $this->_store('id', $data, 'name');
+    }
+
     public function groupsAction() {
     }
 
@@ -104,8 +128,23 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
                 $group->delete();
             endif;
         }
+
         $parmas = array('message' => 'Deleted ' . $indexes);
         $this->_forward('groups', NULL, NULL, $params);
+    }
+
+    public function gamesdeleteAction()
+    {
+        $grid_indexes = $this->_getParam("grid_indexes",  NULL );
+        $gi = Ultimatum_Model_Ultgames::getInstance();
+        foreach(split(',', $grid_indexes) as $id):
+            $game = $gi->get($id);
+            if ($game->isSaved()):
+                $game->delete();
+            endif;
+        endforeach;
+        $parmas = array('message' => 'Deleted ' . $grid_indexes);
+        $this->_forward('games', NULL, NULL, $params);
     }
 
 }

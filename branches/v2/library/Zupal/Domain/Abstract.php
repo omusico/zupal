@@ -29,7 +29,28 @@ implements Zupal_Domain_IDomain {
             $this->newRow();
     endif;
     }
-    
+
+    protected function _as($pItem, $pClass, $pAsID = FALSE)
+    {
+       if (!$pItem instanceof $pClass):
+            if (is_scalar($pItem)):
+                $pItem = new $pClass($pItem);
+                if (!$pItem->isSaved()):
+                    return FALSE;
+                endif;
+            else:
+                throw new Exception(__METHOD__ . ': cannot convert ' . print_r($pItem, 1) . ' to ' . $pClass);
+            endif;
+        endif;
+
+        if ($pAsID):
+            return $pItem->identity();
+        else:
+            return $pItem;
+        endif;
+
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ new @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     
     protected function newRow($pData = NULL) {

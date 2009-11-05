@@ -29,7 +29,6 @@ implements Model_ZupalatomIF
         $this->atomic_id = $pValue;
     }
 
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ content @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
@@ -56,6 +55,26 @@ implements Model_ZupalatomIF
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param boolean $pReload = FALSE
+     * @return Model_Zupalatoms
+     */
+    public function get_atom ($pReload = FALSE) {
+        $out = parent::get_atom($pReload);
+
+        if (!$out):
+        $out = parent::get_atom($pReload);
+            return NULL;
+        endif;
+
+        if (! $out->get_model_class() != ($class = get_class($this))):
+            $out->set_model_class($class);
+        endif;
+        
+        return $out;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -64,7 +83,7 @@ implements Model_ZupalatomIF
      * @return Pages_Model_Zupalpages
      */
     public function for_atom_id ($pAtomic_id) {
-        return $this->findOne(array('atomic_id' => $pAtomic_id));
+        return $this->findOne(array('atomic_id' => $pAtomic_id), 'id DESC');
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

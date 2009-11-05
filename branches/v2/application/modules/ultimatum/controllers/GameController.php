@@ -32,13 +32,25 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
 
     public function runAction()
     {        
-        if(!$this->_prep()) return;
+        if(!$this->_prep()):
+            return $this->_forward('index', 'index', NULL, array('error' => 'Problem playing Ultimatum'));
+        endif;
 
         if (!count($this->view->player->groups())):
             return $this->_forward('start');
         endif;
+
+        $this->_draw_network();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _draw_network @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     *
+     */
+    public function _draw_network () {
+        $this->view->player_groups = $this->view->player->groups(TRUE);
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ startAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -75,7 +87,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         endif;
 
         $this->view->player->acquire($this->_getParam('group'));
-        
+        $this->_forward('run');
     }
     
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _prep @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

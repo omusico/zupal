@@ -76,7 +76,7 @@ extends Model_Zupalatomdomain
      * @return Pages_Model_Zupalpages
      */
     public function for_atom_id ($pAtomic_id) {
-        return $this->findOne(array('atomic_id' => $pAtomic_id));
+        return $this->findOne(array('atomic_id' => $pAtomic_id), 'id DESC');
     }
     
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ atomic_id @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -97,8 +97,8 @@ extends Model_Zupalatomdomain
      */
     public function get_atom ($pReload = FALSE) {
         $out = parent::get_atom($pReload);
-        if (! $out->model_class):
-            $out->model_class = 'Model_Zupalatomdomain';
+        if (! $out->get_model_class() != ($class = get_class($this))):
+            $out->set_model_class($class);
         endif;
         return $out;
     }

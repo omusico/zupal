@@ -1,0 +1,28 @@
+<?
+
+$this->placeholder('atom_title')->set('Atoms');
+
+$this->headScript()->captureStart()
+?>
+function atom_grid_edit_formatter(id)
+{
+    return '<a href="/administer/index/atoms/edit/id/' + id + '"><img src="/images/icons/edit.gif" border="0" width="20" height="20"></a>';
+}
+
+function atom_grid_delete_formatter(id)
+{
+    return '<a href="/administer/index/atoms/delete/id/' + id + '"><img src="/images/icons/x.gif" border="0" width="20" height="20"></a>';
+}
+function atom_grid_view_formatter(id)
+{
+    return '<a href="/atom/' + id + '"><img src="/images/icons/view.gif" border="0" width="20" height="20"></a>';
+}
+
+<? $this->headScript()->captureEnd(); ?>
+
+<?
+echo $this->dojostore('atom_store', $this->baseUrl() . '/administer/index/atomsstore');
+
+echo $this->dojogrid('atom_grid', 'atom_store'
+    , new Zend_Config_Ini(dirname(__FILE__) . '/atom_grid.ini', 'columns'), 'id', NULL,
+    array('width' => 700, 'height' => 400));

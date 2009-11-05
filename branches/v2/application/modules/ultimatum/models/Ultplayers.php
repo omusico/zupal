@@ -42,10 +42,12 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
      * @param Model_Users $pUser = NULL
      * @return Ultimatum_Model_Ultplayers
      */
-    public function user_active_player ($pUser = NULL) {
-        if (!$pUser) $pUser = Model_Users::current_user();
+    public static function user_active_player ($pUser = NULL) {
+        if (!$pUser = self::_as($pUser, 'Model_Users', TRUE)):
+            throw new Exception(__METHOD__ . ': bad user passed: ' . print_r($pUser, TRUE));
+        endif;
 
-        $params = array('user' => $pUser->identity(), 'active' => 1);
+        $params = array('user' => $pUser, 'active' => 1);
 
         $game = self::getInstance()->findOne($params);
 
@@ -158,8 +160,8 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     /**
      * returns the players ownership wrapper for the groups they control.
      */
-    public function groups () {
-        return Ultimatum_Model_Ultplayergroup::for_player($this);
+    public function groups ($pRoot = FALSE) {
+        return Ultimatum_Model_Ultplayergroups::for_player($this, $pRoot);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ full_scan_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -186,19 +188,46 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ acquire @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pGroup
-     * @return <type>
+     * @param Ultimatum_Model_Ultgroups $pGroup
+     * @return Ultimatum_Model_Ultplayergroups
      */
     public function acquire ($pGroup) {
         if (!($pGroup = $this->_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE))):
             throw new Exception(__METHOD__ . ': bad gorup passed : ' . print_r($pGroup, 1));
         endif;
 
-        $pg = new Ultimatum_Model_Ultplayergroup();
-        $pg->game = $this->get_game()->identity();
-        $pg->player = $this->identity();
-        $pg->on_turn = $this->get_game()->turn(TRUE);
-        $pg->save();
+        $game = $this->get_game();
+
+        $filter = array(
+            'game' => $game->identity(),
+            'player' => $this->identity(),
+            'group_id' => $pGroup
+        );
+
+        $pgi = Ultimatum_Model_Ultplayergroups::getInstance();
+
+        if (!$pg = $pgi->findOne($filter)):
+            $pg = $pgi->get(NULL, $filter);
+            $pg->on_turn = $game->turn(TRUE);
+            $pg->save();
+        endif;
+        
+        return $pg;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <boolean $pErase
+     */
+    public function delete ($pErase = FALSE) {
+        if ($pErase):
+            parent::delete();
+        endif;
+
+        $this->status = 'deleted';
+        $this->active = 0;
+        $this->save();
     }
 }
 
