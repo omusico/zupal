@@ -26,13 +26,27 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
  *
  * @return Ultimatum_Model_Ultgames
  */
-    public function get($pID = NULL, $pLoad_Fields = NULL)
+    public function get($pID = NULL, $pLoadFields = NULL)
     {
         $out = new self($pID);
-            if ($pLoad_Fields && is_array($pLoad_Fields)):
-                $out->set_fields($pLoad_Fields);
+            if ($pLoadFields && is_array($pLoadFields)):
+                $out->set_fields($pLoadFields);
             endif;
             return $out;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ user_active_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Ultimatum_Model_Ultgames
+     */
+    public static function user_active_game ($pUser = NULL) {
+        $player = Ultimatum_Model_Ultplayers::user_active_player($pUser);
+        if (!$player):
+            return NULL;
+        else:
+            return $player->get_game();
+        endif;
     }
 
    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ players @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -71,7 +85,7 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
      *
      * @return int
      */
-    public function turn ($pAs_int = FALSE) {
+    public function turn ($pAs_int = TRUE) {
         $turn = Ultimatum_Model_Ultgameturns::getInstance()->last_turn($this);
         return $pAs_int ? $turn->turn : $turn;
     }

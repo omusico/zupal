@@ -30,8 +30,8 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     public function get($pID = 'NULL', $pLoadFields = 'NULL')
     {
         $out = new self($pID);
-            if ($pLoad_Fields && is_array($pLoad_Fields)):
-                $out->set_fields($pLoad_Fields);
+            if ($pLoadFields && is_array($pLoadFields)):
+                $out->set_fields($pLoadFields);
             endif;
             return $out;
     }
@@ -43,7 +43,12 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
      * @return Ultimatum_Model_Ultplayers
      */
     public static function user_active_player ($pUser = NULL) {
-        if (!$pUser = self::_as($pUser, 'Model_Users', TRUE)):
+        if ($pUser == NULL):
+            if (!$pUser = Model_Users::current_user()):
+                throw new Exception(__METHOD__ . ': no user logged in');
+            endif;
+            $pUser = $pUser->identity();
+        elseif (!$pUser = self::_as($pUser, 'Model_Users', TRUE)):
             throw new Exception(__METHOD__ . ': bad user passed: ' . print_r($pUser, TRUE));
         endif;
 
@@ -146,7 +151,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     private $_game = NULL;
     /**
      *
-     * @param <type> $pReload
+     * @param boolean $pReload
      * @return Ultimatum_Model_Ultgames
      */
     function get_game($pReload = FALSE) {
@@ -156,14 +161,59 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
         endif;
         return $this->_game;
     }
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ groups @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     * returns the players ownership wrapper for the groups they control.
+     *
+     * @return Ultimatum_Model_Ultgames
      */
-    public function groups ($pRoot = FALSE) {
-        return Ultimatum_Model_Ultplayergroups::for_player($this, $pRoot);
+    public function game () {
+        return $this->get_game();
+    }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ groups @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_groups = NULL;
+    function player_groups($pReload = FALSE) {
+        if ($pReload || is_null($this->_groups)):
+        // process
+            $this->_groups = Ultimatum_Model_Ultplayergroups::for_player($this, $pRoot);
+        endif;
+        return $this->_groups;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param  $pGroup
+     * @return Ultimatum_Model_Ultplayergroups
+     */
+
+    public function player_group ($pGroup) {
+        if (!$pGroup = $this->_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE)):
+            throw new Exception(__METHOD__ . ': passed ' . print_r($pGroup));
+        endif;
+
+        foreach($this->player_groups() as $pg):
+            if ($pGroup == $pg->group_id()):
+                return $pg;
+            endif;
+        endforeach;
+        
+        return NULL;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scans @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function scans () {
+        $scans = Ultimatum_Model_Ultplayergroupknowledge::getInstance()->for_player($this);
+        foreach($this->player_groups() as $group):
+            $gid = $group->group_id;
+            foreach($scans as $i => $scan):
+                if ($scan->group_id == $gid) unset($scans[$i]);
+            endforeach;
+        endforeach;
+        return $scans;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ full_scan_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -229,5 +279,28 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
         $this->active = 0;
         $this->save();
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending_orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pType
+     * @param <type> $pTarget
+     * @return
+     */
+    public function pending_orders ($pType = NULL, $pTarget = NULL) {
+        $params = array('commander' => $this->identity(), 'active' => 1);
+        $out = Ultimatum_Model_Ultplayergrouporder::getInstance()->find($params, 'given_at');
+        return $out;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function __toString () {
+        return $this->get_user()->username;
+    }
+
 }
 

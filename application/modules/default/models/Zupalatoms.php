@@ -10,10 +10,10 @@ implements  Model_ZupalatomIF {
         return 'Model_DbTable_Zupalatoms';
     }
 
-    public function get($pID = 'NULL', $pLoad_Fields = 'NULL') {
+    public function get($pID = 'NULL', $pLoadFields = 'NULL') {
         $out = new self($pID);
-        if ($pLoad_Fields && is_array($pLoad_Fields)):
-            $out->set_fields($pLoad_Fields);
+        if ($pLoadFields && is_array($pLoadFields)):
+            $out->set_fields($pLoadFields);
         endif;
         return $out;
     }
@@ -59,20 +59,25 @@ implements  Model_ZupalatomIF {
 
     }
 
-    public function set_atomic_id($pValue) { $this->atomic_id = $pValue; }
-
+    public function set_atomic_id($pValue) { $this->atomic_id = $pValue; $this->save(); }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ model_class @@@@@@@@@@@@@@@@@@@@@@@@ */
-
-    /**
-     * @return class;
-     */
 
     public function get_model_class() { return $this->model_class; }
 
     public function set_model_class($pValue) { $this->model_class = $pValue; $this->save(); }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_lead @@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    public function get_format_lead(){ return $this->format_lead ? TRUE : FALSE; }
+
+    public function set_format_lead($pValue){$this->format_lead = $pValue; $this->save(); }
+    
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_content @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_format_content(){ return $this->format_content ? TRUE : FALSE; }
+
+    public function set_format_content($pValue){$this->format_content = $pValue; $this->save(); }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -387,4 +392,35 @@ implements  Model_ZupalatomIF {
    public function parent () {
        return $this->for_atom_id($this->get_atomic_id());
    }
+
+   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ strip_lead_markup @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+   /**
+    *
+    * @return void
+    */
+   public function strip_lead_markup () {
+       if ($this->get_format_lead()) return;
+
+       $lead = str_replace(array("\n", "\r"), '', trim($this->get_lead()));
+       $new_lead = preg_replace('~<p>~', "\n", $new_lead);
+       $new_lead = trim(preg_replace('~</p>~', "\n", $lead));
+       $this->set_lead($new_lead);
+   }
+
+
+   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ strip_content_markup @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+   /**
+    *
+    * @return void
+    */
+   public function strip_content_markup () {
+       if ($this->get_format_content()) return;
+
+       $content = str_replace(array("\n", "\r"), '', trim($this->get_content()));
+       $new_content = preg_replace('~<p>~', "\n", $content);
+       $new_content = trim(preg_replace('~</p>~', "\n", $new_content));
+       $this->set_content($new_content);
+   }
+   
+
 }

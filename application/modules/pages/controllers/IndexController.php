@@ -13,9 +13,10 @@ class Pages_IndexController extends Zupal_Controller_Abstract {
     }
 
     public function homeAction() {
-        $this->view->page = new Pages_Model_Zupalpages(1);
-
-        $this->view->pages = Model_Zupalbonds::getInstance()->get_bonds_to($this->view->page->get_atomic_id(), 'parent', 'from_atom');
+        $this->view->page = $page = new Pages_Model_Zupalpages(1);
+        $aid = $page->get_atomic_id();
+        $m = Model_Zupalbonds::getInstance();
+        $this->view->pages = $m->get_bonds_to($aid, 'parent', 'from_atom');
     }
 
 

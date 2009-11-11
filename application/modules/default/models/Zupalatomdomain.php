@@ -35,11 +35,19 @@ abstract class Model_Zupalatomdomain
        $this->get_atom()->set_content($pValue);
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-  //  public abstract function get_atomic_id ();
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_lead @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-   // public abstract function set_atomic_id($pValue);
+    public function get_format_lead(){ return $this->get_atom()->get_format_lead();}
+
+    public function set_format_lead($pValue){$this->get_atom()->set_format_lead($pValue); }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_content @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_format_content(){ return $this->get_atom()->get_format_content();}
+
+    public function set_format_content($pValue){$this->get_atom()->set_format_content($pValue); }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_model_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -81,6 +89,11 @@ abstract class Model_Zupalatomdomain
  * This method returns the atomic model that this class decorates. 
  */
     protected $_atom = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Model_Zupalatoms
+     */
     function get_atom($pReload = FALSE) {
         if (!$this->get_atomic_id()):
             $this->_spawn_atom();

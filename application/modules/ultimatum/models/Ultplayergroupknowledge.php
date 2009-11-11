@@ -22,12 +22,22 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
     public function get($pID = NULL, $pLoadFields = NULL)
     {
         $out = new self($pID);
-            if ($pLoad_Fields && is_array($pLoad_Fields)):
-                $out->set_fields($pLoad_Fields);
+            if ($pLoadFields && is_array($pLoadFields)):
+                $out->set_fields($pLoadFields);
             endif;
             return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function link () {
+        ob_start();
+?>
+<a href="/ultimatum/game/scanview/scan/<?= $this->identity() ?>"><?= $this->get_group() ?>(as of <?= $this->last_update ?>)</a>
+<?
+        return ob_get_clean();
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ full_scan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -91,7 +101,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
      * @param <type> $pProperty
      * @return <type>
      */
-    public function get_power ($pProperty, $pString = FALSE) {
+    public function get_effect ($pProperty, $pString = FALSE) {
 
         $eff = $this->get_efficiency($pProperty);
         if (is_null($eff)):
@@ -103,7 +113,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
             return $pString ? '(unknown)' : NULL;
         endif;
 
-        return Ultimatum_Model_Ultgroups::power($size, $eff, $pString);
+        return Ultimatum_Model_Ultgroups::effect($size, $eff, $pString);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -122,7 +132,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
 
     private $_group = NULL;
     /**
-     *
+     * NOTE: this is the GROUP -- not the PLAYER GROUP 
      * @param boolean $pReload
      * @return Ultimatum_Model_Ultgroups
      */
@@ -177,6 +187,142 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         $value = $player->get_game();
         return $value;
     }
-    
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param variant $pPlayer
+     * @return Ultimatum_Model_Ultplayergroupknowledge[]
+     */
+    public function for_player ($pPlayer) {
+        $param = array(
+            'player' => $this->_as($pPlayer, 'Ultimatum_Model_Ultplayers', TRUE)
+        );
+        return self::getInstance()->find($param, 'last_update DESC');
+    }
+
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_efficiency ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_efficiency ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_efficiency ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_efficiency ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_size ($pString = FALSE) {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_size ($pString = FALSE) {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_size ($pString = FALSE) {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_size ($pString = FALSE) {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_effect ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_effect ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_effect ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_effect ($pString = FALSE) {
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
+    }
+
 }
 

@@ -1,9 +1,43 @@
 <?
 $this->placeholder('page_title')->set('Ultimatum: playing game ' . $this->game->get_title());
 
-echo $this->filepage('ult_game_run', "game/run.html", NULL, 'ultimatum');
+$this->headStyle()->captureStart();
+echo '@import "/style/ultimatum/ult_style.css";';
+$this->headStyle()->captureEnd();
 
-foreach($this->player_groups as $pg):
+echo $this->filepage('ult_game_run', "game/run.html", NULL, 'ultimatum');
+Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
+$this->dojo()
+                 ->addStyleSheet('/scripts/dijit/themes/tundra/tundra.css')
+                 ->addStyleSheet('/scripts/dojo/resources/dojo.css')
+             ->setDjConfigOption('parseOnLoad', true);
+
+$rand = '/rand/' . rand(0, 10000);
+
+$this->tabContainer()->captureStart(   'groups',
+    array('style' => 'width: 800px; height: 500px; border: 1px;'),
+    array('dojoType'=>"dijit.layout.TabContainer" )); ?>
+
+<? $this->contentPane()->captureStart('mine', array('title' => 'Your Groups'));
+foreach($this->groups as $pg):
     echo ($this->networknode($pg));
 endforeach;
 ?>
+<?= $this->contentPane()->captureEnd('mine') ?>
+
+<? $this->contentPane()->captureStart('others', array('title' => 'Other Groups')) ?>
+<p><i>Note -- this information is only current to the turn it was scanned.</i></p>
+<? foreach($this->scans as $scan):
+    echo $this->groupscan($scan, $this->interact($scan));
+endforeach; ?>
+<?= $this->contentPane()->captureEnd('others') ?>
+
+<? if ($this->pending_orders && count($this->pending_orders)): ?>
+<? $this->contentPane()->captureStart('po', array('title' => 'Pending Orders')) ?>
+<? foreach ($this->pending_orders as $po): 
+    echo $this->pendingorder($po);
+endforeach; ?>
+<?= $this->contentPane()->captureEnd('po') ?>
+<? endif; ?>
+
+<?= $this->tabContainer()->captureEnd('groups');

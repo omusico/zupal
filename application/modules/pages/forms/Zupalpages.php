@@ -14,12 +14,9 @@ class Pages_Form_Zupalpages extends Zupal_Form_Abstract
 
         if ($pDomain):
             $this->set_domain($pDomain);
-            $domain = $this->get_domain();
 
             $this->domain_to_fields();
-            $this->title->setValue($domain->get_title());
-            $this->lead->setValue($domain->get_lead());
-            $this->content->setValue($domain->get_content());
+            $this->_atom_load();
         endif;
     }
 

@@ -155,8 +155,8 @@ class Administer_Lib_Meta_Domain
                                 )
                             ),
 			    'body' => '     $out = new self($pID);
-    if ($pLoad_Fields && is_array($pLoad_Fields)):
-        $out->set_fields($pLoad_Fields);
+    if ($pLoadFields && is_array($pLoadFields)):
+        $out->set_fields($pLoadFields);
     endif;
     return $out;',
 			))),

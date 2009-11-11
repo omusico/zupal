@@ -6,18 +6,66 @@ if ($this->nouser):
 else:
     echo $this->filepage('ultima_game_intro', "/game/intro.html", NULL, 'ultimatum');
 endif;
+
 if (!$this->nouser):
+
+$grid_options = array('width' => "800");
+
+$filename = dirname(__FILE__) . '/games_grid.ini';
+$col = new Zend_Config_Ini($filename, 'columns');
+
+$this->dojo()->requireModule('dijit.form.Button');
+
+$this->headScript()->captureStart();
 ?>
-<ul>
-<? foreach($this->games as $game): ?>
-    <li><a href="<?= $this->baseUrl() ?>/ultimatum/game/run/<?= $game->identity() ?>">
-<?= $game->get_title() ?></a>
-<? endforeach; ?>
-</ul>
-<? if (count($this->games)): ?>
+function game_grid_play_formatter(p)
+{
+    return '<a href="<?= $this->baseUrl() ?>/ultimatum/game/run/game/'
+        + p + '" title="PLAY"><img src="<?= $this->baseUrl() ?>/images/icons/go.gif" height="20" width="20" border="0"/></a>';
+}
+
+function unity_year(y)
+{
+    return new String(y).replace(/^20/, '');
+}
+
+var ugd_months = [
+  ,
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+];
+
+function grid_date_formatter(pDate)
+{
+    hits = new String(pDate).match(/([\d]{4})-([\d]{2})-([\d]{2})/)
+    if (hits)
+    {
+	var out = ugd_months[new Number(hits[2]).valueOf()] + '&nbsp;' + new Number(hits[3]).valueOf() + '&nbsp;' + unity_year(hits[1]);
+
+	return out;
+    }
+    else
+    {
+	return pDate;
+    }
+}
+
+<?  $this->headScript()->captureEnd();   ?>
+
+<?= $this->dojostore('games_store', $this->baseUrl() . '/ultimatum/game/gamesstore') ?>
+<?= $this->dojogrid('game_grid', 'games_store', $col, 'id', NULL, $grid_options) ?>
+
 <h2>... or start a new game </h2>
-<? else: ?>
-<h2>Start a new game</h2>
-<? endif; ?>
+
 <?= new Ultimatum_Form_Ultgames() ?>
 <? endif; ?>

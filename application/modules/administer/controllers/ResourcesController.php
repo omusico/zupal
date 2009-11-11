@@ -11,6 +11,26 @@ class Administer_ResourcesController extends Zupal_Controller_Abstract {
         $this->_helper->layout->disableLayout();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ storeAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function storeAction () {
+        $model = $this->_getParam('model_class');
+        $m = new $model();
+        if (method_exists($m, 'store')):
+            $data = $m->store();
+        else:
+            $sql = sprintf ('SELECT * from %s;', $m->table()->tableName());
+            error_log(__METHOD__ . ': SQL = ' . $sql);
+            $data = $m->table()->getAdapter()->fetchAssoc($sql);
+        endif;
+
+        $id = $m->table()->idField();
+
+        $this->_store($id, $data);
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ imageAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -54,7 +74,7 @@ class Administer_ResourcesController extends Zupal_Controller_Abstract {
     /**
      *
      */
-    public function cssAction () {
+    public function styleAction () {
         $path = ZUPAL_MODULE_PATH . DS . $this->_getParam('style_module', 'NOMODULE') . DS . 'style' . DS . $this->_getParam('style_path', 'NOPATH');
         $path = str_replace(':', DS, $path);
 
