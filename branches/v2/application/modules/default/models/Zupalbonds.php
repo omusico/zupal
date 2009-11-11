@@ -3,18 +3,16 @@
 class Model_Zupalbonds extends Zupal_Domain_Abstract
 {
 
-    private static $_instance = 'zupal_bonds';
-
     public function tableClass()
     {
         return 'Model_DbTable_Zupalbonds';
     }
 
-    public function get($pID = 'NULL', $pLoad_Fields = 'NULL')
+    public function get($pID = NULL, $pLoadFields = NULL)
     {
         $out = new self($pID);
-            if ($pLoad_Fields && is_array($pLoad_Fields)):
-                $out->set_fields($pLoad_Fields);
+            if ($pLoadFields && is_array($pLoadFields)):
+                $out->set_fields($pLoadFields);
             endif;
             return $out;
     }
@@ -55,7 +53,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
             $params['type'] = $pType;
         endif;
 
-        return $this->_as($this->find($params, 'rank'), $pResultType);
+        return $this->_bond_as($this->find($params, 'rank'), $pResultType);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds_to @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -78,16 +76,16 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
             $params['type'] = $pType;
         endif;
 
-        return $this->_as($this->find($params, 'rank'), $pResultType . '_from');
+        return $this->_bond_as($this->find($params, 'rank'), $pResultType . '_from');
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _as @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _bond_as @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @param array $pData
      * @return variant
      */
-    public function _as ($pData, $pResultType = 'record') {
+    public function _bond_as ($pData, $pResultType = 'record') {
         switch ($pResultType):
             case 'from_atom':
             case 'atom_from':
@@ -133,5 +131,5 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
         $m = new $t(Zupal_Domain_Abstract::STUB);
         return $m->for_atom_id($this->to_atom);
     }
-}
 
+}

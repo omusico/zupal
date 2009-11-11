@@ -1,0 +1,15 @@
+<?
+$this->placeholder('page_title')->set('Ultimatum: reallocate resources');
+?>
+<h2>Current group profile</h2>
+<?
+    echo ($this->networknode($this->player_group));
+    ?>
+<h2>Adjust Size</h2>
+<p>Adjust the size of your group's current resources. Your numbers will be scaled to add up to the groups overall strength
+(<?= $this->player_group->strength(TRUE) ?>).</p>
+
+<p>Resources will be adjusted at the rate of one per turn until the group matches the resource.</p>
+
+<?= $this->form ?>
+    

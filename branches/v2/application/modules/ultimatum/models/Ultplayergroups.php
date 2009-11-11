@@ -1,6 +1,8 @@
 <?php
 
-class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
+class Ultimatum_Model_Ultplayergroups
+extends Zupal_Domain_Abstract
+implements Ultimatum_Model_GroupProfileIF
 {
 
     private static $_Instance = null;
@@ -9,7 +11,10 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
     {
         return 'Ultimatum_Model_DbTable_Ultplayergroups';
     }
-
+/**
+ *
+ * @return Ultimatum_Model_Ultplayergroups
+ */
     public static function getInstance()
     {
         if ($pReload || is_null(self::$_Instance)):
@@ -19,13 +24,17 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
             return self::$_Instance;
     }
 
+/**
+ *
+ * @return Ultimatum_Model_Ultplayergroups
+ */
     public function get($pID = NULL, $pLoadFields = NULL)
     {
         $out = new self($pID);
-            if ($pLoad_Fields && is_array($pLoad_Fields)):
-                $out->set_fields($pLoad_Fields);
-            endif;
-            return $out;
+        if ($pLoadFields && is_array($pLoadFields)):
+            $out->set_fields($pLoadFields);
+        endif;
+        return $out;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -42,7 +51,7 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
             $params['controlling_group'] = 0;
         endif;
         
-        $pg = self::getInstance()->find($parms, 'on_turn');
+        $pg = self::getInstance()->find($params, 'on_turn');
 
         return $pg;
     }
@@ -69,7 +78,12 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
         $this->player = $player->identity();
         $this->game = $player->game;
     }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    public function player () {
+        return $this->get_player();
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_game = NULL;
@@ -95,35 +109,55 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
         endif;
         return $this->_group;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_group_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function group_id () {
+        return $this->group_id;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @param string $pProperty
-     * @return int
+     * @return scalar
      */
-    public function get_size ($pProperty) {
+    public function get_size ($pProperty, $pString = FALSE) {
         $game = $this->get_game();
 
         if ($game):
-            return $this->get_group()->get_size($game, $pProperty);
+            return $this->get_group()->get_size($pProperty, $game, $pString);
         else:
-            return 0;
+            throw new Exception(__METHOD__. ': player group ' . $this->identity() . ' has no string');
         endif;
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_power @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pProperty
-     * @return <type>
+     * @param string $pProperty
+     * @param boolean $pString
+     * @return scalar
      */
-    public function get_power ($pProperty) {
+    public function get_efficiency ($pProperty, $pString = FALSE) {
+        return $this->get_group()->get_efficiency($pProperty, $pString);
+    }
+    
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pProperty
+     * @return scalar
+     */
+    public function get_effect ($pProperty, $pString) {
         $game = $this->get_game();
 
         if ($game):
-            return $this->get_group()->get_power($game, $pProperty);
+            return $this->get_group()->get_effect($pProperty, $pString, $game);
         else:
-            return 0;
+            throw new Exception(__METHOD__. ': player group ' . $this->identity() . ' has no string');
         endif;
     }
 
@@ -137,6 +171,156 @@ class Ultimatum_Model_Ultplayergroups extends Zupal_Domain_Abstract
             $this->$prop = $this->get_power($prop);
         endforeach;
         parent::save();
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ GroupProfileIF @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_efficiency ($pString = FALSE)
+    {
+        return $this->get_efficiency(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_efficiency ($pString = FALSE)
+    {
+        return $this->get_efficiency(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_efficiency ($pString = FALSE)
+    {
+        return $this->get_efficiency(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_efficiency @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_efficiency ($pString = FALSE)
+    {
+        return $this->get_efficiency(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_size ($pString = FALSE)
+    {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_size ($pString = FALSE)
+    {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pString);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_size ($pString = FALSE)
+    {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pString);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_size ($pString = FALSE)
+    {
+        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function network_effect ($pString = FALSE){
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, $pAsString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function offense_effect ($pString = FALSE){
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, $pAsString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ defense_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function defense_effect ($pString = FALSE){
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, $pAsString);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ strength @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function strength ($pString) {
+        $strength = $this->network_size() + $this->growth_size() + $this->offense_size() + $this->defense_size();
+
+        return $pString ? 400 + $strength : $strength;
+    }
+    
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ growth_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pString = FALSE
+ * @return scalar
+ */
+    public function growth_effect ($pString = FALSE){
+        return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pAsString);
+    }
+
+    public function __toString() {
+        return $this->get_group() . ' - controlled by ' . $this->get_player();
     }
 }
 

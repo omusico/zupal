@@ -36,7 +36,15 @@ class Administer_IndexController extends Zupal_Controller_Abstract
     public function repairatomsAction()
     {
         foreach(Pages_Model_Zupalpages::getInstance()->findAll() as $page) $page->get_atom();
-        foreach(Ultimatum_Model_Ultgroups::getInstance()->findAll() as $group) $group->get_atom();
+        foreach(Ultimatum_Model_Ultgroups::getInstance()->findAll() as $group)
+        {
+            /**
+             * @var Model_Zupalatoms
+             */
+            $atom = $group->get_atom();
+            if (!$atom->get_format_lead()) $atom->strip_lead_markup();
+            if (!$atom->get_format_content()) $atom->strip_content_markup();
+        }
         $this->_forward('atoms');
     }
 

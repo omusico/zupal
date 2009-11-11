@@ -29,6 +29,19 @@ extends Zupal_Domain_IDomain
     public function set_atomic_id($pValue);
 
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_lead @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_format_lead();
+
+    public function set_format_lead($pValue);
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ format_content @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_format_content();
+
+    public function set_format_content($pValue);
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ author @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**

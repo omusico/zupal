@@ -9,14 +9,25 @@ class Zupal_Helper_Zupalalerts extends Zend_View_Helper_Abstract {
 
     public function zupalalerts() {
         ob_start();
-        if ($error = $this->getView()->placeholder('error')->getValue()):
+        
+        $error = $this->getView()->placeholder('error')->getValue();
+        $message = $this->getView()->placeholder('message')->getValue();
+        if ($message || $error):
+?>
+        <fieldset>
+            <legend>Messages</legend>
+<?
+        if ($error):
             $this->box('Error', $error, 'error');
         endif;
-
-        if ($message = $this->getView()->placeholder('message')->getValue()):
+        
+        if ($message):
             $this->box('Message', $message, 'message');
         endif;
-
+?>
+        </fieldset>
+<?
+        endif;
         return ob_get_clean();
     }
 
