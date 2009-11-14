@@ -52,10 +52,28 @@ div#user_menu ul.navigation li
     display: inline;
 }
 
-div#main
+#main
 {
     float: left;
     width: 800px;
+}
+
+#main fieldset
+{
+    border: 1px solid #CF0;
+    margin-bottom: 1em;
+    padding: 1em;
+}
+
+#main fieldset fieldset
+{
+    border-color: #999;
+    padding: 0.5em
+}
+#main fieldset legend
+{
+    font-size: 150%;
+    color: #999;
 }
 
 table.frame
@@ -100,11 +118,63 @@ a.linkbutton:visited
     font-weight: bold;
     text-decoration: none;
     color: #006;
-    background-color: #F66;
+    background-color: #E1E1E1;
 }
 
 a.linkbutton:hover
 {
     background-color: black;
     color: black;
+}
+
+
+ .dojoxGrid,
+ .dojoxGrid div, /*
+ div.dojoxGrid div td,
+ div.dojoxGrid div th,*/
+ .dojoxGrid div table,
+ .dojoxGrid div tbody
+{
+    margin: 0px;
+    padding: 0px;
+    border: none;
+}
+
+ .dojoxGrid .dojoxGridRowOdd
+{
+    background-color: #CCCCCC
+}
+
+ .dojoxGridRowOdd table
+{
+    background-color:#E1E1E1
+}
+ .dojoxGrid .dojoxGridCell
+{
+    border-right: 1px solid #999;
+    padding: 2px;
+    padding-left: 4px;
+    padding-right: 5px;
+    border-top: none;
+    border-left: none;
+    text-align: left;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    font-size: 12pt;
+}
+
+dt
+{
+    font-weight: bold;
+    width: 150px;
+    float: left;
+    margin: 1em;
+    display:block;
+}
+
+dd
+{
+    margin: 1em;
+    clear: right;
+    display:block;
 }

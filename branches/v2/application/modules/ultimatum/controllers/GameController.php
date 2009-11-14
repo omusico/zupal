@@ -283,8 +283,60 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             $params = array('error' => 'Cannot find target');
             return $this->_forward('run', NULL, NULL, $params);
         endif;
-         
+
+       $pid = $this->view->player->identity();
+       $gid = $this->view->target->identity();
+
+       $params = array('group_id' => $gid, 'player' => $pid);
+
+       $k = Ultimatum_Model_Ultplayergroupknowledge::getInstance()->findOne($params);
+       if ($k->isSaved()):
+            $this->view->scan = $k;
+       else:
+            $param = array('error' => 'strange, what group ' . $gid . '?');
+            $this->_forward('run', NULL, NULL, $param);
+       endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ attackexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function attackexecuteAction () {
+        if (!$this->_prep()):
+            $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
+        elseif(!$this->view->player_group):
+            $params = array('error' => 'Cannot load group');
+            $this->_forward('run', NULL, NULL, $params);
+        endif;
+
+        $ord = new Ultimatum_Model_Ultplayergrouporder();
+
+        $ord->player_group = $this->view->player_group->identity();
+        $ord->type = 'attack';
+        if ($this->_getParam('repeat')):
+            $ord->repeat = 'iterate';
+            $ord->iterations = min(1, (int)$this->_getParam('repeat_count'));
+        endif;
+        $ord->target = $this->_getParam('target');
+        $ord->save();
+
+        $attack = new Ultimatum_Model_Ultplayergrouporderattacks();
+        $attack->order_id = $ord->identity();
+        $attack->reduceprop = $this->_getParam('reduceprop');
+        $attack->reduceprop_property = (int) $this->_getParam('reduceprop_property');
+        $attack->reduceprop_strength = (int) $this->_getParam('reduceprop_strength');
+        $attack->loss = $this->_getParam('loss');
+        // $attack->loss_count = $this->_getParam('loss_strength_count');
+        $attack->loss_strength = $this->_getParam('loss_strength');
+        $attack->loss_strength_count = $this->_getParam('loss_strength_count');
+        $attack->payoff = $this->_getParam('payoff');
+        $attack->payoff_count = $this->_getParam('payoff_count');
+
+        $attack->save();
+
+        $params = array('message' => 'Scheduled attack');
+        $this->_forward('run', NULL, NULL, $params);
+    }
 }
 

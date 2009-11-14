@@ -14,6 +14,7 @@ extends Zend_Form {
             $dc = $this->get_domain_class();
             $this->_domain = new $dc();
         endif;
+        $data = $this->_domain->toArray();
         return $this->_domain;
     }
 
@@ -31,6 +32,32 @@ extends Zend_Form {
         $this->domain_to_fields();
     }
 
+    protected function _atom_load()
+    {
+        $domain = $this->get_domain();
+        $this->title->setValue($domain->get_title());
+        $this->lead->setValue($domain->get_lead());
+        $this->content->setValue($domain->get_content());
+        $this->format_lead->setChecked($domain->get_format_lead());
+        $this->format_content->setChecked($domain->get_format_content());
+        if ($domain->get_format_lead()):
+            $this->lead->setAttrib('class', 'ckeditor');
+        endif;
+        if ($domain->get_format_content()):
+            $this->content->setAttrib('class', 'ckeditor');
+        endif;
+    }
+
+    protected function _save_atom()
+    {
+        $this->get_domain()->set_title($this->title->getValue());
+        $this->get_domain()->set_lead($this->lead->getValue());
+        $this->get_domain()->set_content($this->content->getValue());
+        $this->get_domain()->set_format_content($this->format_content->getValue());
+        $this->get_domain()->set_format_lead($this->format_lead->getValue());
+        $this->get_domain()->save();
+
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

@@ -6,8 +6,6 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
     protected $identity = NULL;
     
     public function init() {
-        $this->view->placeholder('message')->set($this->_getParam('message', ''));
-        $this->view->placeholder('error')->set($this->_getParam('error', ''));
         
         $module = $this->getRequest()->getModuleName();
         $config = array(
@@ -21,6 +19,15 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         $this->view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
         
         parent::init();
+    }
+    
+    public function preDispatch() {
+        $message = $this->_getParam('message', '');
+        $error = $this->_getParam('error', '');
+        if ($message || $error):
+            $this->view->placeholder('message')->set($message);
+            $this->view->placeholder('error')->set($error);
+        endif;
     }
     
     public function postDispatch() {
