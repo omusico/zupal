@@ -1,5 +1,63 @@
 <?
-$this->placeholder('page_title')->set('');
-    $this->target;
-    
+$this->placeholder('page_title')->set('Ultimatum: attack group');
+?>
 
+<h2>Attack Group <?= $this->target ?></h2>
+
+<?= $this->groupscan($this->scan) ?>
+
+<p>This will reduce the strength of the target. This makes them easier to acquire ...
+    but less valuable once you do acquire it! You can expect a counterattack -- or even a series of counterattacks!
+But you do get the first strike. </p>
+<form method="POST" action="<?= $this->baseUrl() ?>/ultimatum/game/attackexecute">
+<?= $this->formHidden('target', $this->target->identity()) ?>
+<?
+$groups = $this->player->player_groups();
+$checked = TRUE;
+foreach($groups as $group):
+ob_start();
+?>
+    <br />
+<label><input name="player_group" <?= $checked ? ' checked="checked" ' : '' ?>  type="radio" value="<?= $group->identity() ?>"/>
+Attack with <?= $group ?></label>
+<?
+echo $this->networknode($group, ob_get_clean());
+$checked = FALSE;
+endforeach; ?>
+
+<p>Attack <?= $this->target ?> ... </p>
+<p><label>
+<?= $this->formCheckbox('reduceprop', NULL, array('checked' => true)) ?> until
+ <?= $this->formSelect('reduceprop_property', 'defense', NULL, array_combine(Ultimatum_Model_Ultgroups::$_properties , Ultimatum_Model_Ultgroups::$_properties )) ?>
+is reduced to <?= $this->formText('reduceprop_strength', 50) ?> or below
+    </label></p>
+
+    <p><label>
+<?= $this->formCheckbox('repeat') ?> up to <?= $this->formText('repeat_count', 1) ?> times
+    </label></p>
+
+    <p><label>
+<?= $this->formCheckbox('loss', null, array('checked' => true)) ?> Until I suffer <?= $this->formText('loss_count', 1) ?>
+successful counterattacks
+    </label></p>
+
+    <p><label>
+<?= $this->formCheckbox('crush', null, array('checked' => true)) ?> Until the group is utterly destroyed or surrenders control to me
+    </label></p>
+
+    <p><label>
+<?= $this->formCheckbox('loss_strength', null, array('checked' => true)) ?>
+            Until I lose <?= $this->formText('loss_strength_count', 20) ?>
+            strength from successful counterattacks
+    </label></p>
+
+    <p><label>
+<?= $this->formCheckbox('payoff', null, array('checked' => true)) ?> Until the target offers
+ <?= $this->formText('payoff_count', 50) ?> payoff for peace</label></p>
+<input type="Submit" value="Attack <?= $this->target ?>">
+
+
+<p>If your target is really ticked off and crushes your group in a severe
+    counterattack the group will automatically negotiate for self preservation,
+    trading its own strength for a peace treaty, or even surrendering to your would-be target! </p>
+</form>

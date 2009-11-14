@@ -8,7 +8,7 @@ extends Zend_View_Helper_Abstract
  * @param $pPlayer_group
  * @return string
  */
-    public function networknode ($pPlayer_group) {
+    public function networknode ($pPlayer_group, $pContent = NULL) {
 
         $this->view->headLink()->appendStylesheet($this->view->baseUrl() . '/style/ultimatum/ult_style.css');
 
@@ -22,6 +22,9 @@ extends Zend_View_Helper_Abstract
     <b><?= $group->get_lead() ?></b>
     <hr />
         <?= $group->get_content(); ?>
+    <? if ($pContent):
+    echo $pContent;
+    else: ?>
     <ul>
         <li>
             <a class="actionbutton" href="<?= $this->view->baseUrl() ?>/ultimatum/game/network/group/<?= $group->identity() ?>">
@@ -49,6 +52,7 @@ extends Zend_View_Helper_Abstract
             </a>
         </li>
     </ul>
+    <? endif; ?>
 </fieldset>
 <?
     return ob_get_clean();

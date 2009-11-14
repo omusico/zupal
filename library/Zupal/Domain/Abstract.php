@@ -30,7 +30,7 @@ implements Zupal_Domain_IDomain {
     endif;
     }
 
-    protected function _as($pItem, $pClass, $pAsID = FALSE)
+    public static function _as($pItem, $pClass, $pAsID = FALSE)
     {
        if (!$pItem instanceof $pClass):
             if (is_scalar($pItem)):
@@ -48,7 +48,6 @@ implements Zupal_Domain_IDomain {
         else:
             return $pItem;
         endif;
-
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ new @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

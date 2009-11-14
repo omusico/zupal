@@ -10,6 +10,10 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         return 'Ultimatum_Model_DbTable_Ultplayergroupknowledge';
     }
 
+/**
+ *
+ * @return Ultimatum_Model_Ultplayergroupknowledge
+ */
     public static function getInstance()
     {
         if ($pReload || is_null(self::$_Instance)):
@@ -19,6 +23,10 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
             return self::$_Instance;
     }
 
+/**
+ *
+ * @return Ultimatum_Model_Ultplayergroupknowledge
+ */
     public function get($pID = NULL, $pLoadFields = NULL)
     {
         $out = new self($pID);

@@ -6,11 +6,18 @@ $this->dojo()->addStyleSheet('/scripts/dijit/themes/tundra/tundra.css');
     $this->zupallayoutcss('style.css', __FILE__);
     $this->zupallayoutcss('admin.css', __FILE__);
 
-    if (1 || $this->dojo()->isEnabled()){
+    if ($this->dojo()->isEnabled()):
     $this->dojo()->setLocalPath('/scripts/dojo/dojo.js')// changing to root scripts
                  ->addStyleSheetModule('dijit.themes.tundra');
     echo $this->dojo();
-}
+else:
+    $this->headStyle()->captureStart();
+    echo '@import "/scripts/dijit/themes/tundra/tundra.css";';
+    $this->headStyle()->captureEnd();
+endif;
+$this->headStyle()->captureStart();
+echo '@import "/scripts/dojo/resources/dojo.css";';
+$this->headStyle()->captureEnd();
 ?>
     <?php echo $this->headTitle() ?>
     <?php echo $this->headMeta() ?>
