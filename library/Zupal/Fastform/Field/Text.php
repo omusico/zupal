@@ -58,7 +58,28 @@ class Zupal_Fastform_Field_Text extends Zupal_Fastform_Field_Abstract {
         if ($this->get_rows() == 1):
             printf('<input type="text" %s />', $props);
         else:
-            printf('<textarea %s>%s</textarea>', $props, $this->get_value());
+            $value = $this->get_value();
+            printf('<textarea %s>%s</textarea>', $props, $value);
+        endif;
+
+        $out = ob_get_clean();
+        return $out;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function express () {
+        ob_start();
+        $props = $this->express_props();
+
+        if ($this->get_rows() == 1):
+            printf('<input type="text" %s />', $props);
+        else:
+            $value = $this->express_value();
+            printf('<textarea %s>%s</textarea>', $props, $value);
         endif;
 
         $out = ob_get_clean();

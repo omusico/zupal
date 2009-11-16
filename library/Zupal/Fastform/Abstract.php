@@ -6,9 +6,9 @@ extends Zupal_Fastform_Tag_Form {
     public function __construct($pName = '', $pID = NULL, $pLabel = '', $pAction = '', $pFields = array(), $pProps = array()) {
         $this->set_name($pName);
         $this->set_label($pLabel);
-            $this->set_id($pID);
+        $this->set_id($pID);
 
-        if ($pForm_props && count($pForm_props)):
+        if ($pProps && count($pProps)):
             $this->load_props($pProps);
         endif;
 
@@ -32,6 +32,22 @@ extends Zupal_Fastform_Tag_Form {
         return $this->_form_tag;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_prop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pKey
+     * @return <type>
+     */
+    public function set_prop ($pKey, $pValue) {
+
+        switch($pKey):
+            case 'field_width':
+                return $this->set_field_width($pValue);
+                break;
+            default:
+                return parent::set_prop($pKey, $pValue);
+        endswitch;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ template @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -67,21 +83,19 @@ extends Zupal_Fastform_Tag_Form {
     }
 
     public function get_field($pName) {
-        return $this->_fields[$pName];
+        if (array_key_exists($pName, $this->_fields)):
+            return $this->_fields[$pName];
+        else:
+            return NULL;
+        endif;
     }
 
     public function get_fields() { return $this->_fields; }
 
-    public function render_field($pField, $pRow_Template = NULL) {
-        if (is_string($pField)):
-            $pField = $this->get_field($pField);
-        endif;
-
-        if (!($pField instanceof Zupal_Fastform_Tag_Abstract)):
-            return;
-    endif;
+    public function __get($name) {
+        return $this->get_field($name);
     }
-
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -121,6 +135,13 @@ extends Zupal_Fastform_Tag_Form {
         return $this->template()->render();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express_body @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @return string
+     */
+    public function express_body () {
+        return $this->template()->express();
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controls @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -149,13 +170,11 @@ extends Zupal_Fastform_Tag_Form {
         if (count($controls = $this->get_controls())):
             return $controls;
         else:
-            $props =  array('type' => 'submit');
-            return array(
-            new Zupal_Fastform_Field_Button('submit', 'Submit',$props, $this)
-            );
+            $props =  array('type' => 'submit', 'width' => 0);
+            $submit = new Zupal_Fastform_Field_Button('submit', 'Submit',$props, $this);
+            return array($submit);
     endif;
     }
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ label @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -167,6 +186,31 @@ extends Zupal_Fastform_Tag_Form {
     public function get_label() { return $this->_label; }
 
     public function set_label($pValue) { $this->_label = $pValue; }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ field_width @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_field_width = null;
+    /**
+     * @return class;
+     */
+
+    public function get_field_width() { return $this->_field_width; }
+
+    public function set_field_width($pValue) { $this->_field_width = $pValue; }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_field_values @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pValues
+     * @return void
+     */
+    public function load_values (array $pValues) {
+        foreach($pValues as $field_name => $value):
+            if ($field = $this->get_field($field_name)):
+                $field->set_value($value);
+            endif;
+        endforeach;
+    }
 
 
 }

@@ -32,9 +32,18 @@ abstract class Zupal_Fastform_Tag_Abstract {
 
     public function set_body($pValue) { $this->_body = $pValue; }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express_body @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function express_body () {
+        return $this->get_body();
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    private $_props = array();
+    protected $_props = array();
 
     public function set_prop( $pID, $pValue) {
         if (!$pID) return;
@@ -75,7 +84,8 @@ abstract class Zupal_Fastform_Tag_Abstract {
      */
     public function props () {
         $props = $this->get_props();
-        return array_merge($props, $this->my_props());
+        $my_props = $this->my_props();
+        return array_merge($props, $my_props);
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _set_width_prop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -131,6 +141,15 @@ abstract class Zupal_Fastform_Tag_Abstract {
         endforeach;
 
         return $out;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express_props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function express_props () {
+        return $this->render_props();
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -231,10 +250,37 @@ abstract class Zupal_Fastform_Tag_Abstract {
      */
     public function data () {
         if ($source = $this->get_data_source()):
-            return $this->get_form()->get_data($source);
+            if (is_array($source)):
+                return $source;
+            else:
+                return $this->get_form()->get_data($source);
+            endif;
         else:
             return NULL;
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function express () {
+        $po = '<?';
+        $poe = '<?=';
+        $pc = '?>';
+
+        $tag_content = $this->express_props();
+
+        ob_start(); // tag proper
+        $body = $this->express_body();
+        if (is_null($body) || $body == ''):
+            ?><<?= $this->tag_name() ?> <?= $tag_content ?>  /><?
+        else:
+            ?><<?= $this->tag_name() ?> <?= $tag_content ?> ><?= $body ?></<?= $this->tag_name() ?> ><?
+        endif;
+
+        $out = ob_get_clean();
+        return $out;
+    }
 }
