@@ -2,7 +2,20 @@
 $this->placeholder('page_title')->set('Forms Test');
 
 echo  $this->simple_form;
+
 echo  $this->complex_form;
+
 echo  $this->data_form;
 
+?>
 
+
+
+<h1>Expressions</h1>
+
+
+
+<?
+echo $this->simple_form->express();
+
+echo $this->complex_form->express();

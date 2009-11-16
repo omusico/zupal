@@ -257,3 +257,24 @@ a.edit:hover
 {
     border: none;
 }
+
+table.zupal_form_table{
+    border: none;
+    margin: 1em;
+    background-color: #999;
+}
+
+table.zupal_form_table th,
+table.zupal_form_table td{
+    padding: 0.25em;
+    vertical-align: top;
+    text-align:left;
+    white-space:nowrap;
+    padding-bottom: 0.5em;
+}
+
+table.zupal_form_table th{
+    text-align:left;
+    font-weight: bold;
+    width: 200px;
+}

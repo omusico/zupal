@@ -23,4 +23,5 @@ interface Zupal_Fastform_Template_Interface {
 
     public function set_render_form_tag($pValue);
 
+    public function express();
 }
