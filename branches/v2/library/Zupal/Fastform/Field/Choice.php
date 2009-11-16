@@ -196,8 +196,6 @@ extends Zupal_Fastform_Field_Abstract {
      */
     public function express () {
 
-        $data = $this->data();
-
         $pType = $this->get_type();
         $sep = $this->get_seperator();
 
@@ -213,12 +211,12 @@ extends Zupal_Fastform_Field_Abstract {
                 break;
 
             case self::CHOICE_RADIO:
-                $this->express_radio();
+                $this->_express_radio();
                 break;
 
             default:
                 ob_flush();
-                throw new Exception(__METHOD__ . ': bad value ' . $pType . ' passed');
+                throw new Exception(__METHOD__ . ': bad type value ' . $pType . ' passed');
         endswitch;
         $out = ob_get_clean();
         return $out;
@@ -227,10 +225,8 @@ extends Zupal_Fastform_Field_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express_radio @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type>
-     * @return <type>
      */
-    protected function express_radio () {
+    protected function _express_radio () {
         foreach($data as $key => $label):
             ?><label><input type="radio" <?= $properties ?> /><?= $label ?></label><?= $sep ?><?
         endforeach;
@@ -238,11 +234,9 @@ extends Zupal_Fastform_Field_Abstract {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _express_select @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
-     * @param <type> $pParam
-     * @return <type>
+     * //@TODO: differentiate between dropdowns and lists. 
      */
-    protected function _express_select ($pParam) {
+    protected function _express_select () {
         $sep = $this->get_seperator();
         $properties = $this->express_props();
         $key = $this->get_name() . '_key';
@@ -259,8 +253,6 @@ extends Zupal_Fastform_Field_Abstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _express_checkbox() @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param <type> $pParam
-     * @return <type>
      */
     protected function _express_checkbox() {
         $sep = $this->get_seperator();
@@ -268,6 +260,7 @@ extends Zupal_Fastform_Field_Abstract {
         $key = $this->get_name() . '_key';
         $label = $this->get_name() . '_label';
         $value = $this->get_value();
+        $data = $this->data();
 
         if ($data && is_array($data)):
 
@@ -283,12 +276,13 @@ extends Zupal_Fastform_Field_Abstract {
             endif;
             echo '<? endforeach; ?>', "\n";
 
-            else:
-                $checked = '<?= $' . $this->get_name() . ' ? \' checked="checked" \' : \'\' ?>';
-                ?><label><input type="checkbox" <?= $properties ?> <?= $checked ?> value="<?= $this->get_chosen_value() ?>" />
-                <?= $this->get_label() ?></label><?
-            endif;
+        else:
+            $checked = '<?= $' . $this->get_name() . ' ? \' checked="checked" \' : \'\' ?>';
+            ?><label><input type="checkbox" <?= $properties ?> <?= $checked ?> value="<?= $this->get_chosen_value() ?>" />
+            <?= $this->get_label() ?></label><?
+        endif;
     }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ seperator @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_seperator = '<br />';
