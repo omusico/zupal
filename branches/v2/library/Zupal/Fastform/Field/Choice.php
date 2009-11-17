@@ -27,11 +27,8 @@ extends Zupal_Fastform_Field_Abstract {
      */
     public function __construct ($pName, $pLabel, $pValue, $pData, $pProps = array(), Zupal_Fastform_Abstract $pForm = NULL) {
         $this->set_type(self::CHOICE_DROPDOWN);
-
         parent::__construct($pName, $pLabel, $pValue, $pProps, $pForm);
         $this->set_data_source($pData);
-
-    //parent::__construct ($pForm, $pProps, $pBody);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -245,7 +242,7 @@ extends Zupal_Fastform_Field_Abstract {
         <?
             echo '<? foreach($' . $this->get_name() . '_options as ' . $key . ' => ' . $label . '): ?>', "\n";
             ?><option value="<?=  "<?= $key ?>" ?>" <?= "<?= $key == {$this->get_name()} ? ' selected=\"selected\" ' : '' " ?> >
-        <?= $label ?></option>
+        <?= "<?= $label ?>"?></option>
         <?= '<? endforeach; ?>'. "\n"; ?>
 </select><?
     }

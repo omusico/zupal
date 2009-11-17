@@ -110,11 +110,15 @@ extends Zupal_Fastform_Field_Abstract
         endforeach;
         ob_start();
         ?>
+<!-- CONTROL ROW -->
 <tr><td colspan="3" style="text-align: center"><center><table border="0" class="controls"><tr>
-                        <? foreach($this->get_form()->controls() as $button): ?>
+                        <? foreach($this->get_form()->controls() as $key => $button): ?>
+                    <!-- CONTROL <?= $key ?> -->
                 <td><?= $button ?></td>
+                    <!-- END CONTROL <?= $key ?> -->
                     <? endforeach; ?></tr>
         </table></center></td></tr>
+<!-- END CONTROL ROW -->
         <?
         return $out . ob_get_clean();
     }
