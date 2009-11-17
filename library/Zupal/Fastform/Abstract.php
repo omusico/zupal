@@ -3,24 +3,6 @@
 abstract class Zupal_Fastform_Abstract
 extends Zupal_Fastform_Tag_Form {
 
-    public function __construct($pName = '', $pID = NULL, $pLabel = '', $pAction = '', $pFields = array(), $pProps = array()) {
-        $this->set_name($pName);
-        $this->set_label($pLabel);
-        $this->set_id($pID);
-
-        if ($pProps && count($pProps)):
-            $this->load_props($pProps);
-        endif;
-
-        if ($pAction):
-            $this->set_action($pAction);
-        endif;
-
-        if ($pFields && count($pFields)):
-            $this->load_fields($pFields);
-    endif;
-    }
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ form_tag @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_form_tag = NULL;
@@ -102,7 +84,65 @@ extends Zupal_Fastform_Tag_Form {
      * @param array $pFields
      */
     public function load_fields (array $pFields) {
-        $this->_fields = array_merge($this->_fields, $pFields);
+       foreach($pFields as $name => $pField):
+        if ($pField instanceof Zupal_Fastform_Field_Abstract):
+            $this->set_field($pField);
+        elseif (is_array($pField)):
+            $label = '';
+            $value = '';
+            $rows = NULL;
+            $options =  $pField['options'];
+            $multiOptions = array();
+
+            extract($options);
+
+            switch($pField['type']):
+
+                case 'textarea':
+                    if (!$rows):
+                        $options['rows'] = 5;
+                    endif;
+                    // continue! 
+                case 'text':                        
+                        $field = new Zupal_Fastform_Field_Text($name, $label, $value,$options, $form);
+                    break;
+
+                case 'select':
+                        $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_DROPDOWN;
+                        $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $multiOptions, $options, $form);
+                    break;
+
+                case 'list':
+                    if (!$rows):
+                        $options['rows'] = 5;
+                    endif;
+                    $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_LIST;
+                    $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $multiOptions, $options, $form);
+                break;
+
+                case 'radio':
+
+                    break;
+
+                case 'checkbox':
+
+                    break;
+
+                case 'button':
+
+                    break;
+
+                case 'multiCheckbox':
+
+                    break;
+
+                default:
+                    throw new Exception(__METHOD__ . ': cannot handle element ' . $pField['type']);
+                    
+            endswitch;
+
+        endif;
+       endforeach;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ datas @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -171,7 +211,7 @@ extends Zupal_Fastform_Tag_Form {
             return $controls;
         else:
             $props =  array('type' => 'submit', 'width' => 0);
-            $submit = new Zupal_Fastform_Field_Button('submit', 'Submit',$props, $this);
+            $submit = new Zupal_Fastform_Field_Button('submit', 'Submit',$props);
             return array($submit);
     endif;
     }
