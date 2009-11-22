@@ -7,8 +7,9 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
 
     public function tableClass()
     {
-        return 'Ultimatum_Model_DbTable_Ultplayergrouporder';
+        return 'Ultimatum_Model_DbTable_Ultplayergrouporders';
     }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getInstance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
  * @return Ultimatum_Model_Ultplayergrouporders
@@ -22,6 +23,7 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
             return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
  * @return Ultimatum_Model_Ultplayergrouporders
