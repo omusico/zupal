@@ -37,13 +37,25 @@ extends Zupal_Fastform_Field_Abstract
             return '';
         endif;
 
-        ob_start(); ?>
+        $hidden = FALSE;
+        $show_label = TRUE;
+        $show_field = TRUE;
+
+        extract($pField->display_props());
+
+        ob_start();
+
+        if ($hidden):
+            echo $pField;
+        else:
+            ?>
 <tr>
-    <th><?= $pField->get_label() ?></th>
-    <td><?= $pField ?></td>
-    <td><small><?= $pField->get_description() ?></small></td>
+    <th <?= $show_field ? '' : ' colspan="2" ' ?> ><?= $show_label ? $pField->get_label() : '' ?></th>
+    <td><?=  $show_field ? $pField  : '' ?></td>
+    <td><small><?= $pField->description() ?></small></td>
 </tr>
         <?
+        endif;
         $out = ob_get_clean();
         return $out;
     }
@@ -69,14 +81,13 @@ extends Zupal_Fastform_Field_Abstract
     }
 
     public function render() {
+        $body = $this->__toString();
         if ($this->get_render_form_tag()):
-            $this->get_form()->set_body($this->__toString());
-            return $this->get_form()->__toString();
+            return $this->get_form()->render_head() . $body . $this->get_form()->render_foot();
         else:
-            return $this->__toString();
-        endif;
+            return $body;
+    endif;
     }
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_body @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -85,16 +96,17 @@ extends Zupal_Fastform_Field_Abstract
      */
     public function get_body () {
         $out = '';
-        foreach($this->get_form()->get_fields() as $field):
+        $fields = $this->get_form()->get_fields();
+        foreach($fields as $field):
             $out .= $this->render_field($field);
         endforeach;
         ob_start();
         ?>
 <tr><td colspan="3" style="text-align: center"><center><table border="0" class="controls"><tr>
-                        <? foreach($this->get_form()->controls() as $button): ?>
-                <td><?= $button ?></td>
-                    <? endforeach; ?></tr>
-        </table></center></td></tr>
+                            <? foreach($this->get_form()->controls() as $button): ?>
+                    <td><?= $button ?></td>
+                        <? endforeach; ?></tr>
+            </table></center></td></tr>
         <?
         return $out . ob_get_clean();
     }
@@ -112,12 +124,12 @@ extends Zupal_Fastform_Field_Abstract
         ?>
 <!-- CONTROL ROW -->
 <tr><td colspan="3" style="text-align: center"><center><table border="0" class="controls"><tr>
-                        <? foreach($this->get_form()->controls() as $key => $button): ?>
+                            <? foreach($this->get_form()->controls() as $key => $button): ?>
                     <!-- CONTROL <?= $key ?> -->
-                <td><?= $button ?></td>
+                    <td><?= $button ?></td>
                     <!-- END CONTROL <?= $key ?> -->
-                    <? endforeach; ?></tr>
-        </table></center></td></tr>
+                        <? endforeach; ?></tr>
+            </table></center></td></tr>
 <!-- END CONTROL ROW -->
         <?
         return $out . ob_get_clean();
@@ -125,7 +137,7 @@ extends Zupal_Fastform_Field_Abstract
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ render_form_tag @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    private $_render_form_tag = null;
+    private $_render_form_tag = TRUE;
     /**
      * @return class;
      */
@@ -162,9 +174,9 @@ extends Zupal_Fastform_Field_Abstract
             $out .= $this->head();
         endif;
         $out .= parent::__toString();
-       return $out;
+        return $out;
     }
-
+    
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ my_props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      * @return array

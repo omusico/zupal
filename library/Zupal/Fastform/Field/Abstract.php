@@ -12,19 +12,20 @@
 abstract class Zupal_Fastform_Field_Abstract
 extends Zupal_Fastform_Tag_Abstract {
 
-    public function __construct($name, $label, $value = NULL, $props = null, $form = null) {
+    public function __construct($name, $label, $value = NULL, 
+        $props = null, $form = null, $pData = NLLL) {
         if (is_array($name)):
             extract($name);
         endif;
 
         if (is_string($name)):
             $this->set_name($name);
-            
+
             if (!$label):
                 $label = ucwords(str_replace('_', ' ', $name));
             endif;
         endif;
-        
+
         $this->set_value($value);
         $this->set_label($label);
 
@@ -32,7 +33,10 @@ extends Zupal_Fastform_Tag_Abstract {
 
         if ($form):
             $this->set_form($form);
-            $this->get_form()->set_field($this);
+        endif;
+
+        if ($pData && is_array($pData)):
+            $this->set_data_source($pData);
         endif;
     }
 
@@ -45,11 +49,11 @@ extends Zupal_Fastform_Tag_Abstract {
         return '<?= $' . $this->get_name() . ' ?>';
     }
 
-    public function express_props(){
+    public function express_props() {
         $this->set_value($this->express_value());
         return $this->render_props();
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ name @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_name = null;
@@ -112,6 +116,10 @@ extends Zupal_Fastform_Tag_Abstract {
                 return $this->set_id($pValue);
                 break;
 
+            case 'value':
+                return $this->set_value($pValue);
+                break;
+
             case 'name':
                 return $this->set_name($pValue);
                 break;
@@ -142,6 +150,19 @@ extends Zupal_Fastform_Tag_Abstract {
 
             case 'width':
                 return $this->set_width($pValue);
+                break;
+
+            case 'required':
+                return $this->set_required($pValue);
+                break;
+
+            case 'description':
+                return $this->set_description($pValue);
+                break;
+
+            case 'data':
+            case 'mulitoptions':
+                return $this->set_data_source($pValue);
                 break;
 
             default:
@@ -242,6 +263,60 @@ extends Zupal_Fastform_Tag_Abstract {
     endif;
     }
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ required @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_required = FALSE;
+    /**
+     * @return boolean;
+     */
+
+    public function get_required() { return $this->_required; }
+
+    public function set_required($pValue) { $this->_required = $pValue ? TRUE : FALSE; }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ description @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_description = null;
+    /**
+     * @return string;
+     */
+
+    public function get_description() { return $this->_description; }
+
+    public function set_description($pValue) { $this->_description = $pValue; }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ description @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function description () {
+        return ($this->get_required() ? '<span class="required">Required;</span> ' : '')
+        . $this->get_description();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ error @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_error = null;
+    /**
+     * @return string;
+     */
+
+    public function get_error() { return $this->_error; }
+
+    public function set_error($pValue) { $this->_error = $pValue; }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ error @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function error () {
+        if ($error = $this->get_error()):
+            return sprintf('<span class="error">%s</span>', $error);
+        endif;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -251,4 +326,13 @@ extends Zupal_Fastform_Tag_Abstract {
         $this->set_value(  '<?= $' . $this->get_name() . ' ?>');
         return parent::express();
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ hidden @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @return boolean
+     */
+    public function display_props () {
+        return array('show_label' => TRUE, 'show_field' => TRUE, 'hidden' => FALSE);
+    }
+
 }

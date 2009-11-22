@@ -14,7 +14,7 @@ class Zupal_Util_Array {
         endforeach;
         return $out;
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ diff @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public static function diff($a1, $a2) {
@@ -121,7 +121,7 @@ class Zupal_Util_Array {
     public static function is_last ($pValue, $pArray) {
         return $pValue == array_pop($pArray);
     }
-/**
+    /**
      * finds the keys before and/or after the passed key in the array.
      * If the key is in the array returns sets of three keys -- the one before, equal to and after the passed value.
      * if as_pairs is true the three value arrays are split into two two-key values --
@@ -214,7 +214,7 @@ class Zupal_Util_Array {
         return $out;
     }
 
-/**
+    /**
      * Test range is for situations in which being out of range is an automatic fatal error.
      *
      */
@@ -235,7 +235,7 @@ class Zupal_Util_Array {
             return TRUE;
     endif;
     }
-/**
+    /**
      * in_range returns whether the number is inside the range.
      * NOTE: unlike test_range, it doesn't fail if you are out of range.
      * @return boolean
@@ -255,7 +255,7 @@ class Zupal_Util_Array {
             return $pNum <= $pLast;
     endif;
     }
-/**
+    /**
      * Limit input to the given range through min/max logic
      *
      * @param number $pValue
@@ -318,7 +318,7 @@ class Zupal_Util_Array {
         $distribution[] = $end;
         return $distribution;
     }
-/**
+    /**
      * Multiplies all numeric values in an array by the scalar.
      * Accepts a mixed array but insists on a numeric scalar.
      *
@@ -340,7 +340,7 @@ class Zupal_Util_Array {
 
         return $pArray;
     }
-/**
+    /**
      * Sets, adds, or decrements an array item by a numeric value. Handles summary logic.
      *
      * @param array $array
@@ -365,7 +365,7 @@ class Zupal_Util_Array {
         endif;
         return $array;
     }
-/**
+    /**
      * adds all the numeric values of the arrays, using keys from the first array.
      * non-numeric/missing values are skipped,
      * as are values that are not in the first array.
@@ -412,4 +412,25 @@ class Zupal_Util_Array {
             return TRUE;
     endif;
     }
+
+    public static function stripslashes($value) {
+        if(is_array($value)):
+            $call = array('Zupal_Util_Array', 'stripslashes');
+            $out = array_map($call, $value);
+        else:
+            $out = stripslashes($value);
+        endif;
+        return $out;
+    }
+    
 }
+/*
+ * function stripslashes_deep($value)
+{
+    $value = is_array($value) ?
+                array_map('stripslashes_deep', $value) :
+                stripslashes($value);
+
+    return $value;
+}
+ */

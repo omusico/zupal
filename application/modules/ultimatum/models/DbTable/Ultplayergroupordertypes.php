@@ -11,7 +11,7 @@ class Ultimatum_Model_DbTable_Ultplayergroupordertypes extends Zupal_Table_Abstr
         $sql = <<<SQL
 CREATE TABLE `ult_player_group_order_types` (
   `name` varchar(45) collate utf8_bin NOT NULL,
-  `Title` varchar(255) collate utf8_bin NOT NULL,
+  `title` varchar(255) collate utf8_bin NOT NULL,
   `description` text collate utf8_bin NOT NULL,
   `target_type` enum('self','other','both','none') collate utf8_bin NOT NULL default 'other',
   `turns` tinyint(11) unsigned NOT NULL default '1',

@@ -40,7 +40,7 @@ abstract class Zupal_Fastform_Tag_Abstract {
     public function express_body () {
         return $this->get_body();
     }
-    
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     protected $_props = array();
@@ -134,7 +134,7 @@ abstract class Zupal_Fastform_Tag_Abstract {
         $out = ' ';
 
         $props = $this->props();
-        
+
         foreach($props as $k => $v):
             $prop = " $k=\"$v\" ";
             $out .= $prop;
@@ -173,17 +173,36 @@ abstract class Zupal_Fastform_Tag_Abstract {
 
         $tag_content = $this->render_props();
 
-        ob_start(); // tag proper
         $body = $this->get_body();
         if (is_null($body) || $body == ''):
-            ?><<?= $this->tag_name() ?> <?= $tag_content ?>  /><?
+            return sprintf('<%s %s />',  $this->tag_name(), $tag_content);
         else:
-            ?><<?= $this->tag_name() ?> <?= $tag_content ?> ><?= $body ?></<?= $this->tag_name() ?> ><?
+            return $this->render_head($tag_content) . $body . $this->render_foot();
         endif;
 
-        return ob_get_clean();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_head @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $tag_content
+     * @return string
+     */
+    public function render_head ($tag_content = NULL) {
+        if (is_null($tag_content)):
+            $tag_content = $this->render_props();
+        endif;
+        return sprintf('<%s %s>', $this->tag_name(), $tag_content);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_foot @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function render_foot () {
+        return sprintf('</%s >', $this->tag_name());
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ id @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -206,19 +225,6 @@ abstract class Zupal_Fastform_Tag_Abstract {
     public function get_template_render_method() { return $this->_template_render_method; }
 
     public function set_template_render_method($pValue) { $this->_template_render_method = $pValue; }
-
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@ description @@@@@@@@@@@@@@@@@@@@@@@@ */
-
-    private $_description = null;
-    /**
-     * @return string;
-     */
-
-    public function get_description() { return $this->_description; }
-
-    public function set_description($pValue) { $this->_description = $pValue; }
-
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ data_source @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -254,10 +260,10 @@ abstract class Zupal_Fastform_Tag_Abstract {
                 return $source;
             else:
                 return $this->get_form()->get_data($source);
-            endif;
+        endif;
         else:
             return NULL;
-        endif;
+    endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ express @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

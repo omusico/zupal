@@ -322,5 +322,33 @@ implements Ultimatum_Model_GroupProfileIF
     public function __toString() {
         return $this->get_group() . ' - controlled by ' . $this->get_player();
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_orders = NULL;
+    function get_orders($pReload = FALSE) {
+        if ($pReload || is_null($this->_orders)):
+            $params = array('player_group' => $this->identity());
+            $pgo = Ultimatum_Model_Ultplayergrouporder::getInstance();
+            $this->_orders = $pgo->find($params, 'start_turn');
+        endif;
+        return $this->_orders;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending_orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return array
+     */
+    public function pending_orders () {
+        $orders = $this->get_orders();
+        $out = array();
+        foreach($orders as $o):
+            if ($o->active):
+                $out[] = $o;
+            endif;
+        endforeach;
+        return $out;
+    }
 }
 

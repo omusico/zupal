@@ -30,11 +30,11 @@ class Administer_TestController extends Zupal_Controller_Abstract {
 
         $complex_form = $this->_complex_form();
 
-        $data_form = '';
+        $config_form = Zupal_Fastform_Form::from_config(dirname(__FILE__) . '/config_form.ini', 'config_form', 'Configuration Form');
 
         $this->view->simple_form = $simple_form;
         $this->view->complex_form = $complex_form;
-        $this->view->data_form = $data_form;
+        $this->view->config_form = $config_form;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _simple_form @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

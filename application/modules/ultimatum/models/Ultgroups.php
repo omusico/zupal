@@ -145,8 +145,7 @@ implements Ultimatum_Model_GroupProfileIF
 
         $params = array(
             'group_id' => $this->identity(),
-            'game' => $pGame,
-            'activity' => $pProperty);
+            'game' => $pGame);
 
         foreach($params as $f => $v):
             $select->where("$f = ?", $v);

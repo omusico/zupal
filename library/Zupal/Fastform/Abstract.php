@@ -61,15 +61,20 @@ extends Zupal_Fastform_Tag_Form {
      * @param Zupal_Fastform_Field_Abstract $pValue
      */
     public function set_field( $pValue) {
-        $this->_fields[$pValue->get_name()] = $pValue;
+        $this->_fields[] = $pValue;
     }
 
     public function get_field($pName) {
         if (array_key_exists($pName, $this->_fields)):
             return $this->_fields[$pName];
         else:
-            return NULL;
+            foreach($this->get_fields() as $field):
+                if (!strcasecmp($pName, $field->get_name())):
+                    return $field;
+                endif;
+            endforeach;
         endif;
+        return NULL;
     }
 
     public function get_fields() { return $this->_fields; }
@@ -77,72 +82,108 @@ extends Zupal_Fastform_Tag_Form {
     public function __get($name) {
         return $this->get_field($name);
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_field_values @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pValues
+     * @return void
+     */
+    public function load_field_values ($pValues) {
+        foreach($pValues as $field => $value):
+            if ($f = $this->get_field($field)):
+                $f->set_value($value);
+        endif;
+        endforeach;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_fields @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @param array $pFields
      */
     public function load_fields (array $pFields) {
-       foreach($pFields as $name => $pField):
-        if ($pField instanceof Zupal_Fastform_Field_Abstract):
-            $this->set_field($pField);
-        elseif (is_array($pField)):
-            $label = '';
-            $value = '';
-            $rows = NULL;
-            $options =  $pField['options'];
-            $multiOptions = array();
+        foreach($pFields as $name => $pField):
+            if (is_array($pField)):
+                $pField = $this->_array_to_field($pField, $name);
+            endif;
 
-            extract($options);
+            if ($pField instanceof Zupal_Fastform_Field_Abstract):
+                $this->set_field($pField);
+            endif;
+        endforeach;
+    }
 
-            switch($pField['type']):
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _array_to_field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pField_Array
+     * @return Zupal_Fastform_Field_Abstract
+     */
+    public function _array_to_field (array $pField, $name = '') {
+        $label = '';
+        $value = NULL;
+        $rows = NULL;
+        $data = NULL;
+        $options =  $pField['options'];
+        $multiOptions = array();
 
-                case 'textarea':
-                    if (!$rows):
-                        $options['rows'] = 5;
-                    endif;
-                    // continue! 
-                case 'text':                        
-                        $field = new Zupal_Fastform_Field_Text($name, $label, $value,$options, $form);
-                    break;
+        extract($options);
 
-                case 'select':
-                        $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_DROPDOWN;
-                        $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $multiOptions, $options, $form);
-                    break;
+        switch($pField['type']): // a little clumsy -- prob. need to flatten constructors or make consistent.
 
-                case 'list':
-                    if (!$rows):
-                        $options['rows'] = 5;
-                    endif;
-                    $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_LIST;
-                    $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $multiOptions, $options, $form);
+            case 'hidden':
+                $field = new Zupal_Fastform_Field_Hidden($name, $label, $value, $options, $this);
                 break;
 
-                case 'radio':
+            case 'textarea':
+                if (!$rows):
+                    $options['rows'] = 5;
+            endif;
+            // continue!
+            case 'text':
+                $field = new Zupal_Fastform_Field_Text($name, $label, $value,$options, $this);
+                break;
 
-                    break;
+            case 'select':
+                $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_DROPDOWN;
+                $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $options, $this, $multiOptions);
+                break;
 
-                case 'checkbox':
+            case 'list':
+                if (!$rows):
+                    $options['rows'] = 5;
+                endif;
+                $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_LIST;
+                $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $options, $this, $multiOptions);
+                break;
 
-                    break;
+            case 'radio':
+                $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_RADIO;
 
-                case 'button':
+                $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $options, $this, $multiOptions);
+                break;
 
-                    break;
+            case 'multiCheckbox':
+            case 'checkbox':
+                $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_CHECKBOX;
 
-                case 'multiCheckbox':
+                $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $options, $this, $multiOptions);
+                break;
 
-                    break;
+            case 'button':
+                $field = new Zupal_Fastform_Field_Button($name, $label, $value, $options, $this);
+                break;
 
-                default:
-                    throw new Exception(__METHOD__ . ': cannot handle element ' . $pField['type']);
-                    
-            endswitch;
+            case 'submit':
+                $field = new Zupal_Fastform_Field_Button($name, $label, $value, $options, $this);
+                $field->set_type('submit');
+                break;
 
-        endif;
-       endforeach;
+            default:
+                throw new Exception(__METHOD__ . ': cannot handle element ' . $pField['type']);
+        endswitch;
+        return $field;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ datas @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -190,17 +231,31 @@ extends Zupal_Fastform_Tag_Form {
      */
     private $_controls = array();
 
-    public function set_control($pValue, $pID = NULL) {
-        if (is_null($pID)):
-            array_push($this->_controls, $pValue);
-        else:
-            $this->_controls[$pID] = $pValue;
-    endif;
+    public function add_control($pValue, $pName = NULL) {
+        if (is_array($pValue)):
+            $pValue = $this->_array_to_field($pValue, $pName = NULL);
+        endif;
+
+        $this->_controls[$pValue->get_name()] = $pValue;
     }
 
     public function get_control($pID) { return $this->_controls[$pID]; }
 
     public function get_controls() { return $this->_controls; }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ load_controls @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pControls
+     */
+    public function load_controls (array $pControls) {
+        foreach($pControls as $name => $control):
+            if (is_numeric($name)):
+                $name = NULL;
+            endif;
+            $this->add_control($control, $name);
+        endforeach;
+    }
 
    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controls @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -211,7 +266,7 @@ extends Zupal_Fastform_Tag_Form {
             return $controls;
         else:
             $props =  array('type' => 'submit', 'width' => 0);
-            $submit = new Zupal_Fastform_Field_Button('submit', 'Submit',$props);
+            $submit = new Zupal_Fastform_Field_Button('submit', 'Submit', 'Submit',$props);
             return array($submit);
     endif;
     }
@@ -248,9 +303,8 @@ extends Zupal_Fastform_Tag_Form {
         foreach($pValues as $field_name => $value):
             if ($field = $this->get_field($field_name)):
                 $field->set_value($value);
-            endif;
+        endif;
         endforeach;
     }
-
 
 }
