@@ -210,7 +210,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
         endif;
         $form = new Ultimatum_Form_GroupResize($this->_getParam('player_group'));
         $new_values = $form->scale($this->_getAllParams());
-        $order = new Ultimatum_Model_Ultplayergrouporder();
+        $order = new Ultimatum_Model_Ultplayergrouporders();
         $order->type = 'resize';
         $order->player_group = $this->view->player_group->identity();
         $order->save();
@@ -259,7 +259,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
             $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
         endif;
         $order = $this->_getParam("order",  NULL );
-        $po = Ultimatum_Model_Ultplayergrouporder::getInstance()->get($order);
+        $po = Ultimatum_Model_Ultplayergrouporders::getInstance()->get($order);
         if (!$po->player_group()->player()->identity() == $this->view->player->identity()):
             $params = array('error' => 'cannot cancel order ' . $order . ': doesn\'t refer to one of your groups');
         else:
@@ -301,7 +301,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
             $params = array('error' => 'Cannot load group');
             $this->_forward('run', NULL, NULL, $params);
         endif;
-        $ord = new Ultimatum_Model_Ultplayergrouporder();
+        $ord = new Ultimatum_Model_Ultplayergrouporders();
         $ord->player_group = $this->view->player_group->identity();
         $ord->type = 'attack';
         if ($this->_getParam('repeat')):

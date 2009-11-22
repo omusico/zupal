@@ -14,12 +14,36 @@ class Ultimatum_Form_Ultplayergrouporder extends Zupal_Fastform_Domainform {
     }
 
     protected function _domain_class() {
-        return 'Ultimatum_Model_Ultplayergrouporder';
+        return 'Ultimatum_Model_Ultplayergrouporders';
     }
 
     protected function _ini_path() {
         return preg_replace('~php$~', 'ini', __FILE__);
     }
 
-}
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ target @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function target () {
+        if ($target = $this->target->get_value()):
+            return Zupal_Domain_Abstract::_as($target, 'Ultimatum_Model_Ultplayergroups');
+        else:
+            return NULL;
+        endif;
+    }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @return void
+     */
+    public function save () {
+        if (($this->mode->get_value() == 'replace')
+            && ($target = $this->target())):
+            Ultimatum_Model_Ultplayergrouporders::clear_orders($this->player_group->get_value(), $target);
+        endif;
+        return parent::save(); // magic delegates to the domain object. 
+    }
+    
+}

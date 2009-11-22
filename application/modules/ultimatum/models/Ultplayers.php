@@ -289,7 +289,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
      */
     public function pending_orders ($pType = NULL, $pTarget = NULL) {
         $params = array('commander' => $this->identity(), 'active' => 1);
-        $out = Ultimatum_Model_Ultplayergrouporder::getInstance()->find($params, 'given_at');
+        $out = Ultimatum_Model_Ultplayergrouporders::getInstance()->find($params, 'given_at');
         return $out;
     }
 

@@ -16,7 +16,7 @@ extends Zend_View_Helper_Abstract
      * @return <type>
      */
         public function pendingorder ($pPendingOrder) {
-            $pPendingOrder = Zupal_Domain_Abstract::_as($pPendingOrder, 'Ultimatum_Model_Ultplayergrouporder');
+            $pPendingOrder = Zupal_Domain_Abstract::_as($pPendingOrder, 'Ultimatum_Model_Ultplayergrouporders');
             $pg = $pPendingOrder->player_group();
             $ot = $pPendingOrder->order_type();
             $type = $ot->identity();
