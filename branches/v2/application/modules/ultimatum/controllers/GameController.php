@@ -1,8 +1,6 @@
 <?php
-class Ultimatum_GameController extends Zupal_Controller_Abstract
-{
-    public function indexAction()
-    {
+class Ultimatum_GameController extends Zupal_Controller_Abstract {
+    public function indexAction() {
         $user = Model_Users::current_user();
         if ($user):
             $pi = Ultimatum_Model_Ultplayers::getInstance();
@@ -16,12 +14,11 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             $this->view->games = $pi->find($prop);
         else:
             $this->view->nouser = true;
-        endif;
+    endif;
     }
 
-    public function newAction()
-    {
-        // note -- title is not required -- a generaic numbered game will be created in its absence.
+    public function newAction() {
+    // note -- title is not required -- a generaic numbered game will be created in its absence.
         if ($user = Model_Users::current_user()):
             $title = $this->_getParam("title",  NULL );
             $game = new Ultimatum_Model_Ultgames();
@@ -33,11 +30,10 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         else:
             $params = array('error' => 'You must be logged in to start a game');
             $this->_forward('index', NULL, NULL, $params);
-        endif;
+    endif;
     }
 
-    public function runAction()
-    {
+    public function runAction() {
         if(!$this->_prep()):
             return $this->_forward('index', 'index', NULL, array('error' => 'Problem playing Ultimatum'));
         endif;
@@ -132,6 +128,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             return FALSE;
         endif;
         $this->view->player = $player;
+
         if ($player_group = $this->_getParam('player_group')):
             $this->view->player_group = Ultimatum_Model_Ultplayergroups::getInstance()->get($player_group);
         elseif ($group = $this->_getParam("group",  NULL )):
@@ -141,10 +138,11 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         if ($target = $this->_getParam('target')):
             $this->view->target = Ultimatum_Model_Ultgroups::getInstance()->get($target);
         endif;
+
         return TRUE;
     }
 
-        public function gamesstoreAction() {
+    public function gamesstoreAction() {
         $pt = Ultimatum_Model_Ultplayers::getInstance();
         $pl = $pt->find(array('user' => Model_Users::current_user()->identity()));
         $data = array();
@@ -157,25 +155,23 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
                 $row['players'] = count($players);
                 $row['turn'] = $turn;
                 $data[] = $row;
-            endif;
+        endif;
         endforeach;
         ksort($data);
         $this->_store('id', $data, 'name');
     }
 
-    public function interactAction()
-    {
+    public function interactAction() {
         if (!$this->_prep()):
             $params = array('error' => 'Cannot load game.');
             $this->_forward('index', 'index', NULL, $params);
         elseif(!$this->view->player_group):
             $params = array('error' => 'Cannot load group');
             $this->_forward('run', NULL, NULL, $params);
-        endif;
+    endif;
     }
 
-    public function networkAction()
-    {
+    public function networkAction() {
         if (!$this->_prep()):
             $params = array('error' => 'Cannot load game.');
             $this->_forward('index', 'index', NULL, $params);
@@ -186,8 +182,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         $this->_draw_network();
     }
 
-    public function resizeAction()
-    {
+    public function resizeAction() {
         if (!$this->_prep()):
             $params = array('error' => 'Cannot load game.');
             return $this->_forward('index', 'index', NULL, $params);
@@ -201,9 +196,9 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ resourceexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-/**
- *
- */
+    /**
+     *
+     */
 
     public function resizeexecuteAction () {
         if (!$this->_prep()):
@@ -230,19 +225,17 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         parent::__call($methodName, $args);
     }
 
-    public function moveAction()
-    {
+    public function moveAction() {
         if (!$this->_prep()):
             $params = array('error' => 'Cannot load game.');
             $this->_forward('index', 'index', NULL, $params);
         elseif(!$this->view->player_group):
             $params = array('error' => 'Cannot load group');
             $this->_forward('run', NULL, NULL, $params);
-        endif;
+    endif;
     }
 
-    public function orderexecuteAction()
-    {
+    public function orderexecuteAction() {
         if (!$this->_prep()):
             $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
         endif;
@@ -251,16 +244,17 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         $params['commander'] = $this->view->player->identity();
         if ($form->isValid($params)):
             $form->save();
+            $data = $form->get_domain()->toArray();
+            error_log(__METHOD__ . ': saving order ' . print_r($data, 1) . ' from params ' . print_r($params, 1));
             $params = array('message' => 'Order Given');
-            $this->_forward('run', NULL, NULL, $params);
+            return $this->_forward('run', NULL, NULL, $params);
         else:
             $params = array('error' => 'Cannot give order');
-            $this->_forward('order', NULL, NULL, $params);
+            return $this->_forward('order', NULL, NULL, $params);
         endif;
     }
 
-    public function cancelorderAction()
-    {
+    public function cancelorderAction() {
         if (!$this->_prep()):
             $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
         endif;
@@ -271,37 +265,35 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         else:
             $po->cancel();
             $params = array('message' => 'Cancelled order ' . $po);
-         endif;
-      $this->_forward('run', NULL, NULL, $params);
-   }
+        endif;
+        $this->_forward('run', NULL, NULL, $params);
+    }
 
-    public function attackAction()
-    {
+    public function attackAction() {
         if (!$this->_prep()):
             return $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
         elseif (!$this->view->target):
             $params = array('error' => 'Cannot find target');
             return $this->_forward('run', NULL, NULL, $params);
         endif;
-
-       $pid = $this->view->player->identity();
-       $gid = $this->view->target->identity();
-
-       $params = array('group_id' => $gid, 'player' => $pid);
-
-       $k = Ultimatum_Model_Ultplayergroupknowledge::getInstance()->findOne($params);
-       if ($k->isSaved()):
+        $pid = $this->view->player->identity();
+        $gid = $this->view->target->identity();
+        $params = array('group_id' => $gid, 'player' => $pid);
+        $k = Ultimatum_Model_Ultplayergroupknowledge::getInstance()->findOne($params);
+        if ($k->isSaved()):
             $this->view->scan = $k;
-       else:
+        else:
             $param = array('error' => 'strange, what group ' . $gid . '?');
             $this->_forward('run', NULL, NULL, $param);
-       endif;
+    endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ attackexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
     /**
      *
      */
+
     public function attackexecuteAction () {
         if (!$this->_prep()):
             $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
@@ -309,9 +301,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
             $params = array('error' => 'Cannot load group');
             $this->_forward('run', NULL, NULL, $params);
         endif;
-
         $ord = new Ultimatum_Model_Ultplayergrouporder();
-
         $ord->player_group = $this->view->player_group->identity();
         $ord->type = 'attack';
         if ($this->_getParam('repeat')):
@@ -320,7 +310,6 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         endif;
         $ord->target = $this->_getParam('target');
         $ord->save();
-
         $attack = new Ultimatum_Model_Ultplayergrouporderattacks();
         $attack->order_id = $ord->identity();
         $attack->reduceprop = $this->_getParam('reduceprop');
@@ -332,11 +321,23 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract
         $attack->loss_strength_count = $this->_getParam('loss_strength_count');
         $attack->payoff = $this->_getParam('payoff');
         $attack->payoff_count = $this->_getParam('payoff_count');
-
         $attack->save();
-
         $params = array('message' => 'Scheduled attack');
         $this->_forward('run', NULL, NULL, $params);
     }
+
+    public function orderAction() {
+        if (!$this->_prep()):
+            $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
+        elseif(!$this->view->player_group):
+            $params = array('error' => 'Cannot load group');
+            return $this->_forward('run', NULL, NULL, $params);
+        endif;
+
+        $this->_draw_network();
+        $order = $this->_getParam("order",  NULL );
+        $this->view->order_type = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->get($order);
+    }
+
 }
 

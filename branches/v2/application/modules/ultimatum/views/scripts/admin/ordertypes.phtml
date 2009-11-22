@@ -36,10 +36,18 @@ function render_selection()
     dojo.byId('selected_ordertypes').value = v;
 }
 
+function ordertypes_grid_active_get(id, record)
+{
+    if ((!record)) return '';
+    if (record.active > 0) return '<a href="/admin/ultimatum/ordertypedeactivate/name/' + record.name  + '"><img src="/images/icons/okb.gif" height="20" width="20" border="0" /></a>';
+    return '<a href="/admin/ultimatum/ordertypeactivate/name/' + record.name  + '"><img src="/images/icons/xb.gif" height="20" width="20" border="0" /></a>';
+}
+
+
 <?  $this->headScript()->captureEnd();   ?>
 
 <?= $this->dojostore('ordertypes_store', $this->baseUrl() . '/store/Ultimatum_Model_Ultplayergroupordertypes') ?>
-<?= $this->dojogrid('ordertype_grid', 'ordertypes_store', $this->columns, 'id', NULL, $grid_options) ?>
+<?= $this->dojogrid('ordertype_grid', 'ordertypes_store', $this->columns, 'name', NULL, $grid_options) ?>
 
 <a href="<?= $this->baseUrl() ?>/admin/ultimatum/ordertypenew" class="linkbutton">Add Order Type</a>
 <br />

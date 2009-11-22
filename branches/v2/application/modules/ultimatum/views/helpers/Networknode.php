@@ -26,33 +26,15 @@ extends Zend_View_Helper_Abstract
     echo $pContent;
     else: ?>
     <ul>
-        <li>
-            <a class="actionbutton" href="<?= $this->view->baseUrl() ?>/ultimatum/game/network/group/<?= $group->identity() ?>">
-                Investigate Other Groups
-            </a>
-        </li>
-        <li>
-            <a class="actionbutton"  href="<?= $this->view->baseUrl() ?>/ultimatum/game/interact/group/<?= $group->identity() ?>">
-                Interact with Other Group
-            </a>
-        </li>
-        <li>
-            <a class="actionbutton"  href="<?= $this->view->baseUrl() ?>/ultimatum/game/resize/group/<?= $group->identity() ?>">
-                Adjust Group Size
-            </a>
-        </li>
-        <li>
-            <a class="actionbutton"  href="<?= $this->view->baseUrl() ?>/ultimatum/game/move/group<?= $group->identity() ?>">
-                Reorganize
-            </a>
-        </li>
-        <li>
-            <a class="actionbutton"  href="<?= $this->view->baseUrl() ?>/ultimatum/game/rebrand/group/<?= $group->identity() ?>">
-                Re-brand
-            </a>
-        </li>
+    <?
+    $params = array('active' => 1);
+    foreach(Ultimatum_Model_Ultplayergroupordertypes::getInstance()->find($params) as $ot):
+    ?>
+        <li><a class="linkbutton" href="/ultimatum/game/order/group/<?= $group->identity() ?>/order/<?= $ot->identity() ?>/"><?= $ot ?></a>
+            <?= $ot->description ?>
+    <? endforeach; ?>
     </ul>
-    <? endif; ?>
+        <? endif; ?>
 </fieldset>
 <?
     return ob_get_clean();

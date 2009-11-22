@@ -12,10 +12,7 @@
 class Zupal_Fastform_Field_Button
 extends Zupal_Fastform_Field_Abstract {
 
-    public function __construct($pName, $pLabel, $pProps, $pForm) {
-        parent::__construct($pName, $pLabel, $pLabel, $pProps, $pForm);
-    }
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @return string
@@ -45,5 +42,15 @@ extends Zupal_Fastform_Field_Abstract {
     public function tag_name () {
         return 'button';
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_value @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function get_value () {
+        $value = parent::get_value();
+        if (!$value) return $this->get_label();
+        return $value;
+    }
 }

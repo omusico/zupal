@@ -58,7 +58,8 @@ class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
      */
     public function save () {
         if ($this->player_group && !$this->commander):
-            $this->commander = $this->player_group()->get_player()->identity();
+            $pg = $this->player_group();
+            $this->commander = $pg->get_player()->identity();
         endif;
         return parent::save();
     }
@@ -117,13 +118,17 @@ class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
     }
 
     public function __toString() {
-        return $this->order_type() . ' to group ' . $this->player_group();
+        if ($player_group = $this->player_group()):
+            return $this->order_type() . ' to group ' . $player_group . ' on ' . $this->start_turn;
+        else:
+            return $this->order_type() . ' on ' . $this->start_turn;
+        endif;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cancel @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @return void
      */
     public function cancel () {
         $this->active = 0;
@@ -132,5 +137,22 @@ class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
         $this->interrupt_turn = $game->turn();
         $this->save();
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ target @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_target = NULL;
+    function get_target($pReload = FALSE) {
+        if ($pReload || is_null($this->_target)):
+            if ($this->target):
+                $value = Ultimatum_Model_Ultgroups::getInstance()->get($this->target);
+            else:
+                $value = FALSE;
+            endif;
+        // process
+            $this->_target = $value;
+        endif;
+        return $this->_target;
+    }
+
 }
 

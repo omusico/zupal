@@ -20,16 +20,18 @@ extends Zend_View_Helper_Abstract
             $pg = $pPendingOrder->player_group();
             $ot = $pPendingOrder->order_type();
             $type = $ot->identity();
+            $target = $pPendingOrder->get_target();
 ?>
 <fieldset>
     <legend>
-        <?= $pg ?>
-        
+        (ID: <?= $pPendingOrder->identity() ?>)
+        <?= $pg ?>        
     </legend>
  <? if (($type == 'resize') && $pPendingOrder->resize()): ?>
 <?=  $this->view->powerMatrix($pPendingOrder->resize()) ?>
     <? endif; ?>
     <p><b><?= $ot ?></b>: <?= $ot->description ?>
+        <? if ($target): ?> to <?= $target ?> <? endif; ?>
     <? if ($pPendingOrder->repeat): ?>
     (Repeat</b> <?= $pPendingOrder->end_phrase() ?>)
 <? endif; ?>

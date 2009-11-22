@@ -47,4 +47,9 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         $zd = new Zend_Dojo_Data($pID, $pData, $pLabel);
         echo $zd->toJson();
     }
+
+    protected function _getAllParams()
+    {
+        return Zupal_Util_Array::stripslashes($this->getRequest()->getParams());
+    }
 }

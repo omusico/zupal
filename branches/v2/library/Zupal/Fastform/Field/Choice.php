@@ -19,16 +19,11 @@ extends Zupal_Fastform_Field_Abstract {
     const CHOICE_CHECKBOX = 3;
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __construct @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param Zupal_Fastform_Abstract $pForm
-     * @param array $pFields
-     * @param array $pData
-     */
-    public function __construct ($pName, $pLabel, $pValue, $pData, $pProps = array(), Zupal_Fastform_Abstract $pForm = NULL) {
+ 
+    public function __construct ($pName, $pLabel, $pValue, 
+        $pProps = array(), Zupal_Fastform_Abstract $pForm = NULL, $pData) {
         $this->set_type(self::CHOICE_DROPDOWN);
-        parent::__construct($pName, $pLabel, $pValue, $pProps, $pForm);
-        $this->set_data_source($pData);
+        parent::__construct($pName, $pLabel, $pValue, $pProps, $pForm, $pData);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -175,7 +170,8 @@ extends Zupal_Fastform_Field_Abstract {
 
             case self::CHOICE_RADIO:
                 foreach($data as $key => $label):
-                        ?><label><input type="radio" <?= $properties ?> /><?= $label ?></label><?= $sep ?><?
+                        $checked = ($key == $this->get_value()) ? ' checked="checked" ' : '';
+                        ?><label><input type="radio" <?= $properties ?> <?= $checked ?> /><?= $label ?></label><?= $sep ?><?
                     endforeach;
                     break;
 

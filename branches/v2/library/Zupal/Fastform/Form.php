@@ -49,10 +49,39 @@ extends Zupal_Fastform_Abstract
 
         if(array_key_exists('name', $pConfig)) $name = $pConfig['name'];
 
-        $form = new Zupal_Fastform_Form($name, $pName, $pLabel, $pAction, $pConfig['elements']);
+        $form = new Zupal_Fastform_Form($name, $pName, $label, $action, $pConfig['elements']);
 
         return $form;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ isValid @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * extned to enforce tighter validation. 
+     *
+     * @return boolean
+     */
+    public function isValid ($pParams = NULL) {
+
+        if (!is_null($pParams) && is_array($pParams)):
+            $this->load_field_values($pParams);
+        endif;
+
+        /**
+         * @var Zupal_Fastfield_Field_Abstract
+         */
+        $field = NULL;
+        $valid = TRUE;
+
+        foreach($this->get_fields() as $field):
+            if ($field->get_required()):
+                if (((string) $field->get_value()) == ''):
+                    $field->set_error('Required');
+                    $valid = FALSE;
+                endif;
+            endif;
+        endforeach;
+
+        return $valid;
+    }
 }
 

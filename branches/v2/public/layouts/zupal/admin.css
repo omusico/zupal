@@ -278,3 +278,8 @@ table.zupal_form_table th{
     font-weight: bold;
     width: 200px;
 }
+
+table.zupal_form_table .required
+{
+    color: white;
+}
