@@ -37,7 +37,7 @@ class Ultimatum_Model_Ultplayergrouporderresizes extends Zupal_Domain_Abstract
     private $_order = NULL;
     function order($pReload = FALSE) {
         if ($pReload || is_null($this->_order)):
-            $value = Ultimatum_Model_Ultplayergrouporder::getInstance()->get($this->order_id);
+            $value = Ultimatum_Model_Ultplayergrouporders::getInstance()->get($this->order_id);
         // process
             $this->_order = $value;
         endif;

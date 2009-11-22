@@ -1,6 +1,6 @@
 <?php
 
-class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
+class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
 {
 
     private static $_Instance = null;
@@ -11,7 +11,7 @@ class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
     }
 /**
  *
- * @return Ultimatum_Model_Ultplayergrouporder
+ * @return Ultimatum_Model_Ultplayergrouporders
  */
     public static function getInstance()
     {
@@ -24,7 +24,7 @@ class Ultimatum_Model_Ultplayergrouporder extends Zupal_Domain_Abstract
 
 /**
  *
- * @return Ultimatum_Model_Ultplayergrouporder
+ * @return Ultimatum_Model_Ultplayergrouporders
  */
     public function get($pID = NULL, $pLoadFields = NULL)
     {

@@ -329,7 +329,7 @@ implements Ultimatum_Model_GroupProfileIF
     function get_orders($pReload = FALSE) {
         if ($pReload || is_null($this->_orders)):
             $params = array('player_group' => $this->identity());
-            $pgo = Ultimatum_Model_Ultplayergrouporder::getInstance();
+            $pgo = Ultimatum_Model_Ultplayergrouporders::getInstance();
             $this->_orders = $pgo->find($params, 'start_turn');
         endif;
         return $this->_orders;
