@@ -162,6 +162,22 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $this->_change_ota(TRUE);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypestoreAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function ordertypestoreAction () {
+        $ots = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->findAll('name');
+        $out = array();
+        foreach($ots as $ot):
+            $data = $ot->toArray();
+            $data['title'] = $ot->get_title();
+            $data['content'] = $ot->get_content();
+            $out[] = $data;
+        endforeach;
+        $this->_store('name', $out, 'title');
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypeactivateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**

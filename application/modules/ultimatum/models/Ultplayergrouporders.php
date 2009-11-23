@@ -63,12 +63,36 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
             $pg = $this->player_group();
             $this->commander = $pg->get_player()->identity();
         endif;
-        return parent::save();
+
+        if (!$this->series):
+            $this->_init_series();
+        endif;
+
+        parent::save();
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init_series @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function _init_series () {
+        $sql= sprintf('SELECT MAX(series) FROM %s ', $this->table()->tableName());
+        $sql .= sprintf(' WHERE player_group = %s', $this->player_group);
+        $sql .= ' AND ((status = "pending") OR (status = "executing"))';
+
+        $max_series = (int) $this->table()->getAdapter()->fetchOne($sql);
+        $this->series = $max_series + 1;
+    }
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ order_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_order_type = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Ultimatum_Model_Ultplayergroupordertypes
+     */
     function order_type($pReload = FALSE) {
         if ($pReload || is_null($this->_order_type)):
             $value = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->get($this->type);
@@ -120,11 +144,36 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
     }
 
     public function __toString() {
-        if ($player_group = $this->player_group()):
-            return $this->order_type() . ' to group ' . $player_group . ' on ' . $this->start_turn;
+        $player_group = $this->player_group();
+        $start_turn = $this->start_turn();
+        if ($player_group):
+            return $this->order_type() . ' to group ' . $player_group . ' on turn ' . $start_turn;
         else:
-            return $this->order_type() . ' on ' . $this->start_turn;
+            return $this->order_type() . ' on turn ' . $start_turn;
         endif;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ start_turn @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function start_turn () {
+        $select = $this->table()->select()
+            ->where('player_group = ?', $this->player_group)
+            ->where('series < ?', $this->series)
+            ->where('status=?', 'pending')
+            ->orWhere('status = ?', 'executing');
+
+        $precedents = $this->find($select, 'series');
+        $start_turn = $this->player_group()->get_game()->turn();
+        foreach($precedents as $pgo):
+            if ($pgo->identity() != $this->identity()):
+                $type = $this->order_type();
+                $start_turn += $type->turns;
+            endif;
+        endforeach;
+        return $start_turn;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cancel @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -134,9 +183,8 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
      */
     public function cancel () {
         $this->active = 0;
+        $this->status = 'cancelled';
         $game = Zend_Registry::get('ultimatum_game');
-
-        $this->interrupt_turn = $game->turn();
         $this->save();
     }
 
@@ -156,5 +204,37 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
         return $this->_target;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ clear_orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param $pPlayer_group
+     * @return void
+     */
+    public static function clear_orders ($pPlayer_group, $pTarget = NULL) {
+        $pPlayer_group = Zupal_Domain_Abstract::_as($pPlayer_group, 'Ultimatum_Model_Ultplayergroups', TRUE);
+        $params = array('player_group' => $pPlayer_group);
+        if ($pTarget):
+            $pTarget = Zupal_Domain_Abstract::_as($pTarget, 'Ultimatum_Model_Ultgroups', TRUE);
+            if ($pTarget):
+                $params['target'] = $pTarget;
+            endif;
+        endif;
+
+        foreach(self::getInstance()->find($params) as $order):
+            $order->cancel();
+        endforeach;
+
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cancel_link @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function cancel_link () {
+        ob_start();
+        ?><a href="/ultimatum/game/cancelorder/order/<?= $this->identity() ?>" class="linkbutton">Cancel Order</a><?
+        return ob_get_clean();
+    }
 }
 

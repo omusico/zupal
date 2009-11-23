@@ -74,6 +74,18 @@ extends Zupal_Fastform_Field_Abstract {
         endswitch;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_width @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function get_width () {
+        if ($this->get_type() == self::CHOICE_RADIO):
+            return 0;
+        else:
+            return parent::get_width();
+        endif;
+    }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_prop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -171,7 +183,7 @@ extends Zupal_Fastform_Field_Abstract {
             case self::CHOICE_RADIO:
                 foreach($data as $key => $label):
                         $checked = ($key == $this->get_value()) ? ' checked="checked" ' : '';
-                        ?><label><input type="radio" <?= $properties ?> <?= $checked ?> /><?= $label ?></label><?= $sep ?><?
+                        ?><label><input type="radio" <?= $properties ?> value="<?= $key ?>" <?= $checked ?> /><?= $label ?></label><?= $sep ?><?
                     endforeach;
                     break;
 

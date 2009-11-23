@@ -83,5 +83,14 @@ extends Zupal_Fastform_Abstract
 
         return $valid;
     }
+
+/**
+ * overload to create config based
+ * @return string;
+ */
+    protected function _ini_path(){
+        return '';
+     }
+
 }
 

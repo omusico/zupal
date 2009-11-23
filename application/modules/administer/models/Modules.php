@@ -94,9 +94,9 @@ extends Zupal_Domain_Abstract {
      *
      * @return <type>
      */
-    public function find_all_indexed () {
+    public static function find_all_indexed () {
         $out = array();
-        foreach($this->findAll('folder') as $module):
+        foreach(self::getInstance()->findAll('folder') as $module):
             $out[$module->folder] = $module;
         endforeach;
         return $out;

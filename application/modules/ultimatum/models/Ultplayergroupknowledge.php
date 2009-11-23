@@ -332,5 +332,30 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         return $this->get_effect(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, $pString);
     }
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending_orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @return Ultimatum_Model_Ultplayergrouporders[]
+     */
+    public function pending_orders () {
+        $orders = Ultimatum_Model_Ultplayergrouporders::getInstance();
+
+        try {
+            $sql = sprintf('SELECT po.id FROM %s po ', $orders->table()->tableName());
+            $sql .= sprintf (' LEFT JOIN %s pg ON pg.id = po.player_group ', Ultimatum_Model_Ultplayergroups::getInstance()->table()->tableName());
+            $sql .= sprintf(' WHERE po.target = %s ', $this->get_group()->identity());
+            $sql .= sprintf(' AND pg.player = %s', $this->player);
+            $sql .= ' AND po.active > 0;';
+            error_log(__METHOD__ . ': finding orders; sql = ' . $sql);
+
+            $out =  $orders->find_from_sql($sql, FALSE);
+        } catch (Exception $e)
+        {
+            error_log(__METHOD__ . ': error on sql ' . $sql);
+            $out = array();
+        }
+        return $out;
+    }
+
 }
 

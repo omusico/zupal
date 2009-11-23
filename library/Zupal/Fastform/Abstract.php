@@ -3,6 +3,68 @@
 abstract class Zupal_Fastform_Abstract
 extends Zupal_Fastform_Tag_Form {
 
+    public function __construct($pName = NULL, $pID = NULL,  $pAction = NULL) {
+        $this->_load($pName, $pID, $pAction);
+
+        $this->_init();
+    }
+
+    protected function _load($pName = NULL, $pID = NULL,  $pAction = NULL) {
+
+        $config = new Zend_Config_Ini($this->_ini_path(), 'fields');
+        
+        if (file_exists($this->_ini_path())):
+            $c_array = $config->toArray();
+            $c_array = $this->_filter_config($c_array);
+        else:
+            $c_array = array();
+        endif;
+
+        if (!$pAction):
+            if (array_key_exists('action', $c_array)):
+                $pAction = $c_array['action'];
+            endif;
+        endif;
+        $this->set_action($pAction);
+
+        if (!$pName):
+            if (array_key_exists('name', $c_array)):
+                $pName = $c_array['name'];
+            else:
+                $pName = get_class($this);
+            endif;
+        endif;
+        $this->set_name($pName);
+
+        if (!$pID):
+            $pID = $pName;
+        endif;
+        $this->set_id($pID);
+
+        $elements = $c_array['elements'];
+        foreach($elements as $key => $data):
+            if (!array_key_exists('options', $data) || !array_key_exists('label', $data['options'])):
+                $elements[$key]['options']['label'] = ucwords(str_replace('_', ' ', $key));
+            endif;
+        endforeach;
+
+        $this->load_fields($elements);
+
+        if (array_key_exists('controls', $c_array)):
+            $this->load_controls($c_array['controls']);
+        endif;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * An extension point for any customization post-config.
+     *
+     * @return void
+     */
+    protected function _init () {
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ form_tag @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_form_tag = NULL;
@@ -307,4 +369,20 @@ extends Zupal_Fastform_Tag_Form {
         endforeach;
     }
 
+    abstract protected function _ini_path(); /*
+     * Set to, as a rule:
+     * { return preg_replace('~php$~', 'ini', __FILE__); }
+     */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _filter_configuration @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * An optional extenstion point for any field customization.
+     *
+     * @param array $pConfig_array
+     * @return <type>
+     */
+    protected function _filter_config (array $pConfig_array) {
+        return $pConfig_array;
+    }
 }

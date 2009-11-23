@@ -21,7 +21,7 @@ ob_start();
 <label><input name="player_group" <?= $checked ? ' checked="checked" ' : '' ?>  type="radio" value="<?= $group->identity() ?>"/>
 Attack with <?= $group ?></label>
 <?
-echo $this->networknode($group, ob_get_clean());
+echo $this->playergroup($group, ob_get_clean());
 $checked = FALSE;
 endforeach; ?>
 

@@ -134,7 +134,6 @@ abstract class Zupal_Fastform_Tag_Abstract {
         $out = ' ';
 
         $props = $this->props();
-
         foreach($props as $k => $v):
             $prop = " $k=\"$v\" ";
             $out .= $prop;

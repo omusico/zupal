@@ -78,6 +78,7 @@ implements Ultimatum_Model_GroupProfileIF
         $this->player = $player->identity();
         $this->game = $player->game;
     }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function player () {
@@ -87,6 +88,11 @@ implements Ultimatum_Model_GroupProfileIF
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_game = NULL;
+    /**
+     *
+     * @param boolean $pReload
+     * @return Ultimatum_Model_Ultgames
+     */
     function get_game($pReload = FALSE) {
         if ($pReload || is_null($this->_game)):
         // process
@@ -330,7 +336,7 @@ implements Ultimatum_Model_GroupProfileIF
         if ($pReload || is_null($this->_orders)):
             $params = array('player_group' => $this->identity());
             $pgo = Ultimatum_Model_Ultplayergrouporders::getInstance();
-            $this->_orders = $pgo->find($params, 'start_turn');
+            $this->_orders = $pgo->find($params, 'series');
         endif;
         return $this->_orders;
     }

@@ -30,12 +30,9 @@ extends Zend_View_Helper_Abstract
  <? if (($type == 'resize') && $pPendingOrder->resize()): ?>
 <?=  $this->view->powerMatrix($pPendingOrder->resize()) ?>
     <? endif; ?>
-    <p><b><?= $ot ?></b>: <?= $ot->description ?>
+    <p><b><?= $ot ?></b>
         <? if ($target): ?> to <?= $target ?> <? endif; ?>
-    <? if ($pPendingOrder->repeat): ?>
-    (Repeat</b> <?= $pPendingOrder->end_phrase() ?>)
-<? endif; ?>
-        <a href="/ultimatum/game/cancelorder/order/<?= $pPendingOrder->identity() ?>" class="linkbutton">Cancel Order</a>
+        <?= $pPendingOrder->cancel_link() ?>
 </p>
 
 
