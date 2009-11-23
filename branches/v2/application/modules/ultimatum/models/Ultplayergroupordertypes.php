@@ -1,6 +1,7 @@
 <?php
 
-class Ultimatum_Model_Ultplayergroupordertypes extends Zupal_Domain_Abstract
+class Ultimatum_Model_Ultplayergroupordertypes
+extends Model_Zupalatomdomain
 {
 
     const TARGET_TYPE_SELF = 'self';
@@ -61,7 +62,31 @@ class Ultimatum_Model_Ultplayergroupordertypes extends Zupal_Domain_Abstract
     const ORDER_SCAN = 'scan';
 
     public function __toString() {
-        return $this->title;
+        return $this->get_title();
     }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ atomic_id @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return int;
+     */
+
+    public function get_atomic_id() { return $this->atomic_id; }
+
+    public function set_atomic_id($pValue) { $this->atomic_id = $pValue; }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pAtomic_id
+     * @return Pages_Model_Zupalpages
+     */
+    public function for_atom_id ($pAtomic_id) {
+        return $this->findOne(array('atomic_id' => $pAtomic_id), 'id DESC');
+    }
+
+
 }
 

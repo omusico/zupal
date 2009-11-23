@@ -46,7 +46,7 @@ function ordertypes_grid_active_get(id, record)
 
 <?  $this->headScript()->captureEnd();   ?>
 
-<?= $this->dojostore('ordertypes_store', $this->baseUrl() . '/store/Ultimatum_Model_Ultplayergroupordertypes') ?>
+<?= $this->dojostore('ordertypes_store', $this->baseUrl() . '/admin/ultimatum/ordertypestore') ?>
 <?= $this->dojogrid('ordertype_grid', 'ordertypes_store', $this->columns, 'name', NULL, $grid_options) ?>
 
 <a href="<?= $this->baseUrl() ?>/admin/ultimatum/ordertypenew" class="linkbutton">Add Order Type</a>

@@ -434,7 +434,7 @@ implements Zupal_Domain_IDomain {
         if ($pTable):
             $base = $this->table();
         else:
-            $base = $this->table->getAdapter();
+            $base = $this->table()->getAdapter();
         endif;
 
         if (is_array($pSQL)):

@@ -20,7 +20,7 @@ $this->tabContainer()->captureStart(   'groups',
 
 <? $this->contentPane()->captureStart('mine', array('title' => 'Your Groups'));
 foreach($this->groups as $pg):
-    echo ($this->networknode($pg));
+    echo ($this->playergroup($pg));
 endforeach;
 ?>
 <?= $this->contentPane()->captureEnd('mine') ?>

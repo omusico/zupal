@@ -39,9 +39,9 @@ class Ultimatum_Form_Ultplayergrouporder extends Zupal_Fastform_Domainform {
      * @return void
      */
     public function save () {
-        if (($this->mode->get_value() == 'replace')
-            && ($target = $this->target())):
-            Ultimatum_Model_Ultplayergrouporders::clear_orders($this->player_group->get_value(), $target);
+        $mode = $this->mode->get_value();
+        if ($mode == 'replace'):
+            Ultimatum_Model_Ultplayergrouporders::clear_orders($this->player_group->get_value());
         endif;
         return parent::save(); // magic delegates to the domain object. 
     }

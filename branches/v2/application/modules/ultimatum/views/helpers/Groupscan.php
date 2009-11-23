@@ -18,11 +18,23 @@ extends Zend_View_Helper_Abstract
         ob_start();
         ?>
 <fieldset>
-    <legend><?= $group->get_title() ?>
+    <legend>(ID <?= $group->identity() ?>)
+        <?= $group->get_title() ?>
         (as of turn <?= $pScan->get_game()->turn(TRUE) ?>)</legend>
      <?= $this->view->powerMatrix($pScan) ?>
 
     <b><?= $group->get_lead() ?></b>
+<? if(($orders = $pScan->pending_orders())): ?>
+    <hr />
+    <h3>Pending Orders</h3>
+    <ol>
+<? foreach($orders as $order): ?>
+        <li>
+            <?= $order ?> <?= $order->cancel_link() ?>
+        </li>
+<? endforeach; ?>
+    </ol>
+<? endif; ?>
     <hr />
         <?= $group->get_content() ?>
 
