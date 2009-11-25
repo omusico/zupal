@@ -341,20 +341,59 @@ implements Ultimatum_Model_GroupProfileIF
         return $this->_orders;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending_order @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Ultimatum_Model_Ultplayergrouporders
+     */
+    public function pending_order () {
+
+        $po = Ultimatum_Model_Ultplayergrouporders::getInstance();
+
+        $select = $po->table()->select()
+            ->where('active = ?', 1)
+            ->where('player_group = ?', $this->identity())
+            ->where('status = ?', Ultimatum_Model_Ultplayergrouporders::STATUS_PENDIONG)
+            ->orWhere('status = ?', Ultimatum_Model_Ultplayergrouporders::STATUS_EXECUTING);
+
+        return $po->findOne($select, 'series');
+    }
+    
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending_orders @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @return array
      */
     public function pending_orders () {
-        $orders = $this->get_orders();
-        $out = array();
-        foreach($orders as $o):
-            if ($o->active):
-                $out[] = $o;
-            endif;
-        endforeach;
-        return $out;
+
+        $po = Ultimatum_Model_Ultplayergrouporders::getInstance();
+
+        $select = $po->table()->select()
+            ->where('active = ?', 1)
+            ->where('player_group = ?', $this->identity())
+            ->where('status = ?', Ultimatum_Model_Ultplayergrouporders::STATUS_PENDIONG)
+            ->orWhere('status = ?', Ultimatum_Model_Ultplayergrouporders::STATUS_EXECUTING);
+
+        return $po->find($select, 'series');
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_group_ids @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pPlayer_id
+     * @return array
+     */
+    public function player_group_ids ($pPlayer_id) {
+        $sql = sprintf('SELECT DISTINCT group_id FROM %s ', $this->table()->tableName());
+        if (is_array($pPlayer_id)):
+            $sql .= sprintf('WHERE player IN (%s)', join(',', $pPlayer_id));
+            return $this->table()->getAdapter()->fetchCol($sql);
+        else:
+            $sql .= 'WHERE player = ?';
+            return $this->table()->getAdapter()->fetchCol($sql, $pPlayer_id);
+        endif;
+    }
+
+
 }
 

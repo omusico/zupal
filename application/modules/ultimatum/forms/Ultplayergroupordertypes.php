@@ -26,6 +26,7 @@ extends Zupal_Fastform_Domainform {
             $this->set_label('Edit Order Type &quot;' . $this->get_domain()->get_title() . '&quot;');
             $this->name->set_prop('readonly', 'readonly');
             $this->title->set_value($this->get_domain()->get_title());
+            $this->lead->set_value($this->get_domain()->get_lead());
             $this->content->set_value($this->get_domain()->get_content());
         else:
             $this->set_label('Create Order Type');
@@ -44,6 +45,10 @@ extends Zupal_Fastform_Domainform {
         parent::load_field_values($pFields);
         if (array_key_exists('title', $pFields)):
             $this->get_domain()->set_title($pFields['title']);
+        endif;
+
+        if (array_key_exists('lead', $pFields)):
+            $this->get_domain()->set_lead($pFields['lead']);
         endif;
 
         if (array_key_exists('content', $pFields)):

@@ -15,7 +15,7 @@ implements Ultimatum_Model_GroupProfileIF
  *
  * @param int $pID
  * @param array $pLoadFields
- * @return Model_Zupalatomdomain
+ * @return Ultimatum_Model_Ultgroups
  */
     public function get($pID = 'NULL', $pLoadFields = 'NULL')
     {
@@ -129,32 +129,15 @@ implements Ultimatum_Model_GroupProfileIF
      *
      * @return scalar
      */
-    public function get_size ($pProperty, $pGame = NULL, $pString) {
-        if (is_null($pGame)):
-            if (!($pGame = Ultimatum_Model_Ultgames::user_active_game())):
-                throw new Exception(__METHOD__ . ': no game');
-            endif;
-            $pGame = $pGame->identity();
+    public function get_size ($pProperty = NULL, $pString) {
+        $pGame = Ultimatum_Model_Ultgames::get_active();
+        if ($pGame):
+            $size = $this->size_in_game($pGame);
+        else:
+            $size = 0;
         endif;
-        $pGame = $this->_as($pGame, 'Ultimatum_Model_Ultgames', TRUE);
 
-        $sizes = Ultimatum_Model_Ultplayergroupsize::getInstance();
-
-        $select = $sizes->table()->select()
-            ->from($sizes->table()->tableName(), array('SUM(size) as total_size') );
-
-        $params = array(
-            'group_id' => $this->identity(),
-            'game' => $pGame);
-
-        foreach($params as $f => $v):
-            $select->where("$f = ?", $v);
-        endforeach;
-        
-        $sql = $select->assemble();
-
-        $size = (int) $sizes->table()->getAdapter()->fetchOne($sql);
-        return $pString ? 100 + $size : $size;
+        return $pString ? (int) $size : $size;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -163,8 +146,8 @@ implements Ultimatum_Model_GroupProfileIF
      * @param $pGame, $pProperty
      * @return float
      */
-    public function get_effect ($pProperty, $pAsString = FALSE, $pGame = NULL ) {
-       $size = $this->get_size($pProperty, $pGame);
+    public function get_effect ($pProperty, $pAsString = FALSE) {
+       $size = $this->get_size($pProperty, FALSE);
        $eff = $this->get_efficiency($pProperty);
        return self::effect($size, $eff, $pAsString);
     }
@@ -174,15 +157,12 @@ implements Ultimatum_Model_GroupProfileIF
      *
      * @return float | string
      */
-    public static function effect ($pSize, $pEff = 0, $pString = FALSE) {
+    public static function effect ($pSize, $pEff, $pString = FALSE) {
         if (is_null($pSize) || is_null($pEff)):
             return $pString ? '(unknown)' : NULL;
         endif;
-
-        $pSize += 100;
-        $eff_factor = self::eff_factor($pEff);
         
-        $pSize *= $eff_factor;
+        $pSize *= $pEff;
 
         return $pString ? number_format($pSize, 0) : $pSize;
     }
@@ -229,11 +209,12 @@ implements Ultimatum_Model_GroupProfileIF
 
     public function get_efficiency ($pProperty, $pString = FALSE) {
         $eff = $this->__get($pProperty);
+        $eff_factor = self::eff_factor($eff);
 
         if ($pString):
-            return Zupal_Util_Format::percent(self::eff_factor($eff), FALSE);
+            return Zupal_Util_Format::percent($eff_factor, FALSE);
         else:
-            return $eff;
+            return $eff_factor;
         endif;
     }
 
@@ -293,7 +274,7 @@ implements Ultimatum_Model_GroupProfileIF
  */
     public function network_size ($pString = FALSE)
     {
-        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_NETWORK, NULL, $pString);
+        return $this->get_size(NULL, $pString);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ offense_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -304,7 +285,7 @@ implements Ultimatum_Model_GroupProfileIF
  */
     public function offense_size ($pString = FALSE)
     {
-        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_OFFENSE, NULL, $pString);
+        return $this->get_size(NULL, $pString);
     }
 
 
@@ -316,7 +297,7 @@ implements Ultimatum_Model_GroupProfileIF
  */
     public function defense_size ($pString = FALSE)
     {
-        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_DEFENSE, NULL, $pString);
+        return $this->get_size(NULL, $pString);
     }
 
 
@@ -328,7 +309,7 @@ implements Ultimatum_Model_GroupProfileIF
  */
     public function growth_size ($pString = FALSE)
     {
-        return $this->get_size(Ultimatum_Model_GroupProfileIF::PROP_GROWTH, NULL, $pString);
+        return $this->get_size(NULL, $pString);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ network_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -377,7 +358,17 @@ implements Ultimatum_Model_GroupProfileIF
      * @return <type>
      */
     public function __toString () {
-        return 'group ' . $this->get_title();
+        return sprintf('Group &quot;%s&quot;', $this->get_title());
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ size_in_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    public function size_in_game ($pGame_id = NULL) {
+        return Ultimatum_Model_Ultplayergroupsize::getInstance()->group_size($this->identity(), $pGame_id);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ sizes @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    public function sizes_in_game ($pGame_id = NULL) {
+        return Ultimatum_Model_Ultplayergroupsize::getInstance()->group_sizes($this->identity(), $pGame_id);
     }
 }
 

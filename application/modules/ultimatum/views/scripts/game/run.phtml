@@ -4,7 +4,7 @@ $this->placeholder('page_title')->set('Ultimatum: playing game ' . $this->game->
 $this->headStyle()->captureStart();
 echo '@import "/style/ultimatum/ult_style.css";';
 $this->headStyle()->captureEnd();
-
+echo $this->game();
 echo $this->filepage('ult_game_run', "game/run.html", NULL, 'ultimatum');
 Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
 $this->dojo()

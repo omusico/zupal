@@ -1,23 +1,36 @@
 <?
-$this->placeholder('page_title')->set($this->page->get_title()); ?>
+$this->placeholder('page_title')->set($this->page->get_title()); 
 
-<blockquote>
-    <?= $this->page->get_lead() ?>
-</blockquote>
-<hr />
+$lead = $this->page->get_lead();
+if ($this->page->get_format_lead()): 
+else:
+    $lead = sprintf('<b>%s</b>', $lead);
+endif;
 
-<?= $this->page->get_content() ?>
-<hr />
+if ($this->page->get_format_content()):
+
+    if (preg_match('~(<p[^>]*>)(.*)$~', $this->page->get_content(), $match)):
+        $content = $match[1] . $lead . $match[2];
+    else:
+        $content = '<p>' . $lead . $this->page->get_content() . '</p>';
+    endif;
+
+else: // do not format content
+?>
+<p>
+    <?= $lead ?>
+<?= $this->page->get_content() ?></p>
+<? endif; // format content
+?>
 <? if ($this->pages): ?>
-<ul>
+<ul class="subpages">
     <? foreach ($this->pages as $page): ?>
     <li><?= $page->get_title() ?></li>
     <? endforeach; ?>
 </ul>
+<? endif; // subpages ?>
 
-<? endif; ?>
-
-<? if (    $user = Model_Users::current_user()):
+<? if ($user = Model_Users::current_user()):
 if ($user->can('pages_admin')):
     echo $this->partial('edit_page.phtml', array('page_id' => $this->page->identity()));
 endif;

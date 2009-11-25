@@ -26,7 +26,7 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
 
     public function gamesstoreAction() {
         $pt = Ultimatum_Model_Ultgames::getInstance();
-        $games = $pt->findAll('id');
+        $games = $pt->find(array('status' => array('deleted', '!=')), 'id');
         $data = array();
         foreach($games as $game):
             $row = $game->toArray();
@@ -54,7 +54,7 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         foreach($groups as $group):
             $name = $group->get_title();
             $row = $group->toArray();
-            $row['name'] = $name;
+            $row['title'] = $name;
             $data[] = $row;
         endforeach;
         ksort($data);
@@ -152,21 +152,19 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $this->view->form = new Ultimatum_Form_Ultplayergroupordertypes($this->view->ordertype);
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypeactivateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
     /**
      *
      */
 
-    public function ordertypeactivateAction () {
+    public function ordertypeactivateAction() {
         $this->_change_ota(TRUE);
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypestoreAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      */
-    public function ordertypestoreAction () {
+
+    public function ordertypestoreAction() {
         $ots = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->findAll('name');
         $out = array();
         foreach($ots as $ot):
@@ -178,23 +176,19 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $this->_store('name', $out, 'title');
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypeactivateAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
     /**
      *
      */
 
-    public function ordertypedeactivateAction () {
+    public function ordertypedeactivateAction() {
         $this->_change_ota(FALSE);
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ordertypeeditexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
     /**
      *
      */
 
-    public function ordertypeeditexecuteAction () {
+    public function ordertypeeditexecuteAction() {
         $name = $this->_getParam('name');
         $form =  new Ultimatum_Form_Ultplayergroupordertypes($name);
         $gap = $this->_getAllParams();
@@ -207,18 +201,17 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
             $message = 'problems saving ' . $name;
             $params = array('error' => $message);
             $this->_forward('ordertyeedit', NULL, NULL, $params);
-        endif;
+    endif;
     }
 
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _change_ota @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-
     /**
-     *
      * @param boolean $pChange_to
      * @return NULL
+     *
+     *
      */
 
-    public function _change_ota ($pChange_to) {
+    public function _change_ota($pChange_to) {
         $ot = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->get($name = $this->_getParam('name'));
         if ($ot->isSaved()):
             $ot->active = $pChange_to ? 1 : 0;
@@ -230,8 +223,93 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $this->_forward('ordertypes', NULL, NULL, $params);
     }
 
-    public function ordertypenewAction()
-    {
+    public function ordertypenewAction() {
+    }
+
+    public function gamesviewAction() {
+        $id = $this->_getParam("id",  NULL );
+        $this->view->game = Ultimatum_Model_Ultgames::getInstance()->get($id);
+    }
+
+    /**
+     *
+     */
+
+    public function gameviewstoreAction() {
+        $game_id = $this->_getParam('game');
+        $game = Ultimatum_Model_Ultgames::getInstance()->get($game_id);
+        $player_ids = $game->player_ids();
+        $player_group_ids = array_values(Ultimatum_Model_Ultplayergroups::getInstance()->player_group_ids($player_ids, TRUE));
+        $scanned_group_ids = array_keys(
+            Ultimatum_Model_Ultplayergroupknowledge::getInstance()->last_scans_for_player($player_ids, TRUE)
+        );
+        $group_ids = array_merge($player_group_ids, $scanned_group_ids);
+        array_unique($group_ids);
+        $find_params = array('id' => array($group_ids, 'in'));
+        $groups = Ultimatum_Model_Ultgroups::getInstance()->find($find_params);
+        $out = array();
+        foreach($groups as $group):
+            $data = $group->toArray();
+            $data['size'] = $group->size_in_game($game_id);
+            $data['title'] = $group->get_title();
+            $out[] = $data;
+        endforeach;
+        $this->_store('id', $out);
+    }
+
+    public function gamegroupviewAction() {
+        $id = $this->_getParam("id",  NULL );
+        $game_id = $this->_getParam('game');
+        $this->view->group = $group = Ultimatum_Model_Ultgroups::getInstance()->get($id);
+        $this->view->game = $game = Ultimatum_Model_Ultgames::getInstance()->get($game_id);
+        $game->activate();
+    }
+
+    public function groupresizeAction() {
+        $game_id = $this->_getParam("game_id",  NULL );
+        $group_id = $this->_getParam("group_id",  NULL );
+        $size = (int) $this->_getParam('size');
+        $mode = $this->_getParam('mode');
+
+        $game  = Ultimatum_Model_Ultgames::getInstance()->get($game_id);
+        $group = Ultimatum_Model_Ultgroups::getInstance()->get($group_id);
+
+        $sizer = new Ultimatum_Model_Ultplayergroupsize();
+        $sizer->group_id = $group_id;
+        $sizer->game = $game_id;
+        $sizer->turn = $game->turn();
+
+        switch($mode):
+            case 'relative':
+                if ($size):
+                    $sizer->size = $size;
+                    $sizer->save();
+                    $m_key = 'message';
+                    $message = 'Sice changed by ' . $size;
+                else:
+                    $m_key = 'error';
+                    $message = 'No Size Change Made';
+                endif;
+                break;
+
+            case 'absolute':
+                $current = $group->size_in_game($game_id);
+                if ($current != $size):
+                    $size -= $current;
+                    $sizer->size = $size;
+                    $sizer->save();
+                    $m_key = 'message';
+                    $message = 'Size changed to ' . $size;
+                else:
+                    $m_key = 'error';
+                    $message = 'No Size Change Made';                        
+                endif;
+                break;
+        endswitch;
+
+        $params = array('id' => $group_id, 'game' => $game_id, $m_key => $message);
+
+        $this->_forward('gamegroupview', NULL, NULL, $params);
     }
 
 }

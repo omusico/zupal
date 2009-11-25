@@ -20,6 +20,7 @@ extends Zend_View_Helper_Abstract
         <th>Grow</th>
         <th>Net</th>
     </tr>
+    <? if (Ultimatum_Model_Ultgames::get_active()): ?>
     <tr>
         <td><small><?= $profile->offense_size(TRUE) ?> &times; <?= $profile->offense_efficiency(TRUE) ?></td>
         <td><small><?= $profile->defense_size(TRUE) ?> &times; <?= $profile->defense_efficiency(TRUE) ?></td>
@@ -32,6 +33,15 @@ extends Zend_View_Helper_Abstract
         <td><?= $profile->growth_effect(TRUE) ?></td>
         <td><?= $profile->network_effect(TRUE) ?></td>
     </tr>
+    <? else: ?>
+    <tr>
+        <td><?= $profile->offense_efficiency(TRUE) ?></td>
+        <td><?= $profile->defense_efficiency(TRUE) ?></td>
+        <td><?= $profile->growth_efficiency(TRUE) ?></td>
+        <td><?= $profile->network_efficiency(TRUE) ?></td>
+    </tr>
+
+    <? endif; ?>
 </table>
 
 <?

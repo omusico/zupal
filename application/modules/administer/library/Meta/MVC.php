@@ -264,7 +264,7 @@ class Administer_Lib_Meta_MVC {
 	    $file = new Zend_CodeGenerator_Php_File();
 	    $file->setClass($class);
 
-            $new_file = preg_replace('~\r[\s]*\n~', "\r",  $file->generate());
+            $new_file = preg_replace('~[\r\n][\s]*[\r\n]~', "\r",  $file->generate());
 
 	    file_put_contents($this->controller_path(), $new_file);
 	    $view_path = $this->view_path($action);

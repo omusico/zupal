@@ -2,8 +2,15 @@
 
 class Zupal_Helper_Zupalticket{
 
-    public function zupalticket(array $pValue, $pTitle, $pButtons = NULL)
+    public function zupalticket($pValue, $pTitle, $pButtons = NULL)
     {
+        if (is_object($pValue)):
+            if (!$pTitle):
+                $pTitle = (string)$pValue;
+            endif;
+            $pValue = $pValue->toArray();
+
+        endif;
 	ob_start();
 	?>
 <fieldset class="ticket">
@@ -21,8 +28,8 @@ class Zupal_Helper_Zupalticket{
     <li><a href="<?= $page->getHref() ?>"><?= $page->getLabel() ?></a></li>
     <? endforeach; ?>
 </ol>
-</fieldset>
 <? endif; ?>
+</fieldset>
 <?
 
 	return ob_get_clean();
