@@ -28,7 +28,7 @@ class Ultimatum_Form_Ultplayergrouporder extends Zupal_Fastform_Domainform {
      */
     public function target () {
         if ($target = $this->target->get_value()):
-            return Zupal_Domain_Abstract::_as($target, 'Ultimatum_Model_Ultplayergroups');
+            return Zupal_Domain_Abstract::_as($target, 'Ultimatum_Model_Ultgamegroups');
         else:
             return NULL;
         endif;

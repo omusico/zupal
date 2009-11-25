@@ -64,10 +64,10 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return Ultimatum_Model_Ultplayergroups
+     * @return Ultimatum_Model_Ultgamegroups
      */
     public function player_group () {
-        return Ultimatum_Model_Ultplayergroups::getInstance()->get($this->player_group);
+        return Ultimatum_Model_Ultgamegroups::getInstance()->get($this->player_group);
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -260,7 +260,7 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
      * @return void
      */
     public static function clear_orders ($pPlayer_group, $pTarget = NULL) {
-        $pPlayer_group = Zupal_Domain_Abstract::_as($pPlayer_group, 'Ultimatum_Model_Ultplayergroups', TRUE);
+        $pPlayer_group = Zupal_Domain_Abstract::_as($pPlayer_group, 'Ultimatum_Model_Ultgamegroups', TRUE);
         $params = array('player_group' => $pPlayer_group);
         if ($pTarget):
             $pTarget = Zupal_Domain_Abstract::_as($pTarget, 'Ultimatum_Model_Ultgroups', TRUE);

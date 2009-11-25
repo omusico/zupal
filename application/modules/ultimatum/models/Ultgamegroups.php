@@ -1,6 +1,6 @@
 <?php
 
-class Ultimatum_Model_Ultplayergroups
+class Ultimatum_Model_Ultgamegroups
 extends Zupal_Domain_Abstract
 implements Ultimatum_Model_GroupProfileIF
 {
@@ -9,11 +9,11 @@ implements Ultimatum_Model_GroupProfileIF
 
     public function tableClass()
     {
-        return 'Ultimatum_Model_DbTable_Ultplayergroups';
+        return 'Ultimatum_Model_DbTable_Ultgamegroups';
     }
 /**
  *
- * @return Ultimatum_Model_Ultplayergroups
+ * @return Ultimatum_Model_Ultgamegroups
  */
     public static function getInstance()
     {
@@ -26,7 +26,7 @@ implements Ultimatum_Model_GroupProfileIF
 
 /**
  *
- * @return Ultimatum_Model_Ultplayergroups
+ * @return Ultimatum_Model_Ultgamegroups
  */
     public function get($pID = NULL, $pLoadFields = NULL)
     {
@@ -41,7 +41,7 @@ implements Ultimatum_Model_GroupProfileIF
     /**
      *
      * @param Ultimatum_Model_Ultplayer $pPlayer
-     * @return Ultimatum_Model_Ultplayergroups
+     * @return Ultimatum_Model_Ultgamegroups
      */
     public static function for_player (Ultimatum_Model_Ultplayer $pPlayer, $pRoot_only = FALSE) {
         $params = array(

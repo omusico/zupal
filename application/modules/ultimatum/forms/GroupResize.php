@@ -14,7 +14,7 @@ extends Zend_Form
 {
 
     public function __construct($pg) {
-        $pg = Zupal_Domain_Abstract::_as($pg, 'Ultimatum_Model_Ultplayergroups');
+        $pg = Zupal_Domain_Abstract::_as($pg, 'Ultimatum_Model_Ultgamegroups');
         
         $this->set_player_group($pg);
         $path = dirname(__FILE__) . '/GroupResize.ini';

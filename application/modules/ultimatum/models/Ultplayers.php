@@ -176,7 +176,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     function player_groups($pReload = FALSE) {
         if ($pReload || is_null($this->_groups)):
         // process
-            $this->_groups = Ultimatum_Model_Ultplayergroups::for_player($this, $pRoot);
+            $this->_groups = Ultimatum_Model_Ultgamegroups::for_player($this, $pRoot);
         endif;
         return $this->_groups;
     }
@@ -185,7 +185,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     /**
      *
      * @param  $pGroup
-     * @return Ultimatum_Model_Ultplayergroups
+     * @return Ultimatum_Model_Ultgamegroups
      */
 
     public function player_group ($pGroup) {
@@ -239,7 +239,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
     /**
      *
      * @param Ultimatum_Model_Ultgroups $pGroup
-     * @return Ultimatum_Model_Ultplayergroups
+     * @return Ultimatum_Model_Ultgamegroups
      */
     public function acquire ($pGroup) {
         if (!($pGroup = $this->_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE))):
@@ -254,7 +254,7 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
             'group_id' => $pGroup
         );
 
-        $pgi = Ultimatum_Model_Ultplayergroups::getInstance();
+        $pgi = Ultimatum_Model_Ultgamegroups::getInstance();
 
         if (!$pg = $pgi->findOne($filter)):
             $pg = $pgi->get(NULL, $filter);
