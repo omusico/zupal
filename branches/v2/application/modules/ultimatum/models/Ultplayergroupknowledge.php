@@ -343,7 +343,7 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
 
         try {
             $sql = sprintf('SELECT po.id FROM %s po ', $orders->table()->tableName());
-            $sql .= sprintf (' LEFT JOIN %s pg ON pg.id = po.player_group ', Ultimatum_Model_Ultplayergroups::getInstance()->table()->tableName());
+            $sql .= sprintf (' LEFT JOIN %s pg ON pg.id = po.player_group ', Ultimatum_Model_Ultgamegroups::getInstance()->table()->tableName());
             $sql .= sprintf(' WHERE po.target = %s ', $this->get_group()->identity());
             $sql .= sprintf(' AND pg.player = %s', $this->player);
             $sql .= ' AND po.active > 0;';

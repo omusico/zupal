@@ -129,7 +129,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
         endif;
         $this->view->player = $player;
         if ($player_group = $this->_getParam('player_group')):
-            $this->view->player_group = Ultimatum_Model_Ultplayergroups::getInstance()->get($player_group);
+            $this->view->player_group = Ultimatum_Model_Ultgamegroups::getInstance()->get($player_group);
         elseif ($group = $this->_getParam("group",  NULL )):
             $this->view->player_group = $player->player_group($group);
         endif;

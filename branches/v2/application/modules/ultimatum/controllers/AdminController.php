@@ -239,7 +239,7 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $game_id = $this->_getParam('game');
         $game = Ultimatum_Model_Ultgames::getInstance()->get($game_id);
         $player_ids = $game->player_ids();
-        $player_group_ids = array_values(Ultimatum_Model_Ultplayergroups::getInstance()->player_group_ids($player_ids, TRUE));
+        $player_group_ids = array_values(Ultimatum_Model_Ultgamegroups::getInstance()->player_group_ids($player_ids, TRUE));
         $scanned_group_ids = array_keys(
             Ultimatum_Model_Ultplayergroupknowledge::getInstance()->last_scans_for_player($player_ids, TRUE)
         );

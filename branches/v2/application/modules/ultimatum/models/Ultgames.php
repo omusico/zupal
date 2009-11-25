@@ -132,7 +132,7 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
      */
     public function next_turn () {
         $params = array('game' => $this->identity());
-        $pgs = Ultimatum_Model_Ultplayergroups::getInstance()->find($params);
+        $pgs = Ultimatum_Model_Ultgamegroups::getInstance()->find($params);
         $this->turn++;
         $this->save();
 

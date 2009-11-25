@@ -50,11 +50,11 @@ class Ultimatum_Model_Ultplayergrouporderresizes extends Zupal_Domain_Abstract
     /**
      *
      * @param boolean $pReload
-     * @return Ultimatum_Model_Ultplayergroups
+     * @return Ultimatum_Model_Ultgamegroups
      */
     function player_group($pReload = FALSE) {
         if ($pReload || is_null($this->_player_group)):
-            $value = Ultimatum_Model_Ultplayergroups::getInstance()->get($this->order()->player_group);
+            $value = Ultimatum_Model_Ultgamegroups::getInstance()->get($this->order()->player_group);
         // process
             $this->_player_group = $value;
         endif;

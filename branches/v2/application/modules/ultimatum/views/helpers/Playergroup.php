@@ -8,7 +8,7 @@ extends Zend_View_Helper_Abstract
  * @param $pPlayer_group
  * @return string
  */
-    public function playergroup (Ultimatum_Model_Ultplayergroups $pPlayer_group, $pContent = NULL) {
+    public function playergroup (Ultimatum_Model_Ultgamegroups $pPlayer_group, $pContent = NULL) {
 
         $this->view->headLink()->appendStylesheet($this->view->baseUrl() . '/style/ultimatum/ult_style.css');
         $po = $pPlayer_group->pending_orders();
