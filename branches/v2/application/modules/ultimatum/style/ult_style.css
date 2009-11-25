@@ -1,3 +1,21 @@
+#ultimatum_game
+{
+    float: right;
+    width: 300px;
+    border: 3px solid #666;
+    color: green;
+    background-color: black;
+
+}
+
+#ultimatum_game legend
+{
+    color: white;
+    font-size: 12pt;
+    font-weight: bold;
+}
+
+
 #main .ult_power_matrix,
 .ult_power_matrix
 {

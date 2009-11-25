@@ -17,12 +17,11 @@ extends Zend_View_Helper_Abstract
         ob_start();
         ?>
 
-<fieldset>
+<fieldset class="ult_groupinfo">
     <legend>Group <?= $group->get_title() ?></legend>
      <?= $this->view->powerMatrix($group) ?>
-    <b><?= $group->get_lead() ?></b>
-    <hr />
-        <?= $group->get_content(); ?>
+    <p><b><?= $group->get_lead() ?></b>:
+        <?= $group->get_content(); ?></p>
     <? if ($pContent):
     echo $pContent;
     else: ?>
@@ -35,13 +34,14 @@ extends Zend_View_Helper_Abstract
     </ol>
 
     <? endif; ?>
+        <h3>Command Group</h3>
     <ul>
     <?
     $params = array('active' => 1);
     foreach(Ultimatum_Model_Ultplayergroupordertypes::getInstance()->find($params) as $ot):
     ?>
         <li><a class="linkbutton" href="/ultimatum/game/order/group/<?= $group->identity() ?>/order/<?= $ot->identity() ?>/"><?= $ot ?></a>
-            <?= $ot->get_content() ?>
+            <?= $ot->get_lead() ?>
     <? endforeach; ?>
     </ul>
         <? endif; ?>

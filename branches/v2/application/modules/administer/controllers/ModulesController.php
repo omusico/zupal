@@ -142,7 +142,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
             $data['sort_by'] = $i + 1;
             $out[$menu->name] = $data;
         endforeach;
-        $config  = new Zend_Config(array('fields' => $out));
+        $config  = new Zend_Config(array('menu' => $out));
         error_log(__METHOD__ . ': data = ' . print_r($config, 1));
         $ini  = new Zupal_Config_Writer_Ini(array('config' => $config));
 

@@ -3,12 +3,36 @@
 class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
 {
 
+    const STATUS_PENDIONG   = 'pending';
+    const STATUS_EXECUTING  = 'executing';
+    const STATUS_CANCELLED  = 'cancelled';
+    const STATUS_COMPLETE   = 'complete';
+
     private static $_Instance = null;
 
     public function tableClass()
     {
         return 'Ultimatum_Model_DbTable_Ultplayergrouporders';
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ pending @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param boolean $pInclude_Executing = TRUE
+ * @return boolean
+ */
+    public function pending ($pInclude_Executing = TRUE) {
+        if ($this->status == self::STATUS_PENDIONG):
+            return TRUE;
+        endif;
+
+        if ($pInclude_Executing && ($this->status == self::STATUS_EXECUTING)):
+            return TRUE;
+         endif;
+
+        return FALSE;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getInstance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
@@ -147,10 +171,23 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
         $player_group = $this->player_group();
         $start_turn = $this->start_turn();
         if ($player_group):
-            return $this->order_type() . ' to group ' . $player_group . ' on turn ' . $start_turn;
+            return $this->order_type() . ' to ' . $player_group . ' on turn ' . $start_turn;
         else:
             return $this->order_type() . ' on turn ' . $start_turn;
         endif;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ start @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * @return <type>
+     */
+    public function start () {
+        if ($this->status != self::STATUS_PENDIONG):
+            return;
+        endif;
+        $this->start_turn = $this->player_group()->get_game()->turn();
+        $this->status = self::STATUS_EXECUTING;
+        $this->save();
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ start_turn @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -159,6 +196,10 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
      * @return int
      */
     public function start_turn () {
+        if (($this->status != self::STATUS_PENDIONG)):
+            return $this->start_turn;
+        endif;
+
         $select = $this->table()->select()
             ->where('player_group = ?', $this->player_group)
             ->where('series < ?', $this->series)
@@ -176,6 +217,15 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
         return $start_turn;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ end_turn @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function end_turn () {
+        return $this->start_turn() + $this->order_type()->turns - 1;
+    }
+
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cancel @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -184,7 +234,6 @@ class Ultimatum_Model_Ultplayergrouporders extends Zupal_Domain_Abstract
     public function cancel () {
         $this->active = 0;
         $this->status = 'cancelled';
-        $game = Zend_Registry::get('ultimatum_game');
         $this->save();
     }
 

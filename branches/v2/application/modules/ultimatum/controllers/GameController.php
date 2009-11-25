@@ -121,24 +121,21 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
             $game = $player->get_game();
         endif;
         $this->view->game = $game;
-        Zend_Registry::set('ultimatum_game', $game);
+        $game->activate();
         if (!$player):
             $params = array('errror' => 'You are not a player in game ' . $id);
             $this->_forward('index', 'index', NULL, $params);
             return FALSE;
         endif;
         $this->view->player = $player;
-
         if ($player_group = $this->_getParam('player_group')):
             $this->view->player_group = Ultimatum_Model_Ultplayergroups::getInstance()->get($player_group);
         elseif ($group = $this->_getParam("group",  NULL )):
             $this->view->player_group = $player->player_group($group);
         endif;
-
         if ($target = $this->_getParam('target')):
             $this->view->target = Ultimatum_Model_Ultgroups::getInstance()->get($target);
         endif;
-
         return TRUE;
     }
 
@@ -155,7 +152,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
                 $row['players'] = count($players);
                 $row['turn'] = $turn;
                 $data[] = $row;
-        endif;
+            endif;
         endforeach;
         ksort($data);
         $this->_store('id', $data, 'name');
@@ -251,7 +248,7 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
         else:
             $params = array('error' => 'Cannot give order');
             return $this->_forward('order', NULL, NULL, $params);
-        endif;
+    endif;
     }
 
     public function cancelorderAction() {
@@ -333,10 +330,21 @@ class Ultimatum_GameController extends Zupal_Controller_Abstract {
             $params = array('error' => 'Cannot load group');
             return $this->_forward('run', NULL, NULL, $params);
         endif;
-
         $this->_draw_network();
         $order = $this->_getParam("order",  NULL );
         $this->view->order_type = Ultimatum_Model_Ultplayergroupordertypes::getInstance()->get($order);
+    }
+
+    public function nextturnAction() {
+        if (!$this->_prep()):
+            $this->_forward('index', 'index', NULL, array('error' => 'problem loading game'));
+        endif;;
+
+        $user = Model_Users::current_user();
+        if ($user && $user->can('ultimatum_manage')):
+            $this->view->game->next_turn();
+    endif;
+
     }
 
 }

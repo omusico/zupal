@@ -1,24 +1,8 @@
-<?
-$this->placeholder('page_title')->set('Group &quot;' . $this->group->get_title() .'&quot;');
-?>
-<?= $this->group->get_lead() ?>
-<blockquote>
-   <?= $this->group->get_content() ?>
-</blockquote
-<hr>
-<table border="1">
-    <tr>
-        <th>Offense</th>
-        <th>Defense</th>
-        <th>Network</th>
-        <th>growth</th>
-    </tr>
-    <tr>
-        <td><?= $this->group->offense_efficiency(TRUE) ?></td>
-        <td><?= $this->group->defense_efficiency(TRUE) ?></td>
-        <td><?= $this->group->network_efficiency(TRUE) ?></td>
-        <td><?= $this->group->growth_efficiency(TRUE) ?></td>
-</table>
+<fieldset class="ult_groupinfo">
+    <legend>Group <?= $this->group->get_title() ?></legend>
+     <?= $this->powerMatrix($this->group) ?>
+    <p><b><?= $this->group->get_lead() ?></b>:
+        <?= $this->group->get_content(); ?></p>
 
 <span class="button_link_list">
     <ul>
@@ -27,3 +11,9 @@ $this->placeholder('page_title')->set('Group &quot;' . $this->group->get_title()
         <li><a href="<?= $this->baseUrl() ?>/admin/ultimatum/groupnew">Add New Group</a></li>
     </ul>
 </span>
+</fieldset>
+<?
+$this->headStyle()->captureStart();
+echo '@import "/style/ultimatum/ult_style.css";';
+$this->headStyle()->captureEnd();
+$this->placeholder('page_title')->set('Group ' . $this->group);

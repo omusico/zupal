@@ -85,9 +85,8 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
      *
      * @return int
      */
-    public function turn ($pAs_int = TRUE) {
-        $turn = Ultimatum_Model_Ultgameturns::getInstance()->last_turn($this);
-        return $pAs_int ? $turn->turn : $turn;
+    public function turn () {
+        return $this->turn;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -121,5 +120,63 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
         $this->status = 'deleted';
         $this->save();
     }
+
+    public function __toString() {
+        return sprintf('Ultimatum game &quot;%s&quot;', $this->title);
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ next_turn @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function next_turn () {
+        $params = array('game' => $this->identity());
+        $pgs = Ultimatum_Model_Ultplayergroups::getInstance()->find($params);
+        $this->turn++;
+        $this->save();
+
+        foreach($pgs as $player_group):
+            $po = $player_group->pending_order();
+            if ($po->end_turn() <= $this->turn()):
+                $po->execute();
+            endif;
+        endforeach;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_ids @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int[]
+     */
+    public function player_ids () {
+
+        $table = $player_ids = Ultimatum_Model_Ultplayers::getInstance()->table();
+        $sql = sprintf('SELECT id FROM %s where game = ?', $table->tableName());
+        $player_ids = $table->getAdapter()->fetchCol($sql, $this->identity());
+        return $player_ids;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ activate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function activate () {
+        Zend_Registry::set(self::GAME_KEY, $this);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_active @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public static function get_active($pReload = FALSE) {
+        if (Zend_Registry::isRegistered(self::GAME_KEY)):
+            return  Zend_Registry::get(self::GAME_KEY);
+        else:
+            return NULL;
+        endif;
+    }
+
+    const GAME_KEY = 'ultimatum_game';
+
 }
 

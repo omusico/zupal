@@ -115,13 +115,14 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         if (is_null($eff)):
             return $pString ? '(unknown)' : NULL;
         endif;
+        $eff_factor = Ultimatum_Model_Ultgroups::eff_factor($eff);
 
         $size = $this->get_size($pProperty);
         if (is_null($size)):
             return $pString ? '(unknown)' : NULL;
         endif;
 
-        return Ultimatum_Model_Ultgroups::effect($size, $eff, $pString);
+        return Ultimatum_Model_Ultgroups::effect($size, $eff_factor, $pString);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ group @@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -356,6 +357,44 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         }
         return $out;
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ last_scans_for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pPlayer_id
+     * @return <type>
+     */
+    public function last_scans_for_player ($pPlayer_id, $pAs_array = FALSE) {
+        if (is_array($pPlayer_id)):
+            $scans = array();
+            foreach($pPlayer_id as $pid):
+                $scans = $scans + $this->last_scans_for_player($pid, $pAs_array);
+            endforeach;
+            return $scans;
+        else:
+            $sql = sprintf('SELECT group_id, id FROM %s WHERE player = ? ORDER BY last_update',
+                $this->table()->tableName());
+            $scan_ids = $this->table()->getAdapter()->fetchPairs($sql, $pPlayer_id);
+
+/*
+ * using the fact that the scans are returned in last_update order
+ * to put the id of the most recent scan in the index for the group
+ */
+
+            if ($pAs_array):
+                return $scan_ids; // returns an array where keys == scan ids and values == group ids
+            else:
+                $out = array();
+
+                foreach($scan_ids as $id):
+                    $out = $this->get($id);
+                endforeach;
+
+                return $out;
+            endif;
+        endif;
+    }
+
 
 }
 

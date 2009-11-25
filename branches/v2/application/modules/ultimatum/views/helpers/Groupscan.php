@@ -23,7 +23,10 @@ extends Zend_View_Helper_Abstract
         (as of turn <?= $pScan->get_game()->turn(TRUE) ?>)</legend>
      <?= $this->view->powerMatrix($pScan) ?>
 
+    <p>
     <b><?= $group->get_lead() ?></b>
+        <?= $group->get_content() ?>
+    </p>
 <? if(($orders = $pScan->pending_orders())): ?>
     <hr />
     <h3>Pending Orders</h3>
@@ -35,10 +38,9 @@ extends Zend_View_Helper_Abstract
 <? endforeach; ?>
     </ol>
 <? endif; ?>
-    <hr />
-        <?= $group->get_content() ?>
 
-    <? if ($pContent) echo $pContent; ?>
+    <hr />
+    <?= $pContent; ?>
 </fieldset>
         <?
         return ob_get_clean();
