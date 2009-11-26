@@ -13,25 +13,6 @@ class Zupal_Fastform_Form
 extends Zupal_Fastform_Abstract
 {
 
-    public function __construct($pName = '', $pID = NULL, $pLabel = '',
-        $pAction = '', $pFields = array(), $pProps = array()) {
-        $this->set_name($pName);
-        $this->set_label($pLabel);
-        $this->set_id($pID);
-
-        if ($pProps && count($pProps)):
-            $this->load_props($pProps);
-        endif;
-
-        if ($pAction):
-            $this->set_action($pAction);
-        endif;
-
-        if ($pFields && count($pFields)):
-            $this->load_fields($pFields);
-        endif;
-    }
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ from_config @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
@@ -89,7 +70,7 @@ extends Zupal_Fastform_Abstract
  * @return string;
  */
     protected function _ini_path(){
-        return '';
+        return ''; // return preg_replace('~php$~', 'ini', __FILE__);
      }
 
 }

@@ -10,10 +10,8 @@ extends Zupal_Fastform_Tag_Form {
     }
 
     protected function _load($pName = NULL, $pID = NULL,  $pAction = NULL) {
-
-        $config = new Zend_Config_Ini($this->_ini_path(), 'fields');
-        
         if (file_exists($this->_ini_path())):
+            $config = new Zend_Config_Ini($this->_ini_path(), 'fields');
             $c_array = $config->toArray();
             $c_array = $this->_filter_config($c_array);
         else:

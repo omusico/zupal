@@ -52,4 +52,66 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
     {
         return Zupal_Util_Array::stripslashes($this->getRequest()->getParams());
     }
+
+    public function __call($methodName, $args) {
+        if (preg_match('~^(.*)Action$~', $methodName, $m)):
+            $action = $m[1];
+            $caname = ucfirst(strtolower($action));
+            $cn = $this->controller_name($this);
+            $cd = $this->controller_dir();
+            
+            $action_class_path = $cd . $cn . DIRECTORY_SEPARATOR . $caname . 'Action.php';
+            if (file_exists($action_class_path)):
+                require_once($action_class_path);
+
+                $action_class = $this->module_name($this) . '_' .  $cn . '_' . $caname . 'Action';
+                $action = new $action_class($this);
+
+                return $action->execute();
+            endif;
+        endif;
+        return parent::__call($methodName, $args);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    abstract public function controller_dir ();
+    /**
+     * This boilerplate should work with any controller
+     *
+     *
+    private $_controller_dir = NULL;
+    function controller_dir($pReload = FALSE) {
+        if ($pReload || is_null($this->_controller_dir)):
+        // process
+            $this->_controller_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        endif;
+        return $this->_controller_dir;
+    }
+*/
+    
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    private $_controller_name = NULL;
+    function controller_name($pController_Object) {
+        if (is_null($this->_controller_name)):
+        // process
+            if (preg_match('~^[\w]+_([\w]+)Controller$~', get_class($pController_Object), $m)):
+                $value = $m[1];
+            endif;
+            $this->_controller_name = $value;
+        endif;
+        return $this->_controller_name;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module_name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    
+    private $_module_name = NULL;
+    function module_name($pController_Object) {
+        if (is_null($this->_module_name)):
+        $value = array_shift(split('_', get_class($pController_Object)));
+        // process
+            $this->_module_name = $value;
+        endif;
+        return $this->_module_name;
+    }
+
 }
