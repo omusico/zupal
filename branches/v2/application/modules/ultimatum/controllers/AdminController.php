@@ -312,5 +312,16 @@ class Ultimatum_AdminController extends Zupal_Controller_Abstract {
         $this->_forward('gamegroupview', NULL, NULL, $params);
     }
 
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+    
 }
 
