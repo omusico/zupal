@@ -158,13 +158,21 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ activate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     */
+
     public function activate () {
         Zend_Registry::set(self::GAME_KEY, $this);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_active_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public function get_active_id () {
+        if (Zend_Registry::isRegistered(self::GAME_KEY)):
+            $game =  Zend_Registry::get(self::GAME_KEY);
+            return $game ? $game->identity() : NULL;
+        else:
+            return NULL;
+        endif;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_active @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 

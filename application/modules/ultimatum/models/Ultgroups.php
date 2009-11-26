@@ -126,11 +126,18 @@ implements Ultimatum_Model_GroupProfileIF
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
+     * At this point there is no granularity for size --
+     * a group has a single size value, that only varies due to the
+     * group's efficiency scale. However in the future there may be
+     * adjusters that affect size on a prop by prop value. 
      *
      * @return scalar
      */
-    public function get_size ($pProperty = NULL, $pString) {
-        $pGame = Ultimatum_Model_Ultgames::get_active();
+    public function get_size ($pProperty = NULL, $pString, $pGame = NULL) {
+        if (!$pGame):
+            $pGame = Ultimatum_Model_Ultgames::get_active();
+        endif;
+
         if ($pGame):
             $size = $this->size_in_game($pGame);
         else:
@@ -138,6 +145,25 @@ implements Ultimatum_Model_GroupProfileIF
         endif;
 
         return $pString ? (int) $size : $size;
+    }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ sizes @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pGame_id
+     * @return <type>
+     */
+    public function sizes ($pGame_id = NULL) {
+        if (!$pGame):
+            $pGame = Ultimatum_Model_Ultgames::get_active();
+        endif;
+
+        if ($pGame):
+            $sizes = $this->sizes_in_game($pGame);
+        else:
+            $sizes = array();
+        endif;
+
+        return $sizes;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_effect @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -355,20 +381,23 @@ implements Ultimatum_Model_GroupProfileIF
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __toString @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @return <type>
+     * @return string
      */
     public function __toString () {
         return sprintf('Group &quot;%s&quot;', $this->get_title());
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ size_in_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
     public function size_in_game ($pGame_id = NULL) {
         return Ultimatum_Model_Ultplayergroupsize::getInstance()->group_size($this->identity(), $pGame_id);
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ sizes @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
     public function sizes_in_game ($pGame_id = NULL) {
         return Ultimatum_Model_Ultplayergroupsize::getInstance()->group_sizes($this->identity(), $pGame_id);
     }
+    
 }
 

@@ -44,9 +44,8 @@ implements Ultimatum_Model_GroupProfileIF
      * @return Ultimatum_Model_Ultgamegroups
      */
     public static function for_player (Ultimatum_Model_Ultplayer $pPlayer, $pRoot_only = FALSE) {
-        $params = array(
-            'player' => $pPlayer->identity()
-        );
+        $params = array('player' => $pPlayer->identity());
+
         if ($pRoot_only):
             $params['controlling_group'] = 0;
         endif;
@@ -65,18 +64,23 @@ implements Ultimatum_Model_GroupProfileIF
     
     public function get_player() { return Ultimatum_Model_Ultplayers::getInstance()->get($this->player); }
     
-    public function set_player($pValue) { 
-        if (is_numeric($pValue)):
-            $player = Ultimatum_Model_Ultplayers::getInstance()->get($pValue); 
-        elseif ($pValue instanceof Ultimatum_Model_Ultplayer):
-            $player = $pValue;
-        else:
-            throw new Exception(__METHOD__ . ': bad value passed: ' . print_r($pValue, 1));
+    public function set_player($pPlayer) {
+//      $player = new Ultimatum_Model_Ultplayers();
+        $pPlayer = Zupal_Domain_Abstract::_as($pPlayer, 'Ultimatum_Model_Ultplayers');
+
+        if($this->player == $pPlayer->identity()):
+            return;
         endif;
-        
-        $this->_player = $player;
-        $this->player = $player->identity();
-        $this->game = $player->game;
+
+        if ($this->get_game()->identity() != $pPlayer->get_game()->identity()):
+            throw new Exception(__METHOD__ . ': attempt to assign player from different game.');
+        endif;
+
+        $this->_player = $pPlayer;
+
+        $this->player = $pPlayer->identity();
+        $this->on_turn = $this->get_game()->turn();
+        $this->save();
     }
     
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -134,9 +138,25 @@ implements Ultimatum_Model_GroupProfileIF
         $game = $this->get_game();
 
         if ($game):
-            return $this->get_group()->get_size($pProperty, $game, $pString);
+            return $this->get_group()->get_size($pProperty, $pString, $game);
         else:
-            throw new Exception(__METHOD__. ': player group ' . $this->identity() . ' has no string');
+            throw new Exception(__METHOD__. ': player group ' . $this->identity() . ' has no game');
+        endif;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ sizes @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type>
+     * @return <type>
+     */
+    public function sizes () {
+        $game = $this->get_game();
+
+        if ($game):
+            return $this->get_group()->get_sizes($game);
+        else:
+            throw new Exception(__METHOD__. ': player group ' . $this->identity() . ' has no game');
         endif;
     }
 
@@ -173,10 +193,46 @@ implements Ultimatum_Model_GroupProfileIF
      * @return void
      */
     public function save () {
+
         foreach(Ultimatum_Model_Ultgroups::$_properties as $prop):
-            $this->$prop = $this->get_power($prop);
+            $this->$prop = $this->get_size($prop);
         endforeach;
+
+        
         parent::save();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ start_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int $pTarget_size
+     */
+    public function start_size ($pTarget_size = 30, $pFactor = 3) {
+        $size = $pTarget_size % $pFactor;
+        $fraction = floor($pTarget_size / $pFactor);
+        for ($i = 0; $i < $pFactor; ++$i):
+            $size += rand(0, $fraction);
+        endfor;
+
+        $this->add_size($size);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ add_size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function add_size ($pSize = 0) {
+        $pSize = (int) $pSize;
+        $game_id = $this->get_game()->identity();
+        if (!$pSize || $game_id):
+            return;
+        endif;
+
+        $size = new Ultimatum_Model_Ultplayergroupsize();
+        $size->group_id = $this->group_id();
+        $size->size = $pSize;
+        $size->game = $game_id;
+        $size->save();
     }
 
 
@@ -377,11 +433,13 @@ implements Ultimatum_Model_GroupProfileIF
         return $po->find($select, 'series');
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_group_ids @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_group_ids @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
+     *  Returns the group IDs (NOT player group ids) 
+     * of the groups owned by a given player (or players).
      *
      * @param int $pPlayer_id
-     * @return array
+     * @return int[]
      */
     public function player_group_ids ($pPlayer_id) {
         $sql = sprintf('SELECT DISTINCT group_id FROM %s ', $this->table()->tableName());
@@ -394,6 +452,29 @@ implements Ultimatum_Model_GroupProfileIF
         endif;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group_for_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param  $pGroup
+     * @return Ultimatum_Model_Ultgamegroups
+     */
+    public function group_for_game ($pGroup, $pGame = NULL, $pCreate = FALSE) {
+        $pGroup = Zupal_Domain_Abstract::_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE);
+        $pGame = $pGame ? Zupal_Domain_Abstract::_as($pGame, 'Ultimatum_Model_Ultgames', TRUE) : Ultimatum_Model_Ultgames::getInstance()->get_active_id();
+        
+        $params = array('group' => $pGroup, 'game' => $pGame);
+        
+        $gfg = $this->findOne($params);
+        
+        if (!$gfg && $pCreate):
+            $gfg = new self();
+            $gfg->group = $pGroup;
+            $gfg->game  = $pGame;
+            $gfg->save();
+        endif;
+        
+        return $gfg;
+    }
 
 }
 

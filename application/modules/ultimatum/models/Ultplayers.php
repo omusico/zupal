@@ -246,21 +246,10 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
             throw new Exception(__METHOD__ . ': bad gorup passed : ' . print_r($pGroup, 1));
         endif;
 
-        $game = $this->get_game();
-
-        $filter = array(
-            'game' => $game->identity(),
-            'player' => $this->identity(),
-            'group_id' => $pGroup
-        );
-
         $pgi = Ultimatum_Model_Ultgamegroups::getInstance();
-
-        if (!$pg = $pgi->findOne($filter)):
-            $pg = $pgi->get(NULL, $filter);
-            $pg->on_turn = $game->turn(TRUE);
-            $pg->save();
-        endif;
+        
+        $pg = $pgi->group_for_game($pGroup, $this->get_game(), TRUE);
+        $pg->set_player($this);
         
         return $pg;
     }
