@@ -176,5 +176,16 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
         return $out;
     }
 
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+    
 }
 

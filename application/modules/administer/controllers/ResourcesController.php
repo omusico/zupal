@@ -100,5 +100,16 @@ class Administer_ResourcesController extends Zupal_Controller_Abstract {
     public function _base_path ($css) {
         return str_replace('[BASE_URL]', $this->view->baseUrl(), $css);
     }
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+    
 }
 

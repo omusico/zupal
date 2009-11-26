@@ -73,5 +73,47 @@ class Administer_IndexController extends Zupal_Controller_Abstract
 
         $this->_store('id', $data);
     }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@ ROUTING BOILERPLATE @@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * This boilerplate should work with any controller
+     *
+     */
+    private $_controller_dir = NULL;
+    function controller_dir($pReload = FALSE) {
+        if ($pReload || is_null($this->_controller_dir)):
+        // process
+            $this->_controller_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+        endif;
+        return $this->_controller_dir;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    private $_controller_name = NULL;
+    function controller_name($pReload = FALSE) {
+        if ($pReload || is_null($this->_controller_name)):
+        // process
+            if (preg_match('~^([\w)_)?([\w]+)Controller$~', get_class($this), $m)):
+                $value = $m[1];
+            endif;
+            $this->_controller_name = $value;
+        endif;
+        return $this->_controller_name;
+    }
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ module_name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    private $_module_name = NULL;
+    function module_name($pReload = FALSE) {
+        if ($pReload || is_null($this->_module_name)):
+        $value = array_shift(split('_', get_class($this))) . DIRECTORY_SEPARATOR;
+        // process
+            $this->_module_name = $value;
+        endif;
+        return $this->_module_name;
+    }
+
+
 }
 

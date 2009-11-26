@@ -81,5 +81,28 @@ class Administer_TestController extends Zupal_Controller_Abstract {
 
         return $complex_form;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mergesortAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function mergesortAction () {
+        $this->view->data = preg_split('/[^\d]+/', $this->_getParam('data', array()));
+        $form = new Zupal_Fastform_Form('data', 'data', '/administer/test/mergesort');
+        $form->set_field(new Zupal_Fastform_Field_Text('data', 'Data', join(',', $this->view->data), array('rows' => 5), $form));
+        $this->view->data_form = $form;
+    }
+
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+
 }
 
