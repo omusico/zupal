@@ -283,7 +283,8 @@ implements Zupal_Domain_IDomain {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ findOne @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
-     * @return Zupal_Domain_Abstract
+     * @return Zupal_Domain_Abstract.
+     * If no match is found, NULL returns. 
      */
     public function findOne($pParams = NULL, $pSort = NULL) {
         $select = $this->_select($pParams, $pSort);
@@ -308,12 +309,20 @@ implements Zupal_Domain_IDomain {
                 else:
                     $operator = 'LIKE';
                 endif;
-                $select->where("`$field` $operator ?", $value);
+                if (!strcasecmp('in', $operator)):
+                    if (is_array($value)):
+                        $value = '(' . join(',', $value) . ')';
+                    endif;
+                    $select->where("`$field` $operator $value");
+                else:
+                    $select->where("`$field` $operator ?", $value);
+                endif;
             endforeach;
         endif;
         if ($pSort):
             $select->order($pSort);
         endif;
+        $sql = $select->assemble();
         return $select;
     }
 

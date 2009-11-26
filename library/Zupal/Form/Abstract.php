@@ -107,6 +107,9 @@ extends Zend_Form {
 
         foreach($pFields as $field):
             $element = $this->getElement($field);
+            if ($field == $object->table()->idField()):
+                continue;
+            endif;
             $object->$field = $element->getValue();
         endforeach;
     }
