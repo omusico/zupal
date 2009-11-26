@@ -209,6 +209,17 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
        $this->_forward('rolesedit', 'users', 'administer', $params);
     }
 
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+    
 
 }
 

@@ -1,0 +1,15 @@
+<?php
+$this->placeholder('page_title')->set('Merge Sort Test');
+
+echo $this->data_form;
+
+?>
+<h3>Input:</h3>
+<p><?= join(', ', $this->data) ?></p>
+<?
+$ms = new Zupal_Util_MergeSort($this->data);
+$ms->merge_sort();
+$oa = (array) $ms;
+?>
+<h3>Merged: </h3>
+<?= join(', ', (array) $oa) ?>

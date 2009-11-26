@@ -111,6 +111,17 @@ extends Zupal_Controller_Abstract {
         $this->view->form->parent->setValue($parent);        
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@ ROUTING BOILERPLATE @@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+
 
 }
 

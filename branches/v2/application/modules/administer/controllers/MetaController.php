@@ -245,4 +245,16 @@ class Administer_MetaController extends Zupal_Controller_Abstract {
         $this->view->in_module = $in_module;
         $in_module = $this->_getParam("in_module",  NULL );
     }
+
+/* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    }
+
 }
