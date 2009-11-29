@@ -420,8 +420,13 @@ class Administer_Lib_Meta_Domain
     
     public function get_domain_code() { return $this->_domain_code; }
     
-    public function set_domain_code($pValue) { $this->_domain_code = $pValue; }
-    
+    public function set_domain_code($pValue) {
+        $pValue = str_replace(
+            '$pID, $pLoadFields',
+            '$pID = NULL, $pLoadFields = NULL',
+            $pValue);
+        $this->_domain_code = $pValue;
+    }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ form_code @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -433,6 +438,5 @@ class Administer_Lib_Meta_Domain
     public function get_form_code() { return $this->_form_code; }
 
     public function set_form_code($pValue) { $this->_form_code = $pValue; }
-
 
 }
