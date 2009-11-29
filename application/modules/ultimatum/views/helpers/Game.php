@@ -1,4 +1,4 @@
-<?
+ <?
 class Ultimatum_View_Helper_Game
 extends Zend_View_Helper_Abstract {
 
@@ -18,8 +18,10 @@ extends Zend_View_Helper_Abstract {
     <legend>Ultimatum</legend>
 <b>Game:</b> <?= $game ?>, turn <?= $game->turn() ?>
 <? if ($user && $user->can('ultimatum_manage')): ?>
-<a class="linkbutton" href="/ultimatum/game/nextturn/game/<?= $game->identity() ?>">Next Turn</a>
+<?= $this->view->zupallinkbutton("/ultimatum/game/nextturn/game/" . $game->identity(), 'Next Turn') ?>
 <? endif; ?>
+<br />
+<?= $this->view->zupallinkbutton("/ultimatum/game/switch/", 'Stop Playing') ?>
 </fieldset>
 <?
             return ob_get_clean();

@@ -454,7 +454,8 @@ implements Ultimatum_Model_GroupProfileIF
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ group_for_game @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
+     * This method is a bit more "expansive" than as_game_group
+     * as it allows a game group object to autospawn if $pGreat = TRUE.
      * @param  $pGroup
      * @return Ultimatum_Model_Ultgamegroups
      */
@@ -476,5 +477,28 @@ implements Ultimatum_Model_GroupProfileIF
         return $gfg;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ as_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * This methos presues any integer passed is an identity of a GAME GROUP
+     * not a group.
+     */
+    public static function as_game_group ($pGameGroup, $pAs_ID = FALSE) {
+        if (!$pGameGroup instanceof Ultimatum_Model_Ultgamegroups):
+            if ($pGameGroup instanceof Ultimatum_Model_Ultgroups):
+                $pGameGroup = self::getInstance()->group_for_game($pGameGroup);
+            elseif (is_numeric($pGameGroup)):
+                $pGameGroup = new Ultimatum_Model_Ultgamegroups($pGameGroup);
+                if (!$pGameGroup->isSaved()):
+                    return NULL;
+                endif;
+            endif;
+        endif;
+
+        if ($pAs_ID):
+            return $pGameGroup->identity();
+        else:
+            return $pGameGroup;
+        endif;
+    }
 }
 

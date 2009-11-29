@@ -358,6 +358,18 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_group_scan @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    
+    public static function player_group_scan ($pPlayer, $pGroup) {
+
+        $player = Zupal_Domain_Abstract::_as($pPlayer, 'Ultimatum_Model_Ultplayers', TRUE);
+        $group = Zupal_Domain_Abstract::_as($pGroup, 'Ultimatum_Model_Ultgroups', TRUE);
+
+        $params = array('player' => $player, 'group_id' => $group);
+
+        return self::getInstance()->findOne($params, 'scanned_at DESC');
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ last_scans_for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -395,6 +407,8 @@ class Ultimatum_Model_Ultplayergroupknowledge extends Zupal_Domain_Abstract
         endif;
     }
 
-
+    public function __call($pName, $pParams) {
+       return call_user_method_array($pName, $this->get_group(), $pParams);
+    }
 }
 

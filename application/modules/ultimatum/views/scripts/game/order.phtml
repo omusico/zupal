@@ -17,7 +17,7 @@ $s = count($orders) > 1 ? 's' : '';
     <? foreach($orders as $o): ?>
     <tr>
         <td><?= $o->identity() ?></td>
-        <td><?= $o->order_type()->title ?></td>
+        <td><?= $o->order_type()->get_title() ?></td>
         <td><?= $o->get_target() ?></td>
         <td><?= (int) $o->start_turn ?></td>
     </tr>
@@ -27,7 +27,7 @@ $s = count($orders) > 1 ? 's' : '';
 <? endif; ?>
 <h1><?= $this->order_type ?></h1>
 
-<p><?= $this->order_type->description ?></p>
+<p><b><?= $this->order_type->get_lead() ?></b>: <?= $this->order_type->get_content() ?></p>
 
 <? switch($this->order_type->target_type): ?>
 <? case (Ultimatum_Model_Ultplayergroupordertypes::TARGET_TYPE_SELF): ?>

@@ -87,6 +87,18 @@ extends Model_Zupalatomdomain
         return $this->findOne(array('atomic_id' => $pAtomic_id), 'id DESC');
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_by_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Ultimatum_Model_Ultplayergroupordertypes[]
+     */
+    public function get_by_type () {
+        $types = func_get_args();
 
+        $params = array(
+            'active' => 1,
+            'target_type' => array('in', $types)
+        );
+    }
 }
 

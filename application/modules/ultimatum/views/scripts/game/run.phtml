@@ -28,7 +28,7 @@ endforeach;
 <? $this->contentPane()->captureStart('others', array('title' => 'Other Groups')) ?>
 <p><i>Note -- this information is only current to the turn it was scanned.</i></p>
 <? foreach($this->scans as $scan):
-    echo $this->groupscan($scan, $this->interact($scan));
+    echo $this->groupscan($scan);
 endforeach; ?>
 <?= $this->contentPane()->captureEnd('others') ?>
 

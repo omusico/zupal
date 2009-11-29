@@ -204,25 +204,34 @@ class Ultimatum_Model_Ultplayers extends Zupal_Domain_Abstract
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scans @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function scans () {
-        $scans = Ultimatum_Model_Ultplayergroupknowledge::getInstance()->for_player($this);
-        foreach($this->player_groups() as $group):
-            $gid = $group->group_id;
-            foreach($scans as $i => $scan):
-                if ($scan->group_id == $gid) unset($scans[$i]);
-            endforeach;
-        endforeach;
+    public function scanned_groups () {
+       $gs =  Ultimatum_Model_Ultgamegroupscans::getInstance();
+       $scans = $gs->scanned_groups_for_player($this);
         return $scans;
     }
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ full_scan_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ scan_group @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
-     * @param Ultimatum_Model_Groups $pGroup
-     * @return scan
+     * @return <type>
      */
-    public function full_scan_group (Ultimatum_Model_Groups $pGroup) {
-        $scan = new Ultimatum_Model_Ultplayergroupknowledge();        
-        return $scan->full_scan($pGroup, $this);
+    public function scan_group ($pGroup ) {
+        $pGroup = Ultimatum_Model_Ultgroups::as_group($pGroup, TRUE);
+        $params = array(
+            'target_group_id' => $pGroup,
+            'player' => $this->identity(),
+            'active' => 1
+        );
+
+        $old_scan = Ultimatum_Model_Ultgamegroupscans::getInstance()->findOne($params);
+        if ($old_scan):
+            return $old_scan;
+        else:
+            $scan = Ultimatum_Model_Ultgamegroupscans::getInstance()->get(NULL, $params);
+            $scan->on_turn = Ultimatum_Model_Ultgames::get_active()->turn();
+            $scan->save();
+            return $scan;
+        endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ __call @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

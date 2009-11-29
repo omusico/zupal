@@ -2,7 +2,9 @@
 class Ultimatum_View_Helper_Interact
 extends Zend_View_Helper_Abstract
 {
-
+/**
+ * DEPRECATED -- interaction is now a view
+ */
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ interact @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *
@@ -13,8 +15,7 @@ extends Zend_View_Helper_Abstract
 
     ob_start();
 ?>
-<a href="<?= $this->view->baseUrl() ?>/ultimatum/game/attack/terget/<?= $pScan->get_group()->identity() ?>"
-   class="linkbutton">Attack</a>
+<?= $this->zupallinkbutton('/ultimatum/game/attack/target/' . $pScan->get_group()->identity(), 'Attack') ?>
 
 <a href="<?= $this->view->baseUrl() ?>/ultimatum/game/attack/target/<?= $pScan->get_group()->identity() ?>"
    class="linkbutton">Acquire</a>
