@@ -1,6 +1,7 @@
 <?php
 
-class Administer_Form_Zupalresources extends Zupal_Form_Abstract {
+class Administer_Form_Zupalresources
+extends Zupal_Form_Abstract {
 
     public function __construct($pDomain) {
         $ini_path = preg_replace('~php$~', 'ini', __FILE__);
@@ -9,8 +10,9 @@ class Administer_Form_Zupalresources extends Zupal_Form_Abstract {
 
         if ($pDomain):
             $this->set_domain($pDomain);
-            $this->domain_to_fields();
         endif;
+        $domain_values = $this->get_domain()->toArray();
+        
         $this->load_modules();
     }
 
@@ -55,7 +57,7 @@ class Administer_Form_Zupalresources extends Zupal_Form_Abstract {
      * @return void
      */
     public function domain_to_fields (array $pFields = NULL) {
-        $this->resoucemodule->setValue($this->get_domain()->module);
+        $this->resourcemodule->setValue($this->get_domain()->module);
         parent::domain_to_fields($pFields);
     }
 }
