@@ -14,7 +14,7 @@ if ($this->page->get_format_content()):
     else:
         $content = '<p>' . $lead . $this->page->get_content() . '</p>';
     endif;
-
+    echo $content;
 else: // do not format content
 ?>
 <p>
