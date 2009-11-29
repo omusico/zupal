@@ -138,6 +138,7 @@ class Administer_ModulesController extends Zupal_Controller_Abstract {
         $out = array();
 
         foreach($menus as $i => $menu):
+            $md = $menu->toArray();
             $data = $this->_menu_ini($menu);
             $data['sort_by'] = $i + 1;
             $out[$menu->name] = $data;
