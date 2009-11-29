@@ -1,0 +1,16 @@
+<?
+
+$this->placeholder('page_title')->set('Games: Administer');
+
+$params = array('panel' => 'game_admin');
+$mm = Model_Menu::getInstance();
+if (!$menus = $mm->find($params, 'sort_by')):
+    $module = Administer_Model_Modules::getInstance()->get('game');
+    $menu = $module->config_node('admin_menu');
+
+    $mm->add_menus($menu, 'game');
+endif;
+
+$pages = $mm->pages('game_admin');
+
+echo '<span class="button_link_list">', $this->navigation()->menu($pages), '</span>';
