@@ -1,5 +1,8 @@
 <?
-$this->placeholder('page_title')->set('');
-    $this->group;
-    
+$this->placeholder('page_title')->set('Ultimatum: Interact with ' . $this->target);
 
+echo $this->groupscan($this->target_scan);
+?>
+<p>Act on this group with:</p>
+
+<?= $this->grouptable($this->groups, TRUE) ?>

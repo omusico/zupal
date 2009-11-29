@@ -165,7 +165,7 @@ class Ultimatum_Model_Ultgames extends Zupal_Domain_Abstract
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_active_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function get_active_id () {
+    public static function get_active_id () {
         if (Zend_Registry::isRegistered(self::GAME_KEY)):
             $game =  Zend_Registry::get(self::GAME_KEY);
             return $game ? $game->identity() : NULL;
