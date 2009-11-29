@@ -63,7 +63,7 @@ class Administer_UsersController extends Zupal_Controller_Abstract {
     }
 
     public function resourcesaveAction() {
-        $form = new Administer_Form_Zupalresources();
+        $form = new Administer_Form_Zupalresources($this->_getParam('resource_id', NULL));
         if ($form->isValid($this->_getAllParams())):
             $form->save();
             $params = array('id' => $form->get_domain()->identity());
