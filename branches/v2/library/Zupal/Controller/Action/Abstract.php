@@ -17,7 +17,14 @@ abstract class Zupal_Controller_Action_Abstract {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ route @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public abstract function execute ();
+    public abstract function run();
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ respond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * an (optional handler for (actionname)response
+     * - handles form response from base action
+     */
+    public function response () {  }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ controller @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -52,6 +59,19 @@ abstract class Zupal_Controller_Action_Abstract {
         endif;
     }
 
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ view @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function view ($pProperty, $pValue) {
+        $view = $this->get_controller()->view;
+        if ($pProperty):
+            $view->$pProperty = $pValue;
+        endif;
+        
+        return $view;
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ magic referenes to controller @@@@@@@@@@@@@@@@@@ */
 
     public function __call($name,  $arguments) { call_user_func_array($this->get_controller(), $arguments);  }
@@ -60,4 +80,13 @@ abstract class Zupal_Controller_Action_Abstract {
 
     public function __set($name,  $value) {  $this->get_controller()->$name = $value;   }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ forward @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $p1, $p2 = NULL, $p3 = NULL, $p4 = NULL
+     * @return <type>
+     */
+    public function forward ($p1, $p2 = NULL, $p3 = NULL, $p4 = NULL) {
+        $this->get_controller()->forward($p1, $p2, $p3, $p4);
+    }
 }

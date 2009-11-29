@@ -1,9 +1,12 @@
-<?php
+<?
 
 abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
     protected $security = 0;
     protected $insecure = FALSE;
     protected $identity = NULL;
+    
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+  
     
     public function init() {
         
@@ -33,6 +36,16 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
     public function postDispatch() {
         $this->view->headTitle()->set($this->view->placeholder('page_title'));
     }
+      /**
+     *
+     */
+    public function indexAction () {
+        
+        /**
+         * most index pages are all view -- so a stub is created here for conveniene.
+         */
+    }
+
     
         /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -57,6 +70,14 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         if (preg_match('~^(.*)Action$~', $methodName, $m)):
             $action = $m[1];
             $caname = ucfirst(strtolower($action));
+
+            if (preg_match('~^(.*)(execute|response|items|store|newitem|newresponse|edititem|editresponse|deleteitem|deleteresponse)~$~', $caname, $m)):
+                $caname = $m[1];
+                $response = TRUE;
+            else:
+                $response = FALSE;
+            endif;
+
             $cn = $this->controller_name($this);
             $cd = $this->controller_dir();
             
@@ -67,7 +88,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
                 $action_class = $this->module_name($this) . '_' .  $cn . '_' . $caname . 'Action';
                 $action = new $action_class($this);
 
-                return $action->execute();
+                return $response ? $action->response() :  $action->run();
             endif;
         endif;
         return parent::__call($methodName, $args);
@@ -75,17 +96,11 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     abstract public function controller_dir ();
-    /**
-     * This boilerplate should work with any controller
-     *
-     *
-    private $_controller_dir = NULL;
-    function controller_dir($pReload = FALSE) {
-        if ($pReload || is_null($this->_controller_dir)):
-        // process
-            $this->_controller_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-        endif;
-        return $this->_controller_dir;
+/**
+ * This boilerplate should work with any controller
+ *
+     public function controller_dir () {
+        return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
 */
     
@@ -114,4 +129,38 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         return $this->_module_name;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ forward @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * exposes forward as a public method for the benefit of extnesions.
+     * @return void
+     */
+    public function forward ($p1, $p2 = NULL, $p3 = NULL, $p4 = NULL) {
+        return $this->_forward($p1, $p2, $p3, $p4);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getParam @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param string $pParam
+ * @return scalar
+ */
+    public function getParam ($paramName, $pDefault = NULL) {
+        return $this->_getParam($paramName, $default);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getAllParams @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return array
+     */
+    public function getAllParams () {
+        return $this->_getAllParams();
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ helper @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     */
+    public function helper () {
+        return $this->_helper;
+    }
 }
