@@ -1,12 +1,12 @@
 <?
 
-class Games_Admin_Gametypeaction
-extends Zupal_Action_CrudAbstract {
+class Game_Admin_GametypesAction
+extends Zupal_Controller_Action_CrudAbstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ list @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     public function store() {
         $params = array('active' => 1);
-        $items = $this->_model()->find($params);
+        $items = $this->_model(TRUE)->find($params);
 
         $data = array();
 
