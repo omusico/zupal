@@ -7,10 +7,15 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         return $this->view;
     }
 
-    public function zupalmenus() {
+    public function zupalmenus($pages = NULL) {
         $menu = $this->getView()->navigation()->menu();
         $menu->setAcl(Model_Acl::acl());
-        $pages = $this->pages();
+        if (is_null($pages)):
+            $pages = $this->pages();
+        else:
+            error_log(print_r($pages, 1));
+        endif;
+
 
         if (Model_Users::current_user()):
             $menu->setRole(Model_Users::current_user()->role);
@@ -19,6 +24,7 @@ class Zupal_Helper_Zupalmenus extends Zend_View_Helper_Abstract {
         endif;
         
         $router = Zend_Controller_Front::getInstance()->getRouter();
+        $router = $router->getRoute('default');
         return $menu->renderMenu($pages, array('router' => $router));
     }
 

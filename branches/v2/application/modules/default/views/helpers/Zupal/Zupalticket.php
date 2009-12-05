@@ -1,9 +1,14 @@
 <?php
 
-class Zupal_Helper_Zupalticket{
+class Zupal_Helper_Zupalticket
+extends Zend_View_Helper_Abstract
+{
 
-    public function zupalticket($pValue, $pTitle, $pButtons = NULL)
-    {
+    public function zupalticket($pValue, $pTitle, $pButtons = NULL) {
+        if (is_array($pButtons)):
+            $pButtons = $this->view->navigation($pButtons);
+        endif;
+
         if (is_object($pValue)):
             if (!$pTitle):
                 $pTitle = (string)$pValue;
@@ -11,27 +16,26 @@ class Zupal_Helper_Zupalticket{
             $pValue = $pValue->toArray();
 
         endif;
-	ob_start();
-	?>
+        ob_start();
+        ?>
 <fieldset class="ticket">
     <legend><?= $pTitle ?></legend>
     <dl>
-<? foreach($pValue as $title => $value): ?>
-	<dt><?= $title ?></dt>
-	<dd><?= $value ?></dd>
-<? endforeach; ?>
+        <? foreach($pValue as $title => $value): ?>
+        <dt><?= $title ?></dt>
+        <dd><?= $value ?></dd>
+        <? endforeach; ?>
     </dl>
-
-<? if ($pButtons): ?>
-<ol>
-    <? foreach($pButtons as $page): $page->setParams($page->getParams() + array('rand' => rand(0, 1000))); ?>
-    <li><a href="<?= $page->getHref() ?>"><?= $page->getLabel() ?></a></li>
-    <? endforeach; ?>
-</ol>
-<? endif; ?>
+        <? if ($pButtons): ?>
+    <br clear="all" />
+<? foreach($pButtons as $button):
+    $href = $button->getHref();
+    echo $this->view->zupallinkbutton($href, $button->getLabel());
+endforeach; ?>
+        <? endif; ?>
 </fieldset>
-<?
+        <?
 
-	return ob_get_clean();
+        return ob_get_clean();
     }
 }

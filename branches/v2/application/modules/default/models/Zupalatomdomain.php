@@ -239,4 +239,62 @@ abstract class Model_Zupalatomdomain
         endif;
     }
 
+    public function __get($pField) {
+        switch($pField):
+            case 'title':
+                return $this->get_title();
+                break;
+
+            case 'content':
+                return $this->get_content();
+                break;
+
+            case 'lead':
+                return $this->get_lead();
+                break;
+
+
+        default:
+                return parent::__get($pField);
+            endswitch;
+    }
+
+    public function  __set($pField,  $value) {
+                switch($pField):
+            case 'title':
+                return $this->set_title($value);
+                break;
+
+            case 'content':
+                return $this->set_content($value);
+                break;
+
+            case 'lead':
+                return $this->set_lead($value);
+                break;
+
+
+        default:
+                return parent::__set($pField, $value);
+            endswitch;
+    }
+
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ toArray @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type>
+     * @return <type>
+     */
+    public function toArray () {
+        $out = parent::toArray();
+        $out['title']   = $this->title;
+        $out['lead']    = $this->lead;
+        $out['content'] = $this->content;
+        return $out;
+    }
+
+    public function __toString() {
+        return $this->title;
+    }
 }
