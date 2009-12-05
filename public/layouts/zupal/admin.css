@@ -22,6 +22,7 @@ div#menu li a.visited
     text-decoration: none;
 }
 
+.ticket .navigation li,
 .button_link_list li
 {
     link-style: none;
@@ -30,7 +31,11 @@ div#menu li a.visited
     padding: 0px;
 }
 
-.button_link_lista,
+.ticket .navigation a,
+.ticket .navigation a:link,
+.ticket .navigation a:visited,
+
+.button_link_list a,
 .button_link_list a:link,
 .button_link_list a:visited,
 
@@ -45,6 +50,8 @@ a.linkbutton:visited
     border: 1px #999 solid;
     font-family: Arial, sans-serif;
     color: #006;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .button_link_list a:hover,

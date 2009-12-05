@@ -322,7 +322,7 @@ implements Zupal_Domain_IDomain {
         if ($pSort):
             $select->order($pSort);
         endif;
-        $sql = $select->assemble();
+      //  $sql = $select->assemble();
         return $select;
     }
 
@@ -364,7 +364,7 @@ implements Zupal_Domain_IDomain {
         foreach($pFields as $f => $v):
             if (strcasecmp($f, $idf) || $v):
                 try {
-                    $this->_row->$f = $v;
+                    $this->$f = $v;
                 }
                 catch (Exception $e) {
                     error_log(__METHOD__ . ": bad field assignamtion: $f => $v");

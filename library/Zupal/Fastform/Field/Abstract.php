@@ -291,7 +291,7 @@ extends Zupal_Fastform_Tag_Abstract {
      * @return <type>
      */
     public function description () {
-        return ($this->get_required() ? '<span class="required">Required;</span> ' : '')
+        return ($this->get_required() ? '<span class="required">Required</span> ' : '')
         . $this->get_description();
     }
 
@@ -312,7 +312,8 @@ extends Zupal_Fastform_Tag_Abstract {
      * @return string
      */
     public function error () {
-        if ($error = $this->get_error()):
+        $error = $this->get_error();
+        if ($error):
             return sprintf('<span class="error">%s</span>', $error);
         endif;
     }
@@ -335,4 +336,15 @@ extends Zupal_Fastform_Tag_Abstract {
         return array('show_label' => TRUE, 'show_field' => TRUE, 'hidden' => FALSE);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ validate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function validate () {
+        if ($this->get_required() && (!($this->get_value()))):
+            $this->set_error('This field is required');
+            return FALSE;
+        endif;
+        return TRUE;
+    }
 }

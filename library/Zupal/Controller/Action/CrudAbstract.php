@@ -1,6 +1,6 @@
 <?
 
-abstract class Zupal_Action_CrudAbstract
+abstract class Zupal_Controller_Action_CrudAbstract
 extends Zupal_Controller_Action_Abstract {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ list @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
@@ -12,22 +12,29 @@ extends Zupal_Controller_Action_Abstract {
         $this->_model();
     }
 
+    abstract public function store();
+
     public function items() {
     }
-
-    abstract public function store();
 
     public function newitem() {
         $this->_form();
     }
 
-    abstract public function newresponse ();
-
     public function edititem() {
         $this->_form();
     }
 
-    abstract public function editresponse();
+    public function viewitem() {
+        $model = $this->_model(FALSE);
+        if ((!$model) || $model->isSaved()):
+            $this->error('Attempt to view non-existent item', $this->prefix() . 'items');
+        endif;
+    }
+
+    abstract public function responseedit ();
+
+    abstract public function responsedelete ();
 
     /**
      * note in many cases this won't actually be useful --
@@ -36,21 +43,28 @@ extends Zupal_Controller_Action_Abstract {
     function deleteitem() {
     }
 
-    abstract public function deleteresponse();
-
-    protected function _form() {
+    protected function _form($pReload = TRUE) {
         $fc = $this->_form_class();
-        $this->view('form', new $fc($this->_model()));
+        $form = new $fc($this->_model());
+        $pReload = $this->getParam('reload', $pReload);
+        if ($pReload):
+            $form->load_field_values($this->getAllParams());
+            $form->isValid();
+        endif;
+        $this->view('form', $form);
+        return $form;
     }
 
-/**
- *
- * @return Zupal_Domain_Abstract
- */
-    protected function _model() {
-        if ($id = $this->get_controller()->getParam('id')):
-            $dc = $this->_model_class();
+    /**
+     *
+     * @return Zupal_Domain_Abstract
+     */
+    protected function _model($pSpawn_New = FALSE) {
+        $dc = $this->_model_class();
+        if ($id = $this->getParam('id')):
             $model = new $dc($id);
+        elseif ($pSpawn_New):
+            $model = new $dc();
         else:
             $model = NULL;
         endif;
@@ -67,5 +81,19 @@ extends Zupal_Controller_Action_Abstract {
      * returns the name of the form class as a a string;
      */
     abstract protected function _form_class();
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ error @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param string $pMessage
+     * @param string $pAction
+     */
+    abstract public function error ($pMessage, $pAction = NULL);
+
+    /**
+     * the name of this action.
+     * @return string;
+     */
+    abstract public function prefix();
 
 }
