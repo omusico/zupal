@@ -1,0 +1,11 @@
+<frameset class="dialog">
+    <legend><?= $this->lead ?></legend>
+    <?= $this->question ?>
+    <ul class="button_link_list">
+    <? foreach($this->options as $title => $link): ?>
+        <li>
+           <a href="<?= $link ?>"><?= $title ?></a>
+        </li>
+    <? endforeach; ?>
+    </ul>
+</frameset>
