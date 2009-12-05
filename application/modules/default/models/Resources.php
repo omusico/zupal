@@ -68,6 +68,21 @@ implements Zend_Acl_Resource_Interface
             $resource->save();
         endforeach;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ as_list @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pZero_Option = NULL
+     * @return <type>
+     */
+    public function as_list ($pZero_Option = NULL) {
+
+      $options = $pZero_Option ? array(0 => $pZero_Option) : array();
+      $sql = sprintf('SELECT resource_id, title FROM %s ORDER BY title;', $this->table()->tableName());
+       $options = $options + $this->table()->getAdapter()->fetchPairs($sql);
+
+       return $options;
+    }
 }
 
 
