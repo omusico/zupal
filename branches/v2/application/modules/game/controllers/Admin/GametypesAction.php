@@ -50,6 +50,7 @@ extends Zupal_Controller_Action_CrudAbstract {
     public function viewitem () {
         parent::viewitem();
         $this->_item_buttons();
+        $this->helper()->actionStack($this->prefix() . 'itembuttons');
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ edititem @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
