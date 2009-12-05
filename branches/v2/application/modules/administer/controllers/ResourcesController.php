@@ -110,6 +110,32 @@ class Administer_ResourcesController extends Zupal_Controller_Abstract {
     public function controller_dir () {
         return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ dialogAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function dialogAction () {
+        foreach($this->_getAllParams() as $param => $value):
+            switch ($param):
+                case 'question':
+                case 'options':
+                    $this->view->$param = $value;
+                    break;
+            endswitch;
+        endforeach;
+    }
+
+   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ itembuttonsAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function buttonlistAction () {
+
+        $this->view->buttons = $this->getParam('buttons');
+        $this->view->prefix = $this->getParam('prefix', '');
+        $this->view->suffix = $this->getParam('suffix', '');
+        
+    }
 }
 
