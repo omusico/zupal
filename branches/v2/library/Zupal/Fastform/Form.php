@@ -54,12 +54,9 @@ extends Zupal_Fastform_Abstract
         $valid = TRUE;
 
         foreach($this->get_fields() as $field):
-            if ($field->get_required()):
-                if (((string) $field->get_value()) == ''):
-                    $field->set_error('Required');
-                    $valid = FALSE;
-                endif;
-            endif;
+            $name = $field->get_name();
+            $value = $field->get_value();
+            $valid =  $field->validate() && $valid;
         endforeach;
 
         return $valid;

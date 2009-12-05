@@ -24,6 +24,8 @@ extends Zupal_Fastform_Field_Abstract {
         $pProps = array(), Zupal_Fastform_Abstract $pForm = NULL, $pData) {
         $this->set_type(self::CHOICE_DROPDOWN);
         parent::__construct($pName, $pLabel, $pValue, $pProps, $pForm, $pData);
+        $value = $this->get_value();
+        $a = 1;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -152,13 +154,13 @@ extends Zupal_Fastform_Field_Abstract {
 
         $pType = $this->get_type();
         $sep = $this->get_seperator();
+        $value = $this->get_value();
+
         $properties = $this->render_props();
 
         ob_start();
         switch((int) $pType):
             case self::CHOICE_CHECKBOX:
-                $value = $this->get_value();
-
                 if ($data && is_array($data)):
                     foreach($data as $key => $label):
                         if (is_array($value)):

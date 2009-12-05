@@ -17,8 +17,10 @@ extends Zupal_Fastform_Form {
 
         parent::_load($pName, $pID, $pLabel, $pAction, $pFields, $pProps);
 
-        parent::load_field_values($this->get_domain()->toArray()); // loads defaults or record field data.
-
+        if ($this->get_domain()->isSaved()):
+            $data = $this->get_domain()->toArray();
+            parent::load_field_values($data); // loads defaults or record field data.
+        endif;
         $this->_init();
     }
 
@@ -73,4 +75,20 @@ extends Zupal_Fastform_Form {
     }
     
     abstract protected function _domain_class();
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * An extension point for customization. 
+     */
+    protected function _init () {
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ save @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return <type>
+     */
+    public function save () {
+        $this->get_domain()->save();
+    }
 }

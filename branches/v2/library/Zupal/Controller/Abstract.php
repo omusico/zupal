@@ -66,29 +66,43 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         return Zupal_Util_Array::stripslashes($this->getRequest()->getParams());
     }
 
+
+    private static $_suffixes = array(
+        'execute', 'response',
+        'items', 'store', 'itembuttons',
+        'newitem', 'newresponse',
+        'edititem', 'responseedit',
+        'deleteitem', 'responsedelete',
+    'viewitem');
+
+    public function _suffixes ($pJoin = TRUE) {
+        return $pJoin ? join('|', self::$_suffixes) : self::$_suffixes;
+    }
+
     public function __call($methodName, $args) {
         if (preg_match('~^(.*)Action$~', $methodName, $m)):
-            $action = $m[1];
-            $caname = ucfirst(strtolower($action));
+            $action_name = $m[1];
 
-            if (preg_match('~^(.*)(execute|response|items|store|newitem|newresponse|edititem|editresponse|deleteitem|deleteresponse)~$~', $caname, $m)):
-                $caname = $m[1];
-                $response = TRUE;
+            if (preg_match('~^(.*)(' . $this->_suffixes() . ')$~', $action_name, $m)):
+                $action_name = $m[1];
+                $handler = $m[2];
             else:
-                $response = FALSE;
+                $handler = 'run';
             endif;
+
+            $capitaized_action_name = ucfirst(strtolower($action_name));
 
             $cn = $this->controller_name($this);
             $cd = $this->controller_dir();
             
-            $action_class_path = $cd . $cn . DIRECTORY_SEPARATOR . $caname . 'Action.php';
+            $action_class_path = $cd . $cn . DIRECTORY_SEPARATOR . $capitaized_action_name . 'Action.php';
             if (file_exists($action_class_path)):
                 require_once($action_class_path);
 
-                $action_class = $this->module_name($this) . '_' .  $cn . '_' . $caname . 'Action';
+                $action_class = $this->module_name($this) . '_' .  $cn . '_' . $capitaized_action_name . 'Action';
                 $action = new $action_class($this);
 
-                return $response ? $action->response() :  $action->run();
+                return $action->$handler();
             endif;
         endif;
         return parent::__call($methodName, $args);
@@ -145,7 +159,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
  * @return scalar
  */
     public function getParam ($paramName, $pDefault = NULL) {
-        return $this->_getParam($paramName, $default);
+        return $this->_getParam($paramName, $pDefault);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getAllParams @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -51,6 +51,10 @@ extends Zupal_Fastform_Tag_Form {
         if (array_key_exists('controls', $c_array)):
             $this->load_controls($c_array['controls']);
         endif;
+
+        if (array_key_exists('field_width', $c_array)):
+            $this->set_field_width($c_array['field_width']);
+        endif;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -152,8 +156,8 @@ extends Zupal_Fastform_Tag_Form {
     public function load_field_values ($pValues) {
         foreach($pValues as $field => $value):
             if ($f = $this->get_field($field)):
-                $f->set_value($value);
-        endif;
+                    $f->set_value($value);
+            endif;
         endforeach;
     }
 
@@ -295,7 +299,7 @@ extends Zupal_Fastform_Tag_Form {
         if (is_array($pValue)):
             $pValue = $this->_array_to_field($pValue, $pName = NULL);
         endif;
-
+        $pValue->set_form(NULL); // break link to establish individual field width
         $this->_controls[$pValue->get_name()] = $pValue;
     }
 

@@ -74,7 +74,7 @@ abstract class Zupal_Controller_Action_Abstract {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ magic referenes to controller @@@@@@@@@@@@@@@@@@ */
 
-    public function __call($name,  $arguments) { call_user_func_array($this->get_controller(), $arguments);  }
+    public function __call($name,  $arguments) { return call_user_func_array(array($this->get_controller(), $name), $arguments);  }
 
     public function __get($name) { return $this->get_controller()->$name;  }
 
