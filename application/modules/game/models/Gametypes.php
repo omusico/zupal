@@ -8,6 +8,11 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
         return 'Game_Model_DbTable_Gametypes';
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getInstance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @return Game_Model_Gametypes
+ */
     public static function getInstance() {
         if ($pReload || is_null(self::$_Instance)):
         // process
@@ -16,13 +21,24 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
         return self::$_Instance;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ * Note -- uses a cache pattern 
+ * @return Game_Model_Gametypes
+ */
     public function get($pID = NULL, $pLoadFields = NULL) {
-        $out = new self($pID);
-        if ($pLoadFields && is_array($pLoadFields)):
-            $out->set_fields($pLoadFields);
+        if (array_key_exists($pID, self::$_cache)):
+            return self::$_cache[$pID];
+        else:
+            $out = new self($pID);
+            if ($pLoadFields && is_array($pLoadFields)):
+                $out->set_fields($pLoadFields);
+            endif;
+            self::$_cache[$pID] = $out;
+            return $out;
         endif;
-        return $out;
     }
+    private static $_cache = array();
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ atomic_id @@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -133,5 +149,25 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
 
         return $tree;
     }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ options @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function options () {
+        $games = $this->find(array('active' => array(0, '>')));
+
+        $options = array();
+
+        foreach($games as $game):
+            $options[$game->identity()] = $game->title;
+        endforeach;
+
+        asort($options);
+        return $options;
+    }
+
+
 }
 
