@@ -179,7 +179,13 @@ abstract class Model_Zupalatomdomain
      * @return <type>
      */
     public function save () {
-        $this->get_atom()->save();
+        if (($atom = $this->get_atom()) && $atom->isSaved()):
+            try {
+                $this->get_atom()->save();
+            } catch (Exception $e) {
+                error_log(__METHOD__ . ': error deleting atom ' . $e->getMessage());
+            }
+        endif;
         parent::save();
     }
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -296,5 +302,30 @@ abstract class Model_Zupalatomdomain
 
     public function __toString() {
         return $this->title;
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ atomic_id @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return class;
+     */
+
+    public function get_atomic_id() { return $this->atomic_id; }
+
+    public function set_atomic_id($pValue) { $this->atomic_id = $pValue; }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atomic_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * NOTE: this works only if there is a 1:1 mapping betwen atomic_id fields and records.
+     * if this is not true (i.e., the table is versioned) then hopefully the versions
+     * are stored in the same order asn the identity field.
+     * 
+     * @param int $pAtomic_id
+     * @return <type>
+     */
+    public function for_atom_id ($pAtomic_id) {
+        $params = array('atomic_id' => $pAtomic_id);
+        return $this->findOne($params, $this->table()->idField() . ' DESC');
     }
 }

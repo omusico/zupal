@@ -1,0 +1,13 @@
+<?
+if ($this->game_type):
+    echo $this->prefix;
+        echo $this->zupallinkbutton('/game/admin/gametypesviewitem/id/' . $this->game_type->identity(), 'View Game Type' . $this->game_type);
+    echo $this->suffix;
+endif;
+
+$buttons = $this->buttons;
+foreach($buttons as $button):
+    echo $this->prefix;
+    echo $this->zupallinkbutton($button);
+    echo $this->suffix;
+endforeach; 
