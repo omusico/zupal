@@ -104,5 +104,11 @@ class Administer_TestController extends Zupal_Controller_Abstract {
         return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ switchAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function switchAction () {
+    }
 }
 
