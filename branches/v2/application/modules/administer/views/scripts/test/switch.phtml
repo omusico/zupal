@@ -1,0 +1,234 @@
+<?php
+$this->placeholder('page_title')->set('Test of Switch Classes');
+
+function stop_on_bar($pParameters = NULL)
+{
+   echo '<p><b>BAR rached</b></p>';
+   return TRUE;
+
+}
+
+function stop_on_foo($pParameters = NULL)
+{
+   echo '<p><b>FOO rached</b></p>';
+   return TRUE;
+
+}
+
+function default_echo($pParameters = NULL){
+   echo '<p><i><b>Default Reached</b></i></p>';
+   return TRUE;
+}
+
+?>
+<h2>Case One</h2>
+<p>
+    Determine if the class responds to a default handler.
+  No other handlers present.
+</p>
+<blockquote>
+<?
+
+$case1 = new Zupal_Switch('bar', FALSE, 'default_echo');
+?>
+<h3>1a: test responding to switch constructor parameter &quot;Bar&quot;</h3>
+<?
+$case1->execute();
+?>
+<h3>1b: test responding to execution parameter &quot;Foo&quot;</h3>
+<?
+$case1->execute('foo');
+?>
+</blockquote>
+<h2>Case Two</h2>
+<p>Determine whether a keyed handler traps a response.
+</p>
+<?
+/**
+ * case two -- 
+ */
+
+$case2 = new Zupal_Switch('bar', FALSE, 'default_echo');
+
+
+$case2->set_handler('stop_on_bar', 'bar');
+?>
+<blockquote>
+<h3>2a: test parameter &quot;Foo&quot;</h3>
+<p>Ensure it doesn't respond to the wrong trigger
+</p>
+<?
+$case2->execute('foo');
+?>
+<h3>2b: test parameter &quot;Bar&quot;</h3>
+<p> ensure it responds to the RIGHT trigger</p>
+<?
+$case2->execute('bar');
+?>
+</blockquote>
+<h2>Case Three</h2>
+<p>test multiple handlers</p>
+<?
+$case3 = new Zupal_Switch('', FALSE, 'default_echo');
+
+$case3->set_handler('stop_on_bar', 'bar');
+$case3->set_handler('stop_on_foo', 'foo');
+
+?>
+<blockquote>
+<h3>3a: test parameter &quot;Foo&quot;</h3>
+<?
+$case3->execute('foo');
+?>
+<h3>3a: test parameter &quot;Bar&quot;</h3>
+<?
+$case3->execute('bar');
+?>
+<h3>3b: test parameter &quot;Fabian&quot; (unhandled)</h3>
+<?
+$case3->execute('Fabian');
+?>
+</blockquote>
+<hr />
+<h1>Now it gets interesting</h1>
+<p>what if you want multiple handlers to respond to the same triggers?
+    Very difficult to do with switch: very easy to do with handlers.</p>
+<?
+
+$biff = array('name' => "Biff",
+    'status' => 'banned',
+    'time_traveller' => TRUE
+);
+
+$marty = array('name' => "Marty",
+    'status' => 'user',
+    'time_traveller' => TRUE
+);
+
+$doc = array('name' => 'Doc',
+    'status' => 'admin',
+    'time_traveller' => TRUE
+);
+
+$dad = array('name' => 'dad',
+    'status' => 'user',
+    'time_traveller' => FALSE
+);
+
+$users = array($biff, $marty, $doc,$dad);
+
+function bttf_missing_user_error($activity){
+        echo '<p><i><font color="red">attempt to ', $activity, '; no user present</font></i></p>';
+    return FALSE;
+
+    }
+
+function bttf_do_nothing($pValue, $pParameters)
+{
+    if (!array_key_exists('user', $pParameters)):
+        bttf_missing_user_error($pValue);
+        return FALSE;
+    endif;
+
+    echo '<p>Done attempting to ', $pValue, ' with ', $pParameters['user']['name'];
+}
+
+
+$back_to_the_future_1 = new Zupal_Switch(NULL, NULL, 'bttf_do_nothing');
+?>
+<h2>Case one: only the default handler is present.</h2>
+<p>Time machine AWOL; all cases fall through to the default</p>
+<ol>
+    <? foreach($users as $user): ?>
+    <li>
+<?
+$back_to_the_future_1->execute('time_travel', array('user' => $user));
+?>
+</li>
+<? endforeach; ?>
+<li>
+<?
+$back_to_the_future_1->execute('time_travel', array());
+?>
+</li>
+</ol>
+<h2>Case two: attempting to time travel; alert AND time travel handlers present. </h2>
+<p>alert if a banned user time travels <b>AND</b>
+send all time travellers through.</p>
+<?
+
+function bttf_warn_banned($pValue, $pParameters)
+{
+    if (array_key_exists('user' , $pParameters)):
+        $user = $pParameters['user'];
+    else:
+        bttf_missing_user_error($pValue);
+        return FALSE;
+    endif;
+
+    if ($user['status'] == 'banned'):
+        echo '<p><font color="red">!!!WARNING!!!</font>: banned user ', $user['name'] , '! present</p>';
+    endif;
+
+    return FALSE; // cascade activity
+}
+
+function bttf_time_travel($pValue, $pParameters)
+{
+    if (array_key_exists('user' , $pParameters)):
+        $user = $pParameters['user'];
+    else:
+        bttf_missing_user_error('Time Travel');
+        return FALSE;
+    endif;
+
+    if ($user['time_traveller']):
+        echo '<p>sending ', $user['name'] , ' back ... <b><i><font color="green">TO THE FUTURE!</font></i></b></p>';
+    else:
+        echo '<p>Sorry, ', $user['name'], ' cannot time travel, and is stuck in the present.</p>';
+    endif;
+
+    return FALSE; // cascade activity
+}
+
+$back_to_the_future_2 =  new Zupal_Switch(NULL, NULL, 'bttf_do_nothing');
+
+$warn_banned = new Zupal_Switch_Handler('bttf_warn_banned');
+$warn_banned->set_responds_to(array('time_travel', 'warn_banned'));
+
+$back_to_the_future_2->set_handler($warn_banned, 'warn_banned');
+$back_to_the_future_2->set_handler('bttf_time_travel', 'time_travel');
+?>
+<ol>
+    <? foreach($users as $user): ?>
+    <li>
+<?
+$back_to_the_future_2->execute('time_travel', array('user' => $user));
+?>
+</li>
+<? endforeach; ?>
+<li>
+<?
+$back_to_the_future_2->execute('time_travel', array());
+?>
+</li>
+</ol>
+    <p>Note triple error at the end -- all three handlers will fail out becuase of missing user.</p>
+</blockquote>
+<h2>Case Three: just use the warn case to detect bad users</h2>
+<p>say, a "dry run" case to ensure all your users are good.</p>
+<ol>
+    <? foreach($users as $user): ?>
+    <li>
+<?
+$back_to_the_future_2->execute('warn_banned', array('user' => $user));
+?>
+</li>
+<? endforeach; ?>
+<li>
+<?
+$back_to_the_future_2->execute('warn_banned', array());
+?>
+</li>
+</ol>
+    <p>Note -- only TWO errors tripped becuase time travel handler doesn't take place.</p>
