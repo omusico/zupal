@@ -50,7 +50,7 @@ extends Zupal_Fastform_Field_Abstract
         else:
             ?>
 <tr>
-    <th <?= $show_field ? '' : ' colspan="2" ' ?> ><?= $show_label ? $pField->get_label() : '' ?></th>
+    <th <?= $show_field ? '' : ' colspan="2" ' ?> <?= $this->title_width() ?> > <?= $show_label ? $pField->get_label() : '' ?></th>
     <td><?=  $show_field ? $pField  : '' ?></td>
     <td><small><?= $pField->description() ?></small></td>
 </tr>
@@ -187,6 +187,23 @@ extends Zupal_Fastform_Field_Abstract
             $out['name'] = $this->get_name();
         endif;
 
+        return $out;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ title_width @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return string
+     */
+    public function title_width () {
+        $width = $this->get_form()->get_title_width();
+        
+        if (!$width) return '';
+        
+        if (is_numeric($width)):
+            $width .= 'px';
+        endif;
+        $out = sprintf(' style="width:%s" ', $width);
         return $out;
     }
 

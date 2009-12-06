@@ -13,7 +13,14 @@ abstract class Zupal_Controller_Action_Abstract {
 
     public function __construct($pController) {
         $this->set_controller($pController);
+        $this->init();
     }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * an extension point. 
+     */
+    public function init () {}
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ route @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 

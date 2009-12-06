@@ -12,7 +12,6 @@ extends Zupal_Controller_Action_Abstract {
         $this->_model();
     }
 
-    abstract public function store();
 
     public function items() {
     }
@@ -27,14 +26,11 @@ extends Zupal_Controller_Action_Abstract {
 
     public function viewitem() {
         $model = $this->_model(FALSE);
-        if ((!$model) || $model->isSaved()):
+        if ((!$model) || (!$model->isSaved())):
             $this->error('Attempt to view non-existent item', $this->prefix() . 'items');
         endif;
     }
 
-    abstract public function responseedit ();
-
-    abstract public function responsedelete ();
 
     /**
      * note in many cases this won't actually be useful --
@@ -72,6 +68,26 @@ extends Zupal_Controller_Action_Abstract {
         return $model;
     }
 
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ store @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * return a JSON Dojo data block
+     */
+    abstract public function store();
+
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ responses @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/**
+ * handle a created/updated form
+ */
+    abstract public function responseedit ();
+/**
+ * delete a record
+ */
+    abstract public function responsedelete ();
+
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ class resource names @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      * returns the name of the model class, as a string
      */

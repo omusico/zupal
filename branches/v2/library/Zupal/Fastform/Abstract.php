@@ -45,16 +45,21 @@ extends Zupal_Fastform_Tag_Form {
                 $elements[$key]['options']['label'] = ucwords(str_replace('_', ' ', $key));
             endif;
         endforeach;
-
         $this->load_fields($elements);
+        unset($c_array['elements']);
 
         if (array_key_exists('controls', $c_array)):
             $this->load_controls($c_array['controls']);
+            unset($c_array['controls']);
         endif;
-
+/*
         if (array_key_exists('field_width', $c_array)):
             $this->set_field_width($c_array['field_width']);
         endif;
+ */
+        foreach($c_array as $key => $value):
+            $this->set_prop($key, $value);
+        endforeach;
     }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -90,6 +95,11 @@ extends Zupal_Fastform_Tag_Form {
             case 'field_width':
                 return $this->set_field_width($pValue);
                 break;
+
+            case 'title_width' :
+                return $this->set_title_width($pValue);
+                break;
+            
             default:
                 return parent::set_prop($pKey, $pValue);
         endswitch;
@@ -356,6 +366,18 @@ extends Zupal_Fastform_Tag_Form {
     public function get_field_width() { return $this->_field_width; }
 
     public function set_field_width($pValue) { $this->_field_width = $pValue; }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ title_width @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_title_width = NULL;
+    /**
+     * @return string;
+     */
+
+    public function get_title_width() { return $this->_title_width; }
+
+    public function set_title_width($pValue) { $this->_title_width = $pValue; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_field_values @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
