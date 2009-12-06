@@ -168,6 +168,16 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
         return $options;
     }
 
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ resource_classes @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
+    private $_resource_classes = NULL;
+    function get_resource_classes($pReload = FALSE) {
+        if ($pReload || is_null($this->_resource_classes)):
+        // process
+            $params = array('game_type' => $this->identity(), 'active' => 1);
+            $this->_resource_classes = Game_Model_Gameresourceclasses::getInstance()->find($params, 'rank');
+        endif;
+        return $this->_resource_classes;
+    }
 }
 

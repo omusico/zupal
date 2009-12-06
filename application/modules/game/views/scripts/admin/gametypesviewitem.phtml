@@ -2,4 +2,72 @@
 
 $this->placeholder('page_title')->set('Game Type');
 
+$this->headStyle()->captureStart();
+?>
+table.categories {
+    border: 1px solid green;
+    width: 100%;
+}
+
+table.categories th
+{
+    font-weight: bold;
+    margin-top: 0.5em;
+    color: #666
+    border: none;
+}
+
+table.categories th.head
+{
+    color: black;
+    border-bottom: 1px solid black;
+    margin: 0px;
+    padding: 0.5em;
+    padding-right: 1em;
+}
+
+
+<?
+
+$this->headStyle()->captureEnd();
+
 echo $this->zupalticket($this->model, 'Game Type ' . $this->model);
+
+?>
+<table class="categories" border="0" cellpadding="0" cellspacing="0">
+    <? foreach ($this->model->get_resource_classes() as $rc): ?>
+    <tr>
+        <th class="head" width="100%">
+                <?= $rc ?> Resources <small><?= $rc->lead ?></small>
+        </th>
+
+        <?= $this->zupalmovebar($rc, '/admin/game/resourceclassesmoveitem', '<th class="head" />', '</th>') ?>
+
+        <th class="head" >
+                <?= $this->zupalicon('view', '/admin/game/resourceclassesviewitem/id/'. $rc->identity() ) ?>
+        </th>
+
+        <th class="head" >
+                <?= $this->zupalicon('edit', '/admin/game/resourceclassesedititem/id/'. $rc->identity() ) ?>
+        </th>
+        
+        <th class="head" >
+                <?= $this->zupalicon('delete', '/admin/game/resourceclassesdeleteitem/id/'. $rc->identity() ) ?>
+        </th>
+    </tr>
+    <tr><th>Name </th>
+        
+    </tr>
+        <? foreach ($rc->resources() as $class): ?>
+    <tr>
+        <td><?= $class ?></td>
+    </tr>
+        <? endforeach; ?>
+    <tr>
+        <td><?= $this->zupallinkbutton('/admin/game/resourcetypesitemnew/class/' . $rc->identity(), 'Add Resource') ?></td>
+    </tr>
+    <? endforeach; ?>
+    <tr>
+        <td><?= $this->zupallinkbutton('/admin/game/resourceclassesnewitem/game_type/' . $this->model->identity(), 'Add Resource Class') ?></td>
+    </tr>
+</table>

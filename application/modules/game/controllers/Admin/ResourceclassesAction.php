@@ -1,8 +1,22 @@
 <?
 
-class Game_Admin_GametypesAction
+class Game_Admin_ResourceclassesAction
 extends Zupal_Controller_Action_CrudAbstract {
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ list @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ */
+    public function init () {
+        if ($model = $this->_model()):
+            $this->view('game_type', $model->game_type());
+        endif;
+
+        if ($game_type = $this->getParam('game_type')):
+            $this->view('game_type', Game_Model_Gametypes::getInstance()->get($game_type));
+        endif;
+    }
 
     public function store() {
         $params = array('active' => 1);
@@ -12,30 +26,37 @@ extends Zupal_Controller_Action_CrudAbstract {
 
         foreach($items as $item):
             $row = $item->toArray();
-            $row['title'] = $item->get_title();
             $data[] = $row;
         endforeach;
 
         $this->get_controller()->_store('id', $data, 'title');
     }
 
+    public function newitem() {
+        parent::newitem();
+
+        $form = $this->view()->form;
+
+        $form->game_type->set_value($this->view()->game_type->identity());
+    }
+
     public function responseedit() {
         $form = $this->_form(TRUE);
         $domain = $form->get_domain();
         $dclass = get_class($domain);
-        
+
         if ($form->isValid()):
             $form->save();
             $params = array(
-                'message' => 'Gametype ' . $domain->title . ' saved', 
+                'message' => 'Game Resource Class ' . $domain->title . ' saved',
                 'id' => $domain->identity()
             );
-            return $this->forward('gametypesviewitem', NULL, NULL, $params);
+            return $this->forward($this->prefix() . 'viewitem', NULL, NULL, $params);
         else:
             $params = $this->getAllParams();
             $params['reload'] = TRUE;
             $params['error'] = 'Cannot save ' . $domain->title;
-            $action = $domain->isSaved() ? 'gametypesedititem' : 'gametypesnewitem';
+            $action = $domain->isSaved() ? $this->prefix() . 'edititem' : $this->prefix() . 'newitem';
 
             return $this->forward($action, NULL, NULL, $params);
         endif;
@@ -67,15 +88,15 @@ extends Zupal_Controller_Action_CrudAbstract {
         if (!$model->isSaved()):
             return $this->error('Attempt to delete non-existing gametype');
         endif;
-        $this->helper()->actionStack('gametypesviewitem');
+        $this->helper()->actionStack($this->prefix() . 'viewitem');
 
         $options = array(
-            'Yes' => '/game/admin/gametypesresponsedelete/id/' . $model->identity(),
-            'No' => '/game/admin/gametypesitems/message/Cancelled%20Deletion'
+            'Yes' => '/admin/game/resourceclassesresponsedelete/id/' . $model->identity(),
+            'No' => '/admin/game/resourceclassesitems/message/Cancelled%20Deletion'
         );
 
         $params = array(
-            'question' => 'Are you sure you want to delete this game type? all games of this type will end. ',
+            'question' => 'Are you sure you want to delete this resource class? all resources of this class will end. ',
             'options' => $options
         );
         $this->helper()->actionStack('dialog', 'resources', 'administer', $params);
@@ -88,16 +109,16 @@ extends Zupal_Controller_Action_CrudAbstract {
 
         if ($model && $model->isSaved()):
             $model->delete();
-            $params = array('message' => 'deleted ' . $model->title);
-            return $this->forward('gametypesitems', NULL, NULL, $params);
+            $params = array('message' => 'deleted ' . $model->title, 'id' => $model->game_type);
+            return $this->forward('gametypesviewitem', NULL, NULL, $params);
         else:
-            return $this->error('No Game Type to delete');
+            return $this->error('Mo Game Type to delete');
         endif;
     }
 
-    protected function _model_class() { return 'Game_Model_Gametypes'; }
-    
-    protected function _form_class() { return 'Game_Form_Gametypes'; }
+    protected function _model_class() { return 'Game_Model_Gameresourceclasses'; }
+
+    protected function _form_class() { return 'Game_Form_Gameresourceclasses'; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ error @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -106,8 +127,8 @@ extends Zupal_Controller_Action_CrudAbstract {
      * @return <type>
      */
     public function error ($pMessage, $pAction = NULL) {
-        if (!$pAction) $pAction = 'gametypesitems';
-        
+        if (!$pAction) $pAction = $this->prefix() . 'items';
+
         if (preg_match('~:(id|title)~', $pMessage)):
             $domain = $this->_model(FALSE);
             if ($domain):
@@ -125,7 +146,7 @@ extends Zupal_Controller_Action_CrudAbstract {
      * @return string
      */
     public function prefix () {
-        return 'gametypes';
+        return 'resourceclasses';
     }
 
 
@@ -135,13 +156,13 @@ extends Zupal_Controller_Action_CrudAbstract {
      */
     protected function _item_buttons () {
         $module = Administer_Model_Modules::getInstance()->get('game');
-        $buttons = $module->config_node('game_type_admin_menu');
-        if ($this->view()->model):
+        $buttons = $module->config_node('game_type_resource_classes_menu');
+
         $pages = new Zend_Navigation($buttons);
         foreach($pages as $key => $button):
             $button->setParams(array('id' => $this->view()->model->identity()));
         endforeach;
-        endif;
+
         $this->view('buttons', $pages);
         return $pages;
     }
@@ -154,4 +175,21 @@ extends Zupal_Controller_Action_CrudAbstract {
         $this->_item_buttons();
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ moveitem @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function moveitem () {
+        if ($model = $this->_model()):
+            $mode = $this->getParam('mode');
+            $model->move($mode);
+            $params = array(
+                'id' => $model->game_type,
+                'message' => $model . $mode
+            );
+            $this->forward('gametypesviewitem', NULL, NULL, $params);
+        else:
+            return $this->error(__METHOD__ .  ': No resouce class found to move');
+        endif;
+    }
 }

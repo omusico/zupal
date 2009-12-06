@@ -4,6 +4,8 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
 
     private static $_Instance = null;
 
+    protected $_soft_delete = TRUE;
+
     public function tableClass() {
         return 'Game_Model_DbTable_Gamesessions';
     }
@@ -50,21 +52,6 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
             $this->_game_type = Game_Model_Gametypes::getInstance()->get($this->game_type);
         endif;
         return $this->_game_type;
-    }
-
-/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ delete @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param  boolean $pTotal = FALSE
-     * @return void
-     */
-    public function delete ($pTotal = FALSE) {
-        if ($pTotal):
-            return parent::delete();
-        else:
-            $this->active = 0;
-            $this->save();
-        endif;
     }
 
 }
