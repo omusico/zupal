@@ -1,12 +1,24 @@
 <?
 $this->placeholder('page_title')->set('Game: Sessions');
-$grid_options = array();
+$grid_options = array('width' => 800);
 
 $filename = dirname(__FILE__) . '/sessionsitems_grid.ini';
 $col = new Zend_Config_Ini($filename, 'columns');
 
 $this->headScript()->captureStart();
 ?>
+
+function session_grid_game_type_formatter(gt)
+{
+    return '<a href="<?= $this->baseUrl() ?>/admin/game/gametypeviewitem/id/' + gt + '">Game Type</a>';
+}
+
+function session_grid_title_get(id, record)
+{
+    if ((!record)) return '';
+    return '<a href="<?= $this->baseUrl() ?>/admin/game/gametypesviewitem/id/' + record.game_type + '">' + record.game + '</a>';
+
+}
 
 function session_grid_view_formatter(p)
 {
