@@ -10,16 +10,20 @@ extends Zupal_Controller_Action_CrudAbstract {
  */
     public function init () {
         if ($model = $this->_model()):
-            $this->view('game_type', $model->game_type());
-            $this->view('resource_class', $model->resource_class());
-        endif;
-
-        if ($resource_class = $this->getParam('resource_class')):
-            $this->view('resource_class', Game_Model_Gameresourceclasses::getInstance()->get($resource_class));
+            $this->view('game_type', $model->get_game_type());
+            $this->view('resource_class', $model->get_resource_class());
         endif;
 
         if ($game_type = $this->getParam('game_type')):
             $this->view('game_type', Game_Model_Gametypes::getInstance()->get($game_type));
+        endif;
+
+        if ($resource_class = $this->getParam('class')):
+            $class = Game_Model_Gameresourceclasses::getInstance()->get($resource_class);
+            if ($class && !$game_type):
+                $this->view('game_type', $class->game_type());
+            endif;
+            $this->view('resource_class', $class);
         endif;
     }
 
@@ -98,8 +102,8 @@ extends Zupal_Controller_Action_CrudAbstract {
         $this->helper()->actionStack($this->prefix() . 'viewitem');
 
         $options = array(
-            'Yes' => '/admin/game/resourceclassesresponsedelete/id/' . $model->identity(),
-            'No' => '/admin/game/resourceclassesitems/message/Cancelled%20Deletion'
+            'Yes' => '/admin/game/resourcetypesresponsedelete/id/' . $model->identity(),
+            'No' => '/admin/game/resourcetypesitems/message/Cancelled%20Deletion'
         );
 
         $params = array(
@@ -123,9 +127,9 @@ extends Zupal_Controller_Action_CrudAbstract {
         endif;
     }
 
-    protected function _model_class() { return 'Game_Model_Gameresourceclasses'; }
+    protected function _model_class() { return 'Game_Model_Gameresourcetypes'; }
 
-    protected function _form_class() { return 'Game_Form_Gameresourceclasses'; }
+    protected function _form_class() { return 'Game_Form_Gameresourcetypes'; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ error @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -153,7 +157,7 @@ extends Zupal_Controller_Action_CrudAbstract {
      * @return string
      */
     public function prefix () {
-        return 'resourceclasses';
+        return 'resourcetypes';
     }
 
 
@@ -163,7 +167,7 @@ extends Zupal_Controller_Action_CrudAbstract {
      */
     protected function _item_buttons () {
         $module = Administer_Model_Modules::getInstance()->get('game');
-        $buttons = $module->config_node('game_type_resource_classes_menu');
+        $buttons = $module->config_node('game_type_resource_types_menu');
 
         $pages = new Zend_Navigation($buttons);
         foreach($pages as $key => $button):

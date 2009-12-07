@@ -73,7 +73,7 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
         'newitem', 'newresponse',
         'edititem', 'responseedit',
         'deleteitem', 'responsedelete',
-    'viewitem');
+    'viewitem', 'moveitem');
 
     public function _suffixes ($pJoin = TRUE) {
         return $pJoin ? join('|', self::$_suffixes) : self::$_suffixes;

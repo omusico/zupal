@@ -48,22 +48,20 @@ extends Model_Zupalatomdomain
         return $this->_game_type;
     }
 
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ resources @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
      * @return array
      */
-    public function resources () {
-        $out = array();
-        return $out;
+    public function resource_types () {
+        $params = array('resource_class' => $this->identity());
+        return Game_Model_Gameresourcetypes::getInstance()->find($params);
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ move @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param $pMode
-     */
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ move @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ * @param $pMode
+ */
     public function move ($pMode) {
         $params = array(
             'game_type' => $this->game_type,
@@ -71,6 +69,24 @@ extends Model_Zupalatomdomain
         );
         $data = $this->find($params, 'rank');
         parent::move($this, $pMode, 'rank');
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ options @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ * @param int | Game_Model_Gametypes  $pGame_type
+ * @return array
+ */
+    public function options ($pGame_type) {
+        $pGame_type = Zupal_Domain_Abstract::_as($pGame_type, 'Game_Model_Gametypes', TRUE);
+        $params = array('game_type' => $pGame_type);
+        $classes = $this->find($params, 'rank');
+        $out = array();
+
+        foreach($classes as $class):
+            $out[$class->identity()] = $class->title;
+        endforeach;
+
+        return $out;
     }
 }
 

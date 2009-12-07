@@ -26,7 +26,12 @@ table.categories th.head
     padding-right: 1em;
 }
 
+table.categories td
+{
+padding-bottom: 0.5em;
+padding-top: 0.5em
 
+}
 <?
 
 $this->headStyle()->captureEnd();
@@ -58,13 +63,24 @@ echo $this->zupalticket($this->model, 'Game Type ' . $this->model);
     <tr><th>Name </th>
         
     </tr>
-        <? foreach ($rc->resources() as $class): ?>
+        <? foreach ($rc->resource_types() as $rt): ?>
     <tr>
-        <td><?= $class ?></td>
+        <td colspan="5"><b><?= $rt->title ?></b>: <small><?= $rt->lead ?></small></td>
+                <td  >
+                <?= $this->zupalicon('sm/view', '/admin/game/resourcetypesviewitem/id/'. $rt->identity() ) ?>
+        </td>
+
+        <td  >
+                <?= $this->zupalicon('sm/edit', '/admin/game/resourcetypesedititem/id/'. $rt->identity() ) ?>
+        </td>
+
+        <td  >
+                <?= $this->zupalicon('sm/delete', '/admin/game/resourcetypesdeleteitem/id/'. $rt->identity() ) ?>
+        </td>
     </tr>
         <? endforeach; ?>
     <tr>
-        <td><?= $this->zupallinkbutton('/admin/game/resourcetypesitemnew/class/' . $rc->identity(), 'Add Resource') ?></td>
+        <td><?= $this->zupallinkbutton('/admin/game/resourcetypesnewitem/class/' . $rc->identity(), 'Add Resource') ?></td>
     </tr>
     <? endforeach; ?>
     <tr>

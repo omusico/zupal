@@ -1,6 +1,6 @@
 <?php
 
-class Game_Model_Gameresourcetypes extends Zupal_Domain_Abstract
+class Game_Model_Gameresourcetypes extends Model_Zupalatomdomain
 {
 
     private static $_Instance = null;
@@ -26,6 +26,14 @@ class Game_Model_Gameresourcetypes extends Zupal_Domain_Abstract
                 $out->set_fields($pLoadFields);
             endif;
             return $out;
+    }
+    
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * an extension point for new records
+     */
+    public function init () {
+        $this->_soft_delete = TRUE;
     }
 
 
