@@ -13,8 +13,6 @@ interface Zupal_Fastform_Template_Interface {
 
     public function serial();
 
-    public function render_field($pField);
-
     public function render();
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ render_form_tag @@@@@@@@@@@@@@@@@@@@@@@@ */

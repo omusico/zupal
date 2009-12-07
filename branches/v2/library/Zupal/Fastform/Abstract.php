@@ -107,20 +107,20 @@ extends Zupal_Fastform_Tag_Form {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ template @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    private $_template = 'Table';
+    private $_template = 'Zupal_Fastform_Template_Table';
     /**
      * @return string;
      */
     public function get_template() { return $this->_template; }
 
-    public function set_template($pValue) { $this->_template = ucfirst(strotlower($pValue)); }
+    public function set_template($pValue) { $this->_template = $pValue; }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ template @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_templ = NULL;
     function template($pReload = FALSE) {
         if ($pReload || is_null($this->_templ)):
-            $class = 'Zupal_Fastform_Template_' . $this->get_template();
+            $class = $this->get_template();
             // process
             $this->_templ = new $class($this);
         endif;

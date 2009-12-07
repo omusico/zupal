@@ -112,4 +112,10 @@ extends Zupal_Controller_Action_Abstract {
      */
     abstract public function prefix();
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ moveitem @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * not all objects are sortable -- but for those what are this is the extension point of rresorting. 
+     */
+    public function moveitem () {
+    }
 }
