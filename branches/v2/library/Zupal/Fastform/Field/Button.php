@@ -28,6 +28,10 @@ extends Zupal_Fastform_Field_Abstract {
     public function __toString() {
         $props = $this->render_props();
 
+        if (($type = parent::get_type()) == 'submit'):
+            $props .= ' class="submit" ';
+        endif;
+
         $type=$this->get_type();
         ob_start();
         ?><input type="<?= $type ?>" <?= $props ?> /><?

@@ -29,4 +29,14 @@ extends Zupal_Fastform_Domainform
 
         return parent::save();
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ activate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function activate () {
+        $bond = new Model_Zupalbonds();
+
+        $bond->
+    }
 }

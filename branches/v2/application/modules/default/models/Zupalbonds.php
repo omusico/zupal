@@ -81,11 +81,11 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _bond_as @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
-     *
+     * what the heck was I thinking? have no idea what this does. or why.
      * @param array $pData
      * @return variant
      */
-    public function _bond_as ($pData, $pResultType = 'record') {
+    public function set_bond_as ($pData, $pResultType = 'record') {
         switch ($pResultType):
             case 'from_atom':
             case 'atom_from':
@@ -121,6 +121,20 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
         return $m->for_atom_id($this->from_atom);
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Model_ZupalatomIF || int $pAtom
+     */
+    public function set_from_atom ($pAtom) {
+        if (!$pAtom instanceof Model_ZupalatomIF):
+            $pAtom = Model_Zupalatoms::getInstance()->get_atom($pAtom);
+        endif;
+
+        $this->from_atom = $pAtom->get_atomic_id();
+        $this->from_model_class = $pAtom->get_model_class();
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ to_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -130,6 +144,49 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract
         $t = $this->to_model_class;
         $m = new $t(Zupal_Domain_Abstract::STUB);
         return $m->for_atom_id($this->to_atom);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Model_ZupalatomIF || int $pAtom
+     */
+    public function set_to_atom (Model_ZupalatomIF $pAtom) {
+        if (!$pAtom instanceof Model_ZupalatomIF):
+            $pAtom = Model_Zupalatoms::getInstance()->get_atom($pAtom);
+        endif;
+
+        $this->to_atom = $pAtom->get_atomic_id();
+        $this->to_model_class = $pAtom->get_model_class();
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ to_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return Model_ZupalatomIF
+     */
+    public function bond_atom () {
+        $t = $this->bond_atom_class;
+        if (!$t):
+            return NULL;
+        endif;
+        $m = new $t(Zupal_Domain_Abstract::STUB);
+        return $m->for_atom_id($this->bond_atom);
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param Model_ZupalatomIF || int $pAtom
+     */
+    public function set_bond_atom (Model_ZupalatomIF $pAtom) {
+        if (!$pAtom instanceof Model_ZupalatomIF):
+            $pAtom = Model_Zupalatoms::getInstance()->get_atom($pAtom);
+        endif;
+
+        $this->bond_atom = $pAtom->get_atomic_id();
+        $this->bond_model_class = $pAtom->get_model_class();
     }
 
 }

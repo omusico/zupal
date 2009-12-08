@@ -4,7 +4,7 @@
     background-color: #FF0;
     background-image: url([BASE_URL]/images/synerg/form_bg.png);
     background-repeat:repeat-x;
-    border: 1px solid #966;
+    border: 1px solid #600;
 }
 
 #Synerg_Form_Sessions table td,
@@ -60,4 +60,5 @@
 {
     background-image: none;
     background-color: transparent;
+    border: none;
 }
