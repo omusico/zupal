@@ -106,6 +106,15 @@ abstract class Model_Zupalatomdomain
         return $this->_atom;
     }
 
+    /**
+     * this is a hash that maps fied names from the atomic record
+     * to the detail record. when denormalization of atom data is useful,
+     * this enables automatic updating of the detail record from the atom record.
+     *
+     */
+
+    protected $_atom_field_map = array();
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _spawn_atom @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -181,7 +190,12 @@ abstract class Model_Zupalatomdomain
     public function save () {
         if (($atom = $this->get_atom()) && $atom->isSaved()):
             try {
-                $this->get_atom()->save();
+                $atom = $this->get_atom();
+                $atom->save();
+
+                foreach($this->_atom_field_map as $atom_field => $local_field):
+                    $this->$local_field = $atom->$atom_field;
+                endforeach;
             } catch (Exception $e) {
                 error_log(__METHOD__ . ': error deleting atom ' . $e->getMessage());
             }
@@ -246,6 +260,11 @@ abstract class Model_Zupalatomdomain
     }
 
     public function __get($pField) {
+        // if there is a localized version of an atom field, prefer that.
+        if (array_key_exists($pField, $this->_atom_field_map)):
+            $pField = $this->_atom_field_map[$pField];
+        endif;
+
         switch($pField):
             case 'title':
                 return $this->get_title();

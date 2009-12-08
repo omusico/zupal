@@ -1,0 +1,9 @@
+<?
+$this->placeholder('page_title')->set('');
+
+echo $this->filepage('ultima_game_start', "game/start.html", NULL, 'ultimatum');
+?>
+
+<? foreach($this->scans as $scan): ?>
+<?= $this->groupscan($scan) ?>
+<? endforeach; ?>

@@ -1,0 +1,52 @@
+<?
+$this->placeholder('page_title')->set('Order Group');
+
+$orders = $this->player_group->pending_orders();
+
+if ($orders && count($orders)):
+$s = count($orders) > 1 ? 's' : '';
+?>
+<h2>Current order<?= $s ?></h2>
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Order</th>
+        <th>Target</th>
+        <th>Start Turn</th>
+    </tr>
+    <? foreach($orders as $o): ?>
+    <tr>
+        <td><?= $o->identity() ?></td>
+        <td><?= $o->order_type()->get_title() ?></td>
+        <td><?= $o->get_target() ?></td>
+        <td><?= (int) $o->start_turn ?></td>
+    </tr>
+    <? endforeach; ?>
+</table>
+<hr />
+<? endif; ?>
+<h1><?= $this->order_type ?></h1>
+
+<p><b><?= $this->order_type->get_lead() ?></b>: <?= $this->order_type->get_content() ?></p>
+
+<? switch($this->order_type->target_type): ?>
+<? case (Ultimatum_Model_Ultplayergroupordertypes::TARGET_TYPE_SELF): ?>
+
+<? break; ?>
+
+<? case (Ultimatum_Model_Ultplayergroupordertypes::TARGET_TYPE_OTHER):
+    $targets = array();
+    foreach($this->scans as $s):
+        $group = $s->get_group();
+        $targets[$group->identity()] = $group->get_title();
+    endforeach;
+    $form = new Ultimatum_Form_Ultplayergrouporder(NULL, $this->order_type, NULL, 
+        NULL, NULL, $targets);
+    $form->player_group->set_value($this->player_group->identity());
+?>
+
+<?= $form ?>
+
+<? break; ?>
+
+<? endswitch; ?>

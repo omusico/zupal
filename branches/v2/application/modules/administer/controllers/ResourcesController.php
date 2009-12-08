@@ -83,7 +83,7 @@ class Administer_ResourcesController extends Zupal_Controller_Abstract {
             $pi = pathinfo($path);
 
             $this->getResponse()
-            ->setHeader('Content-Type', 'tert/css');
+            ->setHeader('Content-Type', 'text/css');
 
             echo $this->_base_path(file_get_contents($path));
         else:

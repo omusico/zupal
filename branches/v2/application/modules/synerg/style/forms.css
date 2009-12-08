@@ -1,0 +1,63 @@
+#Synerg_Form_Sessions table,
+#main form table
+{
+    background-color: #FF0;
+    background-image: url([BASE_URL]/images/synerg/form_bg.png);
+    background-repeat:repeat-x;
+    border: 1px solid #966;
+}
+
+#Synerg_Form_Sessions table td,
+#main form table td,
+#Synerg_Form_Sessions table th,
+#main form table th
+{
+    padding-top: 1em;
+    padding-right: 1em;
+    padding-left: 0.5em;
+    font-size: 120%;
+}
+
+
+#Synerg_Form_Sessions table input,
+#main form table input
+{
+    font-size: 120%;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    border: 1px solid #966;
+    background-color: white;
+}
+
+
+#Synerg_Form_Sessions table th,
+#main form table th
+{
+    font-weight: bold;
+}
+
+
+#Synerg_Form_Sessions .submit,
+#main form table  .submit
+{
+    font-weight: bold;
+    font-size: 120%;
+    color: #6F3;
+    background-color: black;
+    padding: 2px 1em;
+    border: 1px solid green;
+    margin-bottom: 1em;
+}
+
+#Synerg_Form_Sessions .submit:hover,
+#main form table  .submit:hover
+{
+    color: white
+}
+
+#Synerg_Form_Sessions table table,
+#main form table table
+{
+    background-image: none;
+    background-color: transparent;
+}

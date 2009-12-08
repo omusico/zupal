@@ -76,14 +76,17 @@ extends Zupal_Domain_Abstract {
      * @return array
      */
     public static function module_folders () {
-
-        $di = new DirectoryIterator(APPLICATION_PATH . '/modules');
+        $mp = APPLICATION_PATH . '/modules';
+        error_log(__METHOD__ . ': mp = ' . $mp);
+        
+        $di = new DirectoryIterator($mp);
 
         $modules = array();
         foreach($di as $fi):
+            $filename = $fi->getFilename();
             if ((!$fi->isDot()) && $fi->isDir() && (!preg_match('~^\.~', $fi->getFilename()))):
-                $modules[] = $fi->getFilename();
-        endif;
+                $modules[] = $filename;
+            endif;
         endforeach;
 
         return $modules;

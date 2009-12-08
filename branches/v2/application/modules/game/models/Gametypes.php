@@ -8,6 +8,14 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
         return 'Game_Model_DbTable_Gametypes';
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function init () {
+        $this->_atom_field_map['title'] = 'name';
+    }
+
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ getInstance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 /**
  *

@@ -1,0 +1,14 @@
+<?php
+$this->placeholder('page_title')->set('Ultimatum: Start Game');
+
+echo $this->filepage('ultima_game_start', "game/start.html", NULL, 'ultimatum');
+?>
+
+<? foreach($this->scans as $scan):
+ob_start();
+?>
+<blockquote>
+    <a href="<?= $this->baseUrl() ?>/ultimatum/game/startexecute/group/<?= $scan->get_group()->identity() ?>">Control This Group</a>
+</blockquote>
+<?= $this->groupscan($scan, ob_get_clean()) ?>
+<? endforeach; ?>
