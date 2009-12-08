@@ -4,7 +4,9 @@ abstract class Zupal_Controller_Abstract extends Zend_Controller_Action {
     protected $security = 0;
     protected $insecure = FALSE;
     protected $identity = NULL;
-    
+
+    protected $_init_status = NULL;
+
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ indexAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   
     

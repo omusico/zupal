@@ -38,7 +38,11 @@ extends Zupal_Controller_Action_Abstract {
      */
     function deleteitem() {
     }
-
+/**
+ *
+ * @param boolesn $pReload
+ * @return Zupal_Fastform_Domainform
+ */
     protected function _form($pReload = TRUE) {
         $fc = $this->_form_class();
         $form = new $fc($this->_model());

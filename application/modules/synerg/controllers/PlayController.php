@@ -23,4 +23,10 @@ extends Zupal_Controller_Abstract
         return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ startAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function startAction () {
+    }
 }

@@ -11,9 +11,11 @@
  */
 abstract class Zupal_Controller_Action_Abstract {
 
+    protected $_init_status = NULL;
+
     public function __construct($pController) {
         $this->set_controller($pController);
-        $this->init();
+        $this->_init_status = $this->init();
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ init @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */

@@ -297,6 +297,9 @@ implements Zupal_Domain_IDomain {
      */
     public function findOne($pParams = NULL, $pSort = NULL) {
         $select = $this->_select($pParams, $pSort);
+        if (defined('DEBUG') && DEBUG):
+            $sql = $select->assemble();
+        endif;
         $row = $this->table()->fetchRow($select);
         return $row ? $this->get($row) : NULL;
     }
