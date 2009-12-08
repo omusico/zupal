@@ -1,0 +1,12 @@
+<?
+if ($this->group->isSaved()):
+    $title = 'Edit Group ' . $this->group->get_title();
+else:
+    $title = 'Create Group ' . $this->group->get_title();
+endif;
+
+$this->headScript()->appendFile($this->baseUrl() . '/ckeditor/ckeditor.js');
+
+$this->placeholder('page_title')->set($title);
+
+echo $this->form;

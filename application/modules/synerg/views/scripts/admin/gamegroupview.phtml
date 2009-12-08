@@ -1,0 +1,33 @@
+<?
+echo $this->game();
+$params = array('id' => $this->group->identity());
+echo $this->action('groupview', 'admin', 'ultimatum', $params);
+$cumulative = 0;
+?>
+<table border="1">
+    <tr>
+        <th>Turn</th>
+        <th>Change</th>
+        <th>Size</th>
+    </tr>
+<? foreach($this->group->sizes_in_game() as $size):
+$cumulative += $size->size ?>
+    <tr>
+        <td><?= $size->turn ?></td>
+        <td><?= $size->size ?></td>
+        <td><?= $cumulative ?></td>
+    </tr>
+<? endforeach; ?>
+    <tr>
+        <th><?= $this->game->turn() ?></th>
+        <th>TOTAL: </th>
+        <th><?= $cumulative ?></th>
+    </tr>
+</table>
+
+<?
+$form = new Ultimatum_Form_Groupsizechange($this->group, $this->game);
+
+echo $form;
+
+$this->placeholder('page_title')->set('View Group ' . $this->group);

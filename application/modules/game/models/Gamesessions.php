@@ -35,6 +35,7 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
         if ($pExtend):
             $out['game'] = $this->game_type()->title;
         endif;
+        $out['plsyers'] = $this->player_count();
         return $out;
     }
 
@@ -54,5 +55,16 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
         return $this->_game_type;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ player_count @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @return int
+     */
+    public function player_count () {
+        $session_player_table = Game_Model_Gamesessionplayers::getInstance()->table();
+        $sql = sprintf("SELECT count(ID) FROM %s WHERE user = ?", $session_player_table->tableName());
+        return $session_player_table->getAdapter()->fetchOne($sql, array($this->user));
+    }
+    
 }
 

@@ -1,0 +1,20 @@
+<?
+$this->placeholder('page_title')->set('Ultimatum: group ' . $this->player_group . ': Network');
+
+echo $this->playergroup($this->player_group);
+
+$order = Ultimatum_Model_Ultplayergroupordertypes::find_by_name( Ultimatum_Model_Ultplayergroupordertypes::ORDER_SCAN);
+$form = new Ultimatum_Form_Ultplayergrouporder($this->player_group, $order);
+$form->removeElement('target');
+$form->addElement('hidden', 'target');
+$form->start_turn->setValue($this->game->turn());
+?>
+
+<h2>Known Groups</h2>
+<ul>
+<? foreach($this->scans as $scan): ?>
+    <li><?= $scan->link() ?> - <a href="<?= $this->baseUrl() ?>/ultimatum/game/rescan/group/<?= $scan->get_group()->identity() ?>">Re-investigate this group</a></li>
+ <? endforeach; ?>
+</ul>
+<h2>Scan for new groups</h2>
+<?= $form ?>
