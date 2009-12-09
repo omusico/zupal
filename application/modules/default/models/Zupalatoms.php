@@ -108,18 +108,14 @@ implements  Model_ZupalatomIF {
      * @return Model_ZupalatomIF
      */
     public function for_atom_id ($pAtomic_id) {
-        $atom = $this->get_atom($pAtomic_id);
-        if (!$atom):
-            throw new exception(__METHOD__ . ': can\'t get ' . $pAtomic_id);
+        if (!$pAtomic_id):
+            throw new Exception(__METHOD__ . ': atom id is empty');
         endif;
 
-        if (!$atom->model_class || $atom->model_class = get_class($atom)):
-            return $atom;
-        endif;
-        $class = $atom->model_class;
-        $stub = new $class;
-        return $stub->for_atom_id($pAtomic_id);
+        return $this->findOne(array('atomic_id' => $pAtomic_id), 'ID desc');
     }
+
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_bonds @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -129,8 +125,7 @@ implements  Model_ZupalatomIF {
      */
     public function get_bonds ($pType = NULL,
         Model_ZupalatomIF $pTarget = NULL,
-        Model_ZupalatomIF $bond_atom = NULL
-    ) {
+        Model_ZupalatomIF $bond_atom = NULL ) {
 
 
         $params = array(

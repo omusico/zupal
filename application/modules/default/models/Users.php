@@ -1,7 +1,7 @@
 <?
 
 class Model_Users
-extends Zupal_Domain_Abstract {
+extends Model_Zupalatomdomain {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ table_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -123,4 +123,60 @@ extends Zupal_Domain_Abstract {
         endif;
     }
 
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@ username @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * @return string;
+     */
+
+    public function get_username() { return $this->username; }
+
+    public function set_username($pValue) {
+        if (!strcasecmp($pValue, $this->get_username())):
+            return $this->username = $pValue;
+        endif;
+
+        $params = array('username' => $pValue);
+        // find a record with this username;
+        // by implication won't rematch this record becuase of previous test
+        return ($this->findOne($params)) ? FALSE : $this->username = $pValue ;
+   }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_password @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param <type> $pOld
+ * @param <type> $pNew
+ * @param <type> $pNew2
+ * @return boolean
+ */
+   public function set_password ($pOld, $pNew, $pNew2) {
+       if (md5($pOld) != $this->get_password()):
+            return FALSE;
+       elseif (!($pNew && ($pNew == $pNew2))):
+            return FALSE;
+       endif;
+
+       $this->password = md5($pNew);
+   }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_password @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+   /**
+    *
+    * @return string
+    */
+   public function get_password () {
+       return $this->password;
+   }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ for_atom_id @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+   /**
+    *
+    * @param <type> $pAtom_id
+    * @return <type>
+    */
+   public function for_atom_id ($pAtom_id) {
+       return $this->findOne(array('atomic_id' => $pAtom_id), 'ID desc');
+   }
 }
