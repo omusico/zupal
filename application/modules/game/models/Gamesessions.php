@@ -65,6 +65,71 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
         $sql = sprintf("SELECT count(ID) FROM %s WHERE user = ?", $session_player_table->tableName());
         return $session_player_table->getAdapter()->fetchOne($sql, array($this->user));
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ active_for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param int | Model_users $pUser = NULL
+     */
+    public function add_user ($pUser = NULL) {
+        if($pUser):
+            $pUser = Zupal_Domain_Abstract::_as($pUser, 'Model_Users');
+        else:
+            $pUser = Model_Users::current_user();
+        endif;
+
+        if (!$pUser):
+            throw new Exception(__METHOD__ . ': user missing');
+        endif;
+
+        return Model_Zupalbonds::getInstance()->make_unique_bond(
+            array(
+                'bond_atom' => $this->game_type(),
+                'from_atom' => $pUser,
+                'type' => self::ACTIVE_KEY
+            )
+        );
+    }
+
+
+        public function activate ($pFor_user = NULL) {
+        $bond = new Model_Zupalbonds();
+        if (!$pFor_user):
+            $pFor_user = Model_Users::current_user();
+            if (!$pFor_user):
+                throw new Exception(__METHOD__ . ': trying to bond missing user to session');
+            endif;
+        endif;
+
+        $bond->type = 'active';
+        $bond->set_to_atom($this);
+        $bond->set_from_atom($pFor_user);
+        $bond->set_bond_atom($this->game_type());
+
+        $params = array(
+            'from_atom' => $bond->from_atom()->get_atomic_id(),
+            'bond_atom' => $bond->to_atom()->get_atomic_id(),
+            'type' => 'active'
+            );
+
+       $other_bonds = $bond->find($params);
+
+       $other_bond = array_pop($other_bonds);
+
+       if (count($other_bonds)):
+            foreach($other_bonds as $extra_bond):
+                $extra_bond->delete();
+            endforeach;
+       endif;
+
+       // find an existing bond that is a syner-G game activation for this user.
+
+       if ($other_bond):
+            $other_bond->set_to_atom($this);
+            $other_bond->save();
+       else:
+            $bond->save();
+       endif;
+    }
 }
 

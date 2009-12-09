@@ -12,7 +12,7 @@ extends Zupal_Fastform_Domainform
     }
 
     protected function _domain_class() {
-        return 'Game_Model_Gamesessions';
+        return 'Synerg_Model_Gamesessions';
     }
 
     protected function _ini_path() {
@@ -30,13 +30,4 @@ extends Zupal_Fastform_Domainform
         return parent::save();
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ activate @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     */
-    public function activate () {
-        $bond = new Model_Zupalbonds();
-
-        $bond->
-    }
 }

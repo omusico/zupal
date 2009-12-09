@@ -26,6 +26,7 @@ extends Zupal_Controller_Action_CrudAbstract
         endif;
         $form->save();
         $domain = $form->get_domain();
+        $domain->add_user();
 
         $params = array('session' => $domain->identity());
         
