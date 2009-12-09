@@ -57,7 +57,7 @@ class UserController extends Zupal_Controller_Abstract
                 return $this->_forward('hi', NULL, NULL, $comment);
             endif;
 
-            $pwmp5 = md5($password);
+            $pwMD5 = md5($password);
 
             $found = $ut->findOne(array('email' => $email));
 
@@ -70,7 +70,7 @@ class UserController extends Zupal_Controller_Abstract
             endif;
 
             $data = array('username' => $username,
-                'password' => $pwmp5,
+                'password' => $pwMD5,
                 'email' => $email);
             $user = $ut->get(NULL, $data);
             $user->save();
@@ -129,6 +129,43 @@ class UserController extends Zupal_Controller_Abstract
     public function controller_dir () {
         return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
-    
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ editmeAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function editmeAction () {
+        $this->view->form = new Form_Zupalusers(Model_Users::current_user());
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ editmeexecuteAction @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * Note -- becuase the processing of the user data is inherently custom
+     * it takes place in manual form here, not via form.
+     */
+    public function editmeexecuteAction () {
+        $user = Model_Users::current_user();
+
+        if (!$user):
+            throw new Exception("No user found");
+        endif;
+
+        extract($this->_getAllParams());
+
+        if ($username):
+            $user->set_username($username);
+        endif;
+
+        if ($new_password):
+            $user->set_password($password, $new_password, $new_password_2);
+        endif;
+
+        // note -- intentionally NOT saving email change!
+
+        $user->save();
+        
+        $params = array('message' => 'Updated User Record');
+        $this->_forward('me', NULL, NULL, $params);
+    }
 
 }

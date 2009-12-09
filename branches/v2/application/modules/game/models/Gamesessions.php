@@ -66,6 +66,8 @@ class Game_Model_Gamesessions extends Zupal_Domain_Abstract {
         return $session_player_table->getAdapter()->fetchOne($sql, array($this->user));
     }
 
+    const ACTIVE_KEY = 'active';
+    
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ active_for_player @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *

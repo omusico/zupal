@@ -121,14 +121,15 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
         if (!$model_class):
             $atom = Model_Zupalatoms::getInstance()->for_atom_id($this->from_atom);
             $this->from_model_class = $model_class = $atom->get_model_class();
+
             if ($this->isSaved()):
                 $this->save();
-        endif;
+            endif;
         endif;
 
         if ($model_class):
             $m = new $model_class(Zupal_Domain_Abstract::STUB);
-            return $m->for_atom_id($this->to_atom);
+            return $m->for_atom_id($this->from_atom);
         else:
             return Model_Zupalatoms::getInstance()->for_atom_id($this->from_atom);
         endif;
@@ -174,7 +175,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
             return $m->for_atom_id($this->to_atom);
         else:
             return Model_Zupalatoms::getInstance()->for_atom_id($this->to_atom);
-        endif;
+    endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -222,15 +223,15 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
             $this->bond_model_class = $model_class = $atom->get_model_class();
             if ($this->isSaved()):
                 $this->save();
-            endif;
         endif;
-        
+        endif;
+
         if ($model_class):
             $m = new $model_class(Zupal_Domain_Abstract::STUB);
             return $m->for_atom_id($this->bond_atom);
         else:
             return Model_Zupalatoms::getInstance()->for_atom_id($this->bond_atom);
-        endif;
+    endif;
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ set_from @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -243,7 +244,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
             if (!$pAtom instanceof Model_ZupalatomIF):
                 if (is_numeric($pAtom)):
                     $pAtom = Model_Zupalatoms::getInstance()->get_atom($pAtom);
-                endif;
+            endif;
             endif;
 
             $this->bond_atom = $pAtom->get_atomic_id();
@@ -251,6 +252,78 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
         else:
             $this->bond_atom = 0;
             $this->bond_model_class = '';
+    endif;
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _prep_params @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param array $pParams
+     * @return array
+     */
+    public function _prep_params (array $pParams) {
+        foreach(array('from_atom', 'to_atom', 'bond_atom') as $key):
+            if ((array_key_exists($key, $pParams))
+                && (is_object($pParams[$key]))):
+               $ob = $pParams[$key];
+               $pParams[$key] = $ob->get_atomic_id();
+            endif;
+        endforeach;
+        return $pParams;
+    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ make_unique_bond @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     * $pForce_new, if false, attempts to reuse any existing bond that qualifies.
+     *      if true, it scrubs ALL old bonds and makes a new one.
+     * @param array $pParams
+     * @return <type>
+     */
+
+     
+    public static function make_unique_bond (array $pParams, $pForce_new = TRUE) {
+        $pParams = self::_prep_params($pParams);
+        $old_bonds = self::getInstance()->find($pParams, 'id');
+        $new_bond = FALSE;
+
+        if (count($old_bonds)):
+            if(!$pForce_new):
+                $new_bond = array_pop($old_bonds);
+                foreach($old_bonds as $old_bond):
+                    $old_bond->delete();
+                endforeach;
+            else:
+                foreach($old_bonds as $old_bond):
+                    $old_bond->delete();
+                endforeach;
+            endif;
+        endif;
+
+        if (!$new_bond):
+            $new_bond = self::getInstance()->get(NULL, $pParams);
+            $new_bond->find_models(FALSE);
+            $new_bond->save();
+        endif;
+
+        return $new_bond;
+    }
+
+    public function find_models ($pSave = TRUE) {
+        $a = $this->to_atom();
+        $a_class = get_class($a);
+        $this->to_model_class = $mc = ($a) ? $a->get_model_class() : '';
+
+        $a = $this->from_atom();
+        $a_class = get_class($a);
+        $this->from_model_class = $mc =  ($a) ? $a->get_model_class() : '';
+
+        $a = $this->bond_atom();
+        $a_class = get_class($a);
+        $this->bond_model_class = $mc = ($a) ? $a->get_model_class() : '';
+        
+        if ($pSave): 
+            $this->save();
         endif;
     }
 
