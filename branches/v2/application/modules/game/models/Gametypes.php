@@ -1,6 +1,7 @@
 <?php
 
-class Game_Model_Gametypes extends Model_Zupalatomdomain {
+class Game_Model_Gametypes
+extends Model_Zupalatomdomain {
 
     private static $_Instance = null;
 
@@ -187,5 +188,49 @@ class Game_Model_Gametypes extends Model_Zupalatomdomain {
         endif;
         return $this->_resource_classes;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ get_active_session @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param  $pFor_user = NULL
+     * @return Game_session
+     */
+//    public function get_active_session (Model_Users $pFor_user = NULL) {
+//        if (!$pFor_user):
+//            $pFor_user = Model_Users::current_user();
+//            if (!$pFor_user):
+//                throw new Exception(__METHOD__ . ': trying to get with no user');
+//            endif;
+//        endif;
+//
+//        $user_atom_id = $pFor_user->get_atomic_id();
+//        $game_atom_id = $this->get_atomic_id();
+//
+//        $params = array(
+//            'from_atom' => $user_atom_id,
+//            'bond_atom' => $game_atom_id,
+//            'type' => Game_Model_Gamesessions::ACTIVE_KEY
+//        );
+//
+//        $bond = Model_Zupalbonds::getInstance()->findOne($params, 'bonded_on DESC');
+//        if ($bond):
+//            $session = $bond->to_atom();
+//        else:
+//            $session = NULL;
+//        endif;
+//
+//        return $session;
+//    }
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ find_by_name @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/**
+ *
+ * @param string $pName
+ * @return Game_Model_Gametypes
+ */
+    public function gametype_by_name ($pName) {
+        return $this->findOne(array('name' => $pName), 'id DESC');
+    }
+
 }
 
