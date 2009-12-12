@@ -219,6 +219,11 @@ extends Zupal_Fastform_Tag_Form {
                 $field = new Zupal_Fastform_Field_Text($name, $label, $value,$options, $this);
                 break;
 
+           case 'password':
+                $field = new Zupal_Fastform_Field_Text($name, $label, $value,$options, $this);
+                $field->set_prop('password', TRUE);
+               break;
+
             case 'select':
                 $options['type'] = Zupal_Fastform_Field_Choice::CHOICE_DROPDOWN;
                 $field = new Zupal_Fastform_Field_Choice($name, $label, $value, $options, $this, $multiOptions);

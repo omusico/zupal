@@ -39,7 +39,8 @@ class Zupal_Fastform_Field_Text extends Zupal_Fastform_Field_Abstract {
         $props = $this->render_props();
 
         if ($this->get_rows() == 1):
-            printf('<input type="text" %s />', $props);
+            $type = $this->get_prop('password') ? 'password' : 'text';
+            printf('<input type="%s" %s />', $type, $props);
         else:
             $value = $this->get_value();
             printf('<textarea %s>%s</textarea>', $props, $value);
@@ -59,7 +60,8 @@ class Zupal_Fastform_Field_Text extends Zupal_Fastform_Field_Abstract {
         $props = $this->express_props();
 
         if ($this->get_rows() == 1):
-            printf('<input type="text" %s />', $props);
+            $type = $this->get_prop('password') ? 'password' : 'text';
+            printf('<input type="%s" %s />', $type, $props);
         else:
             $value = $this->express_value();
             printf('<textarea %s>%s</textarea>', $props, $value);

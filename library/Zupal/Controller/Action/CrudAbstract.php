@@ -12,7 +12,6 @@ extends Zupal_Controller_Action_Abstract {
         $this->_model();
     }
 
-
     public function items() {
     }
 
