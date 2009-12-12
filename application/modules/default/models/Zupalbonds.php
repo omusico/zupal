@@ -278,7 +278,7 @@ class Model_Zupalbonds extends Zupal_Domain_Abstract {
      * $pForce_new, if false, attempts to reuse any existing bond that qualifies.
      *      if true, it scrubs ALL old bonds and makes a new one.
      * @param array $pParams
-     * @return <type>
+     * @return Model_Zupalbonds
      */
 
      
