@@ -29,4 +29,38 @@ extends Game_Model_Gamesessions
     public function add_user ($pUser = NULL) {
         parent::add_user($pUser);
     }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ active_esssion @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param  $pUser = NULL
+     * @return
+     */
+    public function active_session ($pUser = NULL) {
+        $sgt = Synerg_Model_Gametypes::getInstance()->synergy_gametype();
+        $sgt_id = $sgt->identity();
+        return parent::active_session($sgt_id, $pUser);
+    }
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Instance @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private static $_Instance = NULL;
+
+    /**
+     *
+     * @param boolean $pReload
+     * @return Synerg_Model_Gamesessions
+     */
+    public static function getInstance($pReload = FALSE) {
+        if ($pReload || is_null(self::$_Instance)):
+        // process
+            self::$_Instance = new self();
+        endif;
+        return self::$_Instance;
+    }
+
+
+
 }
