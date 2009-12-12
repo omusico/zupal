@@ -37,6 +37,16 @@ class Game_Model_Gamesessionplayers extends Zupal_Domain_Abstract
             return $out;
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ session @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_session = NULL;
+    function session($pReload = FALSE) {
+        if ($pReload || is_null($this->_session)):
+        // process
+            $this->_session = Game_Model_Gamesessions::getInstance()->get($this->game_session);
+        endif;
+        return $this->_session;
+    }
 
 }
 
