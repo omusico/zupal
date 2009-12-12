@@ -21,9 +21,6 @@ extends Zupal_Controller_Abstract {
  *
  */
     public function indexAction () {
-        if ($user = Model_Users::getInstance()->current_user()):
-
-        endif;
     }
 
 

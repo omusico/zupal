@@ -1,0 +1,75 @@
+<?
+$this->placeholder('page_title')->set('Syner-G Resources');
+$grid_options = array('width' => 800);
+
+$filename = dirname(__FILE__) . '/resources_grid.ini';
+$col = new Zend_Config_Ini($filename, 'columns');
+
+$this->headScript()->captureStart();
+?>
+function synerg_resource_edit_formatter(p)
+{
+    return '<a href="<?= $this->baseUrl() ?>/admin/synerg/gamesedit/id/'
+        + p + '"><img src="<?= $this->baseUrl() ?>/images/icons/edit.gif" height="20" width="20" border="0"/></a>';
+}
+
+function synerg_resource_view_formatter(p)
+{
+    return '<a href="<?= $this->baseUrl() ?>/admin/synerg/gamesview/id/'
+        + p + '"><img src="<?= $this->baseUrl() ?>/images/icons/view.gif" height="20" width="20" border="0"/></a>';
+}
+
+function unity_year(y)
+{
+    return new String(y).replace(/^20/, '');
+}
+
+var ugd_months = [
+  ,
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec'
+];
+
+function grid_date_formatter(pDate)
+{
+    hits = new String(pDate).match(/([\d]{4})-([\d]{2})-([\d]{2})/)
+    if (hits)
+    {
+	var out = ugd_months[new Number(hits[2]).valueOf()] + '&nbsp;' + new Number(hits[3]).valueOf() + '&nbsp;' + unity_year(hits[1]);
+
+	return out;
+    }
+    else
+    {
+	return pDate;
+    }
+}
+
+var selected_indexes = {};
+var grid;
+
+function render_selection()
+{
+    var v = '';
+    for (p in selected_indexes)
+    {
+        v += selected_indexes[p].id + ",";
+    }
+
+    dojo.byId('selected_games').value = v;
+}
+
+<?  $this->headScript()->captureEnd();   ?>
+
+<?= $this->dojostore('resources_store', $this->baseUrl() . '/admin/synerg/resourcesstore') ?>
+<?= $this->dojogrid( 'resources_grid', 'resources_store', $col, 'id', NULL, $grid_options) ?>
