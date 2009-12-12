@@ -54,7 +54,10 @@ extends Model_Zupalatomdomain
      * @return array
      */
     public function resource_types () {
-        $params = array('resource_class' => $this->identity());
+        $params = array(
+            'resource_class' => $this->identity(),
+            'active' => 1
+        );
         return Game_Model_Gameresourcetypes::getInstance()->find($params);
     }
 

@@ -50,12 +50,16 @@ implements Zupal_Fastform_Template_Interface {
             <h2>Properties</h2>
         </th>
     </tr>
-<? for($i = 1; $i <= 5; ++$i): ?>
+    <tr>
+        <th colspan="2" style="text-align: center; font-style:italic">Numeric</th>
+        <th colspan="2" style="text-align: center; font-style:italic">Text</th>
+    </tr>
+<? for($i = 1; $i <= 10; ++$i): ?>
     <tr>
         <th style="width: 150px"><?= $this->get_form()->value_label($i) ?></th>
         <td style="width: 300px"><?= $this->get_form()->get_field("value_$i") ?></td>
         <th style="width: 150px"><?= $this->get_form()->string_label($i) ?></th>
-        <td style="width: 300px"><?= $this->get_form()->get_field("string_$i") ?></td>
+        <td style="width: 450px"><?= $this->get_form()->get_field("string_$i") ?></td>
     </tr>
 
     <? endfor; ?>

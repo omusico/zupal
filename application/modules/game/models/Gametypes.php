@@ -232,5 +232,18 @@ extends Model_Zupalatomdomain {
         return $this->findOne(array('name' => $pName), 'id DESC');
     }
 
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ game_type @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     * @param <type> $pGame
+     * @return <type>
+     */
+    public function game_type ($pGame) {
+        if (is_numeric($pGame)):
+            return self::getInstance()->get($pGame);
+        else:
+            return self::getInstance()->gametype_by_name($pGame);
+        endif;
+    }
 }
 

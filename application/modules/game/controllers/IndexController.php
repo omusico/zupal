@@ -1,17 +1,16 @@
 <?
 
 class Game_IndexController
-extends Zupal_Controller_Abstract
-{
+extends Zupal_Controller_Abstract {
 
 
 /* @@@@@@@@@@@@@ EXTENSION BOILERPLATE @@@@@@@@@@@@@@ */
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ controller_dir @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @return string
-     */
+/**
+ *
+ * @return string
+ */
     public function controller_dir () {
         return dirname(__FILE__) . DIRECTORY_SEPARATOR;
     }
@@ -23,26 +22,28 @@ extends Zupal_Controller_Abstract
     public function usergamesAction () {
         $data = array();
         $game = $this->_getParam('game', '');
-        if ($user = Model_Users::getInstance()->current_user()):
-            $params = array('user' => $user->identity());
 
-            $user_sessions = Game_Model_Gamesessionplayers::getInstance()->find($params);
-            foreach($user_sessions as $us):
-                $session = $us->session();
-                if ($game && strcasecmp($game, $session->name)):
-                    continue;
-                endif;
-                $data[] = $session;
-            endforeach;
+        $user = $this->_getParam('user');
+        if ($user):
+            $user = Model_Users::getInstance()->get($user);
+        else:
+            $user = Model_Users::current_user();
         endif;
 
-        $out = array();
+        $params = array('user' => $user->identity());
 
-        foreach($data as $session):
+        $game_type = $game ? Game_Model_Gametypes::game_type($game) : NULL;
+
+        $user_sessions = Game_Model_Gamesessionplayers::getInstance()->find($prarams);
+
+        foreach($user_sessions as $us):
+            $session = $us->session();
+            if ($game_type && (!$session->is_game_type($game_type))):
+                continue;
+            endif;
             $out[] = $session->toArray(TRUE);
         endforeach;
 
         $this->_store('id', $out, 'name');
-
     }
 }
