@@ -10,6 +10,7 @@ extends Model_Zupalatomdomain
      */
     public function init () {
         $this->_soft_delete = TRUE;
+        $this->_atom_field_map['title'] = 'name';
     }
 
     private static $_Instance = null;

@@ -262,7 +262,11 @@ abstract class Model_Zupalatomdomain
     public function __get($pField) {
         // if there is a localized version of an atom field, prefer that.
         if (array_key_exists($pField, $this->_atom_field_map)):
-            $pField = $this->_atom_field_map[$pField];
+            $field = $this->_atom_field_map[$pField];
+            $value = parent::__get($field);
+            if ($value != ''):
+                return $value;
+            endif;
         endif;
 
         switch($pField):

@@ -34,6 +34,7 @@ class Game_Model_Gameresourcetypes extends Model_Zupalatomdomain
      */
     public function init () {
         $this->_soft_delete = TRUE;
+        $this->_atom_field_map['title'] = 'name';
     }
 
 
@@ -67,6 +68,14 @@ class Game_Model_Gameresourcetypes extends Model_Zupalatomdomain
             $this->_resource_class = Game_Model_Gameresourceclasses::getInstance()->get($this->resource_class);
         endif;
         return $this->_resource_class;
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ resource_class @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function resource_class () {
+        return $this->get_resource_class();
     }
 
     public function set_resource_class($pValue) {
