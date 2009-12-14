@@ -1,0 +1,20 @@
+<?
+$title = $this->model->resource_class()->title;
+switch (strtolower($title)):
+    case 'resources':
+        $this->placeholder('page_title')->set('Edit Resource');
+        break;
+
+    case 'group types':
+        $this->placeholder('page_title')->set('Edit Group Type');
+        break;
+
+    case 'groups':
+        $this->placeholder('page_title')->set('Edit Group');
+        break;
+
+    case 'social metrics':
+        $this->placeholder('page_title')->set('Edit Social Metric');
+endswitch;
+
+echo $this->form;

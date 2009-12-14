@@ -1,0 +1,22 @@
+<?
+switch (strtolower($this->resourceclass)):
+    case 'resources':
+        $this->placeholder('page_title')->set('New Resource');
+        echo new Synerg_Form_Resourcetypesresource();
+        break;
+
+    case 'group types':
+        $this->placeholder('page_title')->set('New Group Type');
+        echo new Synerg_Form_Resourcetypesgrouptype();
+        break;
+
+    case 'groups':
+        $this->placeholder('page_title')->set('New Group');
+        echo new Synerg_Form_Resourcetypesgroup();
+        break;
+
+    case 'sm':
+        $this->placeholder('page_title')->set('New Social Metric');
+        echo new Synerg_Form_Resourcetypessm();
+        break;
+endswitch;
