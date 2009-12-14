@@ -48,6 +48,12 @@ extends Zupal_Fastform_Field_Abstract
         if ($hidden):
             echo $pField;
         else:
+            if (
+                ($width = $this->get_form()->get_field_width())
+                && (!$pField->get_width())
+                ):
+                $pField->set_width($width);
+            endif;
             ?>
 <tr>
     <th <?= $show_field ? '' : ' colspan="2" ' ?> <?= $this->title_width() ?> > <?= $show_label ? $pField->get_label() : '' ?></th>

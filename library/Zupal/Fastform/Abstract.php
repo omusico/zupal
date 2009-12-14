@@ -52,11 +52,7 @@ extends Zupal_Fastform_Tag_Form {
             $this->load_controls($c_array['controls']);
             unset($c_array['controls']);
         endif;
-/*
-        if (array_key_exists('field_width', $c_array)):
-            $this->set_field_width($c_array['field_width']);
-        endif;
- */
+
         foreach($c_array as $key => $value):
             $this->set_prop($key, $value);
         endforeach;

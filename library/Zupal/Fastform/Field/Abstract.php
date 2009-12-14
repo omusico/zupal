@@ -183,9 +183,9 @@ extends Zupal_Fastform_Tag_Abstract {
 
         $out['value'] = $this->get_value();
 
-        if ($this->get_width()):
-            $out = $this->_add_width($out);
-        endif;
+//        if ($this->get_width()):
+//            $out = $this->_add_width($out);
+//        endif;
         return $out;
     }
 
@@ -229,22 +229,20 @@ extends Zupal_Fastform_Tag_Abstract {
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@ width @@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    private $_width = null;
     /**
      * @return class;
      */
 
     public function get_width() {
-        if (!is_null($this->_width)):
-            return $this->_width;
-        elseif ($this->get_form() &&($width = $this->get_form()->get_field_width())):
-            return $width;
-        else:
-            return NULL;
-    endif;
+        return $this->get_style('width');
     }
 
-    public function set_width($pValue) { $this->_width = $pValue; }
+    public function set_width($pValue) {
+        if (is_numeric($pValue)):
+            $pValue = ((int) $pValue) . 'px';
+        endif;
+        $this->set_style('width', $pValue);
+    }
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ width @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
@@ -252,15 +250,7 @@ extends Zupal_Fastform_Tag_Abstract {
      * @return <type>
      */
     public function width () {
-        if ($width = $this->get_width()):
-            if (is_numeric($width)):
-                return $width . 'px';
-            else:
-                return $width;
-        endif;
-        else:
-            return '';
-    endif;
+        return $this->get_width();
     }
 
 
