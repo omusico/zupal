@@ -88,28 +88,6 @@ abstract class Zupal_Fastform_Tag_Abstract {
         return array_merge($props, $my_props);
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ _set_width_prop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    /**
-     *
-     * @param array $pProps
-     * @return array
-     */
-    public function _set_width_prop ($pProps) {
-        if (array_key_exists('style', $pProps)):
-            $style = $pProps['style'];
-
-            if ($style == ($style = preg_replace('~width:([^;]*~', 'width: ' . $this->width() . ';', $style))):
-                $style .= ';width=' . $this->width() . ';';
-            endif;
-            $pProps['style'] = $style;
-        else:
-            $style = "width: {$this->width()}";
-        endif;
-
-        $pProps['style'] = $style;
-        return $out;
-    }
-
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ my_props @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     /**
      *
@@ -174,7 +152,8 @@ abstract class Zupal_Fastform_Tag_Abstract {
 
         $body = $this->get_body();
         if (is_null($body) || $body == ''):
-            return sprintf('<%s %s />',  $this->tag_name(), $tag_content);
+            $style = $this->style_property();
+            return sprintf('<%s %s %s/>',  $this->tag_name(), $tag_content, $style);
         else:
             return $this->render_head($tag_content) . $body . $this->render_foot();
         endif;
@@ -191,7 +170,10 @@ abstract class Zupal_Fastform_Tag_Abstract {
         if (is_null($tag_content)):
             $tag_content = $this->render_props();
         endif;
-        return sprintf('<%s %s>', $this->tag_name(), $tag_content);
+
+        $style = $this->style_property();
+
+        return sprintf('<%s %s, %s>', $this->tag_name(), $tag_content, $style);
     }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ render_foot @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
@@ -287,5 +269,35 @@ abstract class Zupal_Fastform_Tag_Abstract {
 
         $out = ob_get_clean();
         return $out;
+    }
+
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ styles @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_styles = array();
+
+    public function set_style($pID = NULL, $pValue) {
+            $this->_styles[$pID] = $pValue;
+    }
+
+    public function get_style($pID) { return $this->_styles[$pID]; }
+
+    public function get_styles() { return $this->_styles; }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ style_property @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function style_property () {
+        $out = '';
+
+        $style_body = '';
+
+        foreach($this->get_styles() as $key => $value):
+            $style_body .= sprintf('%s: %s;', $key, $value);
+        endforeach;
+
+        return $style_body ? sprintf(' style="%s" ', $style_body) : '';
     }
 }
