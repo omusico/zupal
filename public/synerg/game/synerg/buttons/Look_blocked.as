@@ -1,0 +1,1 @@
+﻿package game.synerg.buttons{	import game.synerg.buttons.Look;	public class Look_blocked  extends Look {				public function Look_blocked(x, y, compass){			super(x, y, compass);		}		}}
