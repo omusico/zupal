@@ -1,0 +1,1 @@
+﻿package game.synerg.buttons{	import flash.display.MovieClip;	public class Look extends MovieClip {		public function Look(px, py, pCompass) {			super();			x=px;			y=py;			gotoAndStop(pCompass);		}	}}
