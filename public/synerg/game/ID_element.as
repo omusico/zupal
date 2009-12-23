@@ -1,0 +1,1 @@
+﻿package game {		public interface ID_element {		function get_id(): uint;				function set_id(id: uint);		}}
