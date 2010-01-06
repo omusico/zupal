@@ -38,6 +38,14 @@ extends Zupal_Fastform_Form {
         endif;
         return $this->_domain; }
 
+    /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ domain @@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /**
+     *
+     */
+    public function domain () {
+        return $this->get_domain();
+    }
+
     public function set_domain($pValue) {
         $class = $this->_domain_class();
         if ($pValue):

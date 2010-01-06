@@ -27,7 +27,9 @@ extends Zupal_Controller_Action_Abstract {
         $model = $this->_model(FALSE);
         if ((!$model) || (!$model->isSaved())):
             $this->error('Attempt to view non-existent item', $this->prefix() . 'items');
+            return FALSE;
         endif;
+        return TRUE;
     }
 
 
@@ -36,6 +38,7 @@ extends Zupal_Controller_Action_Abstract {
      * a one click delete should hop to deleteresponse.
      */
     function deleteitem() {
+        $this->_model(FALSE);
     }
 /**
  *
