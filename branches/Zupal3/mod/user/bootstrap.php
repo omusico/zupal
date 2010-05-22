@@ -1,7 +1,9 @@
 <?php
 
 function user_init() {
-    global $mod_paths;
+
+    $mod_paths = Zupal_Module_Path::instance();
+
     $resourceLoader = new Zend_Loader_Autoloader_Resource(array(
                     'basePath'  => $mod_paths['user'],
                     'namespace' => 'User',

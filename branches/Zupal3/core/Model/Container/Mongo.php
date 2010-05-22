@@ -126,7 +126,7 @@ implements Zupal_Model_Container_IF {
         return $out;
     }
 
-    public function find_one( $pQuery, $sort = NULL) {
+    public function find_one($pWhat, $sort = NULL) {
         if ($pWhat instanceof Zupal_Model_Query_IF) {
             $pQuery = $pWhat;
         } else {

@@ -37,19 +37,18 @@ extends Zupal_Model_Schema_Field {
             );
         }
 
-        if ((!$value) && $this['required']) {
+        if ((!$value) && array_key_exists('required', $this) && $this['required']) {
             $out[] = array(
                     'field' => $this->name(),
                     'value' => $value,
                     'message' => 'absent, and required (must be nonzero)'
             );
         }
-
-
+        
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($value){
+    public function clean_value($value) {
         return is_numeric($value) ? $value : 0;
     }
 }
