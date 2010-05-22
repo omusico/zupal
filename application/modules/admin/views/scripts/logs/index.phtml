@@ -1,9 +1,0 @@
-<?php
-$this->placeholder('page_title')->set('Logs');
-
-$log_form = new Zupal_Logs_SearchForm();
-$log_form->setAction(ZUPAL_BASEURL . DS . join(DS, array('admin','logs', 'searchvalidate')));
-?>
-<h2>Search Logs</h2>
-<?= $log_form->render() ?>
-

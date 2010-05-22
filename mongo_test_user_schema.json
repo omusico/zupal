@@ -1,0 +1,21 @@
+{
+    "name": {
+        "type": "string",
+        "length": 20,
+        "min": 4,
+        "required": true
+    },
+    "pass": {
+        "type": "string",
+        "length": 16,
+        "min": 5,
+        "required": true
+    },
+    "auth": {
+        "type": "array",
+        "default": ["guest"]
+    },
+    "description": {
+        "type": "file"
+    }
+}

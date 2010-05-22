@@ -1,0 +1,18 @@
+{
+    "id": {
+        "type": "int",
+        "key": "true",
+        "generate": true
+    },
+
+    "name" : {
+        "type": "string",
+        "length": 12
+    },
+
+    "cost"  : {
+        "type": "float",
+        "length": 15,
+        "decimal": 2
+    }
+}
