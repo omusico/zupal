@@ -1,0 +1,6 @@
+{
+    "name": "User",
+    "description" : "A module for tracking user data, permissions, and registration",
+    "deps": [],
+    "version": [1,0,0]
+}

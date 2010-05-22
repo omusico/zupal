@@ -1,0 +1,15 @@
+{
+    "id": {
+        "type": "int",
+        "key": true
+    },
+
+    "name": {
+        "type": "string",
+        "length": 20
+    },
+
+    "notes": {
+        "type": "text"
+    }
+}
