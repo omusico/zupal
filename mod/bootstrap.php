@@ -1,18 +1,19 @@
 <?php
 
 function mod_init() {
-    global $mod_paths, $mod_status, $event_manager, $event_manager_container;
+    global $mod_status, $event_manager, $event_manager_container, $mod_config_section;
+
+    $mod_paths = Zupal_Module_Path::instance();
 
     $event_manager_container = new Zupal_Model_Container_Mongo('zupal', 'event');
     $event_manager  = new Zupal_Event_Manager($event_manager_container);
-    
-    $mod_paths      = array();
     $mod_status     = array();
 
-    $di = new DirectoryIterator(dirname(__FILE__));
 
+
+    $di = new DirectoryIterator(dirname(__FILE__));
     foreach($di as $d) {
-        if ((!is_dot()) && is_dir($d)) {
+        if (!$d->isDot()  && $d->isDir()) {
             $path = $d->getPathname() . D . 'profile.json';
             $mod = basename($d->getPathname());
             if (file_exists($path)) {
@@ -27,7 +28,9 @@ function mod_init() {
 }
 
 function mod_load($mod, $path = NULL) {
-    global $mod_status, $mod_paths;
+    global $mod_status;
+
+    $mod_paths = Zupal_Module_Path::instance();
 
     if(!$path) {
         $path = $mod_paths[$path];
@@ -47,6 +50,8 @@ function mod_load($mod, $path = NULL) {
     }
 
     require $path . D . 'bootstrap.php';
+
+    call_user_func($mod . '_init');
 }
 
 mod_init();

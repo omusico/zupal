@@ -131,7 +131,7 @@ implements Zupal_Model_Schema_IF {
 
     public static function make_from_json($pPath){
 
-        if (!file_exists($path)){
+        if (!file_exists($pPath)){
             throw new Exception(__METHOD__ . ": no file at $pPath");
         }
 

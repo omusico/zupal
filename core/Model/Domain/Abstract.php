@@ -7,7 +7,7 @@
  *
  * @author bingomanatee
  */
-class Zupal_Model_Domain_Abstract
+abstract class Zupal_Model_Domain_Abstract
 implements Zupal_Model_Data_IF,
 Zupal_Model_Container_IF {
     const LOAD_NEW = 'new';
@@ -53,12 +53,27 @@ Zupal_Model_Container_IF {
 
     }
 
+    /**
+     *
+     * @return Zupal_Model_Data_IF
+     */
+    public function record(){
+        return $this->_record;
+    }
+
     public function delete() {
         /* @var $event_manager Zupal_Event_Manager */
         global $event_manager;
 
         $this->_record->delete();
         $event_manager->handle('delete', $this);
+    }
+
+    public function delete_data(Zupal_Model_Data_IF $pData){
+        if ($pData instanceof Zupal_Model_Domain_Abstract){
+            $pData = $pData->record();
+        }
+        $this->container()->delete_data($pData);
     }
 
     public function get_field($name, $scope = 'r') {

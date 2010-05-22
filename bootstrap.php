@@ -20,5 +20,6 @@ $resourceLoader = new Zend_Loader_Autoloader_Resource(array(
 $resourceLoader->addResourceType('model', 'Model/', 'Model');
 $resourceLoader->addResourceType('event', 'Event/', 'Event');
 $resourceLoader->addResourceType('view',  'View/',  'View');
+$resourceLoader->addResourceType('module',  'Module/',  'Module');
 
 require ZUPAL_ROOT . D . 'mod' . D . 'bootstrap.php';

@@ -1,0 +1,49 @@
+{
+    "uri": {
+        "type": "string",
+        "required": true,
+        "key" : true
+    },
+    "title" : {
+        "type" : "string",
+        "required": true
+    },
+    "name": {
+        "type": "string",
+        "length": 20,
+        "min": 3,
+        "required": true
+    },
+    "arguments": {
+        "type": "string",
+        "required": true
+    },
+    "event" : {
+        "type" : "string",
+        "required" : false
+    },
+    "auth": {
+        "type": "array",
+        "default": []
+    },
+    "description": {
+        "type": "text"
+    },
+    "parent" : {
+        "type" : "string",
+        "required" : false,
+        "default": "root"
+    },
+    "module": {
+        "type" : "string",
+        "required": true
+    },
+    "menu": {
+        "type": "string",
+        "required" : "false"
+    },
+    "weight" : {
+        "type": "int",
+        "default": 0
+    }
+}
