@@ -203,15 +203,18 @@ implements Zupal_Model_Container_IF {
                 throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invald data:', $valid);
             }
         }
-
-        if (array_key_exists('_id', $array) && $array['_id']) {
-            $result = $this->coll()->update($array);
+        
+        if (property_exists($pData, '__id') && is_object($pData->__id)){
+            $array['_id'] = $pData ->__id;
+            $result = $this->coll()->save($array);
+        } elseif (array_key_exists('_id', $array) && $array['_id']) {
+            $crit = array('_id' => $array['_id']);
+            $result = $this->coll()->update($crit, $array);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
         } else {
             $result = $this->coll()->insert($array);
             $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
             $pData->set_key($array['_id']);
-
         }
 
     }

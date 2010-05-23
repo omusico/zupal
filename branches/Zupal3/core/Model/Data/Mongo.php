@@ -10,8 +10,11 @@ class Zupal_Model_Data_Mongo
 extends ArrayObject
 implements Zupal_Model_Data_IF {
 
+    public $__id = NULL;
+
     public function __construct($array, $pContainer = NULL) {
         if (array_key_exists('_id', $array) && is_object($array['_id'])){
+            $this->__id = $array['_id'];
             $array['_id'] = self::deser_id($array['_id']);
         }
         $this->container($pContainer);

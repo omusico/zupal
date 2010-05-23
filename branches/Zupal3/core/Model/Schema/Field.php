@@ -1,32 +1,32 @@
 <?php
 
 class Zupal_Model_Schema_Field
-extends ArrayObject{
+extends ArrayObject {
 
     public function __construct($pParams = array()) {
         parent::__construct($pParams);
-        
-        if (empty($this['type'])){
+
+        if (empty($this['type'])) {
             $this['type'] = 'string';
         }
 
-        if (empty($this['default'])){
+        if (empty($this['default'])) {
             $this['default'] = NULL;
         }
-        
+
     }
 
-    public function name(){
+    public function name() {
         return $this['name'];
     }
 
-    public function type(){
+    public function type() {
         return $this['type'];
     }
 
-    public function is_key(){
+    public function is_key() {
         $out = array_key_exists('key', $this) ? $this['key'] : FALSE;
-       // echo __METHOD__ . ': checking for ', $this->name(), ' result = ', $out, "\n";
+        // echo __METHOD__ . ': checking for ', $this->name(), ' result = ', $out, "\n";
         return $out;
     }
 
@@ -52,17 +52,24 @@ extends ArrayObject{
             case 'stdClass':
                 return (object) $pValue;
                 break;
-            
+
             default:
                 return $pValue;
         }
     }
 
     private $_label;
-    public function label(){
-        if (!$this->_label){
+    public function label() {
+        if (!$this->_label) {
             $this->_label = empty($this['label'])? ucwords(str_replace('_', ' ', $this->name())) : $this['label'];
         }
         return $this->_label;
+    }
+
+    /**
+     * the default value of a field. can be of any type.
+     */
+    public function get_default() {
+        return NULL;
     }
 }
