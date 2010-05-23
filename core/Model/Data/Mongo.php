@@ -17,8 +17,8 @@ implements Zupal_Model_Data_IF {
             $this->__id = $array['_id'];
             $array['_id'] = self::deser_id($array['_id']);
         }
-        $this->container($pContainer);
-        if ($container = $this->container()) {
+
+        if ($container = $this->container($pContainer)) {
             $defaults = $container->schema()->defaults();
             if ($defaults) {
                 $array = array_merge($defaults, $array);
@@ -69,7 +69,7 @@ implements Zupal_Model_Data_IF {
      * @return scalar
      */
     public function key($pThrow = TRUE) {
-        if (array_key_exists('_id', $this->_data)) {
+        if (array_key_exists('_id', $this)) {
             return $this['_id'];
         } elseif ($pThrow) {
             throw new Exception(__METHOD__ . ': no ID in ' . print_r($this, 1));

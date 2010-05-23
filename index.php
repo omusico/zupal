@@ -18,14 +18,7 @@ include_once('bootstrap.php');
         <table id="outer">
             <tr>
                 <td id="nav">
-                    <ul class="menu">
-                        <? foreach(Nav_Model_Nav::instance()->menu('main') as $item): ?>
-                        <li>
-                            <?= $item ?>
-                        </li>
-                        <? endforeach; ?>
-                    </ul>
-
+                    <?= Nav_Model_Nav::instance()->render_menu('main') ?>
                 </td>
                 <td>
                     <h1>Zupal 3 - in 3D!</h1>
