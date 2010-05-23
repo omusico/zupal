@@ -12,6 +12,9 @@ function nav_init() {
 
     $resourceLoader->addResourceType('model', 'model/', 'Model');
     $resourceLoader->addResourceType('view',  'view/',  'View');
+
+    $nav = Nav_Model_Nav::instance();
+    $crit = array('name' => 'home');
 }
 
 function nav_register() {

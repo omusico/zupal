@@ -1,0 +1,26 @@
+{
+    "name": {
+        "type": "string",
+        "length": 20,
+        "min": 3,
+        "required": true,
+        "key" : true
+    },
+    "title": {
+        "type": "string",
+        "max": 100,
+        "min": 3
+    },
+    "active": {
+        "type": "boolean",
+        "default": false
+    },
+    "variables": {
+        "type": "array",
+        "default": []
+    },
+    "path": {
+        "type": "string",
+        "required": false
+    }
+}

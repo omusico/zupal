@@ -10,13 +10,13 @@ interface Zupal_Model_Container_IF {
      * returns a single item via its key. unlike find, accepts only scalar data.
      * @return Zupal_Model_Data_IF
      */
-    function get($pKey);
+    public function get($pKey);
     
     /**
      * return a blank record;
      * @return Zupal_Model_Data_IF
      */
-    function new_data($pData);
+    public function new_data($pData);
 
     /**
      * Adds data to the container. Unlike new_data which just
@@ -76,5 +76,8 @@ interface Zupal_Model_Container_IF {
      */
     function save_data(Zupal_Model_Data_IF $pData);
 
-
+    /**
+     * @return Zupal_Model_Schema_IF
+     */
+    public function schema();
 }

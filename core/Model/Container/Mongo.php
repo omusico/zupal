@@ -20,7 +20,7 @@ implements Zupal_Model_Container_IF {
     public function __construct($pParentDB, $pColl, array $pProps = array()) {
         $this->_name =  $pColl;
 
-        if (is_string($pParentDB)){
+        if (is_string($pParentDB)) {
             $pParentDB = Zupal_Model_Container_MongoDB::instance($pParentDB);
         }
         $this->_parent = $pParentDB;
@@ -85,7 +85,7 @@ implements Zupal_Model_Container_IF {
         return new Zupal_Model_Data_Mongo($data, $this);
     }
 
-    public function new_data($pData){
+    public function new_data($pData) {
         return new Zupal_Model_Data_Mongo($pData, $this);
     }
 
@@ -134,8 +134,11 @@ implements Zupal_Model_Container_IF {
         }
 
         $data = $this->coll()->findOne($pQuery->toArray());
-
-        return new Zupal_Model_Data_Mongo($data);
+        if ($data) {
+            return new Zupal_Model_Data_Mongo($data);
+        } else {
+            return NULL;
+        }
     }
 
     /**
@@ -144,7 +147,7 @@ implements Zupal_Model_Container_IF {
      */
     public function schema(Zupal_Model_Schema_IF $pSchema = NULL) {
         if ($pSchema) {
-            if (is_string($pSchema)){
+            if (is_string($pSchema)) {
                 $pSchema = Zupal_Model_Schema_Item::make_from_json($pSchema);
             }
             $this->_schema = $pSchema;
@@ -176,7 +179,7 @@ implements Zupal_Model_Container_IF {
 
     }
 
-    public function delete_data(Zupal_Model_Data_IF $pData){
+    public function delete_data(Zupal_Model_Data_IF $pData) {
         $q = array('_id' => $pData->key());
         $this->coll()->remove($q);
     }
@@ -186,7 +189,13 @@ implements Zupal_Model_Container_IF {
      * @param Zupal_Model_Data_IF $pData
      */
     public function save_data(Zupal_Model_Data_IF $pData) {
-        $array = $pData->toArray();
+        if(is_array($pData)) {
+            $array = $pData;
+        } elseif (is_object($pData) && method_exists($pData, 'toArray')) {
+            $array = $pData->toArray();
+        } else {
+            throw new Exception(__METHOD__ . ': bad data passed: ' . print_r($pData, 1));
+        }
 
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);

@@ -31,6 +31,8 @@ class Zupal_Event_Manager {
         // append general handlers for the event type
         $q2 = array('event' => $pEvent, 'target' => 'any');
         $handlers += $this->_route_source->find($q2);
+
+        return $handlers;
     }
 
     /**
