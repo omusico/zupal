@@ -10,10 +10,7 @@ extends Zupal_Model_Domain_Abstract {
     private static $_container;
     protected function container() {
         if (!self::$_container) {
-
-            $mod_paths = Zupal_Module_Path::instance();
-            $path = $mod_paths->file('nav','model', 'nav_schema.json');
-            $schema = Zupal_Model_Schema_Item::make_from_json($path);
+            $schema = $this->schema();
             self::$_container = new Zupal_Model_Container_Mongo('zupal', 'nav', array('schema' => $schema));
         }
         return self::$_container;
@@ -21,12 +18,12 @@ extends Zupal_Model_Domain_Abstract {
 
     /* @@@@@@@@@@@@@@@@@ MENU @@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
-    public function menu($pName, $pParent = 'root'){
+    public function menu($pName, $pParent = 'root') {
         $crit   = array('parent' => $pParent, 'menu' => $pName);
         $menu   = $this->find($crit, NULL, array('weight', 'title'));
         $out    = array();
 
-        foreach($menu as $menu_data){
+        foreach($menu as $menu_data) {
             $options = $menu_data->toArray();
             $options['type'] = 'uri';
             $out[] = new Zend_Navigation_Page_Uri($options);
@@ -47,6 +44,20 @@ extends Zupal_Model_Domain_Abstract {
             self::$_instance = new self();
         }
         return self::$_instance;
+    }
+
+    public function new_data($pData) {
+        return new self($pData);
+    }
+
+    private $_schema;
+    public function schema() {
+        if (!$this->_schema) {
+            $mod_dom = Zupal_Module_Model_Mods::instance();
+            $path = $mod_dom->file('nav','model', 'nav_schema.json');
+            $this->_schema = Zupal_Model_Schema_Item::make_from_json($path);
+        }
+        return $this->_schema;
     }
 }
 

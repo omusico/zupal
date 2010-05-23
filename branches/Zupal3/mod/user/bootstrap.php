@@ -1,22 +1,12 @@
 <?php
 
-function user_init() {
+$user_mod = Zupal_Module_Model_Mods::instance()->mod('user');
 
-    $mod_paths = Zupal_Module_Path::instance();
+$conf = array(
+'basePath'  => $user_mod->path,
+'namespace' => 'User');
 
-    $resourceLoader = new Zend_Loader_Autoloader_Resource(array(
-                    'basePath'  => $mod_paths['user'],
-                    'namespace' => 'User',
-    ));
+$resourceLoader = new Zend_Loader_Autoloader_Resource($conf);
 
-    $resourceLoader->addResourceType('model', 'model/', 'Model');
-    $resourceLoader->addResourceType('view',  'view/',  'View');
-}
-
-function user_register() {
-
-}
-
-function user_unregister() {
-
-}
+$resourceLoader->addResourceType('model', 'model/', 'Model');
+$resourceLoader->addResourceType('view',  'view/',  'View');

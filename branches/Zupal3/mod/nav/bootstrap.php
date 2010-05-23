@@ -1,9 +1,9 @@
 <?php
 
-$mod_paths = Zupal_Module_Path::instance();
+$nav_mod = Zupal_Module_Model_Mods::instance()->mod('nav');
 
 $config = array(
-        'basePath'  => $mod_paths['nav'],
+        'basePath'  => $nav_mod->path,
         'namespace' => 'Nav',
 );
 

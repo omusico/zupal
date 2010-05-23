@@ -41,6 +41,20 @@ extends Zupal_Model_Domain_Abstract {
         return $this->_mods;
     }
 
+
+    /**
+     *
+     * @return string
+     */
+    public function file(){
+        $path = func_get_args();
+        $mod_name = array_shift($path);
+        $mod = $this->mod($mod_name);
+        $root = $mod->path;
+
+        return $root . D . join(D, $path);
+    }
+
     public function profile() {
         if (!$this->profile) {
             $mod_json_path = $this->path . D . 'profile.json';
