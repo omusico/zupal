@@ -137,6 +137,6 @@ implements Zupal_Model_Schema_IF {
 
         $json = file_get_contents($pPath);
         $data = Zend_Json::decode($json);
-        return new self(NULL, $data);
+        return new self($data);
     }
 }

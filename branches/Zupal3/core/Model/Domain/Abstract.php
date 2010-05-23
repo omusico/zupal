@@ -16,9 +16,9 @@ Zupal_Model_Container_IF {
      * @var Zupal_Model_Data_IF
      */
     protected $_record;
-    public $metadata;
+    public $metadata = array();
 
-    public function __construct($pKey) {
+    public function __construct($pKey = NULL) {
         if ($pKey) {
             $this->load($pKey);
         }
@@ -57,7 +57,7 @@ Zupal_Model_Container_IF {
      *
      * @return Zupal_Model_Data_IF
      */
-    public function record(){
+    public function record() {
         return $this->_record;
     }
 
@@ -69,8 +69,8 @@ Zupal_Model_Container_IF {
         $event_manager->handle('delete', $this);
     }
 
-    public function delete_data(Zupal_Model_Data_IF $pData){
-        if ($pData instanceof Zupal_Model_Domain_Abstract){
+    public function delete_data(Zupal_Model_Data_IF $pData) {
+        if ($pData instanceof Zupal_Model_Domain_Abstract) {
             $pData = $pData->record();
         }
         $this->container()->delete_data($pData);
@@ -110,17 +110,20 @@ Zupal_Model_Container_IF {
         } elseif (array_key_exists($name, $this->metadata)) {
             return $this->metadata[$name];
         } else {
-            throw new Exception(__METHOD__ . ": unrecorded field $name requested");
+            return NULL; // throw new Exception(__METHOD__ . ": unrecorded field $name requested");
         }
     }
 
     public function  __set($name,  $value) {
         if (array_key_exists($name, $this->_record)) {
             $this->_record[$name] = $value;
-        } elseif (array_key_exists($name, $this->metadata)) {
-            $this->metadata[$name] = $value;
         } else {
-            throw new Exception(__METHOD__ . ": unrecorded field $name set to $value");
+            $schema = $this->schema();
+            if (array_key_exists($name, $schema)) {
+                $this->_record[$name] = $value;
+            } else {
+                $this->metadata[$name] = $value;
+            }
         }
     }
 
@@ -156,15 +159,13 @@ Zupal_Model_Container_IF {
     protected abstract function container();
 
     public function get($pKey) {
-        return new self($pKey);
+        return $this->new_data($pKey);
     }
 
-    public function new_data($pData) {
-        return new self($pData);
-    }
+    //public abstract function new_data($pData);
 
     public function add($pData) {
-        $d = new self($pData);
+        $d = $this->new_data($pData);
         $d->save();
         return $d;
     }
@@ -173,7 +174,7 @@ Zupal_Model_Container_IF {
         $out = array();
 
         foreach($this->container()->find($pQuery, $limit, $sort) as $record) {
-            $out[] = new self($record);
+            $out[] = $this->new_data($record);
         }
 
         return $out;
@@ -181,7 +182,11 @@ Zupal_Model_Container_IF {
 
     public function find_one($pQuery, $sort = NULL) {
         $record = $this->container()->find_one($pQuery, $sort);
-        return new self($record);
+        if ($record) {
+            return $this->new_data($record);
+        } else {
+            return NULL;
+        }
     }
 
     public function has($pWhat) {
@@ -203,4 +208,5 @@ Zupal_Model_Container_IF {
     public function save_data(Zupal_Model_Data_IF $pData) {
         throw new Exception(__METHOD__ . ': not relevant for Domains');
     }
+
 }

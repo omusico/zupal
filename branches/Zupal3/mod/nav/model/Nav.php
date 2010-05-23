@@ -40,7 +40,7 @@ extends Zupal_Model_Domain_Abstract {
     private static $_instance;
 
     /**
-     * @rerurn Nav_Model_Nav
+     * @return Nav_Model_Nav
      */
     public static function instance() {
         if (!self::$_instance) {
