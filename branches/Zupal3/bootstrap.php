@@ -7,7 +7,7 @@ set_include_path(get_include_path() . P . ZF_PATH . P . ZUPAL_ROOT);
 
 require_once 'Zend/Loader/Autoloader.php';
 
-error_log('Include == ' . get_include_path());
+//error_log('Include == ' . get_include_path());
 
 Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 

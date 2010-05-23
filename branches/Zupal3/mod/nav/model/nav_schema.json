@@ -4,7 +4,7 @@
         "required": true,
         "key" : true
     },
-    "title" : {
+    "label" : {
         "type" : "string",
         "required": true
     },
@@ -16,7 +16,7 @@
     },
     "arguments": {
         "type": "string",
-        "required": true
+        "required": false
     },
     "event" : {
         "type" : "string",
@@ -27,7 +27,8 @@
         "default": []
     },
     "description": {
-        "type": "text"
+        "type": "text",
+        "required": false
     },
     "parent" : {
         "type" : "string",
@@ -40,7 +41,7 @@
     },
     "menu": {
         "type": "string",
-        "required" : "false"
+        "required" : false
     },
     "weight" : {
         "type": "int",

@@ -203,6 +203,11 @@ Zupal_Model_Container_IF {
     }
 
     public function find_and_delete($pWhat) {
+        if ($pWhat instanceof Zupal_Model_Query_IF) {
+            $pQuery = $pWhat;
+        } else {
+            $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
+        }
 
         foreach($this->find($pQuery) as $domain) {
             $domain->delete();

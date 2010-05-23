@@ -120,7 +120,7 @@ implements Zupal_Model_Container_IF {
 
         $out = array();
         foreach($cursor as $data) {
-            $out[] = new Zupal_Model_Data_Mongo($data);
+            $out[] = $this->new_data($data);
         }
 
         return $out;
@@ -135,7 +135,7 @@ implements Zupal_Model_Container_IF {
 
         $data = $this->coll()->findOne($pQuery->toArray());
         if ($data) {
-            return new Zupal_Model_Data_Mongo($data);
+            return $this->new_data($data);
         } else {
             return NULL;
         }
@@ -180,7 +180,7 @@ implements Zupal_Model_Container_IF {
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
-        $q = array('_id' => $pData->key());
+        $q = array('_id' => new MongoId($pData->key()));
         $this->coll()->remove($q);
     }
 
@@ -204,12 +204,9 @@ implements Zupal_Model_Container_IF {
             }
         }
         
-        if (property_exists($pData, '__id') && is_object($pData->__id)){
-            $array['_id'] = $pData ->__id;
+        if (array_key_exists('_id', $array)){
+            $array['_id'] = new MongoId($array['_id']);
             $result = $this->coll()->save($array);
-        } elseif (array_key_exists('_id', $array) && $array['_id']) {
-            $crit = array('_id' => $array['_id']);
-            $result = $this->coll()->update($crit, $array);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
         } else {
             $result = $this->coll()->insert($array);

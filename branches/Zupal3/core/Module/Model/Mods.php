@@ -102,7 +102,6 @@ extends Zupal_Model_Domain_Abstract {
         }
         require $boot_path;
 
-        call_user_func($this->name . '_init');
     }
 
     /* @@@@@@@@@@@@@@@@@ NEW DATA @@@@@@@@@@@@@@@@@@@@@@ */
