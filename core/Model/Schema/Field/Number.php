@@ -51,5 +51,12 @@ extends Zupal_Model_Schema_Field {
     public function clean_value($value) {
         return is_numeric($value) ? $value : 0;
     }
+
+    /**
+     * the default value of a field. can be of any type.
+     */
+    public function get_default() {
+        return 0;
+    }
 }
 

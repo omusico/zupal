@@ -143,6 +143,15 @@ Zupal_Model_Container_IF {
         throw new Exception(__METHOD__ . ": not implemented");
     }
 
+    public function insure_defaults(){
+
+        foreach($this->schema()->defaults() as $field => $value){
+            if (!isset($this->_record[$field])){
+                $this->_record[$field] = $value;
+            }
+        }
+    }
+
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
         global $event_manager;

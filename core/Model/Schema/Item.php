@@ -46,7 +46,7 @@ implements Zupal_Model_Schema_IF {
                 $item['type'] = 'int';
                 return new Zupal_Model_Schema_Field_Int($item);
                 break;
-            
+
             case 'float':
             case 'number':
             case 'numeric':
@@ -54,7 +54,7 @@ implements Zupal_Model_Schema_IF {
                 $item['type'] = 'float';
                 return new Zupal_Model_Schema_Field_Number($item);
                 break;
-            
+
             case 'date':
             case 'datetime':
                 $item['type'] = 'date';
@@ -63,8 +63,8 @@ implements Zupal_Model_Schema_IF {
 
             case 'array':
                 return new Zupal_Model_Schema_Field_Array($item);
-            break;
-        
+                break;
+
             case 'str':
             case 'txt':
             case 'text':
@@ -100,13 +100,12 @@ implements Zupal_Model_Schema_IF {
         return $pAsObject ? $this->_key_obj : $this->_key_obj->name();
     }
 
+    private $_defaults;
     public function defaults() {
         $out = array();
 
         foreach($this as $field => $def) {
-            if ($def['default']) {
-                $out[$field] = $def['default'];
-            }
+            $out[$field] = $def->get_default();
         }
 
         return $out;
@@ -129,9 +128,9 @@ implements Zupal_Model_Schema_IF {
         return count($out) ? $out : TRUE;
     }
 
-    public static function make_from_json($pPath){
+    public static function make_from_json($pPath) {
 
-        if (!file_exists($pPath)){
+        if (!file_exists($pPath)) {
             throw new Exception(__METHOD__ . ": no file at $pPath");
         }
 

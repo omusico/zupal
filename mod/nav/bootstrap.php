@@ -1,26 +1,16 @@
 <?php
 
-function nav_init() {
-    $mod_paths = Zupal_Module_Path::instance();
+$mod_paths = Zupal_Module_Path::instance();
 
-    $config = array(
-                    'basePath'  => $mod_paths['nav'],
-                    'namespace' => 'Nav',
-    );
+$config = array(
+        'basePath'  => $mod_paths['nav'],
+        'namespace' => 'Nav',
+);
 
-    $resourceLoader = new Zend_Loader_Autoloader_Resource($config);
+$resourceLoader = new Zend_Loader_Autoloader_Resource($config);
 
-    $resourceLoader->addResourceType('model', 'model/', 'Model');
-    $resourceLoader->addResourceType('view',  'view/',  'View');
+$resourceLoader->addResourceType('model', 'model/', 'Model');
+$resourceLoader->addResourceType('view',  'view/',  'View');
 
-    $nav = Nav_Model_Nav::instance();
-    $crit = array('name' => 'home');
-}
-
-function nav_register() {
-
-}
-
-function nav_unregister() {
-
-}
+$nav = Nav_Model_Nav::instance();
+$crit = array('name' => 'home');

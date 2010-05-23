@@ -11,8 +11,6 @@ extends Zupal_Model_Domain_Abstract {
     private static $_container;
     protected function container() {
         if (!self::$_container) {
-
-            $mod_paths = Zupal_Module_Path::instance();
             self::$_container = new Zupal_Model_Container_Mongo('zupal', 'modules', array('schema' => $this->schema()));
         }
         return self::$_container;
@@ -30,6 +28,8 @@ extends Zupal_Model_Domain_Abstract {
             if (!$mod) {
                 $mod = $this->new_data($crit);
                 $mod->save();
+            } else {
+                $mod->insure_defaults();
             }
             $this->_mods[$pName] = $mod;
         }
@@ -94,7 +94,14 @@ extends Zupal_Model_Domain_Abstract {
     /* @@@@@@@@@@@@@@@@@ NEW DATA @@@@@@@@@@@@@@@@@@@@@@ */
 
     public function new_data($pData) {
-        return new self($pData);
+        if (is_array($pData)) {
+            $pData = array_merge($this->schema()->defaults(), $pData);
+            $out = new self($pData);
+        } else {
+            $out = new self($pData);
+            $out->insure_defaults();
+        }
+        return $out;
     }
 
     /* @@@@@@@@@@@@@@@@@ INSTANCE @@@@@@@@@@@@@@@@@@@@@@ */
@@ -112,6 +119,10 @@ extends Zupal_Model_Domain_Abstract {
     }
 
     private $_schema;
+    /**
+     *
+     * @return Zupal_Model_Schema_IF
+     */
     public function schema() {
         if (!$this->_schema) {
             $path = dirname(__FILE__) . D . 'module_schema.json';
