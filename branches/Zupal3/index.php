@@ -3,14 +3,14 @@
 define('ZF_PATH', '/Applications/Zend/library');
 
 include_once('bootstrap.php');
-
+$muri = '';
 ?>
 <html>
     <head>
         <style>
             #nav {
                 background-color: #CCFFCC;
-}
+            }
         </style>
     </head>
 
@@ -22,7 +22,7 @@ include_once('bootstrap.php');
                 </td>
                 <td>
                     <h1>Zupal 3 - in 3D!</h1>
-
+                    <p><?= $muri ?></p>
                 </td>
             </tr>
         </table>

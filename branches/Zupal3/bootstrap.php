@@ -23,3 +23,7 @@ $resourceLoader->addResourceType('view',  'View/',  'View');
 $resourceLoader->addResourceType('module',  'Module/',  'Module');
 
 require ZUPAL_ROOT . D . 'mod' . D . 'bootstrap.php';
+
+if (array_key_exists('muri', $_REQUEST)){
+    $muri = $_REQUEST['muri'];
+}
