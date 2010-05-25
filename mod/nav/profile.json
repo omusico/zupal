@@ -2,5 +2,6 @@
     "name": "Navigation",
     "description" : "A module for creating and maintaining navigation UI",
     "deps": [],
-    "version": [1,0,0]
+    "version": [1,0,0],
+    "package": "core"
 }

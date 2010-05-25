@@ -1,0 +1,7 @@
+{
+    "name": "Admin",
+    "description" : "A module for establishing control over modules, etc.",
+    "deps": ["nav"],
+    "version": [1,0,0],
+    "package": "core"
+}

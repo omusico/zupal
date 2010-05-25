@@ -171,8 +171,6 @@ Zupal_Model_Container_IF {
         return $this->new_data($pKey);
     }
 
-    //public abstract function new_data($pData);
-
     public function add($pData) {
         $d = $this->new_data($pData);
         $d->save();

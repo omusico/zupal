@@ -16,12 +16,16 @@ class Zupal_Event_Item {
     public $status;
 
     public $result;
+
+    public $responses;
+
     public function __construct($pName, $pTarget, $pParams) {
-        $this->name     = $pName;
-        $this->target   = $pTarget;
-        $this->params   = (array) $pParams;
-        $this->status   = self::STATUS_WORKING;
-        $this->result   = FALSE;
+        $this->name         = $pName;
+        $this->target       = $pTarget;
+        $this->params       = (array) $pParams;
+        $this->status       = self::STATUS_WORKING;
+        $this->result       = FALSE;
+        $this->responses    = 0;
     }
 
     public function target_type(){

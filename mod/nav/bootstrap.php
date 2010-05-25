@@ -26,15 +26,6 @@ if(!$nav_dom->has($crit)):
     $nav_dom->add($crit);
 endif;
 
-$crit = array('name' => 'admin');
-if (!$nav_dom->has($crit)){
-    $crit['menu'] = 'main';
-    $crit['module'] = 'nav';
-    $crit['uri'] = '/admin/';
-    $crit['label'] = 'Admin';
-    $crit['parent'] = 'home';
-    $crit['weight'] = -100;
-    $nav_dom->add($crit);
-}
+// $menus = $nav_dom->find(array('menu' => 'main'));
 
-$menus = $nav_dom->find(array('menu' => 'main'));
+Zupal_View_Page::instance()->getView()->placeholder('nav')->set(Nav_Model_Nav::instance()->render_menu('main'));

@@ -16,6 +16,14 @@ extends Zupal_Model_Domain_Abstract {
         return self::$_container;
     }
 
+    public function title() {
+        if ( $this->title) {
+            return $this->title;
+        } else {
+            return $this->label;
+        }
+    }
+
     /* @@@@@@@@@@@@@@@@@ MENU @@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
@@ -82,10 +90,81 @@ extends Zupal_Model_Domain_Abstract {
     </li>
             <? endforeach; ?>
 </ul>
-
-
         <?php
         return ob_get_clean();
+    }
+
+    public function path_to_nav($path) {
+
+        $crit = array('uri' => $path);
+        $nav_items = $this->find($crit);
+        $args = array();
+        if (!$nav_items) {
+            $parts = split(D, $path);
+            $args = array();
+
+            while(!$nav_items && count($parts)) {
+                $args[] = array_pop($parts);
+                $test = D . join(D, $parts);
+                $nav_items = $this->find($crit);
+            }
+        }
+        if ($nav_items && count($nav_items)) {
+            $nav_item = array_pop($nav_items);
+            return array('nav' => $nav_item, 'args' => $args);
+        } else {
+            return FALSE;
+        }
+
+    }
+
+    public function handle_event(Zupal_Event_Item $pEvent) {
+        switch ($pEvent->name) {
+            case 'page_load':
+                $this->_handle_page_load($pEvent);
+                break;
+        }
+    }
+
+    public function _handle_page_load(Zupal_Event_Item $pEvent) {
+
+        /* @var $nav_item Nav_Model_Nav */
+        $nav_item = $pEvent->target;
+        if (!$nav_item || (!($nav_item instanceof Nav_Model_Nav))) {
+            $pEvent->status = Zupal_Event_Item::STATUS_ERROR;
+            $pEvent->result = 'missing nav item in target';
+            return;
+        }
+
+        $page = Zupal_View_Page::instance();
+        $page->getView()->placeholder('nav')->set($this->render_menu('main'));
+        $page->getView()->placeholder('title')->set($nav_item->title());
+
+        if ($nav_item->breadcrumb) {
+            $page->getView()->placeholder('breadcrumb')->set($nav_item->breadcrumb);
+        }
+
+        $pEvent->responses++;
+
+        if ($nav_item->event) {
+            $event = Zupal_Event_Manager::instance()->handle($nav_item->event, $nav_item, $pEvent->params);
+            
+            switch($event->status) {
+
+                case Zupal_Event_Item::STATUS_DONE:
+                    $page->getView()->content = $event->result;
+                    break;
+
+                case Zupal_Event_Item::STATUS_WORKING:
+                    if ($event->responses > 0) {
+                        $page->getView()->content = $event->result;
+                    }
+                    break;
+
+                case Zupal_Event_Item::STATUS_ERROR:
+                    throw new Exception($event->result);
+            }
+        }
     }
 
 }
