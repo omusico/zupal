@@ -8,8 +8,8 @@ class Zupal_Event_Manager {
      */
     private $_route_source;
 
-    public function  __construct($pRoute_source) {
-        $this->_route_source = $pRoute_source;
+    public function  __construct() {
+        $this->_route_source = new Zupal_Event_Routes_Domain();
     }
 
     public function add_handler($pEvent,  $pHandler, $pTarget = 'any') {
@@ -63,5 +63,19 @@ class Zupal_Event_Manager {
         }
         
         return $event;
+    }
+
+    /* @@@@@@@@@@@@@@@@@ INSTANCE @@@@@@@@@@@@@@@@@@@@@@ */
+
+    private static $_instance;
+
+    /**
+     * @return Zupal_Event_Manager
+     */
+    public static function instance() {
+        if (!self::$_instance) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
     }
 }
