@@ -13,7 +13,7 @@ extends Zupal_Model_Domain_Abstract
     /**
      * @return Zupal_Model_Container_IF
      */
-    protected abstract function container(){
+    protected function container(){
         if (!$this->_container){
             $this->_container = new Zupal_Model_Container_Mongo('zupal', 'routes');
             // note -- no schema in place yet
@@ -27,6 +27,18 @@ extends Zupal_Model_Domain_Abstract
      */
     public function new_data($pData){
         return new self($pData);
+    }
+
+
+    private $_schema;
+    /**
+     * @return Zupal_Model_Schema_IF
+     */
+    public function schema(){
+        if (!$this->_schema){
+            $path = dirname(__FILE__) . D . 'schema.json';
+            $this->_schema = Zupal_Model_Schema_Item::make_from_json($path);
+        }
     }
 }
 

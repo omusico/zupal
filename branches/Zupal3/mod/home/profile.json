@@ -1,19 +1,13 @@
 {
-    "name": "Navigation",
-    "description" : "A module for creating and maintaining navigation UI",
-    "deps": [],
+    "name": "Home",
+    "description" : "A module for rendering the home page",
+    "deps": ["nav"],
     "version": [1,0,0],
     "package": "core",
 
-    "handlers": {
-        "route": {
-            "any": ["Nav_Handler_Route"]
-        }
-    },
-
     "resources":[
         {
-            "namespace": "Nav",
+            "namespace": "Home",
             "types": [
                 {
                     "name": "model",

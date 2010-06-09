@@ -3,5 +3,28 @@
     "description" : "A module for establishing control over modules, etc.",
     "deps": ["nav"],
     "version": [1,0,0],
-    "package": "core"
+    "package": "core",
+
+    "resources":[
+        {
+            "namespace": "Admin",
+            "types": [
+                {
+                    "name": "model",
+                    "dir": "model/",
+                    "class": "Model"
+                },
+                {
+                    "name": "view",
+                    "dir": "view/",
+                    "class": "View"
+                },
+                {
+                    "name": "handler",
+                    "dir": "handler/",
+                    "class": "Handler"
+                }
+            ]
+        }
+    ]
 }

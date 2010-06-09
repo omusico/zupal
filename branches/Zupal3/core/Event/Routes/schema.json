@@ -1,0 +1,18 @@
+{
+    "event": {
+        "type": "string",
+        "required": true
+    },
+    
+    "handler" : {
+        "type" : "string",
+        "required": true
+    },
+
+    "subject_type": {
+        "type": "string",
+        "length": 40,
+        "min": 3,
+        "required": true
+    }
+}
