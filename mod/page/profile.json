@@ -1,0 +1,51 @@
+{
+    "name": "Page",
+    "description" : "A module that encases content into an HTML page",
+    "deps": ["nav"],
+    "version": [1,0,0],
+    "package": "core",
+
+    "handlers": {
+        "layout": {
+            "any": ["Page_Hander_Layout"]
+        }
+    },
+
+    "resources":[
+        {
+            "namespace": "Page",
+            "types": [
+                {
+                    "name": "model",
+                    "dir": "Model/",
+                    "class": "Model"
+                },
+                {
+                    "name": "view",
+                    "dir": "View/",
+                    "class": "View"
+                },
+                {
+                    "name": "handler",
+                    "dir": "Handler/",
+                    "class": "Handler"
+                }
+            ]
+        }
+    ],
+
+    "settings": {
+        "layouts": {
+            "default": {
+                "name": "default",
+                "path" : "layouts/default",
+                "module": "page"
+            },
+            "home": {
+                "name": "home",
+                "path" : "layouts/default",
+                "module": "page"
+            }
+        }
+    }
+}

@@ -5,7 +5,8 @@
  * @author bingomanatee
  */
 class Nav_Model_Nav
-extends Zupal_Model_Domain_Abstract {
+extends Zupal_Model_Domain_Abstract
+implements Zupal_Event_HandlerIF {
 
     private static $_container;
     protected function container() {
@@ -118,54 +119,55 @@ extends Zupal_Model_Domain_Abstract {
 
     }
 
-    public function handle_event(Zupal_Event_Item $pEvent) {
-        switch ($pEvent->name) {
-            case 'page_load':
-                $this->_handle_page_load($pEvent);
+    public function respond(Zupal_Event_EventIF $pEvent) {
+        switch ($pEvent->get_action()) {
+            case 'page':
+           //     $this->_handle_page($pEvent);
                 break;
         }
     }
 
-    public function _handle_page_load(Zupal_Event_Item $pEvent) {
+    public function _handle_page(Zupal_Event_Item $pEvent) {
 
-        /* @var $nav_item Nav_Model_Nav */
-        $nav_item = $pEvent->target;
-        if (!$nav_item || (!($nav_item instanceof Nav_Model_Nav))) {
-            $pEvent->status = Zupal_Event_Item::STATUS_ERROR;
-            $pEvent->result = 'missing nav item in target';
-            return;
-        }
+        switch ($pPhase) {
+            case Zupal_Event_HandlerIF::PHASE_PRE:
 
-        $page = Zupal_View_Page::instance();
-        $page->getView()->placeholder('nav')->set($this->render_menu('main'));
-        $page->getView()->placeholder('title')->set($nav_item->title());
+                $pEvent->args()->offsetSet('main_menu', $this->render_menu('main'));
+                $pEvent->args()->offsetSet('title', $nav_item->title());
 
-        if ($nav_item->breadcrumb) {
-            $page->getView()->placeholder('breadcrumb')->set($nav_item->breadcrumb);
-        }
+                if ($nav_item->breadcrumb) {
+                    $pEvent->args()->offsetSet('breadcrumb', $nav_item->breadcrumb);
+                }
 
-        $pEvent->responses++;
+                if ($nav_item->content_handler) {
 
-        if ($nav_item->event) {
-            $event = Zupal_Event_Manager::instance()->handle($nav_item->event, $nav_item, $pEvent->params);
-            
-            switch($event->status) {
+                    $class = $nav_item->content_handler;
 
-                case Zupal_Event_Item::STATUS_DONE:
-                    $page->getView()->content = $event->result;
-                    break;
+                    $ch = new $class();
+                    
+                    $em = Zupal_Event_Manager::instance();
 
-                case Zupal_Event_Item::STATUS_WORKING:
-                    if ($event->responses > 0) {
-                        $page->getView()->content = $event->result;
+                    $params = array(
+                            'subject' => $ch,
+                            'nav' => $nav_item
+                    );
+
+                    $e = $em->handle('render', $params);
+
+                    if ($e->get_status() == Zupal_Event_EventIF::STATUS_ERROR) {
+                        $pEvent->set_result("Error rendering content with $class: " . $e->get_result());
+                        $pEvent->set_status(Zupal_Event_EventIF::STATUS_ERROR);
+                    } else {
+                        $pEvent->args()->offsetSet('content', $e->get_result());
                     }
-                    break;
+                } else {
+                    $pEvent->set_status(Zupal_Event_EventIF::STATUS_ERROR);
+                    $pEvent->set_response('no nav event');
+                }
 
-                case Zupal_Event_Item::STATUS_ERROR:
-                    throw new Exception($event->result);
-            }
+                break;
+
         }
     }
-
 }
 

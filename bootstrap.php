@@ -3,6 +3,8 @@ define('D', DIRECTORY_SEPARATOR);
 define('P', PATH_SEPARATOR);
 
 define('ZUPAL_ROOT', dirname(__FILE__));
+define('ZUPAL_MODULES', ZUPAL_ROOT . D . 'mod');
+
 set_include_path(get_include_path() . P . ZF_PATH . P . ZUPAL_ROOT);
 
 require_once 'Zend/Loader/Autoloader.php';

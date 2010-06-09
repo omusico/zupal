@@ -4,25 +4,25 @@ define('ZF_PATH', '/Applications/Zend/library');
 
 include_once('bootstrap.php');
 
-if ($nav_module = Zupal_Module_Model_Mods::instance()->mod('nav')) {
-    $nav_dom = Nav_Model_Nav::instance();
+$em = Zupal_Event_Manager::instance();
 
-    if ($_SERVER['muri']) {
+try {
+
+    if (array_key_exists('muri', $_SERVER)) {
         $path = $_SERVER['muri'];
     } else {
         $path = '/';
     }
-
-    $nav = FALSE;
-    $args = array();
-    $page = $nav_dom->path_to_nav($path);
-    extract($page);
-
-    if ($nav){
-        $event = Zupal_Event_Manager::instance()->handle('page_load', $page, $args);
+    $p = array('path' => $path);
+    $route_event = $em->manage('route', $p);
+    if ($route_event->get_status() == Zupal_Event_EventIF::STATUS_ERROR){
+        throw new Exception($route_event->get_result());
     }
+    echo $route_event->get_result();
+    
+} catch (Exception $ex) {
+    $err_event = $em->handle('error', NULL, array('message' => 'Cannot find page', 'path' => $path));
 }
 
-$l = Zupal_View_Page::instance();
 
-echo $l->render();
+

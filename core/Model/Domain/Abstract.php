@@ -9,7 +9,10 @@
  */
 abstract class Zupal_Model_Domain_Abstract
 implements Zupal_Model_Data_IF,
-Zupal_Model_Container_IF {
+Zupal_Model_Container_IF,
+Zupal_Event_HandlerIF
+
+                {
     const LOAD_NEW = 'new';
     /**
      *
@@ -48,7 +51,7 @@ Zupal_Model_Container_IF {
             } else {
                 $this->_record = $this->container()->get($pKey);
             }
-            $event_manager->handle('load', $this);
+            $event_manager->manage('load', array('subject' => $this) );
         }
 
     }
@@ -66,7 +69,7 @@ Zupal_Model_Container_IF {
         global $event_manager;
 
         $this->_record->delete();
-        $event_manager->handle('delete', $this);
+        $event_manager->manage('deleted', array('subject' => $this));
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
@@ -154,10 +157,9 @@ Zupal_Model_Container_IF {
 
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
-        global $event_manager;
         $this->container()->save_data($this->_record);
-
-        $event_manager->handle('save', $this);
+        $em = Zupal_Event_Manager::instance();
+        $em->manage('update', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
@@ -221,4 +223,10 @@ Zupal_Model_Container_IF {
         throw new Exception(__METHOD__ . ': not relevant for Domains');
     }
 
+    /* @@@@@@@@@@@@@@@@@@@@ handler IF @@@@@@@@@@@@@@@@@@@ */
+
+
+    public function respond(Zupal_Event_EventIF $pEvent){
+        // does no action -- override for custom responsiveness
+    }
 }

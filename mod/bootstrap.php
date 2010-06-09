@@ -7,7 +7,7 @@ global $event_manager, $event_manager_container;
 $event_manager_container = new Zupal_Model_Container_Mongo('zupal', 'event');
 $event_manager  = new Zupal_Event_Manager($event_manager_container);
 
-$mod_dom = Zupal_Module_Model_Mods::instance();
+$loader = new Zupal_Module_Loader();
 
 $di = new DirectoryIterator(dirname(__FILE__));
 foreach($di as $d) {
@@ -23,5 +23,5 @@ foreach($di as $d) {
 
     $mod_name = basename($mod_path);
 
-    $mod_dom->mod_load($mod_name, $mod_path);
+    $loader->mod_load($mod_name, $mod_path);
 }

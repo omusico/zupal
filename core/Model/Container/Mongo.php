@@ -199,6 +199,11 @@ implements Zupal_Model_Container_IF {
 
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);
+            foreach($array as $k => $v){
+                if (is_null($v)){
+                    $array[$k] = '';
+                }
+            }
             if ($valid !== TRUE) {
                 throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invald data:', $valid);
             }

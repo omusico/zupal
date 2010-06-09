@@ -27,6 +27,19 @@ extends Zupal_Model_Domain_Abstract {
             $mod = $this->find_one($crit);
             if (!$mod) {
                 $mod = $this->new_data($crit);
+                $path = ZUPAL_MODULES . D . $pName;
+                $mod->path = $path;
+                $p_path = $path . D . 'profile.json';
+                if(!file_exists($p_path)) {
+                    throw new Exception(__METHOD__ . ": module $pName has no profile at $p_path");
+                }
+                $profile =  Zend_Json::decode(file_get_contents($p_path));
+                $mod->profile = $profile;
+
+                if (array_key_exists('settings', $profile) && !property_exists($mod, 'settings')) {
+                    $mod->settings = $profile['settings'];
+                }
+
                 $mod->save();
             } else {
                 $mod->insure_defaults();
@@ -46,62 +59,13 @@ extends Zupal_Model_Domain_Abstract {
      *
      * @return string
      */
-    public function file(){
+    public function file() {
         $path = func_get_args();
         $mod_name = array_shift($path);
         $mod = $this->mod($mod_name);
         $root = $mod->path;
 
         return $root . D . join(D, $path);
-    }
-
-    public function profile() {
-        if (!$this->profile) {
-            $mod_json_path = $this->path . D . 'profile.json';
-            $this->profile = Zend_Json::decode(file_get_contents($mod_json_path));
-            $this->save();
-        }
-        return $this->profile;
-    }
-
-    /* @@@@@@@@@@@@@@@@@@@@@ MOD LOAD @@@@@@@@@@@@@@@@@@ */
-
-
-    function mod_load($mod_name, $path = NULL) {
-
-        $mod = $this->mod($mod_name);
-        if ($path && !$mod->path) {
-            $mod->path = $path;
-            $mod->save();
-        }
-
-        if (!$mod->active) {
-            //   return;
-        }
-
-        $mod->_load_deps();
-
-        $mod->_boot();
-    }
-
-    protected function _load_deps() {
-        $profile = $this->profile();
-
-        if (array_key_exists('deps', $profile)) {
-            foreach($profile['deps'] as $dep_mod) {
-                $this->mod_load($dep_mod);
-            }
-        }
-    }
-
-    protected function _boot() {
-
-        $boot_path = $this->path . D . 'bootstrap.php';
-        if (!file_exists($boot_path)) {
-            throw new Exception(__METHOD__ . ": cannot boot $boot_path");
-        }
-        require $boot_path;
-
     }
 
     /* @@@@@@@@@@@@@@@@@ NEW DATA @@@@@@@@@@@@@@@@@@@@@@ */

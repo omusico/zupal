@@ -44,13 +44,6 @@ interface Zupal_Model_Container_IF {
     function find_one($pQuery, $sort = NULL);
 
     /**
-     * gets (and/or sets) the schema for this container.
-     * @return Zupal_Model_Schema_Item
-    
-    function schema(Zupal_Model_Schema_IF $pSchema = NULL);
- */
-
-    /**
      * can be a scalar key to get, a query to find or an actual data item.
      * @param variant $pWhat
      * @return boolean
