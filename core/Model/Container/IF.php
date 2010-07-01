@@ -35,6 +35,14 @@ interface Zupal_Model_Container_IF {
     */
     function find($pQuery, $limit = NULL, $sort = NULL);
 
+   /**
+    * returns a series of Zupal_Model_Data_IF
+    * @param <type> $limit
+    * @param <type> $sort
+    * @return array
+    */
+    function find_all($limit = NULL, $sort = NULL);
+
     /**
      * returns a single record
      * @param <type> $pQuery

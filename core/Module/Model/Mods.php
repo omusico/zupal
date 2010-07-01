@@ -19,6 +19,29 @@ extends Zupal_Model_Domain_Abstract {
     /* @@@@@@@@@@@@@@@@ MOD @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_mods = array();
+
+    public function loaded($pName) {
+        $pName = strtolower(trim($pName));
+        return (array_key_exists($pName, $this->_mods));
+    }
+
+    public function profile_path($pName = NULL) {
+        if (!$pName) {
+            $pName = $this->name;
+        }
+        $path = $this->mod_path($pName);
+        $p_path = $path . D . 'profile.json';
+        return $p_path;
+    }
+
+    public function mod_path($pName){
+        return ZUPAL_MODULES . D . $pName;
+    }
+    /**
+     *
+     * @param string $pName
+     * @return Zupal_Module_Model_Mods
+     */
     public function mod($pName) {
         $pName = strtolower(trim($pName));
 
@@ -27,23 +50,27 @@ extends Zupal_Model_Domain_Abstract {
             $mod = $this->find_one($crit);
             if (!$mod) {
                 $mod = $this->new_data($crit);
-                $path = ZUPAL_MODULES . D . $pName;
+                $path = $this->mod_path($pName);
                 $mod->path = $path;
                 $p_path = $path . D . 'profile.json';
                 if(!file_exists($p_path)) {
                     throw new Exception(__METHOD__ . ": module $pName has no profile at $p_path");
                 }
-                $profile =  Zend_Json::decode(file_get_contents($p_path));
-                $mod->profile = $profile;
+                $json = file_get_contents($p_path);
+                $profile =  Zend_Json::decode($json);
+                if (!$profile) {
+                    throw new Exception(__METHOD__ . ': cannot read profile ' . $p_path);
+                }
+                $mod->profile = (array) $profile;
 
-                if (array_key_exists('settings', $profile) && !property_exists($mod, 'settings')) {
+                if (array_key_exists('settings', $mod->profile) && !property_exists($mod, 'settings')) {
                     $mod->settings = $profile['settings'];
                 }
 
                 $mod->save();
-            } else {
-                $mod->insure_defaults();
             }
+
+            Zupal_Module_Loader::instance()->load_deps($mod);
             $this->_mods[$pName] = $mod;
         }
 
@@ -68,7 +95,20 @@ extends Zupal_Model_Domain_Abstract {
         return $root . D . join(D, $path);
     }
 
-    /* @@@@@@@@@@@@@@@@@ NEW DATA @@@@@@@@@@@@@@@@@@@@@@ */
+    /* @@@@@@@@@@@@@@@@@ DOMAIN @@@@@@@@@@@@@@@@@@@@@@ */
+
+    private $_schema;
+    /**
+     *
+     * @return Zupal_Model_Schema_IF
+     */
+    public function schema() {
+        if (!$this->_schema) {
+            $path = dirname(__FILE__) . D . 'module_schema.json';
+            $this->_schema = Zupal_Model_Schema_Item::make_from_json($path);
+        }
+        return $this->_schema;
+    }
 
     public function new_data($pData) {
         if (is_array($pData)) {
@@ -95,16 +135,4 @@ extends Zupal_Model_Domain_Abstract {
         return self::$_instance;
     }
 
-    private $_schema;
-    /**
-     *
-     * @return Zupal_Model_Schema_IF
-     */
-    public function schema() {
-        if (!$this->_schema) {
-            $path = dirname(__FILE__) . D . 'module_schema.json';
-            $this->_schema = Zupal_Model_Schema_Item::make_from_json($path);
-        }
-        return $this->_schema;
-    }
 }
