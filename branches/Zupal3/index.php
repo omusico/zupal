@@ -21,7 +21,7 @@ try {
     echo $route_event->get_result();
     
 } catch (Exception $ex) {
-    $err_event = $em->handle('error', NULL, array('message' => 'Cannot find page', 'path' => $path));
+    $err_event = $em->manage('error', array('exception' =>  new Zupal_Event_Exception($ex->getMessage()), 'message' => 'Cannot find page', 'path' => $path));
 }
 
 

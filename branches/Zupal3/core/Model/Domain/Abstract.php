@@ -10,9 +10,7 @@
 abstract class Zupal_Model_Domain_Abstract
 implements Zupal_Model_Data_IF,
 Zupal_Model_Container_IF,
-Zupal_Event_HandlerIF
-
-                {
+Zupal_Event_HandlerIF {
     const LOAD_NEW = 'new';
     /**
      *
@@ -146,10 +144,10 @@ Zupal_Event_HandlerIF
         throw new Exception(__METHOD__ . ": not implemented");
     }
 
-    public function insure_defaults(){
+    public function insure_defaults() {
 
-        foreach($this->schema()->defaults() as $field => $value){
-            if (!isset($this->_record[$field])){
+        foreach($this->schema()->defaults() as $field => $value) {
+            if (!isset($this->_record[$field])) {
                 $this->_record[$field] = $value;
             }
         }
@@ -179,9 +177,21 @@ Zupal_Event_HandlerIF
         return $d;
     }
 
+    public function find_all($limit = NULL, $sort = NULL) {
+        $out = array();
+        
+        foreach($this->container()->find_all($limit, $sort) as $record) {
+            $out[] = $this->new_data($record);
+        }
+
+        return $out;
+    }
+
     public function find($pQuery, $limit = NULL, $sort = NULL) {
         $out = array();
-
+        if (empty($pQuery)){
+            $pQuery = NULL;
+        }
         foreach($this->container()->find($pQuery, $limit, $sort) as $record) {
             $out[] = $this->new_data($record);
         }
@@ -226,7 +236,7 @@ Zupal_Event_HandlerIF
     /* @@@@@@@@@@@@@@@@@@@@ handler IF @@@@@@@@@@@@@@@@@@@ */
 
 
-    public function respond(Zupal_Event_EventIF $pEvent){
+    public function respond(Zupal_Event_EventIF $pEvent) {
         // does no action -- override for custom responsiveness
     }
 }

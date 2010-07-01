@@ -5,12 +5,6 @@
     "version": [1,0,0],
     "package": "core",
 
-    "handlers": {
-        "layout": {
-            "any": ["Page_Hander_Layout"]
-        }
-    },
-
     "resources":[
         {
             "namespace": "Page",
@@ -34,18 +28,27 @@
         }
     ],
 
-    "settings": {
-        "layouts": {
-            "default": {
-                "name": "default",
-                "path" : "layouts/default",
-                "module": "page"
-            },
-            "home": {
-                "name": "home",
-                "path" : "layouts/default",
-                "module": "page"
-            }
+    "handlers":  {
+                "layout":
+                    {
+                        "any": ["Page_Handler_Layout"]
+                    }
+                },
+
+    "page_layouts" : [
+        {
+            "page": "home",
+            "style": "Zend_Layout",
+            "file": "layouts/home",
+            "mod": "page"
+        },
+
+        {
+            "page": "*",
+            "style": "Zend_layout",
+            "file": "layouts/default",
+            "mod": "page"
         }
-    }
+    ]
+    
 }

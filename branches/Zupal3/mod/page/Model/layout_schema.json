@@ -1,0 +1,21 @@
+{
+    "style": {
+        "type": "string",
+        "required": true,
+        "default": "Zend_Layout",
+        "key" : true
+    },
+    "pages" : {
+        "type" : "array",
+        "required": true
+    },
+    "file": {
+        "type": "string",
+        "required": true
+    },
+    "mod": {
+        "type": "string",
+        "required": true,
+        "default": "page"
+    }
+}

@@ -1,0 +1,15 @@
+#nav {
+    float: left;
+    width: 200px;
+    background-color: #CCC;
+    border: 1px solid #666;
+    padding: 1em;
+    margin-right: 1em;
+    
+}
+
+#content {
+    width: 800px;
+    float: left;
+    clear:right;
+}

@@ -20,24 +20,35 @@ class Zupal_Module_Loader {
 
     function mod_load($mod_name) {
         $ms = Zupal_Module_Model_Mods::instance();
+        if ($ms->loaded($mod_name)) {
+            return;
+        }
         $mod = $ms->mod($mod_name);
-        $this->load_deps($mod);
-
-        $em = Zupal_Event_Manager::instance();
-
-        /**
-         * Load Handlers
-         */
 
         if (array_key_exists('handlers', $mod->profile)) {
-            foreach($mod->profile['handlers'] as $action => $s_handlers) {
-                foreach ($s_handlers as $subject => $handlers) {
-                    foreach($handlers as $handler) {
-                        $em->add_handler($action, $handler, $subject);
-                    }
-                }
-            }
+            $this->_load_handlers($mod);
         }
+
+
+        if (array_key_exists('resources', $mod->profile)) {
+            $this->_load_resources($mod);
+        }
+        /**
+         * do any other custom actions required at boot by module
+         */
+
+        $boot_path = $mod->path . D . 'bootstrap.php';
+        if (file_exists($boot_path)) {
+            require $boot_path;
+        }
+
+        if (!$mod->init) {
+            $mod->init = 1;
+            $mod->save();
+        }
+    }
+
+    private function _load_resources(Zupal_Module_Model_Mods $mod) {
 
         /**
          * define class paths
@@ -61,16 +72,39 @@ class Zupal_Module_Loader {
                 }
             }
         }
+    }
+
+    private function _load_handlers(Zupal_Module_Model_Mods $mod) {
+
+        $em = Zupal_Event_Manager::instance();
 
         /**
-         * do any other custom actions required at boot by module
+         * Load Handlers
          */
 
-        $boot_path = $mod->path . D . 'bootstrap.php';
-        if (file_exists($boot_path)) {
-            require $boot_path;
+        if (array_key_exists('handlers', $mod->profile)) {
+            foreach($mod->profile['handlers'] as $action => $s_handlers) {
+                foreach ($s_handlers as $subject => $handlers) {
+                    foreach($handlers as $handler) {
+                        $em->add_handler($action, $handler, $subject);
+                    }
+                }
+            }
         }
     }
 
+    /* @@@@@@@@@@@@@@@@@ INSTANCE @@@@@@@@@@@@@@@@@@@@@@ */
+
+    private static $_instance;
+
+    /**
+     * @return Zupal_Module_Loader
+     */
+    public static function instance() {
+        if (!self::$_instance) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 
 }

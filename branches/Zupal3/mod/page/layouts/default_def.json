@@ -1,0 +1,8 @@
+{
+    "page_vars": [
+        "title",
+        "content",
+        "main_menu",
+        {"name": "menu", "action": "menu", "args": {"section": "main"}, "default": "No Menu"}
+    ]
+}

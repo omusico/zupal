@@ -108,32 +108,78 @@ implements Zupal_Model_Container_IF {
         return $data;
     }
 
+    /**
+     *
+     * @param <type> $pWhat
+     * @param <type> $limit
+     * @param <type> $sort
+     * @return array
+     */
     function find($pWhat, $limit = NULL, $sort = NULL) {
         if ($pWhat instanceof Zupal_Model_Query_IF) {
             $pQuery = $pWhat;
-        } else {
+        } elseif ($pWhat) {
             $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
 
+        } else {
+            $pQuery = NULL;
         }
 
-        $cursor = $this->coll()->find($pQuery->toArray());
+        if ($pQuery) {
+            $cursor = $this->coll()->find($pQuery->toArray());
+        } else {
+            $cursor = $this->coll()->find();
+        }
+
+        return $this->_process_cursor($cursor, $limit, $sort);
+    }
+
+    /**
+     *
+     * @param MongoCursor $cursor
+     * @param int  $limit
+     * @param string | array $sort
+     * @return array
+     */
+
+    private function _process_cursor(MongoCursor $cursor, $limit = NULL, $sort = NULL) {
+
+        if ($sort) {
+            if (is_string($sort)) {
+                $sort = array($sort => 1);
+            }
+            $cursor->sort($sort);
+        }
 
         $out = array();
-        foreach($cursor as $data) {
-            $out[] = $this->new_data($data);
+
+        if ($cursor) {
+            $count = 0;
+            foreach($cursor as $data) {
+                $out[] = $this->new_data($data);
+                if ($limit && (++$count > $limit)) {
+                    break;
+                }
+            }
         }
 
         return $out;
     }
 
-    public function find_one($pWhat, $sort = NULL) {
-        if ($pWhat instanceof Zupal_Model_Query_IF) {
-            $pQuery = $pWhat;
-        } else {
-            $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
-        }
+    /**
+     *
+     * @param string $limit
+     * @param string | array $sort
+     * @return array
+     */
+    function find_all($limit = NULL, $sort = NULL) {
+        $cursor = $this->coll()->find(array());
+        return $this->_process_cursor($cursor, $limit, $sort);
+    }
 
-        $data = $this->coll()->findOne($pQuery->toArray());
+    public function find_one($pWhat, $sort = NULL) {
+        $pWhat = (array) $pWhat;
+        $data = $this->coll()->findOne($pWhat);
         if ($data) {
             return $this->new_data($data);
         } else {
@@ -199,8 +245,8 @@ implements Zupal_Model_Container_IF {
 
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);
-            foreach($array as $k => $v){
-                if (is_null($v)){
+            foreach($array as $k => $v) {
+                if (is_null($v)) {
                     $array[$k] = '';
                 }
             }
@@ -208,8 +254,8 @@ implements Zupal_Model_Container_IF {
                 throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invald data:', $valid);
             }
         }
-        
-        if (array_key_exists('_id', $array)){
+
+        if (array_key_exists('_id', $array)) {
             $array['_id'] = new MongoId($array['_id']);
             $result = $this->coll()->save($array);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
