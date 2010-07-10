@@ -12,7 +12,7 @@
     </head>
     <body>
         <?php echo $this->render('header.phtml') ?>
-        <div id="nav"><?php echo $this->menu_main ?></div>
+        <div id="nav"><?php echo $this->navigation()->menu($this->menu_main) ?></div>
         <div id="content"><?php echo $this->content ?></div>
         <br clear="all" />
         <?php echo $this->render('footer.phtml') ?>

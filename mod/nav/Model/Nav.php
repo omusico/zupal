@@ -5,8 +5,7 @@
  * @author bingomanatee
  */
 class Nav_Model_Nav
-extends Zupal_Model_Domain_Abstract
-implements Zupal_Event_HandlerIF {
+extends Zupal_Model_Domain_Abstract {
 
     /* @@@@@@@@@@@@@@@@@ DOMAIN INTERFACE METHODS @@@@@@@@@@@@@@@@@@@@@ */
     private static $_container;
@@ -32,16 +31,6 @@ implements Zupal_Event_HandlerIF {
         return $this->_schema;
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@@@@ EVENT HANDLER METHODS @@@@@@@@@@@@@@@@@@@ */
-
-    public function respond(Zupal_Event_EventIF $pEvent) {
-        switch ($pEvent->get_action()) {
-            case 'page':
-           //     $this->_handle_page($pEvent);
-                break;
-        }
-    }
-
     /* @@@@@@@@@@@@@@@@@@@@@@ CLASS SPECIFIC METHODS @@@@@@@@@@@@@@@@@@@ */
 
 
@@ -53,24 +42,6 @@ implements Zupal_Event_HandlerIF {
         }
     }
 
-    function render_menu($pMenu, $pParent = 'root') {
-        ob_start();
-        ?>
-<ul class="menu">
-            <? foreach($this->menu($pMenu, $pParent) as $item):
-                $parent_crit = array('menu' => $pMenu, 'parent' => $item->name);
-                ?>
-    <li>
-        <a href="<?= $item->uri ?>"><?= $item->label ?></a>
-                    <? if ($this->container()->has($parent_crit)): ?>
-                        <?= $this->render_menu($pMenu, $item->name) ?>
-                    <? endif; ?>
-    </li>
-            <? endforeach; ?>
-</ul>
-        <?php
-        return ob_get_clean();
-    }
 
     public function path_to_nav($path) {
 
@@ -96,49 +67,6 @@ implements Zupal_Event_HandlerIF {
 
     }
 
-    public function _handle_page(Zupal_Event_Item $pEvent) {
-
-        switch ($pPhase) {
-            case Zupal_Event_HandlerIF::PHASE_PRE:
-
-                $pEvent->args()->offsetSet('main_menu', $this->render_menu('main'));
-                $pEvent->args()->offsetSet('title', $nav_item->title());
-
-                if ($nav_item->breadcrumb) {
-                    $pEvent->args()->offsetSet('breadcrumb', $nav_item->breadcrumb);
-                }
-
-                if ($nav_item->content_handler) {
-
-                    $class = $nav_item->content_handler;
-
-                    $ch = new $class();
-                    
-                    $em = Zupal_Event_Manager::instance();
-
-                    $params = array(
-                            'subject' => $ch,
-                            'nav' => $nav_item
-                    );
-
-                    $e = $em->handle('render', $params);
-
-                    if ($e->get_status() == Zupal_Event_EventIF::STATUS_ERROR) {
-                        $pEvent->set_result("Error rendering content with $class: " . $e->get_result());
-                        $pEvent->set_status(Zupal_Event_EventIF::STATUS_ERROR);
-                    } else {
-                        $pEvent->args()->offsetSet('content', $e->get_result());
-                    }
-                } else {
-                    $pEvent->set_status(Zupal_Event_EventIF::STATUS_ERROR);
-                    $pEvent->set_response('no nav event');
-                }
-
-                break;
-
-        }
-    }
-
     /* @@@@@@@@@@@@@@@@@ MENU @@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
@@ -156,7 +84,8 @@ implements Zupal_Event_HandlerIF {
             $options = $menu_data->toArray();
             $options['type'] = 'uri';
             unset($options['parent']);
-            $out[] = new Zend_Navigation_Page_Uri($options);
+            $options['pages'] = $this->menu($pMenu, $menu_data->name);
+            $out[] = $options;
         }
 
         return $out;

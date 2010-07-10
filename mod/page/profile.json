@@ -28,12 +28,11 @@
         }
     ],
 
-    "handlers":  {
-                "layout":
+    "handlers":  [
                     {
-                        "any": ["Page_Handler_Layout"]
+                        "action": "layout", "handler": "Page_Handler_Layout", "weight": 0
                     }
-                },
+            ],
 
     "page_layouts" : [
         {

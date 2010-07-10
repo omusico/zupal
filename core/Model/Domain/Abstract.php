@@ -35,7 +35,6 @@ Zupal_Event_HandlerIF {
      */
     public function load($pKey) {
         /* @var $event_manager Zupal_Event_Manager */
-        global $event_manager;
 
         if (!empty($pKey)) {
             if ($pKey == self::LOAD_NEW) {
@@ -49,7 +48,7 @@ Zupal_Event_HandlerIF {
             } else {
                 $this->_record = $this->container()->get($pKey);
             }
-            $event_manager->manage('load', array('subject' => $this) );
+            Zupal_Event_Manager::event('load', array('subject' => $this) );
         }
 
     }
@@ -63,11 +62,8 @@ Zupal_Event_HandlerIF {
     }
 
     public function delete() {
-        /* @var $event_manager Zupal_Event_Manager */
-        global $event_manager;
-
         $this->_record->delete();
-        $event_manager->manage('deleted', array('subject' => $this));
+        Zupal_Event_Manager::event('deleted', array('subject' => $this));
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
@@ -156,8 +152,7 @@ Zupal_Event_HandlerIF {
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
         $this->container()->save_data($this->_record);
-        $em = Zupal_Event_Manager::instance();
-        $em->manage('update', array('subject' => $this));
+        Zupal_Event_Manager::event('update', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */

@@ -27,15 +27,18 @@
             ]
         }
     ],
-    "home_menu" : {
-        "menu": "main",
-        "module": "home",
-        "uri": "/",
-        "label": "Home",
-        "parent": "root",
-        "weight": -100,
-        "action": "homepage",
-        "subject": "Home_Handler_Homepage"
+    "nav": [
+            {
+                "menu": "main",
+                "name": "home",
+                "module": "home",
+                "uri": "/",
+                "label": "Home",
+                "parent": "root",
+                "weight": -100,
+                "action": "homepage",
+                "subject": "Home_Handler_Homepage"
 
-    }
+            }
+        ]
 }
