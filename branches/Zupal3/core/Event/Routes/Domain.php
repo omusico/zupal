@@ -40,5 +40,19 @@ extends Zupal_Model_Domain_Abstract
             $this->_schema = Zupal_Model_Schema_Item::make_from_json($path);
         }
     }
+
+    /* @@@@@@@@@@@@@@@@@ INSTANCE @@@@@@@@@@@@@@@@@@@@@@ */
+
+    private static $_instance;
+
+    /**
+     * @return Zupal_Event_Routes_Domain
+     */
+    public static function instance() {
+        if (!self::$_instance) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 }
 

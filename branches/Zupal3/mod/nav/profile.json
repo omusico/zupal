@@ -5,14 +5,11 @@
     "version": [1,0,0],
     "package": "core",
 
-    "handlers": {
-        "route": {
-            "any": ["Nav_Handler_Route"]
-        },
-        "menu": {
-            "any": ["Nav_Handler_Menu"]
-        }
-    },
+    "handlers": [
+            {  "action": "load_nav",   "handler":   "Nav_Handler_Route" },
+           { "action":  "route", "handler": "Nav_Handler_Route", "weight": 0},
+           {"action": "menu", "handler": "Nav_Handler_Menu", "weight": 1000}
+        ],
 
     "resources":[
         {

@@ -5,6 +5,23 @@
     "version": [1,0,0],
     "package": "core",
 
+    "handlers":  [
+                    { "action" :   "page_content_admin", "handler": "Admin_View_Admin", "weight": 0 }
+        ],
+
+    "nav": [{
+            "menu": "main",
+            "name": "admin_menu",
+            "module": "admin",
+            "uri": "/admin",
+            "label": "Admin",
+            "parent": "home",
+            "weight": -100,
+            "action": "page_content_admin"
+
+        }
+    ],
+
     "resources":[
         {
             "namespace": "Admin",

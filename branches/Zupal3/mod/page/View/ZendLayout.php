@@ -18,8 +18,6 @@ implements Zupal_View_ViewIF {
         $layout_args['layoutPath']  =  $pData['layout_path'];
         $layout_args['layout']      = $pData['page'];
 
-        $em = Zupal_Event_Manager::instance();
-
         $layout = new Zend_layout($layout_args);
 
         if (array_key_exists('layoutPath', $layout_args)) {
@@ -36,7 +34,7 @@ implements Zupal_View_ViewIF {
                                 $args = array();
                             }
                             $args['page_data'] = $pData;
-                            $var_ev = $em->manage($var['action'], $args);
+                            $var_ev = Zupal_Event_Manager::event($var['action'], $args);
 
                             if ($var_ev->get_status() == Zupal_Event_EventIF::STATUS_DONE) {
                                 $layout->getView()->$name = $var_ev->get_result();

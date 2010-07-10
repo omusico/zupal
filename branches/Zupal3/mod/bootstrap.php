@@ -9,6 +9,7 @@ $event_manager  = new Zupal_Event_Manager($event_manager_container);
 
 $loader     = Zupal_Module_Loader::instance();
 $mod_stub   = Zupal_Module_Model_Mods::instance();
+$pForce     = (array_key_exists('remod', $_REQUEST) && $_REQUEST['remod']) ? TRUE : FALSE;
 
 $di = new DirectoryIterator(dirname(__FILE__));
 foreach($di as $d) {
@@ -22,5 +23,5 @@ foreach($di as $d) {
         continue;
     }
 
-    $loader->mod_load($mod_name);
+    $loader->mod_load($mod_name, $pForce);
 }

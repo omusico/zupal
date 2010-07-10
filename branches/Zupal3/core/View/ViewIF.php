@@ -8,6 +8,6 @@ interface Zupal_View_ViewIF {
     /**
      * @return string
      */
-    function render();
+    function render($pData);
 }
 

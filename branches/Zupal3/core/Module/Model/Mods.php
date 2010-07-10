@@ -42,12 +42,16 @@ extends Zupal_Model_Domain_Abstract {
      * @param string $pName
      * @return Zupal_Module_Model_Mods
      */
-    public function mod($pName) {
+    public function mod($pName, $pForce = FALSE) {
         $pName = strtolower(trim($pName));
 
         if(!array_key_exists($pName, $this->_mods)) {
             $crit = array('name' => $pName);
             $mod = $this->find_one($crit);
+            if ($pForce){
+                $mod->delete();
+                unset($mod);
+            }
             if (!$mod) {
                 $mod = $this->new_data($crit);
                 $path = $this->mod_path($pName);
