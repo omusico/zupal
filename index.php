@@ -4,7 +4,13 @@ define('ZF_PATH', '/Applications/Zend/library');
 
 include_once('bootstrap.php');
 
-include_once( ZUPAL_CORE . D . 'Event' . D . 'tests' . D . 'event_ordering.php');
+require_once(ZUPAL_ROOT . D . 'mod' . D . 'bootstrap.php');
+
+if (array_key_exists('muri', $_REQUEST)){
+    $muri = $_REQUEST['muri'];
+}
+
+include_once(ZUPAL_CORE . D . 'Event' . D . 'tests' . D . 'event_ordering.php');
 
 try {
 
