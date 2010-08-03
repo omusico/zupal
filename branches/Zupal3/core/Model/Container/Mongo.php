@@ -1,16 +1,16 @@
 <?php
 
-class Zupal_Model_Container_Mongo
-implements Zupal_Model_Container_IF {
+/**
+ * represents a Mongo collection
+ */
+class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
 
     private $_name;
-
     /**
      *
      * @var Zupal_Model_Schema_Item
      */
     private $_schema;
-
     /**
      *
      * @var Zupal_Model_Container_MongoDB
@@ -18,7 +18,7 @@ implements Zupal_Model_Container_IF {
     private $_parent;
 
     public function __construct($pParentDB, $pColl, array $pProps = array()) {
-        $this->_name =  $pColl;
+        $this->_name = $pColl;
 
         if (is_string($pParentDB)) {
             $pParentDB = Zupal_Model_Container_MongoDB::instance($pParentDB);
@@ -27,7 +27,7 @@ implements Zupal_Model_Container_IF {
 
         $this->_type = 'mongo';
 
-        foreach($pProps as $key => $value) {
+        foreach ($pProps as $key => $value) {
             $key = strtolower(trim($key));
 
             switch ($key) {
@@ -37,7 +37,6 @@ implements Zupal_Model_Container_IF {
 
                 case 'schema':
                     $this->schema($value);
-
             }
         }
 
@@ -75,14 +74,17 @@ implements Zupal_Model_Container_IF {
     /**
      * returns a single item via its key. unlike find, accepts only scalar data.
      */
-
     public function get($pKey) {
 
-        $q = array('_id' => $pKey);
+        $q = array('_id' => new MongoId($pKey));
 
         $data = $this->coll()->findOne($q);
 
-        return new Zupal_Model_Data_Mongo($data, $this);
+        if (empty($data)) {
+            throw new Exception(__METHOD__ . ': cannot find key ' . $pKey . ' in collection ' . $this->name());
+        } else {
+            return new Zupal_Model_Data_Mongo($data, $this);
+        }
     }
 
     public function new_data($pData) {
@@ -120,7 +122,6 @@ implements Zupal_Model_Container_IF {
             $pQuery = $pWhat;
         } elseif ($pWhat) {
             $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
-
         } else {
             $pQuery = NULL;
         }
@@ -141,7 +142,6 @@ implements Zupal_Model_Container_IF {
      * @param string | array $sort
      * @return array
      */
-
     private function _process_cursor(MongoCursor $cursor, $limit = NULL, $sort = NULL) {
 
         if ($sort) {
@@ -155,7 +155,7 @@ implements Zupal_Model_Container_IF {
 
         if ($cursor) {
             $count = 0;
-            foreach($cursor as $data) {
+            foreach ($cursor as $data) {
                 $out[] = $this->new_data($data);
                 if ($limit && (++$count > $limit)) {
                     break;
@@ -222,7 +222,6 @@ implements Zupal_Model_Container_IF {
     public function find_and_delete($pWhat) {
         $q = Zupal_Model_Query_Mongo::to_query($pWhat);
         $this->coll()->remove($q->toArray());
-
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
@@ -235,7 +234,7 @@ implements Zupal_Model_Container_IF {
      * @param Zupal_Model_Data_IF $pData
      */
     public function save_data(Zupal_Model_Data_IF $pData) {
-        if(is_array($pData)) {
+        if (is_array($pData)) {
             $array = $pData;
         } elseif (is_object($pData) && method_exists($pData, 'toArray')) {
             $array = $pData->toArray();
@@ -245,25 +244,25 @@ implements Zupal_Model_Container_IF {
 
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);
-            foreach($array as $k => $v) {
+            foreach ($array as $k => $v) {
                 if (is_null($v)) {
                     $array[$k] = '';
                 }
             }
             if ($valid !== TRUE) {
-                throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invald data:', $valid);
+                throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invalid data:', $valid);
             }
         }
 
-        if (array_key_exists('_id', $array)) {
-            $array['_id'] = new MongoId($array['_id']);
+        if (empty($array['_id'])) {
+            $array['_id'] = new MongoId();
             $result = $this->coll()->save($array);
+            $pData->set_key($array['_id']);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
         } else {
             $result = $this->coll()->insert($array);
             $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
-            $pData->set_key($array['_id']);
         }
-
     }
+
 }

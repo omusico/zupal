@@ -9,17 +9,12 @@
  * Because the fields are stored in an arrayObject, can be accessed
  * or iterated as an array.
  */
-
-class Zupal_Model_Schema_Item
-extends ArrayObject 
-implements Zupal_Model_Schema_IF {
-
-    private $_name;
+class Zupal_Model_Schema_Item extends ArrayObject implements Zupal_Model_Schema_IF {
 
     public function __construct($pFields = array()) {
         $pFields = (array) $pFields;
 
-        foreach($pFields as $name => $field) {
+        foreach ($pFields as $name => $field) {
             if (!is_numeric($name) && is_array($field) && !array_key_exists('name', $field)) {
                 $pFields[$name]['name'] = $name;
             }
@@ -39,7 +34,7 @@ implements Zupal_Model_Schema_IF {
     public function make_field($item) {
         $type = array_key_exists('type', $item) ? $item['type'] : 'string';
 
-        switch(strtolower($type)) {
+        switch (strtolower($type)) {
             case 'int':
             case 'integer':
             case 'whole':
@@ -65,6 +60,15 @@ implements Zupal_Model_Schema_IF {
                 return new Zupal_Model_Schema_Field_Array($item);
                 break;
 
+            case 'object':
+            case 'obj':
+                return new Zupal_Model_Schema_Field_Object($item);
+                break;
+
+            case 'class':
+                return new Zupal_Model_Schema_Field_Class($item);
+                break;
+
             case 'str':
             case 'txt':
             case 'text':
@@ -87,10 +91,11 @@ implements Zupal_Model_Schema_IF {
      * @var Zupal_Model_Schema_Field
      */
     private $_key_obj;
+
     public function key_field($pAsObject = FALSE) {
         if (is_null($this->_key_obj)) {
             $this->_key_obj = FALSE;
-            foreach($this as $field) {
+            foreach ($this as $field) {
                 if ($field->is_key()) {
                     $this->_key_obj = $field;
                     break;
@@ -102,13 +107,15 @@ implements Zupal_Model_Schema_IF {
 
     private $_defaults;
     public function defaults() {
-        $out = array();
+        if (!$this->_defaults) {
+            $this->_defaults = array();
 
-        foreach($this as $field => $def) {
-            $out[$field] = $def->get_default();
+            foreach ($this as $field => $def) {
+                $this->_defaults[$field] = $def->get_default();
+            }
         }
-
-        return $out;
+        
+        return $this->_defaults;
     }
 
     public function validate($pData) {
@@ -118,7 +125,7 @@ implements Zupal_Model_Schema_IF {
 
         $out = array();
 
-        foreach($this as $name => $field) {
+        foreach ($this as $name => $field) {
             $result = $field->validate($pData);
             if ($result !== TRUE) {
                 $out += $result;
@@ -138,4 +145,5 @@ implements Zupal_Model_Schema_IF {
         $data = Zend_Json::decode($json);
         return new self($data);
     }
+
 }

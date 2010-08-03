@@ -8,6 +8,7 @@ class Nav_Model_Nav
 extends Zupal_Model_Domain_Abstract {
 
     /* @@@@@@@@@@@@@@@@@ DOMAIN INTERFACE METHODS @@@@@@@@@@@@@@@@@@@@@ */
+    
     private static $_container;
     protected function container() {
         if (!self::$_container) {

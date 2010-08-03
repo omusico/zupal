@@ -16,9 +16,20 @@ extends Zupal_Model_Domain_Abstract {
         return self::$_container;
     }
 
-    /* @@@@@@@@@@@@@@@@ MOD @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+    /* @@@@@@@@@@@@@@@@@@@ HANDLER @@@@@@@@@@@@@@@@@@@@@ */
 
-    private $_mods = array();
+    private $_handler = NULL;
+    /**
+     *
+     * @return Module_Handler_Module
+     */
+    public function handler(){
+        if (!$this->_handler){
+            $hc = ucfirst($this->name) . '_Handler_Module';
+            $this->handler() = new $hc($this);
+        }
+        return $this->_handler;
+    }
 
     public function loaded($pName) {
         $pName = strtolower(trim($pName));
@@ -37,6 +48,11 @@ extends Zupal_Model_Domain_Abstract {
     public function mod_path($pName){
         return ZUPAL_MODULES . D . $pName;
     }
+
+    /* @@@@@@@@@@@@@@@@ MOD @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    //@TODO: convert to static ArrayObject
+    private $_mods = array();
     /**
      *
      * @param string $pName

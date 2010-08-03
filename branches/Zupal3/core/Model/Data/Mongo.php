@@ -7,13 +7,13 @@
  * @author bingomanatee
  */
 class Zupal_Model_Data_Mongo
-extends ArrayObject
-implements Zupal_Model_Data_IF {
+        extends ArrayObject
+        implements Zupal_Model_Data_IF {
 
     public $__id = NULL;
 
     public function __construct($array, $pContainer = NULL) {
-        if (array_key_exists('_id', $array) && is_object($array['_id'])){
+        if (array_key_exists('_id', $array) && is_object($array['_id'])) {
             $this->__id = $array['_id'];
             $array['_id'] = self::deser_id($array['_id']);
         }
@@ -25,6 +25,44 @@ implements Zupal_Model_Data_IF {
             }
         }
         parent::__construct($array);
+
+        $this->_init_values();
+    }
+
+    protected function _init_values() {
+        /* @var $schema Zupal_Model_Schema_IF */
+        $classes = array();
+        foreach ($this->container()->schema() as $schema) {
+            switch ($schema->type()) {
+                case 'class':
+                    $name = $schema->name();
+                    $c = $schema['class'];
+                    $d_value = empty($this[$name]) ? array() : (array) $this[$name];
+
+                    /* @var $c_obj Zupal_Model_Schema_Field_ObjIF */
+                    if ($schema->is_serial()) {
+                        // note in this case we are not sure the series is made of objs or not.
+                        foreach ($d_value as $i => $d_value_item) {
+                            if (is_array($d_value_item)) {
+                                $c_obj = new $c($this, $d_value_item, $name, $i);
+                                $classes[] = $c_obj;
+                                $d_value[$i] = $c_obj;
+                            }
+                        }
+                        $this[$name] = $d_value;
+                    } else {
+                        $c_obj = new $c($this, $d_value, $name);
+                        $classes[] = $c_obj;
+                        $this[$name] = $c_obj;
+                    }
+
+                    break;
+            }
+        }
+
+        foreach ($classes as $c) {
+            $c->init();
+        }
     }
 
     private $_status = Zupal_Model_Data_IF::STATUS_UNKNOWN;
@@ -44,13 +82,14 @@ implements Zupal_Model_Data_IF {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@ CONTAINER @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
     private $_container = NULL;
+
     /**
      * note -- to prevent circular logic, setting the container does not
      * actually add the data object to the container object.
      * it just registers the container inside the data object.
      *
-     * @param Zupal_Model_Container_Abstract $pContainer
-     * @return Zupal_Model_Container_Abstract
+     * @param Zupal_Model_Container_IF $pContainer
+     * @return Zupal_Model_Container_IF
      */
     public function container(Zupal_Model_Container_IF $pContainer = NULL) {
         if ($pContainer) {
@@ -113,8 +152,41 @@ implements Zupal_Model_Data_IF {
     }
 
     public function toArray() {
-        return $this->getArrayCopy();
-    }
-}
+        $data = $this->getArrayCopy();
 
+        /* @var $field Zupal_Model_Schema_IF */
+        foreach ($this->container()->schema() as $field) {
+            $name = $field->name();
+
+            switch ($field->type()) {
+                case 'class':
+                    if (!empty($data[$name])) {
+                        $obj = $data[$name];
+                        if ($field->is_serial()) {
+                            foreach ($obj as $k => $o) {
+                                if (!method_exists($o, 'toArray')) {
+                                    throw new Exception(__METHOD__ . ': object of type ' . get_class($o) . ' has no toArray method');
+                                }
+                                $data[$name][$k] = $o->toArray();
+                            }
+                        } else {
+                            if (!method_exists($obj, 'toArray')) {
+                                throw new Exception(__METHOD__ . ': object of type ' . get_class($obj) . ' has no toArray method');
+                            }
+                            $data[$name] = $obj->toArray();
+                        }
+                    }
+                    break;
+
+                case 'object':
+                    $obj = $data[$name];
+                    $data[$name] = (array) $obj;
+                    break;
+            }
+        }
+
+        return $data;
+    }
+
+}
 

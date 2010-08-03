@@ -8,9 +8,9 @@
  * @author bingomanatee
  */
 abstract class Zupal_Model_Domain_Abstract
-implements Zupal_Model_Data_IF,
-Zupal_Model_Container_IF,
-Zupal_Event_HandlerIF {
+implements Zupal_Model_Data_IF, 
+        Zupal_Model_Container_IF,
+        Zupal_Event_HandlerIF {
     const LOAD_NEW = 'new';
     /**
      *
@@ -20,7 +20,9 @@ Zupal_Event_HandlerIF {
     public $metadata = array();
 
     public function __construct($pKey = NULL) {
-        if ($pKey) {
+        if (empty($pKey)) {
+            $this->load(self::LOAD_NEW);
+        } else {
             $this->load($pKey);
         }
     }
@@ -38,7 +40,7 @@ Zupal_Event_HandlerIF {
 
         if (!empty($pKey)) {
             if ($pKey == self::LOAD_NEW) {
-                $this->_record = $this->container()->get_new();
+                $this->_record = $this->container()->new_data(array());
             } elseif ($pKey instanceof Zupal_Model_Data_IF) {
                 $this->_record = $pKey;
             } elseif ($pKey instanceof Zupal_Model_Query_IF) {
@@ -48,9 +50,10 @@ Zupal_Event_HandlerIF {
             } else {
                 $this->_record = $this->container()->get($pKey);
             }
-            Zupal_Event_Manager::event('load', array('subject' => $this) );
+            Zupal_Event_Manager::event('load', array('subject' => $this));
+        } else {
+            $this->_record = $this->container()->new_data(array());
         }
-
     }
 
     /**
@@ -74,13 +77,13 @@ Zupal_Event_HandlerIF {
     }
 
     public function get_field($name, $scope = 'r') {
-        switch($scope) {
+        switch ($scope) {
             case 'm':
-                return $this->metadata[$name];
+                return empty($this->metadata[$name]) ? NULL :  $this->metadata[$name];
                 break;
 
             case 'r':
-                return $this->_record[$name];
+                return empty($this->_record[$name]) ? NULL : $this->_record[$name];
                 break;
 
             default: return $this->_get($name);
@@ -88,7 +91,7 @@ Zupal_Event_HandlerIF {
     }
 
     public function set_field($name, $value, $scope='r') {
-        switch($scope) {
+        switch ($scope) {
             case 'm':
                 $this->metadata[$name] = $value;
                 break;
@@ -101,7 +104,7 @@ Zupal_Event_HandlerIF {
         }
     }
 
-    public function  __get($name) {
+    public function __get($name) {
         if (array_key_exists($name, $this->_record)) {
             return $this->_record[$name];
         } elseif (array_key_exists($name, $this->metadata)) {
@@ -111,7 +114,7 @@ Zupal_Event_HandlerIF {
         }
     }
 
-    public function  __set($name,  $value) {
+    public function __set($name, $value) {
         if (array_key_exists($name, $this->_record)) {
             $this->_record[$name] = $value;
         } else {
@@ -124,8 +127,10 @@ Zupal_Event_HandlerIF {
         }
     }
 
-    public function toArray() {
-        return array_merge($this->metadata, $this->_record->toArray());
+    public function toArray($pIncludeMeta = FALSE) {
+        return $pIncludeMeta ? 
+            array_merge($this->metadata, $this->_record->toArray())
+            : $this->_record->toArray();
     }
 
     public function status($pSet) {
@@ -142,7 +147,7 @@ Zupal_Event_HandlerIF {
 
     public function insure_defaults() {
 
-        foreach($this->schema()->defaults() as $field => $value) {
+        foreach ($this->schema()->defaults() as $field => $value) {
             if (!isset($this->_record[$field])) {
                 $this->_record[$field] = $value;
             }
@@ -174,8 +179,8 @@ Zupal_Event_HandlerIF {
 
     public function find_all($limit = NULL, $sort = NULL) {
         $out = array();
-        
-        foreach($this->container()->find_all($limit, $sort) as $record) {
+
+        foreach ($this->container()->find_all($limit, $sort) as $record) {
             $out[] = $this->new_data($record);
         }
 
@@ -184,10 +189,10 @@ Zupal_Event_HandlerIF {
 
     public function find($pQuery, $limit = NULL, $sort = NULL) {
         $out = array();
-        if (empty($pQuery)){
+        if (empty($pQuery)) {
             $pQuery = NULL;
         }
-        foreach($this->container()->find($pQuery, $limit, $sort) as $record) {
+        foreach ($this->container()->find($pQuery, $limit, $sort) as $record) {
             $out[] = $this->new_data($record);
         }
 
@@ -214,7 +219,7 @@ Zupal_Event_HandlerIF {
             $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
         }
 
-        foreach($this->find($pQuery) as $domain) {
+        foreach ($this->find($pQuery) as $domain) {
             $domain->delete();
         }
     }
@@ -228,10 +233,14 @@ Zupal_Event_HandlerIF {
         throw new Exception(__METHOD__ . ': not relevant for Domains');
     }
 
-    /* @@@@@@@@@@@@@@@@@@@@ handler IF @@@@@@@@@@@@@@@@@@@ */
+    public function schema() {
+        throw new Exception(__METHOD__ . ': must override');
+    }
 
+    /* @@@@@@@@@@@@@@@@@@@@ handler IF @@@@@@@@@@@@@@@@@@@ */
 
     public function respond(Zupal_Event_EventIF $pEvent) {
         // does no action -- override for custom responsiveness
     }
+
 }
