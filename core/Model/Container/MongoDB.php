@@ -66,6 +66,11 @@ class Zupal_Model_Container_MongoDB {
     }
 
     private $_db;
+
+    /**
+     *
+     * @return Mongo
+     */
     public function db() {
         if (!$this->_db) {
             $props = $this->_props;
@@ -109,5 +114,8 @@ class Zupal_Model_Container_MongoDB {
         return self::$_DATABASES[$pName];
     }
 
+    public function gridfs(){
+        return $this->db()->getGridFS();
+    }
 }
 

@@ -53,6 +53,14 @@ class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
         return $this->_parent;
     }
 
+    /**
+     *
+     * @return MongoGridFS
+     */
+    public function gridfs(){
+        return $this->parent()->gridfs();
+    }
+
     public function name() {
         return $this->_name;
     }

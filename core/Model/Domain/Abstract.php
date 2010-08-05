@@ -157,7 +157,7 @@ implements Zupal_Model_Data_IF,
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
         $this->container()->save_data($this->_record);
-        Zupal_Event_Manager::event('update', array('subject' => $this));
+      // not using atomic events  Zupal_Event_Manager::event('update', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
