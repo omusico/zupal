@@ -10,34 +10,33 @@ class Zupal_Model_Schema_Field_Class extends Zupal_Model_Schema_Field {
     public function validate($pData) {
 
         $value = empty($pData[$this->name()]) ? NULL : $pData[$this->name()];
-        $c = $this->get_class();
         $out = array();
 
-        if (!$value) {
+        if (empty($value)) {
             if ($this->is_required()) {
 
                 $out[] = array(
                     'field' => $this->name(),
                     'value' => $value,
-                    'message' => 'absent, and required (must be nonzero)'
+                    'message' => 'absent, and required'
                 );
             }
         } elseif ($this->is_series()) {
             foreach ($data as $o) {
-                if (!($o instanceof $c)) {
+                if (!(is_array($o))) {
                     $out[] = array(
                         'field' => $this->name(),
                         'value' => $value,
-                        'message' => 'must be array of ' . $c
+                        'message' => 'must be array of arrays'
                     );
                 }
             }
-        } elseif (!($value instanceof $c)) {
+        } elseif (!is_array($value)) {
 
             $out[] = array(
                 'field' => $this->name(),
                 'value' => $value,
-                'message' => 'must be instance of ' . $c
+                'message' => 'must be instance of array'
             );
         }
 

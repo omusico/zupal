@@ -13,23 +13,32 @@ class Zupal_Model_Data_Mongo
     public $__id = NULL;
 
     public function __construct($array, $pContainer = NULL) {
+        $this->container($pContainer);
+
+        $this->_load_data($array);
+
+        $this->_apply_schema();
+    }
+
+    protected function _check_id(&$array) {
         if (array_key_exists('_id', $array) && is_object($array['_id'])) {
             $this->__id = $array['_id'];
             $array['_id'] = self::deser_id($array['_id']);
         }
+    }
 
-        if ($container = $this->container($pContainer)) {
-            $defaults = $container->schema()->defaults();
+    protected function _load_data(array $array) {
+        $this->_check_id($array);
+        if ($this->container()) {
+            $defaults = $this->container()->schema()->defaults();
             if ($defaults) {
                 $array = array_merge($defaults, $array);
             }
         }
         parent::__construct($array);
-
-        $this->_init_values();
     }
 
-    protected function _init_values() {
+    protected function _apply_schema() {
         /* @var $schema Zupal_Model_Schema_IF */
         $classes = array();
         foreach ($this->container()->schema() as $schema) {
