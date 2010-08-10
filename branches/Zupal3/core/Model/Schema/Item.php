@@ -69,6 +69,10 @@ class Zupal_Model_Schema_Item extends ArrayObject implements Zupal_Model_Schema_
                 return new Zupal_Model_Schema_Field_Class($item);
                 break;
 
+            case 'mongoid':
+                return new Zupal_Model_Schema_Field_Mongoid($item);
+                break;
+            
             case 'str':
             case 'txt':
             case 'text':

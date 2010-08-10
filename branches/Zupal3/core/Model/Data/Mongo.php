@@ -132,9 +132,9 @@ class Zupal_Model_Data_Mongo
      * @param string $pValue
      */
     public function set_key($pValue) {
-        if (is_object($pValue)) {
-            $pValue = self::deser_id($pValue);
-        }
+      //  if (is_object($pValue)) {
+      //      $pValue = self::deser_id($pValue);
+      //  }
         $this['_id'] = $pValue;
     }
 
