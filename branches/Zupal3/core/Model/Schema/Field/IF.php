@@ -14,5 +14,7 @@ interface Zupal_Model_Schema_Field_IF {
 
     public function is_serial();
 
+    public function clean_value($pItem);
+
 }
 

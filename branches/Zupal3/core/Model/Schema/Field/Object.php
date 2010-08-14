@@ -5,7 +5,8 @@
  *
  * @author bingomanatee
  */
-class Zupal_Model_Schema_Field_Object extends Zupal_Model_Schema_Field {
+class Zupal_Model_Schema_Field_Object
+        extends Zupal_Model_Schema_Field {
 
     public function validate($pData) {
 
@@ -44,25 +45,33 @@ class Zupal_Model_Schema_Field_Object extends Zupal_Model_Schema_Field {
     }
 
     public function clean_value($pValue) {
-        if ($this->is_series()) {
-            $out = array();
-            foreach ($pValue as $key => $value) {
-                if ($value instanceof stdClass) {
-                    $out[$key] = $value;
-                } elseif (is_array($value)){
-                    $out[$key] = (object) $value;
+
+        if (!empty($pValue)) {
+            if ($field->is_serial()) {
+                $obj = array();
+                if (is_object($pValue)) {
+                    $pValue = array($pValue);
+                }
+                foreach ($pValue as $k => $o) {
+                    if (method_exists($o, 'toArray')) {
+                        $obj[$k] = $o->toArray();
+                    } else {
+                        $obj[$k] = (array) $o;
+                    }
+                }
+            } else {
+                if (method_exists($pValue, 'toArray')) {
+                    $obj = $pValue->toArray();
+                } else {
+                    $obj = (array) $obj;
                 }
             }
-            return $out;
-        } elseif (!$pValue instanceof stdClass) {
-            if ($this->required()) {
-                return new stdClass();
-            } else {
-                return NULL;
-            }
+        } elseif ($this->is_serial()) {
+            $obj = array();
         } else {
-            return $pValue;
+            $obj = NULL;
         }
+        return $obj;
     }
 
     /**
