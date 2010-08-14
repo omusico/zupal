@@ -5,7 +5,7 @@
  *
  * @author bingomanatee
  */
-class Zupal_Model_Schema_Field_Class
+class Zupal_Model_Schema_Field_SubData
         extends Zupal_Model_Schema_Field {
 
     public function validate($pData) {

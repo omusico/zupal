@@ -20,6 +20,10 @@ class Zupal_Model_Data_Mongo
         $this->_apply_schema();
     }
 
+    /**
+     * may not be necessary as mongoIDs are being stored as passed. 
+     * @param array $array
+     */
     protected function _check_id(&$array) {
         if (array_key_exists('_id', $array) && is_object($array['_id'])) {
             $this->__id = $array['_id'];
@@ -39,33 +43,11 @@ class Zupal_Model_Data_Mongo
     }
 
     protected function _apply_schema() {
-        /* @var $schema Zupal_Model_Schema_IF */
+        /* @var $field Zupal_Model_Schema_IF */
         $classes = array();
-        foreach ($this->container()->schema() as $schema) {
-            switch ($schema->type()) {
-                case 'class':
-                    $name = $schema->name();
-                    $c = $schema['class'];
-                    $d_value = empty($this[$name]) ? array() : (array) $this[$name];
-
-                    /* @var $c_obj Zupal_Model_Schema_Field_ObjIF */
-                    if ($schema->is_serial()) {
-                        // note in this case we are not sure the series is made of objs or not.
-                        foreach ($d_value as $i => $d_value_item) {
-                            if (is_array($d_value_item)) {
-                                $c_obj = new $c($this, $d_value_item, $name, $i);
-                                $classes[] = $c_obj;
-                                $d_value[$i] = $c_obj;
-                            }
-                        }
-                        $this[$name] = $d_value;
-                    } else {
-                        $c_obj = new $c($this, $d_value, $name);
-                        $classes[] = $c_obj;
-                        $this[$name] = $c_obj;
-                    }
-
-                    break;
+        foreach ($this->container()->schema() as $field) {
+            if (method_exists('post_load', $field)) {
+                $field->post_load($this, $classes);
             }
         }
 
@@ -132,9 +114,9 @@ class Zupal_Model_Data_Mongo
      * @param string $pValue
      */
     public function set_key($pValue) {
-      //  if (is_object($pValue)) {
-      //      $pValue = self::deser_id($pValue);
-      //  }
+        //  if (is_object($pValue)) {
+        //      $pValue = self::deser_id($pValue);
+        //  }
         $this['_id'] = $pValue;
     }
 
@@ -160,37 +142,19 @@ class Zupal_Model_Data_Mongo
         error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
 
+    /**
+     *
+     * @return array
+     */
     public function toArray() {
         $data = $this->getArrayCopy();
 
-        /* @var $field Zupal_Model_Schema_IF */
+        /* @var $field Zupal_Model_Schema_Field_IF */
         foreach ($this->container()->schema() as $field) {
             $name = $field->name();
-
-            switch ($field->type()) {
-                case 'class':
-                    if (!empty($data[$name])) {
-                        $obj = $data[$name];
-                        if ($field->is_serial()) {
-                            foreach ($obj as $k => $o) {
-                                if (!method_exists($o, 'toArray')) {
-                                    throw new Exception(__METHOD__ . ': object of type ' . get_class($o) . ' has no toArray method');
-                                }
-                                $data[$name][$k] = $o->toArray();
-                            }
-                        } else {
-                            if (!method_exists($obj, 'toArray')) {
-                                throw new Exception(__METHOD__ . ': object of type ' . get_class($obj) . ' has no toArray method');
-                            }
-                            $data[$name] = $obj->toArray();
-                        }
-                    }
-                    break;
-
-                case 'object':
-                    $obj = $data[$name];
-                    $data[$name] = (array) $obj;
-                    break;
+            if (!empty($data[$name])) {
+                $value = $data[$name];
+                $data[$name] = $field->clean_value($value);
             }
         }
 

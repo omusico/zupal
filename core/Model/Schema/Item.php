@@ -9,7 +9,9 @@
  * Because the fields are stored in an arrayObject, can be accessed
  * or iterated as an array.
  */
-class Zupal_Model_Schema_Item extends ArrayObject implements Zupal_Model_Schema_IF {
+class Zupal_Model_Schema_Item
+extends ArrayObject
+implements Zupal_Model_Schema_IF {
 
     public function __construct($pFields = array()) {
         $pFields = (array) $pFields;
