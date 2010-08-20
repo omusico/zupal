@@ -7,10 +7,9 @@
  */
 class Zupal_Model_Schema_Field_Object
         extends Zupal_Model_Schema_Field {
+    
+    public function validate_value($value, $pSerial_item = FALSE) {
 
-    public function validate($pData) {
-
-        $value = empty($pData[$this->name()]) ? NULL : $pData[$this->name()];
         $out = array();
 
         if (empty($value)) {

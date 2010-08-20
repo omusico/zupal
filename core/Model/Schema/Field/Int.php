@@ -15,11 +15,10 @@ extends Zupal_Model_Schema_Field_Number {
         parent::__construct($array);
     }
 
-    public function validate($data) {
-        $value = array_key_exists($this->name(), $data) ?
-                $data[$this->name()]:
-                NULL;
-        $out = parent::validate($data);
+    public function validate_value($value, $pSerial_item = FALSE) {
+
+        $out = parent::validate_value($value, $pSerial_item);
+        
         if ($out === TRUE){
             $out = array();
         }

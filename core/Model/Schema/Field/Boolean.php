@@ -8,7 +8,7 @@
 class Zupal_Model_Schema_Field_Boolean
 extends Zupal_Model_Schema_Field {
 
-    public function validate($data) {
+    public function validate_value($value, $pSerial_item = FALSE) {
         // there are no validation requirements for booleans.
         return TRUE;
     }

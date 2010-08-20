@@ -8,21 +8,10 @@
 class Zupal_Model_Schema_Field_SubData
         extends Zupal_Model_Schema_Field {
 
-    public function validate($pData) {
-
-        $value = empty($pData[$this->name()]) ? NULL : $pData[$this->name()];
+    public function validate_value($value, $pSerial_item = FALSE) {
         $out = array();
 
-        if (empty($value)) {
-            if ($this->is_required()) {
-
-                $out[] = array(
-                    'field' => $this->name(),
-                    'value' => $value,
-                    'message' => 'absent, and required'
-                );
-            }
-        } elseif ($this->is_series()) {
+        if ($this->is_series()) {
             foreach ($data as $o) {
                 if (!(is_array($o))) {
                     $out[] = array(
