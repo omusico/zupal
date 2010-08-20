@@ -8,11 +8,12 @@
 class Zupal_Model_Schema_Field_Class
         extends Zupal_Model_Schema_Field {
 
-    public function validate($pData) {
+    public function validate_value($value, $pSerial_item = FALSE) {
 
-        $value = empty($pData[$this->name()]) ? NULL : $pData[$this->name()];
+        $c = $this->get_class();
+
         $out = array();
-
+        
         if (empty($value)) {
             if ($this->is_required()) {
 
@@ -22,22 +23,21 @@ class Zupal_Model_Schema_Field_Class
                     'message' => 'absent, and required'
                 );
             }
-        } elseif ($this->is_series()) {
-            foreach ($data as $o) {
-                if (!(is_array($o))) {
-                    $out[] = array(
-                        'field' => $this->name(),
-                        'value' => $value,
-                        'message' => 'must be array of arrays'
-                    );
-                }
+        } elseif (is_object($value)) {
+// might accept stdClass ... ?
+            if (!$value instanceof $c) {
+                $out[] = array(
+                    'field' => $this->name(),
+                    'value' => $value,
+                    'message' => 'must be instance of ' . c
+                );
             }
         } elseif (!is_array($value)) {
 
             $out[] = array(
                 'field' => $this->name(),
                 'value' => $value,
-                'message' => 'must be instance of array'
+                'message' => 'must be instance of array, or ' . $c
             );
         }
 
@@ -104,8 +104,6 @@ class Zupal_Model_Schema_Field_Class
             $classes[] = $c_obj;
             $data[$name] = $c_obj;
         }
-
-        break;
     }
 
 }

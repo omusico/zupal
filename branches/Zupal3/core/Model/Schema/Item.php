@@ -10,22 +10,35 @@
  * or iterated as an array.
  */
 class Zupal_Model_Schema_Item
-extends ArrayObject
-implements Zupal_Model_Schema_IF {
+        extends ArrayObject
+        implements Zupal_Model_Schema_IF {
 
     public function __construct($pFields = array()) {
         $pFields = (array) $pFields;
-
-        foreach ($pFields as $name => $field) {
-            if (!is_numeric($name) && is_array($field) && !array_key_exists('name', $field)) {
-                $pFields[$name]['name'] = $name;
+        if (array_key_exists('fields', $pFields)) {
+            $fields = $pFields['fields'];
+        } else {
+            $fields = $pFields;
+        }
+        $my_fields = array();
+        foreach ($fields as $name => $field) {
+            if (is_array($field)) {
+                if (!is_numeric($name) && !array_key_exists('name', $field)) {
+                    $field['name'] = $name;
+                }
+                $my_fields[$field['name']] = $field;
             }
         }
-        $pFields = array_map(array($this, 'get_field_object'), $pFields);
+        $my_fields = array_map(array('Zupal_Model_Schema_Item', 'make_field'), $my_fields);
 
-        parent::__construct($pFields);
+        parent::__construct($my_fields);
     }
 
+    /**
+     * deprecated. 
+     * @param <type> $item
+     * @return <type>
+     */
     public function get_field_object(&$item) {
         if (is_array($item)) {
             $item = self::make_field($item);
@@ -33,7 +46,15 @@ implements Zupal_Model_Schema_IF {
         return $item;
     }
 
-    public function make_field($item) {
+    public function get_field($pname) {
+      return $this->offsetGet($pname);
+    }
+
+    public function set_field($pName, Zupal_Model_Schema_Field_IF $pField) {
+       $this->offsetSet($pName, $pField);
+    }
+
+        public function make_field($item) {
         $type = array_key_exists('type', $item) ? $item['type'] : 'string';
 
         switch (strtolower($type)) {
@@ -74,7 +95,7 @@ implements Zupal_Model_Schema_IF {
             case 'mongoid':
                 return new Zupal_Model_Schema_Field_Mongoid($item);
                 break;
-            
+
             case 'str':
             case 'txt':
             case 'text':
@@ -112,6 +133,7 @@ implements Zupal_Model_Schema_IF {
     }
 
     private $_defaults;
+
     public function defaults() {
         if (!$this->_defaults) {
             $this->_defaults = array();
@@ -120,7 +142,7 @@ implements Zupal_Model_Schema_IF {
                 $this->_defaults[$field] = $def->get_default();
             }
         }
-        
+
         return $this->_defaults;
     }
 
@@ -134,6 +156,9 @@ implements Zupal_Model_Schema_IF {
         foreach ($this as $name => $field) {
             $result = $field->validate($pData);
             if ($result !== TRUE) {
+                if (!is_array($result)){
+                    throw new Exception(__METHOD__ . ': field ' . $name . ' returns non-true, non-array ' . print_r($result, 1));
+                }
                 $out += $result;
             }
         }
@@ -152,4 +177,11 @@ implements Zupal_Model_Schema_IF {
         return new self($data);
     }
 
+    public function toArray(){
+        $out = array();
+        foreach($this->getArrayCopy() as $name => $field){
+            $out[$name] = $field->toArray();
+        }
+        return $out;
+    }
 }

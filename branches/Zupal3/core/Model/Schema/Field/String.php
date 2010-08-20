@@ -15,10 +15,8 @@ extends Zupal_Model_Schema_Field {
         parent::__construct($array);
     }
 
-    public function validate($data) {
-        $value = array_key_exists($this->name(), $data) ?
-                $data[$this->name()]:
-                NULL;
+    public function validate_value($value, $pSerial_item = FALSE) {
+
         $out = array();
 
         if ($value) {

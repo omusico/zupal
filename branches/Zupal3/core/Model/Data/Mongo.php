@@ -46,8 +46,12 @@ class Zupal_Model_Data_Mongo
         /* @var $field Zupal_Model_Schema_IF */
         $classes = array();
         foreach ($this->container()->schema() as $field) {
-            if (method_exists('post_load', $field)) {
-                $field->post_load($this, $classes);
+            if (is_object($field)) {
+                if (method_exists( $field, 'post_load')) {
+                    $field->post_load($this, $classes);
+                }
+            } else {
+                $e = $field;
             }
         }
 
