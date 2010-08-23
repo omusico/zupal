@@ -14,9 +14,12 @@
  */
 class Zupal_Model_Data_SubData
         extends ArrayObject
-        implements Zupal_Model_Data_IF {
+        implements Zupal_Model_Data_IF,
+        Zupal_Model_Schema_Field_ObjIF {
 
-    function __construct($pValues, array $pOptions = array()) {
+    public function __construct(Zupal_Model_Data_IF $pData, $pValue, $pName, array $pOptions = array()) {
+        $this->set_root_data($pData);
+
         $pSchema = array();
 
         foreach ($pOptions as $key => $value) {
@@ -48,69 +51,25 @@ class Zupal_Model_Data_SubData
             }
         }
 
-        $this->_load_data($pValues);
+        $this->_load_data($pValue);
 
         $this->_apply_schema();
     }
 
     protected function _load_data($array) {
-
-        if ($array instanceof DomNode) {
-            $array = $this->_digest_xml($array);
+        if (($array instanceof DomNode) || ($array instanceof DOMNodeList)) {
+            $schema = $this->get_schema();
+            $array = Zupal_Model_Data_XMLdigester::digest($xml, $schema);
         }
 
-        $defaults = $this->get_schema()->defaults();
-        if ($defaults) {
-            $array = array_merge($defaults, $array);
-        }
-
-        parent::__construct($array);
-    }
-
-    /**
-     *
-     * @param DomNode $xml
-     *
-     * Note - this just flattens out the content; the only
-     * complex action is that xml nodes are passed to newly
-     * created classes in order to preserve transport of the domnode.
-     * 
-     * @return array
-     */
-    protected function _digest_xml(DomNode $xml) {
-        $out = array();
-        foreach ($xml->childNodes as $node) {
-            $name = $node->localName;
-
-            /* @var $field Zupal_Model_Schema_Field_IF */
-            if ($field = $this->get_schema()->get_field($name)) {
-                if ($field->type() == 'class') {
-                    $options = array('parent' => $this,
-                        'data' => $this->get_root_data());
-                    if ($field['schema']){
-                        $options['schema'] = $field['schema'];
-                    }
-                    $class = $field['class'];
-                    $value = new $class($node, $options);
-                } else {
-                    $value = $node->textContent;
-                }
-                if ($field->is_serial()) {
-                    if (!array_key_exists($name, $out)) {
-                        $out[$name] = array($value);
-                    } else {
-                        $out[$name][] = $value;
-                    }
-                } else {
-                    $out[$name] = $value;
-                }
-            } else {
-                $value = $node->textContent;
-                $out[$name] = $value;
+        if ($this->get_schema()) {
+            $defaults = $this->get_schema()->defaults();
+            if ($defaults) {
+                $array = array_merge($defaults, $array);
             }
         }
 
-        return $out;
+        parent::__construct($array);
     }
 
     protected function _apply_schema() {
@@ -120,7 +79,7 @@ class Zupal_Model_Data_SubData
         /* @var $field Zupal_Model_Schema_IF */
         $classes = array();
         foreach ($this->get_schema() as $field) {
-            if ($this[$field->name()] && method_exists('post_load', $field)) {
+            if ($this[$field->name()] && method_exists($field, 'post_load')) {
                 $field->post_load($this, $classes);
             }
         }
@@ -163,7 +122,7 @@ class Zupal_Model_Data_SubData
         if ($key_field = $this->key_field()) {
             return $this[$key_field->name()];
         } else {
-
+            
         }
     }
 
@@ -259,15 +218,7 @@ class Zupal_Model_Data_SubData
     }
 
     public function toArray() {
-        $out = $this->getArrayCopy();
-
-        foreach ($this->get_schema() as $field) {
-            $name = $field->name();
-            if (!empty($out[$name])) {
-                $out[$name] = $field->clean_value($this[$name]);
-            }
-        }
-        return $out;
+        return Zupal_Model_Data_Hydrator::hydrate($this->getArrayCopy(), $this->get_schema());
     }
 
     /**

@@ -86,21 +86,19 @@ class Zupal_Model_Schema_Field_Class
     function post_load(&$data, &$classes) {
         $name = $this->name();
         $c = $this['class'];
-        $d_value = empty($data[$name]) ? array() : (array) $data[$name];
+        $d_value = empty($data[$name]) ? array() : $data[$name];
 
         /* @var $c_obj Zupal_Model_Schema_Field_ObjIF */
         if ($this->is_serial()) {
             // note in this case we are not sure the series is made of objs or not.
             foreach ($d_value as $i => $d_value_item) {
-                if (is_array($d_value_item)) {
-                    $c_obj = new $c($data, $d_value_item, $name, $i);
+                    $c_obj = new $c($data, $d_value_item, $name, array('index' => $i));
                     $classes[] = $c_obj;
                     $d_value[$i] = $c_obj;
-                }
             }
             $data[$name] = $d_value;
         } else {
-            $c_obj = new $c($data, $d_value, $name);
+            $c_obj = new $c($data, $d_value, $name, array());
             $classes[] = $c_obj;
             $data[$name] = $c_obj;
         }

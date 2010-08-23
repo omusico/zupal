@@ -31,23 +31,39 @@ class Zupal_Model_Data_Mongo
         }
     }
 
-    protected function _load_data(array $array) {
+    protected function _load_data($array) {
+        if ($array instanceof DomNode) {
+            $array = Zupal_Model_Data_XMLdigester::digest($xml, $this->container()->schema());
+        }
         $this->_check_id($array);
-        if ($this->container()) {
+
+        if ($this->container() && $this->container()->schema()) {
             $defaults = $this->container()->schema()->defaults();
             if ($defaults) {
                 $array = array_merge($defaults, $array);
             }
         }
+
         parent::__construct($array);
     }
+
+    /**
+     *
+     * @param DomNode $xml
+     *
+     * Note - this just flattens out the content; the only
+     * complex action is that xml nodes are passed to newly
+     * created classes in order to preserve transport of the domnode.
+     *
+     * @return array
+     */
 
     protected function _apply_schema() {
         /* @var $field Zupal_Model_Schema_IF */
         $classes = array();
         foreach ($this->container()->schema() as $field) {
             if (is_object($field)) {
-                if (method_exists( $field, 'post_load')) {
+                if (method_exists($field, 'post_load')) {
                     $field->post_load($this, $classes);
                 }
             } else {

@@ -1,5 +1,6 @@
 <?php
-/* 
+
+/*
  * $this is a wrapper for the db mongo object.
  *
  * note: get() retrieves Mongo collections;
@@ -8,7 +9,7 @@
  * Although its a container of sorts, its a
  * container of container and therefore does not
  * implement Zupal_Mode_Container_IF.
-*/
+ */
 
 /**
  * Description of MongoDB
@@ -40,19 +41,19 @@ class Zupal_Model_Container_MongoDB {
     }
 
     private static $_DEFAULT_PROPS = array(
-            'host' => 'localhost',
-            'port' => 27017,
-            'persist' => 'mongo lives!!!'
+        'host' => 'localhost',
+        'port' => 27017,
+        'persist' => 'mongo lives!!!'
     );
     private $_props = array();
-
     private $_name;
+
     public function name() {
         return $this->_name;
     }
 
-
     private $_children = array();
+
     /**
      * gets a Mongo collection.
      * @param string $pKey
@@ -94,7 +95,7 @@ class Zupal_Model_Container_MongoDB {
      * @param $pData
      */
     public function add($pData) {
-        if (is_string($pData) || is_array($pData)){
+        if (is_string($pData) || is_array($pData)) {
             return $this->find($pData);
         }
     }
@@ -106,7 +107,6 @@ class Zupal_Model_Container_MongoDB {
      * @param string $pName
      * @return Zupal_Model_Collection_Mongo
      */
-
     public static function instance($pName) {
         if (!array_key_exists($pName, self::$_DATABASES)) {
             self::$_DATABASES[$pName] = new self($pName); // redundant with constructor
@@ -114,8 +114,9 @@ class Zupal_Model_Container_MongoDB {
         return self::$_DATABASES[$pName];
     }
 
-    public function gridfs(){
+    public function gridfs() {
         return $this->db()->getGridFS();
     }
+
 }
 

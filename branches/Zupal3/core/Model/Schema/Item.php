@@ -47,14 +47,17 @@ class Zupal_Model_Schema_Item
     }
 
     public function get_field($pname) {
-      return $this->offsetGet($pname);
+        if (!$this->offsetExists($pname)) {
+            return NULL;
+        }
+        return $this->offsetGet($pname);
     }
 
     public function set_field($pName, Zupal_Model_Schema_Field_IF $pField) {
-       $this->offsetSet($pName, $pField);
+        $this->offsetSet($pName, $pField);
     }
 
-        public function make_field($item) {
+    public function make_field($item) {
         $type = array_key_exists('type', $item) ? $item['type'] : 'string';
 
         switch (strtolower($type)) {
@@ -156,7 +159,7 @@ class Zupal_Model_Schema_Item
         foreach ($this as $name => $field) {
             $result = $field->validate($pData);
             if ($result !== TRUE) {
-                if (!is_array($result)){
+                if (!is_array($result)) {
                     throw new Exception(__METHOD__ . ': field ' . $name . ' returns non-true, non-array ' . print_r($result, 1));
                 }
                 $out += $result;
@@ -177,11 +180,24 @@ class Zupal_Model_Schema_Item
         return new self($data);
     }
 
-    public function toArray(){
+    public static function make_from_yml($path){
+
+        if (!file_exists($path)) {
+            throw new Exception(__METHOD__ . ": no file at $path");
+        }
+
+        $yml = new \Symfony\Components\Yaml\Yaml();
+        $data = $yml->load($path);
+        
+        return new self($data);
+    }
+
+    public function toArray() {
         $out = array();
-        foreach($this->getArrayCopy() as $name => $field){
+        foreach ($this->getArrayCopy() as $name => $field) {
             $out[$name] = $field->toArray();
         }
         return $out;
     }
+
 }

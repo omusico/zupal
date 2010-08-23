@@ -47,5 +47,18 @@ extends Zupal_Model_Schema_Field {
 
         return count($out) ? $out : TRUE;
     }
+
+    public function clean_value($value) {
+        if ($this->is_serial()){
+            $value = (array) $value;
+            foreach($value as $k => $v){
+                $value[$k] = (string) $v;
+            }
+        } else {
+            $value = (string) $value;
+        }
+
+        return $value;
+    }
 }
 

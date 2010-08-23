@@ -267,9 +267,11 @@ class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
             $result = $this->coll()->save($array);
             $pData->set_key($array['_id']);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
-        } else {
+        } elseif (!$this->find(array('_id' => $array['_id']))) {
             $result = $this->coll()->insert($array);
             $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
+        } else {
+            $this->coll()->update(array('_id' => $array['_id']), $array);
         }
     }
 
