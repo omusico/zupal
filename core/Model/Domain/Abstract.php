@@ -45,12 +45,12 @@ implements Zupal_Model_Data_IF,
                 $this->_record = $pKey;
             } elseif ($pKey instanceof Zupal_Model_Query_IF) {
                 $this->_record = $this->container()->find_one($pKey);
-            } elseif (is_array($pKey)) {
+            } elseif (is_array($pKey) || $pKey instanceof DomDocument) {
                 $this->_record = $this->container()->new_data($pKey);
             } else {
                 $this->_record = $this->container()->get($pKey);
             }
-            Zupal_Event_Manager::event('load', array('subject' => $this));
+          //  Zupal_Event_Manager::event('load', array('subject' => $this));
         } else {
             $this->_record = $this->container()->new_data(array());
         }

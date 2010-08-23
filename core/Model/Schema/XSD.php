@@ -68,11 +68,11 @@ class Zupal_Model_Schema_XSD
         $xpath->registerNamespace('xs', 'http://www.w3.org/2001/XMLSchema');
         $xml_string = $schema->saveXML();
 
-        $query = "//*[@name='$pPath']/*/xs:element";
+        $query = "//*[@name='$pPath']//xs:element";
 
         $nodes = $xpath->query($query, $schema);
 
-        //   error_log(__METHOD__ . ": query = $query, result = " . $nodes->length . ' items: ' . print_r($nodes, 1));
+        error_log(__METHOD__ . ": query = $query, result = " . $nodes->length . ' items: ' . print_r($nodes, 1));
 
         foreach ($nodes as $field) {
             //    $data = $schema->saveXML($field);
@@ -93,22 +93,21 @@ class Zupal_Model_Schema_XSD
 
         foreach ($field->attributes as $a) {
             $n = $a->name;
-            $value = preg_replace('~^xs:~', '', $a->value);
             switch (strtolower($n)) {
                 case 'name':
-                    $name = $value;
+                    $name = $a->value;
                     break;
 
                 case 'type':
-                    $type = $value;
+                    $type = preg_replace('~^[\w]+:~', '', $a->value);
                     break;
 
                 case 'minoccurs':
-                    $min = (int) $value;
+                    $min = (int) $a->value;
                     break;
 
-                case 'maxocurrs':
-                    $max = ($value == 'unbounded') ? NULL : $value;
+                case 'maxoccurs':
+                    $max = ($a->value == 'unbounded') ? NULL : $a->value;
                     break;
             }
         }
