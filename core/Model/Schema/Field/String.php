@@ -15,7 +15,7 @@ extends Zupal_Model_Schema_Field {
         parent::__construct($array);
     }
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
 
         $out = array();
 
@@ -48,17 +48,8 @@ extends Zupal_Model_Schema_Field {
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($value) {
-        if ($this->is_serial()){
-            $value = (array) $value;
-            foreach($value as $k => $v){
-                $value[$k] = (string) $v;
-            }
-        } else {
-            $value = (string) $value;
-        }
-
-        return $value;
+    public function  hydrate_value($pItem, $pIndex = NULL) {
+        return (string) $pItem;
     }
 }
 

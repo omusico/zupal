@@ -1,7 +1,7 @@
 <?php
 
 abstract class Zupal_Model_Schema_Field
-        extends ArrayObject
+        extends Zupal_Model_ArrayObject
         implements Zupal_Model_Schema_Field_IF {
 
     public function __construct($pParams = array()) {
@@ -42,49 +42,19 @@ abstract class Zupal_Model_Schema_Field
         return!empty($this['serial']);
     }
 
-    public function clean_value($pValue) {
-        switch ($this->type()) {
-            case 'int':
-            case 'integer':
-                return (int) $pValue;
-                break;
-
-            case 'str':
-            case 'string':
-            case 'text':
-                return (string) $pValue;
-                break;
-
-            case 'array':
-                return (array) $pValue;
-                break;
-
-            case 'object':
-            case 'obj':
-            case 'stdClass':
-                return (object) $pValue;
-                break;
-
-            case 'class':
-                if ($this->is_series()) {
-                    $out = array();
-                    $c = $this['class'];
-                    foreach ($pValue as $key => $value) {
-                        if ($value instanceof $c) {
-                            $out[$key] = $value;
-                        }
-                    }
-                    return $out;
-                } else {
-                    if (!$pValue instanceof $this['class']) {
-                        return new $c();
-                    }
-                }
-                break;
-
-            default:
-                return $pValue;
+    public function hydrate($value) {
+        if ($this->is_serial()) {
+            foreach ((array) $value as $i => $v) {
+                $value[$i] = $this->hydrate_value($v);
+            }
+            return $value;
+        } else {
+            return $this->hydrate_value($value);
         }
+    }
+
+    public function hydrate_value($pItem, $pIndex = NULL) {
+        throw new Exception(__METHOD__ . ': Must be implemented in descendant');
     }
 
     private $_label;
@@ -111,42 +81,32 @@ abstract class Zupal_Model_Schema_Field
             $value = NULL;
         }
 
-        if ($this->is_serial() && is_array($value)) {
-
-            $errs = array();
-            if ($value) {
-                if (!is_array($value)) {
-                    $value = array($value);
-                    // we'll solve it ... with MAGIC!
-             //       throw new Exception(__METHOD__ . ": serial field " . $this->name() . " passed non array value " . print_r($value));
-                }
-
-                foreach ($value as $i => $v) {
-                    $out = $this->validate_value($v, TRUE);
-                    if (!($out === TRUE)) {
-                        $errs[$i] = $out;
-                    }
-                }
-                if (count($errs)){
-                    return $errs;
-                } else {
-                    return TRUE;
-                }
-            } elseif ($this->required()) {
+        if (is_null($value)) {
+            if ($this->required()) {
                 return array('value ' . $this->name() . ': missing and required');
             } else {
                 return TRUE;
             }
+        } elseif ($this->is_serial()) {
+            $errs = array();
+            foreach ((array) $value as $i => $v) {
+                $out = $this->validate_value($v, $i);
+                if (!($out === TRUE)) {
+                    $errs[$i] = $out;
+                }
+            }
+            return (count($errs)) ? $errs : TRUE;
         } else {
             return $this->validate_value($value);
         }
     }
 
-    public function validate_value($pItem, $pSerial_item = FALSE) {
+    public function validate_value($pItem, $pSerial_item = NULL) {
         throw new Exception(__METHOD__ . ': must be overridden');
     }
 
-    public function toArray(){
+    public function toArray() {
         return $this->getArrayCopy();
     }
+
 }

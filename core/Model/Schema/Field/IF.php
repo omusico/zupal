@@ -13,7 +13,15 @@ interface Zupal_Model_Schema_Field_IF {
 
     public function is_serial();
 
-    public function clean_value($pItem);
+    /**
+     * returns an array-storable value.
+     */
+    public function hydrate($pItem);
+
+    /**
+     * hydrates a single value for a serial field.
+     */
+    public function hydrate_value($pItem, $pIndex = NULL);
 
     /**
      * returns TRUE if valid, array of errors if not valid.
@@ -25,8 +33,8 @@ interface Zupal_Model_Schema_Field_IF {
     public function validate($pData);
     
     /**
-     * validates the value of a field; otherwise like validate. 
+     * validates the value of a field; otherwise like validate.
      */
-    public function validate_value($pItem, $pSerial_item = FALSE);
+    public function validate_value($pItem, $pIndex = NULL);
 }
 

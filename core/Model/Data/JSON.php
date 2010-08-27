@@ -137,7 +137,7 @@ implements Zupal_Model_Data_IF {
     public function offsetSet($index, $newval){
         if (array_key_exists($index, $this->schema())){
             $field = $this->schema()->offsetGet($index);
-            $newval = $field->clean_value($newval);
+            $newval = $field->hydrate($newval);
         }
         parent::offsetSet($index, $newval);
     }

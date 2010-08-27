@@ -13,11 +13,11 @@
  * @author bingomanatee
  */
 class Zupal_Model_Data_SubData
-        extends ArrayObject
+        extends Zupal_Model_ArrayObject
         implements Zupal_Model_Data_IF,
-        Zupal_Model_Schema_Field_ObjIF {
+        Zupal_Model_Schema_Field_ClassIF {
 
-    public function __construct(Zupal_Model_Data_IF $pData, $pValue, $pName, array $pOptions = array()) {
+    public function __construct(Zupal_Model_Data_IF $pData, $pValue, array $pOptions = array()) {
         $this->set_root_data($pData);
 
         $pSchema = array();
@@ -70,6 +70,10 @@ class Zupal_Model_Data_SubData
         }
 
         parent::__construct($array);
+    }
+
+    public function load($array){
+        $this->_load_data($array);
     }
 
     protected function _apply_schema() {
@@ -169,18 +173,6 @@ class Zupal_Model_Data_SubData
         return $this->_schema;
     }
 
-    public function offsetSet($index, $newval) {
-        $s = $this->get_schema();
-        if ($s->offsetExists($index)) {
-            /* @var $field Zupal_Model_Schema_Field_IF */
-            $field = $s[$index];
-            if ($field->is_serial() && !is_array($newval)) {
-                $newval = array($newval);
-            }
-        }
-        return parent::offsetSet($index, $newval);
-    }
-
     /**
      *
      * @param Zupal_Model_Schema_IF $_schema
@@ -218,6 +210,10 @@ class Zupal_Model_Data_SubData
     }
 
     public function toArray() {
+        return $this->hydrate();
+    }
+    
+    public function hydrate(){
         return Zupal_Model_Data_Hydrator::hydrate($this->getArrayCopy(), $this->get_schema());
     }
 

@@ -7,7 +7,7 @@
  * @author bingomanatee
  */
 class Zupal_Model_Data_Mongo
-        extends ArrayObject
+        extends Zupal_Model_ArrayObject
         implements Zupal_Model_Data_IF {
 
     public $__id = NULL;
@@ -169,16 +169,7 @@ class Zupal_Model_Data_Mongo
     public function toArray() {
         $data = $this->getArrayCopy();
 
-        /* @var $field Zupal_Model_Schema_Field_IF */
-        foreach ($this->container()->schema() as $field) {
-            $name = $field->name();
-            if (!empty($data[$name])) {
-                $value = $data[$name];
-                $data[$name] = $field->clean_value($value);
-            }
-        }
-
-        return $data;
+        return Zupal_Model_Data_Hydrator::hydrate($data, $this->container()->schema());
     }
 
 }

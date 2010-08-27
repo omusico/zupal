@@ -10,7 +10,7 @@
  * or iterated as an array.
  */
 class Zupal_Model_Schema_Item
-        extends ArrayObject
+        extends Zupal_Model_ArrayObject
         implements Zupal_Model_Schema_IF {
 
     public function __construct($pFields = array()) {
@@ -103,15 +103,19 @@ class Zupal_Model_Schema_Item
             case 'txt':
             case 'text':
             case 'string':
-            default:
                 $item['type'] = 'string';
                 return new Zupal_Model_Schema_Field_String($item);
+                break;
+            case 'variant':
+            default:
+                $item['type'] = 'variant';
+                return new Zupal_Model_Schema_Field_Variant($item);
         }
     }
 
-    public function clean_value($field, $value) {
+    public function hydrate($field, $value) {
         if (isset($this[$field])) {
-            return $this[$field]->clean_value($value);
+            return $this[$field]->hydrate($value);
         }
         return $value;
     }
@@ -156,11 +160,12 @@ class Zupal_Model_Schema_Item
 
         $out = array();
 
+        /* @var $field Zupal_Model_Schema_Field_IF */
         foreach ($this as $name => $field) {
             $result = $field->validate($pData);
             if ($result !== TRUE) {
                 if (!is_array($result)) {
-                    throw new Exception(__METHOD__ . ': field ' . $name . ' returns non-true, non-array ' . print_r($result, 1));
+                    throw new Exception(__METHOD__ . ': field ' . $name . ' returns non-true, non_array ' . print_r($result, 1));
                 }
                 $out += $result;
             }
@@ -180,7 +185,7 @@ class Zupal_Model_Schema_Item
         return new self($data);
     }
 
-    public static function make_from_yml($path){
+    public static function make_from_yml($path) {
 
         if (!file_exists($path)) {
             throw new Exception(__METHOD__ . ": no file at $path");
@@ -188,7 +193,7 @@ class Zupal_Model_Schema_Item
 
         $yml = new \Symfony\Components\Yaml\Yaml();
         $data = $yml->load($path);
-        
+
         return new self($data);
     }
 

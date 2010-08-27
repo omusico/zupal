@@ -27,7 +27,7 @@ interface Zupal_Model_Data_IF {
      * if $pThrow, throws an exception if absent.
      *
      * @param boolean $pThrow
-     * @return scalar
+     * @return variant
      */
     function key($pThrow = TRUE);
 
