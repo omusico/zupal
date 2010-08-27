@@ -15,7 +15,7 @@ extends Zupal_Model_Schema_Field_Number {
         parent::__construct($array);
     }
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
 
         $out = parent::validate_value($value, $pSerial_item);
         
@@ -34,8 +34,9 @@ extends Zupal_Model_Schema_Field_Number {
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($value){
-        return is_numeric($value) ? (int) $value : 0;
+    public function hydrate_value($pItem, $pIndex = NULL) {
+        return is_numeric($pItem) ? (int) $pItem : 0;
     }
+
 }
 

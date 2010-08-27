@@ -5,9 +5,10 @@
  *
  * @author bingomanatee
  */
-class Zupal_Model_Schema_Field_Mongoid extends Zupal_Model_Schema_Field {
+class Zupal_Model_Schema_Field_Mongoid
+        extends Zupal_Model_Schema_Field {
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
 
         $out = array();
 
@@ -19,16 +20,6 @@ class Zupal_Model_Schema_Field_Mongoid extends Zupal_Model_Schema_Field {
                     'value' => $value,
                     'message' => 'absent, and required'
                 );
-            }
-        } elseif ($this->is_series()) {
-            foreach ($data as $o) {
-                if (!(is_array($o))) {
-                    $out[] = array(
-                        'field' => $this->name(),
-                        'value' => $value,
-                        'message' => 'must be array of arrays'
-                    );
-                }
             }
         } elseif (!$value instanceof MongoId) {
 
@@ -42,27 +33,9 @@ class Zupal_Model_Schema_Field_Mongoid extends Zupal_Model_Schema_Field {
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($pValue) {
-        if ($this->is_series()) {
-            $out = array();
-            foreach ($pValue as $key => $value) {
-                if (!$value instanceof MongoId) {
-                    $out[$key] = new MongoId($value);
-
-                } elseif (is_array($value) && array_key_exists('_id', $value)){
-                    $out[$key] = new MongoId($value['_id']);
-                }
-            }
-            return $out;
-        } elseif (!$pValue instanceof MongoId) {
-            if ($this->required()) {
-                if (is_array($pValue) && (array_key_exists('_id', $pValue))) {
-                    $pValue = $pValue['_id'];
-                }
-                return new MongoId($pValue);
-            } else {
-                return NULL;
-            }
+    public function hydrate_value($pValue, $pIndex = NULL) {
+        if (!$pValue instanceof MongoId) {
+            return new MongoId($pValue);
         } else {
             return $pValue;
         }

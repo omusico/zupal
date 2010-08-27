@@ -8,7 +8,7 @@
 class Zupal_Model_Schema_Field_Date
         extends Zupal_Model_Schema_Field {
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
         $out = array();
 
         //@TODO: date contextual tests
@@ -27,6 +27,18 @@ class Zupal_Model_Schema_Field_Date
             return $_SERVER['REQUEST_TIME'];
         }
         return $this['default'];
+    }
+
+    public function hydrate_value($pItem, $pIndex = NULL) {
+
+        if ($pItem instanceof DateTime){
+            return $pItem->format('c');
+        } elseif (is_numeric($pItem)){
+            return date('c', $pItem);
+        } else {
+            return $pItem;
+        }
+
     }
 
 }

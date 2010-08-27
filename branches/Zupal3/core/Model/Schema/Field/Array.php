@@ -10,12 +10,14 @@
  * @author bingomanatee
  */
 class Zupal_Model_Schema_Field_Array
-extends Zupal_Model_Schema_Field {
+extends Zupal_Model_Schema_Field
+implements Zupal_Model_Schema_Field_IF
+{
     public function __construct($array) {
         parent::__construct($array);
     }
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value(&$value, $pSerial_item = NULL) {
         $out = array();
         if (!is_array($value)){
             $out[] = array(
@@ -28,11 +30,15 @@ extends Zupal_Model_Schema_Field {
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($value){
-        return (array) $value;
+    public function hydrate_value($pItem, $pIndex = NULL) {
+        return (array) $pItem;
     }
 
-    /**
+    public function type() {
+
+    }
+
+        /**
      * the default value of a field. can be of any type.
      */
     public function get_default() {

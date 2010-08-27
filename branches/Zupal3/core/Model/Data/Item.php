@@ -1,7 +1,7 @@
 <?php
 
 class Zupal_Model_Data_Item
-        extends ArrayObject
+        extends Zupal_Model_ArrayObject
         implements Zupal_Model_Data_IF {
 
     public function __construct($pValue, $pOptions = array()) {

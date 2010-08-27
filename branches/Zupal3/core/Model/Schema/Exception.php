@@ -13,7 +13,8 @@ extends Exception{
     }
     
     private $_valid;
-    
+    public function validation_errors(){ return $this->_valid; }
+
     public function  __toString() {
         ob_start();
         ?>

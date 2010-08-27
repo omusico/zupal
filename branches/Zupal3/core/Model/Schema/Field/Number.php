@@ -16,7 +16,7 @@ class Zupal_Model_Schema_Field_Number extends Zupal_Model_Schema_Field {
         parent::__construct($array);
     }
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
 
         $out = array();
 
@@ -30,7 +30,7 @@ class Zupal_Model_Schema_Field_Number extends Zupal_Model_Schema_Field {
             }
         } else {
 
-            if ((!empty($this['min'])) && $this['min'] > $value) {
+            if (($this->offsetExists('min')) && $this['min'] > $value) {
                 $out[] = array(
                     'field' => $this->name(),
                     'value' => $value,
@@ -38,7 +38,7 @@ class Zupal_Model_Schema_Field_Number extends Zupal_Model_Schema_Field {
                 );
             }
 
-            if ((!empty($this['max'])) && $this['max'] < $value) {
+            if (($this->offsetExists('max')) && $this['max'] < $value) {
                 $out[] = array(
                     'field' => $this->name(),
                     'value' => $value,
@@ -50,10 +50,9 @@ class Zupal_Model_Schema_Field_Number extends Zupal_Model_Schema_Field {
         return count($out) ? $out : TRUE;
     }
 
-    public function clean_value($value) {
-        return is_numeric($value) ? $value : 0;
+    public function  hydrate_value($pItem, $pIndex = NULL) {
+        return is_numeric($pItem) ? $value : 0;
     }
-
     /**
      * the default value of a field. can be of any type.
      */

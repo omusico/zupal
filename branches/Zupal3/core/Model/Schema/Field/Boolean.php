@@ -8,15 +8,14 @@
 class Zupal_Model_Schema_Field_Boolean
 extends Zupal_Model_Schema_Field {
 
-    public function validate_value($value, $pSerial_item = FALSE) {
+    public function validate_value($value, $pSerial_item = NULL) {
         // there are no validation requirements for booleans.
         return TRUE;
     }
 
-    public function clean_value($pValue) {
-        return $pValue ? TRUE : FALSE;
+    public function  hydrate_value($pItem, $pIndex = NULL) {
+        return $pItem ? TRUE : FALSE;
     }
-
 
     /**
      * the default value of a field. can be of any type.
