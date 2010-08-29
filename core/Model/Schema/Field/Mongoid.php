@@ -34,6 +34,9 @@ class Zupal_Model_Schema_Field_Mongoid
     }
 
     public function hydrate_value($pValue, $pIndex = NULL) {
+        if (empty($pValue)) {
+            $pValue = NULL;
+        }
         if (!$pValue instanceof MongoId) {
             return new MongoId($pValue);
         } else {
@@ -46,6 +49,19 @@ class Zupal_Model_Schema_Field_Mongoid
      */
     public function get_default() {
         return NULL;
+    }
+
+    /**
+     * note - as a hack, classes are saved out through a parameter
+     * for post-installation initialization.
+     *
+     * @param array | ArrayObject $data
+     * @param array $classes
+     */
+    function post_load(&$data, &$classes) {
+        if ($this->auto && (!$data[$this->name()])) {
+            $data[$this->name()] = new MongoId();
+        }
     }
 
 }

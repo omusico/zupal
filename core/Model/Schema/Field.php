@@ -88,6 +88,9 @@ abstract class Zupal_Model_Schema_Field
                 return TRUE;
             }
         } elseif ($this->is_serial()) {
+            if (empty($value)){
+                return TRUE;
+            }
             $errs = array();
             foreach ((array) $value as $i => $v) {
                 $out = $this->validate_value($v, $i);

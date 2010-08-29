@@ -104,6 +104,22 @@ implements Zupal_Model_Data_IF,
         }
     }
 
+    public function add_field($name, $value, $index = NULL, $scope='r'){
+        if (!$this->schema()->get_field($name)->is_serial()){
+            throw new Exception('attempted to append ' . print_r($value, 1) . ' to non-serial field ' . $name);
+        }
+
+        $array = (array) $this->get_field($name);
+
+        if ($index){
+            $array[$index] = $value;
+        } else {
+            $array[] = $value;
+        }
+
+        $this->set_field($name, $array);
+    }
+
     public function __get($name) {
         if (array_key_exists($name, $this->_record)) {
             return $this->_record[$name];
@@ -233,8 +249,11 @@ implements Zupal_Model_Data_IF,
         throw new Exception(__METHOD__ . ': not relevant for Domains');
     }
 
+    /**
+     * @return Zupal_Model_Schema_IF
+     */
     public function schema() {
-        throw new Exception(__METHOD__ . ': must override');
+        return $this->container()->schema();
     }
 
     /* @@@@@@@@@@@@@@@@@@@@ handler IF @@@@@@@@@@@@@@@@@@@ */
