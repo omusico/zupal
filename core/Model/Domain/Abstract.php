@@ -8,7 +8,8 @@
  * @author bingomanatee
  */
 abstract class Zupal_Model_Domain_Abstract
-implements Zupal_Model_Data_IF, 
+        implements Zupal_Model_Data_IF,
+        ArrayAccess,
         Zupal_Model_Container_IF,
         Zupal_Event_HandlerIF {
     const LOAD_NEW = 'new';
@@ -50,7 +51,7 @@ implements Zupal_Model_Data_IF,
             } else {
                 $this->_record = $this->container()->get($pKey);
             }
-          //  Zupal_Event_Manager::event('load', array('subject' => $this));
+            //  Zupal_Event_Manager::event('load', array('subject' => $this));
         } else {
             $this->_record = $this->container()->new_data(array());
         }
@@ -79,7 +80,7 @@ implements Zupal_Model_Data_IF,
     public function get_field($name, $scope = 'r') {
         switch ($scope) {
             case 'm':
-                return empty($this->metadata[$name]) ? NULL :  $this->metadata[$name];
+                return empty($this->metadata[$name]) ? NULL : $this->metadata[$name];
                 break;
 
             case 'r':
@@ -104,14 +105,14 @@ implements Zupal_Model_Data_IF,
         }
     }
 
-    public function add_field($name, $value, $index = NULL, $scope='r'){
-        if (!$this->schema()->get_field($name)->is_serial()){
+    public function add_field($name, $value, $index = NULL, $scope='r') {
+        if (!$this->schema()->get_field($name)->is_serial()) {
             throw new Exception('attempted to append ' . print_r($value, 1) . ' to non-serial field ' . $name);
         }
 
         $array = (array) $this->get_field($name);
 
-        if ($index){
+        if ($index) {
             $array[$index] = $value;
         } else {
             $array[] = $value;
@@ -144,9 +145,8 @@ implements Zupal_Model_Data_IF,
     }
 
     public function toArray($pIncludeMeta = FALSE) {
-        return $pIncludeMeta ? 
-            array_merge($this->metadata, $this->_record->toArray())
-            : $this->_record->toArray();
+        return $pIncludeMeta ?
+                array_merge($this->metadata, $this->_record->toArray()) : $this->_record->toArray();
     }
 
     public function status($pSet) {
@@ -173,7 +173,11 @@ implements Zupal_Model_Data_IF,
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
         $this->container()->save_data($this->_record);
-      // not using atomic events  Zupal_Event_Manager::event('update', array('subject' => $this));
+        // not using atomic events  Zupal_Event_Manager::event('update', array('subject' => $this));
+    }
+
+    public function insert() {
+        $this->container()->insert_data($this->_record);
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
@@ -241,11 +245,18 @@ implements Zupal_Model_Data_IF,
     }
 
     /**
-     * This mesthod is intended as a bridge between
-     * a data object and a container.
+     * This method should not be called externally - use save() or insert() from items.
      * @param Zupal_Model_Data_IF $pData
      */
     public function save_data(Zupal_Model_Data_IF $pData) {
+        throw new Exception(__METHOD__ . ': not relevant for Domains');
+    }
+
+    /**
+     * This method should not be called externally - use save() or insert() from items. 
+     * @param Zupal_Model_Data_IF $pData
+     */
+    public function insert_data(Zupal_Model_Data_IF $pData) {
         throw new Exception(__METHOD__ . ': not relevant for Domains');
     }
 
@@ -260,6 +271,56 @@ implements Zupal_Model_Data_IF,
 
     public function respond(Zupal_Event_EventIF $pEvent) {
         // does no action -- override for custom responsiveness
+    }
+
+    /* @@@@@@@@@@@@@@@@@@@@ ArrayAccess @@@@@@@@@@@@@@@@@@ */
+
+    public function offsetExists($offset) {
+        if ($record = $this->_record){
+            if ((is_array($record)) || $record instanceof ArrayAccess){
+                return array_key_exists($offset, $record);
+            } else {
+                throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
+            }
+        } else {
+            throw new Exception(__METHOD__ . ': no record to test');
+        }
+    }
+
+    public function offsetGet($offset) {
+        if ($record = $this->_record){
+            if ((is_array($record)) || $record instanceof ArrayAccess){
+                return $record[$offset];
+            } else {
+                throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
+            }
+        } else {
+            throw new Exception(__METHOD__ . ': no record to test');
+        }
+    }
+
+    public function offsetSet($offset, $value) {
+                if ($record = $this->_record){
+            if ((is_array($record)) || $record instanceof ArrayAccess){
+                return $record[$offset] = $value;
+            } else {
+                throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
+            }
+        } else {
+            throw new Exception(__METHOD__ . ': no record to test');
+        }
+    }
+
+    public function offsetUnset($offset) {
+                if ($record = $this->_record){
+            if ((is_array($record)) || $record instanceof ArrayAccess){
+                 unset($record[$offset]);
+            } else {
+                throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
+            }
+        } else {
+            throw new Exception(__METHOD__ . ': no record to test');
+        }
     }
 
 }

@@ -60,7 +60,7 @@ extends Zupal_Model_Domain_Abstract {
     protected function container() {
         if (!self::$_container) {
             $schema = $this->schema();
-            self::$_container = new Zupal_Model_Container_Mongo('zupal', 'layouts', array('schema' => $schema));
+            self::$_container = new Zupal_Model_Container_MongoCollection('zupal', 'layouts', array('schema' => $schema));
         }
         return self::$_container;
     }

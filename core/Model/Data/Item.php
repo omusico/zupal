@@ -136,6 +136,16 @@ class Zupal_Model_Data_Item
     public function save() {
         if ($this->get_container()) {
             $this->get_container()->save_data($this);
+        } else {
+            throw new Exception(__METHOD__ . ': called from a containerless item');
+        }
+    }
+
+    public function insert() {
+        if ($this->get_container()) {
+            $this->get_container()->insert_data($this);
+        } else {
+            throw new Exception(__METHOD__ . ': called from a containerless item');
         }
     }
 

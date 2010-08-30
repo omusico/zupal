@@ -4,7 +4,7 @@ global $event_manager, $event_manager_container;
 
 //   $mod_paths = Zupal_Module_Path::instance();
 
-$event_manager_container = new Zupal_Model_Container_Mongo('zupal', 'event');
+$event_manager_container = new Zupal_Model_Container_MongoCollection('zupal', 'event');
 $event_manager  = new Zupal_Event_Manager($event_manager_container);
 
 $loader     = Zupal_Module_Loader::instance();

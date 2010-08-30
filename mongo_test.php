@@ -24,7 +24,7 @@
         $schema_data = Zend_Json::decode($schema_json);
         $schema = new Zupal_Model_Schema_Item($schema_data);
 
-        $users = new Zupal_Model_Container_Mongo('test', 'users', array('schema' => $schema));
+        $users = new Zupal_Model_Container_MongoCollection('test', 'users', array('schema' => $schema));
 
         $crit = array('name' => 'alpha');
 

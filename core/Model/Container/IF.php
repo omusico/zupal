@@ -78,6 +78,14 @@ interface Zupal_Model_Container_IF {
     function save_data(Zupal_Model_Data_IF $pData);
 
     /**
+     * saves a single record to the database.
+     * Note - some situations require manually prompting for INSERT behavor
+     * as is the case with manually created keys. 
+     * @param Zupal_Model_Data_IF $pData
+     */
+    function insert_data(Zupal_Model_Data_IF $pData);
+
+    /**
      * @return Zupal_Model_Schema_IF
      */
     public function schema();

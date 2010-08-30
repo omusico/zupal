@@ -65,7 +65,7 @@ implements Zupal_Model_Query_IF {
      * @param Zupal_Model_Container_IF $pContainer
      * @return Zupal_Model_Container_IF
      */
-    public function container(Zupal_Model_Container_Mongo $pContainer = NULL) {
+    public function container(Zupal_Model_Container_MongoCollection $pContainer = NULL) {
         if ($pContainer) {
             $this->_container = $pContainer;
         }

@@ -15,7 +15,7 @@ extends Zupal_Model_Domain_Abstract
      */
     protected function container(){
         if (!$this->_container){
-            $this->_container = new Zupal_Model_Container_Mongo('zupal', 'routes');
+            $this->_container = new Zupal_Model_Container_MongoCollection('zupal', 'routes');
             // note -- no schema in place yet
         }
         return $this->_container;

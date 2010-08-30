@@ -57,11 +57,11 @@ class Zupal_Model_Container_MongoDB {
     /**
      * gets a Mongo collection.
      * @param string $pKey
-     * @return Zupal_Model_Container_Mongo
+     * @return Zupal_Model_Container_MongoCollection
      */
     public function get($pKey) {
         if (!array_key_exists($pKey, $this->_children)) {
-            $this->_children = new Zupal_Model_Container_Mongo($this, $pKey);
+            $this->_children = new Zupal_Model_Container_MongoCollection($this, $pKey);
         }
         return $this->_children[$pKey];
     }

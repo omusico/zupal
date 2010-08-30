@@ -195,6 +195,10 @@ class Zupal_Model_Data_SubData
 // managed by parent object
     }
 
+    public function insert() {
+        // managed by parent object
+    }
+
     public function delete() {
 // not relevant to a subdoc.
     }
