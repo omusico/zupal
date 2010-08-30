@@ -63,6 +63,7 @@ class Zupal_Model_Data_Mongo
         $classes = array();
         foreach ($this->container()->schema() as $field) {
             if (is_object($field)) {
+                $name = $field->name();
                 if (method_exists($field, 'post_load')) {
                     $field->post_load($this, $classes);
                 }
@@ -161,6 +162,13 @@ class Zupal_Model_Data_Mongo
         $result = $this->container()->save_data($this);
         error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
+
+    public function insert(){
+        $result = $this->container()->insert_data($this);
+        error_log(__METHOD__ . ': result = ' . print_r($result, 1));
+    }
+
+
 
     /**
      *

@@ -44,7 +44,17 @@ interface Zupal_Model_Data_IF {
      */
     function delete();
 
+    /**
+     * persists the object into the container.
+     * Internally branches between insert and update based on existence of key
+     */
     function save();
+
+    /**
+     * Sometimes its necessary to force the insertion of new data, as with 
+     * manually cretaed keys. 
+     */
+    function insert();
 
     /**
      * @return array

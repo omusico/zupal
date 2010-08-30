@@ -11,7 +11,7 @@ extends Zupal_Model_Domain_Abstract {
     private static $_container;
     protected function container() {
         if (!self::$_container) {
-            self::$_container = new Zupal_Model_Container_Mongo('zupal', 'modules', array('schema' => $this->schema()));
+            self::$_container = new Zupal_Model_Container_MongoCollection('zupal', 'modules', array('schema' => $this->schema()));
         }
         return self::$_container;
     }

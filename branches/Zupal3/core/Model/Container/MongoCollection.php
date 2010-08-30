@@ -3,7 +3,8 @@
 /**
  * represents a Mongo collection
  */
-class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
+class Zupal_Model_Container_MongoCollection
+        implements Zupal_Model_Container_IF {
 
     private $_name;
     /**
@@ -57,7 +58,7 @@ class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
      *
      * @return MongoGridFS
      */
-    public function gridfs(){
+    public function gridfs() {
         return $this->parent()->gridfs();
     }
 
@@ -84,15 +85,21 @@ class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
      */
     public function get($pKey) {
 
-        $q = array('_id' => new MongoId($pKey));
+        $q = array('_id' => $pKey instanceof MongoId ? $pKey : new MongoId($pKey));
 
         $data = $this->coll()->findOne($q);
 
         if (empty($data)) {
-            throw new Exception(__METHOD__ . ': cannot find key ' . $pKey . ' in collection ' . $this->name());
-        } else {
-            return new Zupal_Model_Data_Mongo($data, $this);
+            if ($pKey instanceof MongoId) {
+                $pKey = $pKey->__toString();
+            }
+            $q = array('_id' => $pKey);
+            $data = $this->coll()->findOne($q);
+            if (!$data) {
+                throw new Exception(__METHOD__ . ': cannot find key ' . $pKey . ' in collection ' . $this->name());
+            }
         }
+        return new Zupal_Model_Data_Mongo($data, $this);
     }
 
     public function new_data($pData) {
@@ -263,16 +270,42 @@ class Zupal_Model_Container_Mongo implements Zupal_Model_Container_IF {
         }
 
         if (empty($array['_id'])) {
-          //  $array['_id'] = new MongoId();
+            //  $array['_id'] = new MongoId();
             $result = $this->coll()->save($array);
             $pData->set_key($array['_id']);
-            $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
+            $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
         } elseif (!$this->coll()->find(array('_id' => $array['_id']))) {
             $result = $this->coll()->insert($array);
-            $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
+            $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
         } else {
             $this->coll()->update(array('_id' => $array['_id']), $array);
         }
+    }
+
+    public function insert_data(Zupal_Model_Data_IF $pData) {
+
+        if (is_array($pData)) {
+            $array = $pData;
+        } elseif (is_object($pData) && method_exists($pData, 'toArray')) {
+            $array = $pData->toArray();
+        } else {
+            throw new Exception(__METHOD__ . ': bad data passed: ' . print_r($pData, 1));
+        }
+
+        if ($this->schema()) {
+            $valid = $this->schema()->validate($array);
+            foreach ($array as $k => $v) {
+                if (is_null($v)) {
+                    $array[$k] = '';
+                }
+            }
+            if ($valid !== TRUE) {
+                throw new Zupal_Model_Schema_Exception(__METHOD__ . ': attempt to submit invalid data:', $valid);
+            }
+        }
+
+        $result = $this->coll()->insert($array);
+        $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
     }
 
 }

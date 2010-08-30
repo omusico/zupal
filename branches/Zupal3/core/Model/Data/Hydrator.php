@@ -17,15 +17,22 @@ class Zupal_Model_Data_Hydrator {
                     $out[$name] = $value;
                 }
 
-                if ($field->auto && empty($out[$name])){
+                if ($field->auto && empty($out[$name])) {
                     $out[$name] = $field->auto();
                 }
             }
         }
-
+        /**
+         * note - this should only kick in if an un-schema object is in the array.
+         * definatley a borderline condition. 
+         */
         foreach ($out as $k => $v) {
-            if (is_object($v) && method_exists($v, 'toArray')) {
-                $out[$k] = $v->toArray();
+            if (is_object($v) && (! ($v instanceof MongoId))) {
+                if (($v instanceof Zupal_Model_Schema_Field_ClassIF)) {
+                    $out[$k] = $v->hydrate();
+                } else {
+                    throw new exception("non ClassIF object for $k - cannot hydrate");
+                }
             }
         }
         return $out;

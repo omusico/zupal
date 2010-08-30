@@ -2,8 +2,11 @@
 
 /**
  * An interface forced on any class that can be stored in field value.
- * Note that the $pData object is the root ancestor of this class - not necessarily the direct parent
+ * Note that the $pData object is the root ancestor of this class
+ * - not necessarily the direct parent
  * which may be passed in as a $pOptions value.
+ *
+ * Note - EVERY subobject of a Data class MUST implement this interface!
  *
  * @author bingomanatee
  */
