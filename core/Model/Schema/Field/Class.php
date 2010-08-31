@@ -78,7 +78,7 @@ class Zupal_Model_Schema_Field_Class
         $name = $this->name();
         $c = $this['class'];
 
-        /* @var $c_obj Zupal_Model_Schema_Field_ObjIF */
+        /* @var $c_obj Zupal_Model_Schema_Field_ClassIF */
         $d_value = array_key_exists($name, $data) ? ($data[$name]) : NULL;
 
         if ($this->is_serial()) {
