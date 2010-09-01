@@ -33,7 +33,7 @@ interface Zupal_Model_Container_IF {
     * @param <type> $sort
     * @return array
     */
-    function find($pQuery, $limit = NULL, $sort = NULL);
+    function find($pQuery = NULL, $limit = NULL, $sort = NULL);
 
    /**
     * returns a series of Zupal_Model_Data_IF
@@ -49,7 +49,7 @@ interface Zupal_Model_Container_IF {
      * @param <type> $sort 
      * @return Zupal_Model_Data_IF
      */
-    function find_one($pQuery, $sort = NULL);
+    function find_one($pQuery = NULL, $sort = NULL);
 
     /**
      * can be a scalar key to get, a query to find or an actual data item.

@@ -72,7 +72,7 @@ class Zupal_Model_Container_MongoCollection
      *
      * @return Mongo
      */
-    protected function coll() {
+    public function coll() {
         if (!$this->_coll) {
             $name = $this->name();
             $this->_coll = $this->parent()->db()->$name;
@@ -102,6 +102,11 @@ class Zupal_Model_Container_MongoCollection
         return new Zupal_Model_Data_Mongo($data, $this);
     }
 
+    /**
+     *  transforms an array of raw data into a mongo object. 
+     * @param array $pData
+     * @return Zupal_Model_Data_Mongo
+     */
     public function new_data($pData) {
         return new Zupal_Model_Data_Mongo($pData, $this);
     }
@@ -132,52 +137,20 @@ class Zupal_Model_Container_MongoCollection
      * @param <type> $sort
      * @return array
      */
-    function find($pWhat, $limit = NULL, $sort = NULL) {
-        if ($pWhat instanceof Zupal_Model_Query_IF) {
+    function find($pWhat = NULL, $limit = NULL, $sort = NULL) {
+        if ($pWhat instanceof Zupal_Model_Query_MongoCollection) {
             $pQuery = $pWhat;
-        } elseif ($pWhat) {
-            $pQuery = Zupal_Model_Query_Mongo::to_query($pWhat);
         } else {
-            $pQuery = NULL;
+            $pQuery = Zupal_Model_Query_MongoCollection::to_query($pWhat, $limit, $sort);
         }
 
-        if ($pQuery) {
-            $cursor = $this->coll()->find($pQuery->toArray());
-        } else {
-            $cursor = $this->coll()->find();
-        }
-
-        return $this->_process_cursor($cursor, $limit, $sort);
-    }
-
-    /**
-     *
-     * @param MongoCursor $cursor
-     * @param int  $limit
-     * @param string | array $sort
-     * @return array
-     */
-    private function _process_cursor(MongoCursor $cursor, $limit = NULL, $sort = NULL) {
-
-        if ($sort) {
-            if (is_string($sort)) {
-                $sort = array($sort => 1);
-            }
-            $cursor->sort($sort);
-        }
+        $cursor = $pQuery->get_data($this);
 
         $out = array();
 
-        if ($cursor) {
-            $count = 0;
-            foreach ($cursor as $data) {
-                $out[] = $this->new_data($data);
-                if ($limit && (++$count > $limit)) {
-                    break;
-                }
-            }
+        foreach ($cursor as $data) {
+            $out[] = $this->new_data($data);
         }
-
         return $out;
     }
 
@@ -189,17 +162,19 @@ class Zupal_Model_Container_MongoCollection
      */
     function find_all($limit = NULL, $sort = NULL) {
         $cursor = $this->coll()->find(array());
-        return $this->_process_cursor($cursor, $limit, $sort);
+        return $this->find(array(), $limit, $sort);
     }
 
-    public function find_one($pWhat, $sort = NULL) {
-        $pWhat = (array) $pWhat;
-        $data = $this->coll()->findOne($pWhat);
-        if ($data) {
-            return $this->new_data($data);
+    public function find_one($pWhat = NULL, $sort = NULL) {
+        if ($pWhat instanceof Zupal_Model_Query_MongoCollection) {
+            $pQuery = $pWhat;
         } else {
-            return NULL;
+            $pQuery = Zupal_Model_Query_MongoCollection::to_query($pWhat, NULL, $sort);
         }
+
+        $array = $pQuery->get_data($this);
+
+        return $this->new_data($array);
     }
 
     /**
