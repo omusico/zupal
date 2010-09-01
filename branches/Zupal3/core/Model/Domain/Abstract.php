@@ -212,7 +212,7 @@ abstract class Zupal_Model_Domain_Abstract
         return $out;
     }
 
-    public function find($pQuery, $limit = NULL, $sort = NULL) {
+    public function find($pQuery = NULL, $limit = NULL, $sort = NULL) {
         $out = array();
         if (empty($pQuery)) {
             $pQuery = NULL;
@@ -224,7 +224,7 @@ abstract class Zupal_Model_Domain_Abstract
         return $out;
     }
 
-    public function find_one($pQuery, $sort = NULL) {
+    public function find_one($pQuery = NULL, $sort = NULL) {
         $record = $this->container()->find_one($pQuery, $sort);
         if ($record) {
             return $this->new_data($record);
