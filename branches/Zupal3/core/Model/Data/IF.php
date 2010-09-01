@@ -18,7 +18,7 @@ interface Zupal_Model_Data_IF {
      * @param string $pSet
      * @return string
      */
-    function status($pSet);
+    function status($pSet = NULL);
 
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ KEY @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 

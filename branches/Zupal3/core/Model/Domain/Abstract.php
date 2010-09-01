@@ -149,7 +149,7 @@ abstract class Zupal_Model_Domain_Abstract
                 array_merge($this->metadata, $this->_record->toArray()) : $this->_record->toArray();
     }
 
-    public function status($pSet) {
+    public function status($pSet = NULL) {
         return $this->_record->status($pSet);
     }
 

@@ -25,7 +25,7 @@ implements Zupal_Model_Data_IF {
 
     private $_status = Zupal_Model_Data_IF::STATUS_UNKNOWN;
 
-    public function status($pSet) {
+    public function status($pSet = NULL) {
         if ($pSet) {
             $this->_status = $pSet;
         }
