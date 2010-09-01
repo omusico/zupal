@@ -305,7 +305,7 @@ class Zupal_Model_Container_MongoCollection
         }
 
         $result = $this->coll()->insert($array);
-        $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
+        $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
     }
 
 }

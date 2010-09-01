@@ -172,12 +172,17 @@ abstract class Zupal_Model_Domain_Abstract
 
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
+        $key = $this->key();
+        if ($key && $key instanceof MongoId){
+            $key = $key->__toString();
+        }
         $this->container()->save_data($this->_record);
-        // not using atomic events  Zupal_Event_Manager::event('update', array('subject' => $this));
+        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
     }
 
     public function insert() {
         $this->container()->insert_data($this->_record);
+        Zupal_Event_Manager::event('insert', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
@@ -276,8 +281,8 @@ abstract class Zupal_Model_Domain_Abstract
     /* @@@@@@@@@@@@@@@@@@@@ ArrayAccess @@@@@@@@@@@@@@@@@@ */
 
     public function offsetExists($offset) {
-        if ($record = $this->_record){
-            if ((is_array($record)) || $record instanceof ArrayAccess){
+        if ($record = $this->_record) {
+            if ((is_array($record)) || $record instanceof ArrayAccess) {
                 return array_key_exists($offset, $record);
             } else {
                 throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
@@ -288,8 +293,8 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function offsetGet($offset) {
-        if ($record = $this->_record){
-            if ((is_array($record)) || $record instanceof ArrayAccess){
+        if ($record = $this->_record) {
+            if ((is_array($record)) || $record instanceof ArrayAccess) {
                 return $record[$offset];
             } else {
                 throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
@@ -300,8 +305,8 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function offsetSet($offset, $value) {
-                if ($record = $this->_record){
-            if ((is_array($record)) || $record instanceof ArrayAccess){
+        if ($record = $this->_record) {
+            if ((is_array($record)) || $record instanceof ArrayAccess) {
                 return $record[$offset] = $value;
             } else {
                 throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
@@ -312,9 +317,9 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function offsetUnset($offset) {
-                if ($record = $this->_record){
-            if ((is_array($record)) || $record instanceof ArrayAccess){
-                 unset($record[$offset]);
+        if ($record = $this->_record) {
+            if ((is_array($record)) || $record instanceof ArrayAccess) {
+                unset($record[$offset]);
             } else {
                 throw new Exception(__METHOD__ . ': cannot execute on ' . print_r($record, 1));
             }
@@ -323,4 +328,121 @@ abstract class Zupal_Model_Domain_Abstract
         }
     }
 
+    /**
+     * adds or updates an object in an array of objects.
+     * Preaumes content is Zupal_Model_Schema_Field_ClassIF elements. 
+     * @TODO: apply a collection to serial fields. 
+     * 
+     * @param string $pField
+     * @param array | Zupal_Model_Schema_Field_ClassIF $pData
+     * @param string $pClass
+     * @param string $pKey
+     * @return Zupal_Model_Schema_Field_ClassIF 
+     */
+    public function add_field_serial_indexed($pField, $pData, $pClass, $pKey = 'id') {
+
+        if ($pData instanceof $pClass) {
+            $object = $pData;
+        } elseif (is_array($pData)) {
+            $object = new $pClass($this->record(), $pData);
+        } else {
+            throw new Exception(__METHOD__ . ': cannot add non ' . $pClass . ' ' . print_r($pData, 1));
+        }
+
+        $old_data = $this->get_field($pField);
+
+        $mongo_key = FALSE;
+        $set = FALSE;
+
+        $object_key = $object->$pKey;
+        if ($object_key instanceof MongoId) {
+            $mongo_key = TRUE;
+            $object_key = $object_key->__toString();
+        }
+
+        if ($object_key) {
+            foreach ($old_data as $k => $v) {
+                if (!($v instanceof $pClass)) {
+                    throw new Exception(__METHOD__ . ": non $pClass found in field $pField");
+                }
+
+                $v_key = $v->$pKey;
+
+                if ($mongo_key && $v_key instanceof MongoId) {
+                    $v_key = $v_key->__toString();
+                }
+
+                if ($v_key == $object_key) {
+                    $old_data[$k] = $object;
+                    $set = TRUE;
+                    break;
+                }
+            }
+        }
+
+        if (!$set) {
+            $old_data[] = $object;
+        }
+
+        $this->set_field($pField, $old_data);
+
+        return $object;
+    }
+
+    /**
+     * Deletes all members of a serial field with a given key/value identity. 
+     * May delete more than one member. 
+     *
+     * @param string $pField
+     * @param scalar | MongoId $pKey
+     * @param string $pKey_field 
+     */
+    public function delete_field_serial_indexed($pField, $pKey, $pKey_field) {
+        $serial_objects = (array) $this->get_field($pField);
+        $new_serial_objects = array();
+        if ($pKey instanceof MongoId) {
+            $key_value = (string) $pID;
+            $mongo_key = TRUE;
+        } else {
+            $mongo_key = FALSE;
+            $key_value = $pKey;
+        }
+
+        foreach ($serial_objects as $k => $serial_object) {
+            $serial_id = $serial_object->$pKey_field;
+            if ($mongo_key){
+                $serial_id = $serial_id->__toString();
+            }
+            if ($serial_id != $key_value) {
+                $new_serial_objects[$k] = $serial_object;
+            }
+        }
+        $this->set_field($pField, $new_serial_objects);
+    }
+
+    public function get_field_serial_indexed($pField, $pKey, $pKey_field) {
+        if ($pKey instanceof MongoId) {
+            $key_value = (string) $pKey;
+            $is_mongo_key = TRUE;
+        } else {
+            $key_value = $pKey;
+            $is_mongo_key = FALSE;
+        }
+
+        foreach ((array) $this->get_field($pField) as $cond) {
+
+            $c_key = $cond->$pKey_field;
+            if ($is_mongo_key) {
+                $c_key = $c_key->__toString();
+            }
+
+            if ($c_key == $key_value) {
+                return $cond;
+            }
+        }
+
+        return NULL;
+    }
+
 }
+
