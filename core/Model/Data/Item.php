@@ -156,7 +156,7 @@ class Zupal_Model_Data_Item
     }
 
     private $_status;
-    public function status($pSet) {
+    public function status($pSet = NULL) {
         if (!is_null($pSet)){
             $this->_status = $pSet;
         }

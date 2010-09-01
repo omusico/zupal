@@ -209,7 +209,7 @@ class Zupal_Model_Data_SubData
         }
     }
 
-    public function status($pSet) {
+    public function status($pSet = NULL) {
         // not relevant for subdocs;
     }
 

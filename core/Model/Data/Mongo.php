@@ -84,7 +84,7 @@ class Zupal_Model_Data_Mongo
      * @param string $pSet
      * @return string
      */
-    public function status($pSet) {
+    public function status($pSet = NULL) {
         if ($pSet) {
             $this->_status = $pSet;
         }

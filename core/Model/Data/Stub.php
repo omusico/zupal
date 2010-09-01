@@ -24,7 +24,7 @@ class Zupal_Model_Data_Stub
 
     }
 
-    public function status($pSet) {
+    public function status($pSet = NULL) {
 
     }
 
