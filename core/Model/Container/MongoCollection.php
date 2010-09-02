@@ -248,12 +248,13 @@ class Zupal_Model_Container_MongoCollection
             //  $array['_id'] = new MongoId();
             $result = $this->coll()->save($array);
             $pData->set_key($array['_id']);
-            $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
-        } elseif (!$this->coll()->find(array('_id' => $array['_id']))) {
+            $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
+        } elseif (!$this->coll()->findOne(array('_id' => $array['_id']), array('_id'))) {
             $result = $this->coll()->insert($array);
             $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
         } else {
             $this->coll()->update(array('_id' => $array['_id']), $array);
+            $pData->status(Zupal_Model_Data_IF::STATUS_UPDATED);
         }
     }
 
