@@ -99,6 +99,10 @@ class Zupal_Model_Schema_Item
                 return new Zupal_Model_Schema_Field_Mongoid($item);
                 break;
 
+            case 'boolean':
+                return new Zupal_Model_Schema_Field_Boolean($item);
+                break;
+            
             case 'str':
             case 'txt':
             case 'text':

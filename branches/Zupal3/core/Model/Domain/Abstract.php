@@ -177,7 +177,7 @@ abstract class Zupal_Model_Domain_Abstract
             $key = $key->__toString();
         }
         $this->container()->save_data($this->_record);
-        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
+//        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
     }
 
     public function insert() {
