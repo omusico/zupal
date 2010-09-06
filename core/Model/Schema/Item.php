@@ -82,6 +82,11 @@ class Zupal_Model_Schema_Item
                 return new Zupal_Model_Schema_Field_Date($item);
                 break;
 
+            case 'mongodate':
+                $item['type'] = 'mongodate';
+                return new Zupal_Model_Schema_Field_Mongodate($item);
+                break;
+
             case 'array':
                 return new Zupal_Model_Schema_Field_Array($item);
                 break;

@@ -27,7 +27,7 @@ class Zupal_Model_Data_Hydrator {
          * definatley a borderline condition. 
          */
         foreach ($out as $k => $v) {
-            if (is_object($v) && (! ($v instanceof MongoId))) {
+            if (is_object($v) && (! ($v instanceof MongoId) && (!($v instanceof MongoDate)))) {
                 if (($v instanceof Zupal_Model_Schema_Field_ClassIF)) {
                     $out[$k] = $v->hydrate();
                 } else {

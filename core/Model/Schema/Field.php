@@ -44,7 +44,8 @@ abstract class Zupal_Model_Schema_Field
 
     public function hydrate($value) {
         if ($this->is_serial()) {
-            foreach ((array) $value as $i => $v) {
+            $value = (array) $value;
+            foreach ($value as $i => $v) {
                 $value[$i] = $this->hydrate_value($v);
             }
             return $value;
