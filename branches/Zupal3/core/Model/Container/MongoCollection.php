@@ -215,7 +215,7 @@ class Zupal_Model_Container_MongoCollection
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
-        $q = array('_id' => new MongoId($pData->key()));
+        $q = array('_id' => $pData->key());
         $this->coll()->remove($q);
     }
 
