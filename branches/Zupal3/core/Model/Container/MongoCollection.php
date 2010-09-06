@@ -172,9 +172,9 @@ class Zupal_Model_Container_MongoCollection
             $pQuery = Zupal_Model_Query_MongoCollection::to_query($pWhat, NULL, $sort);
         }
 
-        $array = $pQuery->get_data($this);
+        $array = $pQuery->get_one($this);
 
-        return $this->new_data($array);
+        return $array ? $this->new_data($array) : NULL;
     }
 
     /**
