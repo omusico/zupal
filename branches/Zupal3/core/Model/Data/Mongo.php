@@ -57,15 +57,23 @@ class Zupal_Model_Data_Mongo
      *
      * @return array
      */
-
     protected function _apply_schema() {
-        /* @var $field Zupal_Model_Schema_IF */
+        /* @var $field Zupal_Model_Schema_Field_IF */
         $classes = array();
         foreach ($this->container()->schema() as $field) {
             if (is_object($field)) {
                 $name = $field->name();
+
+                if ($name == 'data') {
+                    error_log('data found');
+                }
+
                 if (method_exists($field, 'post_load')) {
                     $field->post_load($this, $classes);
+                }
+
+                if ($field->is_serial()) {
+                    $this->$name = new Zupal_Model_Schema_Field_Serial((array) $this->$name);
                 }
             } else {
                 $e = $field;
@@ -163,12 +171,10 @@ class Zupal_Model_Data_Mongo
         error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
 
-    public function insert(){
+    public function insert() {
         $result = $this->container()->insert_data($this);
         error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
-
-
 
     /**
      *

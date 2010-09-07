@@ -72,7 +72,7 @@ class Zupal_Model_Data_SubData
         parent::__construct($array);
     }
 
-    public function load($array){
+    public function load($array) {
         $this->_load_data($array);
     }
 
@@ -83,8 +83,19 @@ class Zupal_Model_Data_SubData
         /* @var $field Zupal_Model_Schema_IF */
         $classes = array();
         foreach ($this->get_schema() as $field) {
+            $name = $field->name();
+       //     if ($name == 'headers'){
+         //       error_log('headers found');
+           // }
             if ($this[$field->name()] && method_exists($field, 'post_load')) {
                 $field->post_load($this, $classes);
+            }
+
+            if ($field->is_serial()) {
+                $av = $this->$name;
+                $this->$name = new Zupal_Model_Schema_Field_Serial($av);
+            //  if ($name == 'headers')  error_log(var_dump($this->$name, 1));
+            //    $c = count($this->$name);
             }
         }
 
@@ -216,8 +227,8 @@ class Zupal_Model_Data_SubData
     public function toArray() {
         return $this->hydrate();
     }
-    
-    public function hydrate(){
+
+    public function hydrate() {
         return Zupal_Model_Data_Hydrator::hydrate($this->getArrayCopy(), $this->get_schema());
     }
 
