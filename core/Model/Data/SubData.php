@@ -93,6 +93,9 @@ class Zupal_Model_Data_SubData
 
             if ($field->is_serial()) {
                 $av = $this->$name;
+                if (!is_array($av)){
+                    $av = array();
+                }
                 $this->$name = new Zupal_Model_Schema_Field_Serial($av);
             //  if ($name == 'headers')  error_log(var_dump($this->$name, 1));
             //    $c = count($this->$name);
