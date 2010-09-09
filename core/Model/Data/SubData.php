@@ -242,5 +242,25 @@ class Zupal_Model_Data_SubData
         
     }
 
+    /* @@@@@@@@@@@@@@@ TO XML @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    function to_xml(DomDocument $dom, $root = NULL) {
+        if (!$root) {
+            $root = $dom->createElement('data');
+            $dom->appendChild($root);
+        } elseif (is_string($root)){
+            $root = $dom->createElement($root);
+            $dom->appendChild($root);
+        }
+
+        /* @var $schema Zupal_Model_Schema_IF */
+        if ($schema = $this->get_schema()) {
+            $schema->as_xml($this, $dom, $root);
+        } else {
+            Zupal_Model_Schema_Field_Xml::array_to_node($this->getArrayCopy(), $dom, $root);
+        }
+
+        return $root;
+    }
 }
 

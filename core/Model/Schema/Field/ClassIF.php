@@ -33,6 +33,8 @@ interface Zupal_Model_Schema_Field_ClassIF {
      * This is essentially, toArray() - however it conflicts with the data definition. 
      */
     function hydrate();
+
+    function to_xml(DomDocument $dom, $root = NULL);
     
 }
 

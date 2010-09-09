@@ -89,7 +89,7 @@ abstract class Zupal_Model_Schema_Field
                 return TRUE;
             }
         } elseif ($this->is_serial()) {
-            if (empty($value)){
+            if (empty($value)) {
                 return TRUE;
             }
             $errs = array();
@@ -111,6 +111,14 @@ abstract class Zupal_Model_Schema_Field
 
     public function toArray() {
         return $this->getArrayCopy();
+    }
+
+    public function as_xml(Zupal_Model_Data_IF $pData, DomDocument $pDom, $pProps = array()){
+        return Zupal_Model_Schema_Field_Xml::field_to_node($pData, $pDom, $this, $pProps);
+    }
+
+    public function value_to_xml($item, DomDocument $dom, DomNode $root) {
+        $root->appendChild($dom->createTextNode($item));
     }
 
 }

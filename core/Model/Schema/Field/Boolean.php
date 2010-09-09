@@ -6,14 +6,14 @@
  * @author bingomanatee
  */
 class Zupal_Model_Schema_Field_Boolean
-extends Zupal_Model_Schema_Field {
+        extends Zupal_Model_Schema_Field {
 
     public function validate_value($value, $pSerial_item = NULL) {
         // there are no validation requirements for booleans.
         return TRUE;
     }
 
-    public function  hydrate_value($pItem, $pIndex = NULL) {
+    public function hydrate_value($pItem, $pIndex = NULL) {
         return $pItem ? TRUE : FALSE;
     }
 
@@ -23,5 +23,10 @@ extends Zupal_Model_Schema_Field {
     public function get_default() {
         return FALSE;
     }
+
+    public function value_to_xml($item, DomDocument $dom, DomNode $root) {
+        $root->appendChild($dom->createTextNode($item ? 'true' : 'false'));
+    }
+
 }
 

@@ -72,7 +72,7 @@ class Zupal_Model_Schema_XSD
 
         $nodes = $xpath->query($query, $schema);
 
-        error_log(__METHOD__ . ": query = $query, result = " . $nodes->length . ' items: ' . print_r($nodes, 1));
+       // error_log(__METHOD__ . ": query = $query, result = " . $nodes->length . ' items: ' . print_r($nodes, 1));
 
         foreach ($nodes as $field) {
             //    $data = $schema->saveXML($field);
