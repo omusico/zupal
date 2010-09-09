@@ -57,9 +57,11 @@ class Zupal_Model_Data_SubData
     }
 
     protected function _load_data($array) {
+        error_log(__METHOD__ . ': loading data for ' . get_class($this));
+        
         if (($array instanceof DomNode) || ($array instanceof DOMNodeList)) {
             $schema = $this->get_schema();
-            $array = Zupal_Model_Data_XMLdigester::digest($xml, $schema);
+            $array = Zupal_Model_Data_XMLdigester::digest($array, $schema);
         }
 
         if ($this->get_schema()) {
@@ -69,7 +71,7 @@ class Zupal_Model_Data_SubData
             }
         }
 
-        parent::__construct($array);
+        $this->exchangeArray($array);
     }
 
     public function load($array) {
@@ -78,6 +80,7 @@ class Zupal_Model_Data_SubData
 
     protected function _apply_schema() {
         if (!$this->get_schema()) {
+            error_log(get_class() . ': no schema.');
             return;
         }
         /* @var $field Zupal_Model_Schema_IF */

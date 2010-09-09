@@ -223,7 +223,7 @@ class Zupal_Model_Schema_Item
         /* @var $field Zupal_Model_Schema_Field_IF */
         foreach($this as $field){
             $node = $field->as_xml($data, $dom);
-            error_log(__METHOD__ . ': appending ' . $node->nodeName . ' to ' . $root->nodeName);
+         //   error_log(__METHOD__ . ': appending ' . $node->nodeName . ' to ' . $root->nodeName);
             $root->appendChild($node);
         }
         return $root;

@@ -97,7 +97,7 @@ class Zupal_Model_Schema_Field_Class
             $data[$name] = $new_data;
 
         } elseif ($this->required() || (!empty($d_value))) {
-            $c_obj = new $c($data, (array) $d_value, array());
+            $c_obj = new $c($data, $d_value, array());
             $classes[] = $c_obj;
             $data[$name] = $c_obj;
         }

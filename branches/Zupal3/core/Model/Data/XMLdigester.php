@@ -14,33 +14,50 @@ class Zupal_Model_Data_XMLdigester {
 
     public static function digest($xml, Zupal_Model_Schema_IF $schema = NULL) {
         $out = array();
-        if ($xml instanceof DOMNodeList){
+        if ($xml instanceof DOMNodeList) {
             $xml = $xml->item(0);
+        } elseif (is_string($xml)) {
+            error_log(__METHOD__ . ': data = ' . $xml);
+            $dom = new DomDocument();
+            $dom->loadXML($xml);
+            $xml = $dom->documentElement;
         }
-        foreach ($xml->childNodes as $node) {
-            if (!($node->nodeType == XML_ELEMENT_NODE)) {
-                continue;
-            }
-            $name = $node->localName;
-            /* @var $field Zupal_Model_Schema_Field_IF */
-            if ($schema && ($field = $schema->get_field($name))) {
-                if ($field->type() == 'class') {
-                    $value = $node;
-                } else {
-                    $value = self::_digest_raw($node);
+
+        if ($xml && $xml instanceof DOMNode) {
+
+            foreach ($xml->childNodes as $node) {
+                if (!($node->nodeType == XML_ELEMENT_NODE)) {
+                    continue;
                 }
-                if ($field->is_serial()) {
-                    if (!array_key_exists($name, $out)) {
-                        $out[$name] = array($value);
+                $name = $node->localName;
+                error_log(__METHOD__ . ": exmining node $name: ");
+
+                /* @var $field Zupal_Model_Schema_Field_IF */
+                if ($schema && ($field = $schema->get_field($name))) {
+                    if ($field->type() == 'class') {
+                        error_log(__METHOD__ . ": saving node $name for digestion by " . $field->class);
+                        $value = $node;
                     } else {
-                        $out[$name][] = $value;
+                        error_log(__METHOD__ . ": $name is not a class, digesting raw");
+                        $value = self::_digest_raw($node);
                     }
+                    if ($field->is_serial()) {
+                        if (!array_key_exists($name, $out)) {
+                            $out[$name] = array($value);
+                        } else {
+                            $out[$name][] = $value;
+                        }
+                    } else {
+                        $out[$name] = $value;
+                    }
+                } elseif ($schema) {
+                    error_log(__METHOD__ . ": cannot find $name in schema [" . join(',', array_keys($schema->toArray())) . ']');
+                    $value = self::_digest_raw($xml);
+                    $out[$name] = $value;
                 } else {
+                    $value = self::_digest_raw($xml);
                     $out[$name] = $value;
                 }
-            } else {
-                $value = self::_digest_raw($xml);
-                $out[$name] = $value;
             }
         }
 
@@ -62,7 +79,7 @@ class Zupal_Model_Data_XMLdigester {
                     break;
 
                 case XML_TEXT_NODE:
-                    if (!trim($node->data, " \n\t\r")){
+                    if (!trim($node->data, " \n\t\r")) {
                         continue;
                     }
                     $text[] = $node->data;
