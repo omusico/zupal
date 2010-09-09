@@ -14,6 +14,12 @@ interface Zupal_Model_Schema_IF {
     public function get_field($pname);
 
     public function set_field($pName, Zupal_Model_Schema_Field_IF $pField);
+
+    /**
+     * returns the root node - creates it if necessary. NOTE: may have generic name; owning context responsibile for naming node. 
+     * @return DomNode
+     */
+    public function as_xml($data, DomDocument $dom, $root = NULL);
     
 }
 

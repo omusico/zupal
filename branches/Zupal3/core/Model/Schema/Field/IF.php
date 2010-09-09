@@ -36,5 +36,11 @@ interface Zupal_Model_Schema_Field_IF {
      * validates the value of a field; otherwise like validate.
      */
     public function validate_value($pItem, $pIndex = NULL);
+
+    /**
+     * Adds field data from $pData to the passed root
+     */
+    public function value_to_xml($pValue, DomDocument $pDom, DomNode $pRoot);
+
 }
 

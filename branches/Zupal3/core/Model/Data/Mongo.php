@@ -60,28 +60,30 @@ class Zupal_Model_Data_Mongo
     protected function _apply_schema() {
         /* @var $field Zupal_Model_Schema_Field_IF */
         $classes = array();
-        foreach ($this->container()->schema() as $field) {
-            if (is_object($field)) {
-                $name = $field->name();
+        if ($schema = $this->container()->schema()) {
+            foreach ($schema as $field) {
+                if (is_object($field)) {
+                    $name = $field->name();
 
-                if ($name == 'data') {
-                    error_log('data found');
-                }
+                    if ($name == 'data') {
+                        error_log('data found');
+                    }
 
-                if (method_exists($field, 'post_load')) {
-                    $field->post_load($this, $classes);
-                }
+                    if (method_exists($field, 'post_load')) {
+                        $field->post_load($this, $classes);
+                    }
 
-                if ($field->is_serial()) {
-                    $this->$name = new Zupal_Model_Schema_Field_Serial((array) $this->$name);
+                    if ($field->is_serial()) {
+                        $this->$name = new Zupal_Model_Schema_Field_Serial((array) $this->$name);
+                    }
+                } else {
+                    $e = $field;
                 }
-            } else {
-                $e = $field;
             }
-        }
 
-        foreach ($classes as $c) {
-            $c->init();
+            foreach ($classes as $c) {
+                $c->init();
+            }
         }
     }
 
@@ -168,12 +170,12 @@ class Zupal_Model_Data_Mongo
 
     public function save() {
         $result = $this->container()->save_data($this);
-        error_log(__METHOD__ . ': result = ' . print_r($result, 1));
+    //    error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
 
     public function insert() {
         $result = $this->container()->insert_data($this);
-        error_log(__METHOD__ . ': result = ' . print_r($result, 1));
+     //   error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
 
     /**
@@ -184,6 +186,27 @@ class Zupal_Model_Data_Mongo
         $data = $this->getArrayCopy();
 
         return Zupal_Model_Data_Hydrator::hydrate($data, $this->container()->schema());
+    }
+
+    /* @@@@@@@@@@@@@@@ TO XML @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    function to_xml(DomDocument $dom, $root = NULL) {
+        if (!$root) {
+            $root = $dom->createElement('data');
+            $dom->appendChild($root);
+        } elseif (is_string($root)) {
+            $root = $dom->createElement($root);
+            $dom->appendChild($root);
+        }
+
+        /* @var $schema Zupal_Model_Schema_IF */
+        if ($schema = $this->container()->schema()) {
+            $schema->as_xml($this, $dom, $root);
+        } else {
+            Zupal_Model_Schema_Field_Xml::array_to_node($this->getArrayCopy(), $dom, $root);
+        }
+
+        return $root;
     }
 
 }

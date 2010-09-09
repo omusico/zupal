@@ -5,12 +5,11 @@
  * class I/O syntax.
  *
  */
-
 class Zupal_Model_ArrayObject
-extends ArrayObject {
+        extends ArrayObject {
 
     public function __get($name) {
-        if ($this->offsetExists($name)){
+        if ($this->offsetExists($name)) {
             return $this->offsetGet($name);
         } else {
             return NULL;
@@ -19,6 +18,25 @@ extends ArrayObject {
 
     public function __set($name, $value) {
         $this->offsetSet($name, $value);
+    }
+
+    public function offsetGet($name) {
+        if (func_num_args() <= 1) {
+            $default = NULL;
+            if ($this->offsetExists($name)) {
+                return parent::offsetGet($name);
+            }
+        } else {
+            $opts = func_get_args();
+            $default = array_pop($opts);
+            foreach ($opts as $n) {
+                if ($this->offsetExists($n)) {
+                    return parent::offsetGet($n);
+                }
+            }
+        }
+
+        return $default;
     }
 
 }
