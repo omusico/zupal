@@ -104,8 +104,8 @@ class Zupal_Model_Schema_Field_Class
     }
 
     public function value_to_xml($item, DomDocument $dom, DomNode $root) {
-        error_log(__METHOD__ . ': for ' . get_class($item));
-        error_log ($dom->saveXML());
+        //error_log(__METHOD__ . ': for ' . get_class($item));
+      //  error_log ($dom->saveXML());
 
         if (!$item instanceof Zupal_Model_Schema_Field_ClassIF){
             return;
@@ -121,8 +121,8 @@ class Zupal_Model_Schema_Field_Class
         }
 
         $item->to_xml($dom, $class_root);
-        error_log(__METHOD__ . ': end for ' . get_class($item));
-        error_log ($dom->saveXML());
+     //   error_log(__METHOD__ . ': end for ' . get_class($item));
+     //   error_log ($dom->saveXML());
     }
 }
 
