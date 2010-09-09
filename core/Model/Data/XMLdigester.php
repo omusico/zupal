@@ -17,7 +17,7 @@ class Zupal_Model_Data_XMLdigester {
         if ($xml instanceof DOMNodeList) {
             $xml = $xml->item(0);
         } elseif (is_string($xml)) {
-            error_log(__METHOD__ . ': data = ' . $xml);
+           // error_log(__METHOD__ . ': data = ' . $xml);
             $dom = new DomDocument();
             $dom->loadXML($xml);
             $xml = $dom->documentElement;
@@ -35,10 +35,10 @@ class Zupal_Model_Data_XMLdigester {
                 /* @var $field Zupal_Model_Schema_Field_IF */
                 if ($schema && ($field = $schema->get_field($name))) {
                     if ($field->type() == 'class') {
-                        error_log(__METHOD__ . ": saving node $name for digestion by " . $field->class);
+             //           error_log(__METHOD__ . ": saving node $name for digestion by " . $field->class);
                         $value = $node;
                     } else {
-                        error_log(__METHOD__ . ": $name is not a class, digesting raw");
+              //          error_log(__METHOD__ . ": $name is not a class, digesting raw");
                         $value = self::_digest_raw($node);
                     }
                     if ($field->is_serial()) {
@@ -51,7 +51,7 @@ class Zupal_Model_Data_XMLdigester {
                         $out[$name] = $value;
                     }
                 } elseif ($schema) {
-                    error_log(__METHOD__ . ": cannot find $name in schema [" . join(',', array_keys($schema->toArray())) . ']');
+           //         error_log(__METHOD__ . ": cannot find $name in schema [" . join(',', array_keys($schema->toArray())) . ']');
                     $value = self::_digest_raw($xml);
                     $out[$name] = $value;
                 } else {
