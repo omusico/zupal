@@ -64,12 +64,16 @@ class Zupal_Model_Data_SubData
             $array = Zupal_Model_Data_XMLdigester::digest($array, $schema);
         }
 
+        if (!is_array($array)){
+            $array = array();
+        }
         if ($this->get_schema()) {
             $defaults = $this->get_schema()->defaults();
             if ($defaults) {
                 $array = array_merge($defaults, $array);
             }
         }
+
 
         $this->exchangeArray($array);
     }
