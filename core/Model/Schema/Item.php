@@ -73,7 +73,7 @@ class Zupal_Model_Schema_Item
             case 'numeric':
             case 'decimal':
                 $item['type'] = 'float';
-                return new Zupal_Model_Schema_Field_Number($item);
+                return new Zupal_Model_Schema_Field_Float($item);
                 break;
 
             case 'date':
