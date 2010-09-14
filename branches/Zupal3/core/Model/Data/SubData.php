@@ -58,13 +58,13 @@ class Zupal_Model_Data_SubData
 
     protected function _load_data($array) {
         error_log(__METHOD__ . ': loading data for ' . get_class($this));
-        
+
         if (($array instanceof DomNode) || ($array instanceof DOMNodeList)) {
             $schema = $this->get_schema();
             $array = Zupal_Model_Data_XMLdigester::digest($array, $schema);
         }
 
-        if (!is_array($array)){
+        if (!is_array($array)) {
             $array = array();
         }
         if ($this->get_schema()) {
@@ -91,21 +91,21 @@ class Zupal_Model_Data_SubData
         $classes = array();
         foreach ($this->get_schema() as $field) {
             $name = $field->name();
-       //     if ($name == 'headers'){
-         //       error_log('headers found');
-           // }
+            //     if ($name == 'headers'){
+            //       error_log('headers found');
+            // }
             if ($this[$field->name()] && method_exists($field, 'post_load')) {
                 $field->post_load($this, $classes);
             }
 
             if ($field->is_serial()) {
                 $av = $this->$name;
-                if (!is_array($av)){
+                if (!is_array($av)) {
                     $av = array();
                 }
                 $this->$name = new Zupal_Model_Schema_Field_Serial($av);
-            //  if ($name == 'headers')  error_log(var_dump($this->$name, 1));
-            //    $c = count($this->$name);
+                //  if ($name == 'headers')  error_log(var_dump($this->$name, 1));
+                //    $c = count($this->$name);
             }
         }
 
@@ -239,7 +239,13 @@ class Zupal_Model_Data_SubData
     }
 
     public function hydrate() {
-        return Zupal_Model_Data_Hydrator::hydrate($this->getArrayCopy(), $this->get_schema());
+        $schema = $this->get_schema();
+        $data = $this->getArrayCopy();
+        if ($schema instanceof Zupal_Model_Schema_IF) {
+            return Zupal_Model_Data_Hydrator::hydrate($data, $schema);
+        } else {
+            return $data;
+        }
     }
 
     /**
@@ -255,7 +261,7 @@ class Zupal_Model_Data_SubData
         if (!$root) {
             $root = $dom->createElement('data');
             $dom->appendChild($root);
-        } elseif (is_string($root)){
+        } elseif (is_string($root)) {
             $root = $dom->createElement($root);
             $dom->appendChild($root);
         }
@@ -269,5 +275,6 @@ class Zupal_Model_Data_SubData
 
         return $root;
     }
+
 }
 

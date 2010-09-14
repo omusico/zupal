@@ -51,7 +51,7 @@ class Zupal_Model_Schema_Field_Number extends Zupal_Model_Schema_Field {
     }
 
     public function  hydrate_value($pItem, $pIndex = NULL) {
-        return is_numeric($pItem) ? $value : 0;
+        return is_numeric($pItem) ? $pItem : 0;
     }
     /**
      * the default value of a field. can be of any type.

@@ -11,7 +11,6 @@ class Zupal_Model_Query_MongoCollection
     public function __construct($pProps = array(), $pContainer = NULL, $pLimit = NULL, $pSort = NULL, $pFields = NULL) {
 
         $this->container($pContainer);
-        $this->_crit    = $pProps;
         $this->_limit   = $pLimit;
         $this->_sort    = $pSort;
         $this->_fields  = $pFields;
@@ -36,7 +35,7 @@ class Zupal_Model_Query_MongoCollection
         }
     }
 
-    private $_crit = NULL;
+    private $_crit = array();
     private $_fields = NULL;
     private $_limit = NULL;
     private $_sort = NULL;

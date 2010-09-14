@@ -48,6 +48,14 @@ abstract class Zupal_Model_Schema_Field
             foreach ($value as $i => $v) {
                 $value[$i] = $this->hydrate_value($v);
             }
+            if (!empty($this['unique'])){
+                $value = array_unique($value);
+            }
+
+            if (!empty($this['sort'])){
+                sort($value);
+            }
+
             return $value;
         } else {
             return $this->hydrate_value($value);
