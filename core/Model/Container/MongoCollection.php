@@ -161,8 +161,13 @@ class Zupal_Model_Container_MongoCollection
      * @return array
      */
     function find_all($limit = NULL, $sort = NULL) {
-        $cursor = $this->coll()->find(array());
-        return $this->find(array(), $limit, $sort);
+        $cursor = $this->coll()->find(array())->sort((array) $sort);
+        $out = array();
+
+        foreach ($cursor as $data) {
+            $out[] = $this->new_data($data);
+        }
+        return $out;
     }
 
     public function find_one($pWhat = NULL, $sort = NULL) {
