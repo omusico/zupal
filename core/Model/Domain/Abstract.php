@@ -10,6 +10,7 @@
 abstract class Zupal_Model_Domain_Abstract
         implements Zupal_Model_Data_IF,
         ArrayAccess,
+        Zend_Paginator_Adapter_Interface,
         Zupal_Model_Container_IF,
         Zupal_Event_HandlerIF {
     const LOAD_NEW = 'new';
@@ -167,7 +168,7 @@ abstract class Zupal_Model_Domain_Abstract
 
     public function insert() {
         $this->container()->insert_data($this->_record);
-        Zupal_Event_Manager::event('insert', array('subject' => $this));
+      //  Zupal_Event_Manager::event('insert', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
@@ -449,6 +450,24 @@ abstract class Zupal_Model_Domain_Abstract
 
         return $root;
     }
+
+    /* @@@@@@@@@@@@@@@@@@@@@@@@ PAGINATOR INTERFACE @@@@@@@@@@@@@@@@@@@@@@@ */
+
+    public $pagination_sort = '_id';
+
+    public function count() {
+        return $this->container()->get_count();
+    }
+    
+    public function get_count(){
+        return $this->container()->get_count();
+    }
+
+    public function getItems($offset, $itemCountPerPage) {
+        $query = array('_skip' => $offset);
+        return $this->find($query, $itemCountPerPage, $this->pagination_sort);
+    }
+
 
 }
 

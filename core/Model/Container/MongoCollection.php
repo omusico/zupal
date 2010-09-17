@@ -220,7 +220,11 @@ class Zupal_Model_Container_MongoCollection
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
-        $q = array('_id' => $pData->key());
+        $key = $pData->key();
+        if (is_string($key)){
+            $key = new MongoId($key);
+        }
+        $q = array('_id' => $key);
         $this->coll()->remove($q);
     }
 
@@ -286,7 +290,13 @@ class Zupal_Model_Container_MongoCollection
         }
 
         $result = $this->coll()->insert($array);
+        $pData->set_key($array['_id']);
+
         $pData->status(Zupal_Model_Data_IF::STATUS_SAVED);
+    }
+
+    public function get_count($pQuery = NULL) {
+        return $this->coll()->count($pQuery);
     }
 
 }
