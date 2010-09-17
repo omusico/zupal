@@ -89,4 +89,9 @@ interface Zupal_Model_Container_IF {
      * @return Zupal_Model_Schema_IF
      */
     public function schema();
+
+    /**
+     * @return int
+     */
+    function get_count();
 }
