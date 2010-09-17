@@ -44,15 +44,19 @@ abstract class Zupal_Model_Schema_Field
 
     public function hydrate($value) {
         if ($this->is_serial()) {
-            $value = (array) $value;
+            if ($value instanceof ArrayObject) {
+                $value = $value->getArrayCopy();
+            } else {
+                $value = (array) $value;
+            }
             foreach ($value as $i => $v) {
                 $value[$i] = $this->hydrate_value($v);
             }
-            if (!empty($this['unique'])){
+            if (!empty($this['unique'])) {
                 $value = array_unique($value);
             }
 
-            if (!empty($this['sort'])){
+            if (!empty($this['sort'])) {
                 sort($value);
             }
 
@@ -121,7 +125,7 @@ abstract class Zupal_Model_Schema_Field
         return $this->getArrayCopy();
     }
 
-    public function as_xml(Zupal_Model_Data_IF $pData, DomDocument $pDom, $pProps = array()){
+    public function as_xml(Zupal_Model_Data_IF $pData, DomDocument $pDom, $pProps = array()) {
         return Zupal_Model_Schema_Field_Xml::field_to_node($pData, $pDom, $this, $pProps);
     }
 
