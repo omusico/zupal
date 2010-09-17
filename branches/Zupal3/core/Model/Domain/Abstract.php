@@ -122,26 +122,11 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function __get($name) {
-        if (array_key_exists($name, $this->_record)) {
-            return $this->_record[$name];
-        } elseif (array_key_exists($name, $this->metadata)) {
-            return $this->metadata[$name];
-        } else {
-            return NULL; // throw new Exception(__METHOD__ . ": unrecorded field $name requested");
-        }
+        return $this->_record[$name];
     }
 
     public function __set($name, $value) {
-        if (array_key_exists($name, $this->_record)) {
-            $this->_record[$name] = $value;
-        } else {
-            $schema = $this->schema();
-            if (array_key_exists($name, $schema)) {
-                $this->_record[$name] = $value;
-            } else {
-                $this->metadata[$name] = $value;
-            }
-        }
+        $this->_record[$name] = $value;
     }
 
     public function toArray($pIncludeMeta = FALSE) {
@@ -173,7 +158,7 @@ abstract class Zupal_Model_Domain_Abstract
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
         $key = $this->key();
-        if ($key && $key instanceof MongoId){
+        if ($key && $key instanceof MongoId) {
             $key = $key->__toString();
         }
         $this->container()->save_data($this->_record);
@@ -410,7 +395,7 @@ abstract class Zupal_Model_Domain_Abstract
 
         foreach ($serial_objects as $k => $serial_object) {
             $serial_id = $serial_object->$pKey_field;
-            if ($mongo_key){
+            if ($mongo_key) {
                 $serial_id = $serial_id->__toString();
             }
             if ($serial_id != $key_value) {
@@ -444,14 +429,13 @@ abstract class Zupal_Model_Domain_Abstract
         return NULL;
     }
 
-
     /* @@@@@@@@@@@@@@@ TO XML @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     function to_xml(DomDocument $dom, $root = NULL) {
         if (!$root) {
             $root = $dom->createElement('data');
             $dom->appendChild($root);
-        } elseif (is_string($root)){
+        } elseif (is_string($root)) {
             $root = $dom->createElement($root);
             $dom->appendChild($root);
         }
@@ -465,5 +449,6 @@ abstract class Zupal_Model_Domain_Abstract
 
         return $root;
     }
+
 }
 
