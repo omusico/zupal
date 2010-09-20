@@ -49,7 +49,13 @@ extends Zupal_Model_Schema_Field {
     }
 
     public function  hydrate_value($pItem, $pIndex = NULL) {
-        return (string) $pItem;
+        $pItem = (string) $pItem;
+        if ($this['hydration_filters']){
+            foreach ($this['hydration_filters'] as $filter){
+                $pItem = $filter($pItem);
+            }
+        }
+        return $pItem;
     }
 }
 

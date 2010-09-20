@@ -221,11 +221,13 @@ class Zupal_Model_Container_MongoCollection
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
         $key = $pData->key();
-        if (is_string($key)){
-            $key = new MongoId($key);
-        }
         $q = array('_id' => $key);
         $this->coll()->remove($q);
+        if (is_string($key)) {
+            $mkey = new MongoId($key);
+            $q = array('_id' => $mkey);
+            $this->coll()->remove($q);
+        }
     }
 
     /**
