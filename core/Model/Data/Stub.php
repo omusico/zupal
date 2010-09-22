@@ -32,5 +32,9 @@ class Zupal_Model_Data_Stub
         return array();
     }
 
+    public function insert() {
+
+    }
+
 }
 
