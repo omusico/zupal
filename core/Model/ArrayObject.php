@@ -17,7 +17,15 @@ class Zupal_Model_ArrayObject
     }
 
     public function __set($name, $value) {
-        $this->offsetSet($name, $value);
+        if (
+                is_array($value)
+                && $this->offsetExists($name)
+                && ($this[$name] instanceof ArrayObject)
+        ) {
+            $this[$name]->exchangeArray($value);
+        } else {
+            $this->offsetSet($name, $value);
+        }
     }
 
     public function offsetGet($name) {
