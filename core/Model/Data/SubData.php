@@ -57,7 +57,7 @@ class Zupal_Model_Data_SubData
     }
 
     protected function _load_data($array) {
-        error_log(__METHOD__ . ': loading data for ' . get_class($this));
+        //error_log(__METHOD__ . ': loading data for ' . get_class($this));
 
         if (($array instanceof DomNode) || ($array instanceof DOMNodeList)) {
             $schema = $this->get_schema();
