@@ -158,10 +158,10 @@ abstract class Zupal_Model_Domain_Abstract
 
     public function save() {
         /* @var $event_manager Zupal_Event_Manager */
-        $key = $this->key();
+      /*  $key = $this->key();
         if ($key && $key instanceof MongoId) {
             $key = $key->__toString();
-        }
+        } */
         $this->container()->save_data($this->_record);
 //        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
     }
@@ -201,7 +201,7 @@ abstract class Zupal_Model_Domain_Abstract
     public function find($pQuery = NULL, $limit = NULL, $sort = NULL) {
         $out = array();
         if (empty($pQuery)) {
-            $pQuery = NULL;
+            $pQuery = array();
         }
         foreach ($this->container()->find($pQuery, $limit, $sort) as $record) {
             $out[] = $this->new_data($record);
