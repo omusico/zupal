@@ -12,9 +12,9 @@ class Zupal_Model_Data_Hydrator {
                         unset($out[$name]);
                         continue;
                     }
-                    $value = $field->hydrate($out[$name]);
+                     $out[$name] = $value = $field->hydrate($out[$name]);
 
-                    $out[$name] = $value;
+                  //$value;
                 }
 
                 if ($field->auto && empty($out[$name])) {
