@@ -9,16 +9,20 @@ extends Exception{
 
     public function __construct($message, $code) {
         $this->_valid = $code;
-        parent::__construct($message);
+        parent::__construct($message . ' ' . $this->_errs());
     }
     
     private $_valid;
     public function validation_errors(){ return $this->_valid; }
 
+
     public function  __toString() {
+        return $this->_errs();
+    }
+
+    private function _errs() {
         ob_start();
         ?>
-<p><?= $this->getMessage() ?></p>
 <dl>
     <?php foreach($this->_valid as $error):
             $value = $field = $message = '';
