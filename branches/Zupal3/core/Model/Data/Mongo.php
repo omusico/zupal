@@ -65,10 +65,6 @@ class Zupal_Model_Data_Mongo
                 if (is_object($field)) {
                     $name = $field->name();
 
-                    if ($name == 'data') {
-                        error_log('data found');
-                    }
-
                     if (method_exists($field, 'post_load')) {
                         $field->post_load($this, $classes);
                     }
