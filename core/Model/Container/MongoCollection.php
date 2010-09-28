@@ -69,7 +69,7 @@ class Zupal_Model_Container_MongoCollection
     private $_coll;
 
     /**
-     *
+     * returns the PHP MongoCollection object (the PHP version of the collection).
      * @return Mongo
      */
     public function coll() {
