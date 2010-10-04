@@ -18,12 +18,12 @@ class Zupal_Model_Schema_Field_Array
         parent::__construct($array);
     }
 
-    public function validate_value(&$value, $pSerial_item = NULL) {
+    public function validate_value($pItem, $pIndex = NULL) {
         $out = array();
-        if (!is_array($value)) {
+        if (!is_array($pItem)) {
             $out[] = array(
                 'field' => $this->name(),
-                'value' => $value,
+                'value' => $pItem,
                 'message' => 'must be an array'
             );
         }

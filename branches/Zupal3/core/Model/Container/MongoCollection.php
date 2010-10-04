@@ -126,7 +126,7 @@ class Zupal_Model_Container_MongoCollection
         } else {
             throw new Exception(__METHOD__ . ': cannot save ' . print_r($pData, 1));
         }
-        $this->save($data);
+        $this->save_data($data);
         return $data;
     }
 
@@ -230,11 +230,7 @@ class Zupal_Model_Container_MongoCollection
         }
     }
 
-    /**
-     * inserts/updates data in the database, depending on the existince of _id.
-     * @param Zupal_Model_Data_IF $pData
-     */
-    public function save_data(Zupal_Model_Data_IF $pData) {
+    private function _prep_data($pData) {
         if (is_array($pData)) {
             $array = $pData;
         } elseif (is_object($pData) && method_exists($pData, 'toArray')) {
@@ -242,6 +238,15 @@ class Zupal_Model_Container_MongoCollection
         } else {
             throw new Exception(__METHOD__ . ': bad data passed: ' . print_r($pData, 1));
         }
+        return $array;
+    }
+
+    /**
+     * inserts/updates data in the database, depending on the existince of _id.
+     * @param Zupal_Model_Data_IF $pData
+     */
+    public function save_data(Zupal_Model_Data_IF $pData) {
+        $array = $this->_prep_data($pData);
 
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);
@@ -269,16 +274,22 @@ class Zupal_Model_Container_MongoCollection
         }
     }
 
+    /**
+     * note! NOT insulated from duplicate objects!
+     * creates a copy of data in the database.
+     * @param Zupal_Model_Data_IF $pData
+     */
+    public function copy_data(Zupal_Model_Data_IF $pData) {
+        $array = $this->_prep_data($pData);
+        unset($array['_id']);
+
+        $data = $this->add($array);
+        
+        return $data;
+    }
+
     public function insert_data(Zupal_Model_Data_IF $pData) {
-
-        if (is_array($pData)) {
-            $array = $pData;
-        } elseif (is_object($pData) && method_exists($pData, 'toArray')) {
-            $array = $pData->toArray();
-        } else {
-            throw new Exception(__METHOD__ . ': bad data passed: ' . print_r($pData, 1));
-        }
-
+        $array = $this->_prep_data($pData);
         if ($this->schema()) {
             $valid = $this->schema()->validate($array);
             foreach ($array as $k => $v) {

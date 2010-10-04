@@ -28,7 +28,11 @@ class Zupal_Model_ArrayObject
         }
     }
 
-    public function offsetGet($name) {
+    public function offsetSet($index, $newval) {
+        return parent::offsetSet($index, $newval);
+    }
+
+        public function offsetGet($name) {
         if (func_num_args() <= 1) {
             $default = NULL;
             if ($this->offsetExists($name)) {
