@@ -131,8 +131,9 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function toArray($pIncludeMeta = FALSE) {
+        $a = $this->_record->toArray();
         return $pIncludeMeta ?
-                array_merge($this->metadata, $this->_record->toArray()) : $this->_record->toArray();
+                array_merge($this->metadata, $a) : $a;
     }
 
     public function status($pSet = NULL) {
@@ -157,13 +158,13 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function save() {
-        /* @var $event_manager Zupal_Event_Manager */
-      /*  $key = $this->key();
-        if ($key && $key instanceof MongoId) {
-            $key = $key->__toString();
-        } */
         $this->container()->save_data($this->_record);
 //        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
+    }
+
+    public function copy(){
+        $data = $this->_record->copy();
+        return $this->new_data($data);
     }
 
     public function insert() {
@@ -236,11 +237,11 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     /**
-     * This method should not be called externally - use save() or insert() from items.
+     * This is a "fast track" for multi-record saving.
      * @param Zupal_Model_Data_IF $pData
      */
     public function save_data(Zupal_Model_Data_IF $pData) {
-        throw new Exception(__METHOD__ . ': not relevant for Domains');
+        $this->container()->save_data($pData);
     }
 
     /**

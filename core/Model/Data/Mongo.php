@@ -174,6 +174,10 @@ class Zupal_Model_Data_Mongo
      //   error_log(__METHOD__ . ': result = ' . print_r($result, 1));
     }
 
+
+    public function copy() {
+            $this->container()->copy_data($this);
+    }
     /**
      *
      * @return array
