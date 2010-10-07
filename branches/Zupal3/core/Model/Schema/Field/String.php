@@ -1,8 +1,9 @@
 <?php
-/* 
+
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
-*/
+ */
 
 /**
  * Description of String
@@ -10,7 +11,8 @@
  * @author bingomanatee
  */
 class Zupal_Model_Schema_Field_String
-extends Zupal_Model_Schema_Field {
+        extends Zupal_Model_Schema_Field {
+
     public function __construct($array) {
         parent::__construct($array);
     }
@@ -22,25 +24,25 @@ extends Zupal_Model_Schema_Field {
         if ($value) {
             if ((!empty($this['min'])) && $this['min'] > strlen($value)) {
                 $out[] = array(
-                        'field' => $this->name(),
-                        'value' => $value,
-                        'message' => "too short(must be at least {$this['min']} letters long)",
+                    'field' => $this->name(),
+                    'value' => $value,
+                    'message' => "too short(must be at least {$this['min']} letters long)",
                 );
             }
 
             if ((!empty($this['max'])) && $this['max'] < strlen($value)) {
                 $out[] = array(
-                        'field' => $this->name(),
-                        'value' => $value,
-                        'message' => "too long(must be no more than {$this['max']} letters long)",
+                    'field' => $this->name(),
+                    'value' => $value,
+                    'message' => "too long(must be no more than {$this['max']} letters long)",
                 );
             }
         } else {
             if (array_key_exists('required', $this) && $this['required']) {
                 $out[] = array(
-                        'field' => $this->name(),
-                        'value' => $value,
-                        'message' => 'absent, and required'
+                    'field' => $this->name(),
+                    'value' => $value,
+                    'message' => 'absent, and required'
                 );
             }
         }
@@ -48,14 +50,23 @@ extends Zupal_Model_Schema_Field {
         return count($out) ? $out : TRUE;
     }
 
-    public function  hydrate_value($pItem, $pIndex = NULL) {
-        $pItem = (string) $pItem;
-        if ($this['hydration_filters']){
-            foreach ($this['hydration_filters'] as $filter){
+    public function hydrate_value($pItem, $pIndex = NULL) {
+        if (is_object($pItem)) {
+            if (method_exists($pItem, '__toString')) {
+                $pItem = (string) $pItem;
+            } else {
+                throw new Exception(__METHOD__ . ': cannot stringify an ' . get_class($pItem));
+            }
+        } else {
+            $pItem = (string) $pItem;
+        }
+        if ($this['hydration_filters']) {
+            foreach ($this['hydration_filters'] as $filter) {
                 $pItem = $filter($pItem);
             }
         }
         return $pItem;
     }
+
 }
 

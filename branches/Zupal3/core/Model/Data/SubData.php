@@ -276,5 +276,81 @@ class Zupal_Model_Data_SubData
         return $root;
     }
 
+    /* @@@@@@@@@@@@@@@@@@@@ CALL MANAGERS @@@@@@@@@@@@@@@@@@@@@@@@ */
+
+    /**
+     * Call managers are plug-in functionality that extend a class.
+     * They allow for compositional functionality.
+     *
+     * Note - to reduce unnecessary generation of objects
+     * managers can be stored by class name and only instantiated
+     * when needed. However allowances are made to accept
+     * a pre-instantiated object when further handling is needed.
+     *
+     * Note 2 - no allowances are made for conflicting method names.
+     * Also due to the __call treatment, methods of managers are
+     * only called in the absence of a true method in the target.
+     *
+     * Managers can be added into a stack with no concern to their index
+     * or stored in a specific index. (which should be a string.)
+     * The latter allows you to replace a manager that performs a given role
+     * with another manager. This helps prevent conflicting managers if,
+     * for instnace, you key your __tostring() manager with "__tostring". 
+     */
+
+    /**
+     *
+     * @var array
+     */
+    protected $_call_managers = array();
+
+    protected function _add_call_manager($pManager_name, $pParams = NULL, $index = NULL) {
+        if (is_string($pManager_name)) {
+            if ($pParams && is_array($pParams)) {
+                $manager = $pParams;
+                array_unshift($manager, $pManager_name);
+            } else {
+                $manager = array($pManager_name);
+            }
+        } else { // can be an array or an actual object
+            $manager = $pManager_name;
+        }
+        if (is_null($index)) {
+            $this->_call_managers[] = $manager;
+        } else {
+            $this->_call_managers[$index] = $manager;
+        }
+    }
+
+    /**
+     *
+     * They must follow the call manager Zupal_Model_Util_CallManager_IF Interface
+     * @return object
+     */
+    protected function _get_call_managers() {
+        $out = array();
+
+        foreach ($this->_call_managers as $k => $v) {
+            if (is_string($v)) {
+                $this->_call_managers[$k] = new $v($this);
+            } elseif (is_array($v)) {
+                $name = array_shift($v);
+                $this->_call_managers[$k] = new $name($this, $v);
+            }
+        }
+
+        return $this->_call_managers;
+    }
+
+    public function __call($name, $arguments) {
+        foreach ($this->_get_call_managers() as $c) {
+            if ($c->manages($name)) {
+                return call_user_func_array(array($c, $name), $arguments);
+            }
+        }
+
+        return parent::__call($name, $arguments);
+    }
+
 }
 
