@@ -10,10 +10,11 @@ class Zupal_Model_Query_MongoCollection
 
     public function __construct($pProps = array(), $pContainer = NULL, $pLimit = NULL, $pSort = NULL, $pFields = NULL) {
 
+
         $this->container($pContainer);
-        $this->_limit   = $pLimit;
-        $this->_sort    = $pSort;
-        $this->_fields  = $pFields;
+        $this->_limit = $pLimit;
+        $this->set_sort($pSort);
+        $this->_fields = $pFields;
 
         if (is_array($pProps)) {
             foreach ($pProps as $f => $v) {
@@ -58,16 +59,16 @@ class Zupal_Model_Query_MongoCollection
 
         /* @var $cursor MongoCursor */
         $cursor = $container->coll()->find((array) $this->_crit, (array) $this->_fields);
-        if ($this->_limit){
+        if ($this->_limit) {
             $cursor = $cursor->limit($this->_limit);
         }
 
-        if ($this->_skip){
+        if ($this->_skip) {
             $cursor = $cursor->skip((int) $this->_skip);
         }
 
-        if ($this->_sort){
-            $cursor = $cursor->sort((array) $this->_sort);
+        if ($sort = $this->get_sort()) {
+            $cursor = $cursor->sort($sort);
         }
 
         return $cursor;
@@ -90,7 +91,6 @@ class Zupal_Model_Query_MongoCollection
         return $data;
     }
 
-
     /**
      * transforms a variety of input to a query
      *
@@ -102,7 +102,7 @@ class Zupal_Model_Query_MongoCollection
             $q = new Zupal_Model_Query_MongoCollection(array('_id' => $pWhat));
         } elseif ($pWhat instanceof Zupal_Model_Query_MongoCollection) {
             $q = $pWhat;
-        } elseif ($pWhat instanceof Zupal_Model_Query_IF){
+        } elseif ($pWhat instanceof Zupal_Model_Query_IF) {
             throw new Exception(__METHOD__ . ': q trans not impl.');
         } elseif (is_array($pWhat)) {
             $q = new Zupal_Model_Query_MongoCollection($pWhat, NULL, $pLimit, $pSort, $pFields);
@@ -129,6 +129,21 @@ class Zupal_Model_Query_MongoCollection
             $this->_container = $pContainer;
         }
         return $this->_container;
+    }
+
+    public function get_sort() {
+        return $this->_sort;
+    }
+
+    public function set_sort($sort) {
+        if ($sort) {
+            if (is_string($sort)) {
+                $sort = array($sort => 1);
+            }
+        } else {
+            $sort = NULL;
+        }
+        $this->_sort = $sort;
     }
 
 }

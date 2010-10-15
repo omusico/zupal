@@ -28,6 +28,8 @@ abstract class Zupal_Model_Domain_Abstract
         } else {
             $this->load($pKey);
         }
+
+        $this->_post_load();
     }
 
     /* @@@@@@@@@@@@@@@@@ DATA_IF METHODS @@@@@@@@@@@@@ */
@@ -57,6 +59,12 @@ abstract class Zupal_Model_Domain_Abstract
         } else {
             $this->_record = $this->container()->new_data(array());
         }
+    }
+    
+    /* @@@@@@@@@@@@@@@@ EVENT HOOK: POST LOAD @@@@@@@@@@@@@@@@@@@@@ */
+
+    protected function _post_load(){
+        // overload for custom finishing actions
     }
 
     /**
