@@ -161,7 +161,29 @@ class Zupal_Model_Container_MongoCollection
      * @return array
      */
     function find_all($limit = NULL, $sort = NULL) {
-        $cursor = $this->coll()->find(array())->sort((array) $sort);
+        $cursor = $this->coll()->find(array());
+        if ($sort){
+            if(is_string($sort)){
+                $sort = array($sort => 1);
+            }
+            $cursor->sort($sort);
+        }
+        if ($limit){
+            $skip = 0;
+            if(is_array($limit)){
+
+                list($limit, $skip) = array_map('intval', $limit); 
+            } else {
+                $limit = intval($limit);
+            }
+            if ($skip){
+                $cursor->skip($skip);
+            };
+
+            if ($limit){
+                $cursor->limit($limit);
+            }
+        }
         $out = array();
 
         foreach ($cursor as $data) {

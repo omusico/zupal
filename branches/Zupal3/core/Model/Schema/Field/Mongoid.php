@@ -59,8 +59,15 @@ class Zupal_Model_Schema_Field_Mongoid
      * @param array $classes
      */
     function post_load(&$data, &$classes) {
-        if ($this->auto && (!$data[$this->name()])) {
+        $val =  $data[$this->name()];
+        if ($val){ 
+            if (is_string($val)){
+             $data[$this->name()] = new MongoId($val);
+            }
+        } else {
+            if ($this->auto) {
             $data[$this->name()] = new MongoId();
+            }
         }
     }
 
