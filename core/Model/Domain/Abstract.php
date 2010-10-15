@@ -469,8 +469,8 @@ abstract class Zupal_Model_Domain_Abstract
         return $this->container()->get_count();
     }
     
-    public function get_count(){
-        return $this->container()->get_count();
+    public function get_count($pQuery = NULL){
+        return $this->container()->get_count($pQuery);
     }
 
     public function getItems($offset, $itemCountPerPage) {
