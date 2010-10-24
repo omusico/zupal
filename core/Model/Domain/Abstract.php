@@ -77,7 +77,7 @@ abstract class Zupal_Model_Domain_Abstract
 
     public function delete() {
         $this->_record->delete();
-        Zupal_Event_Manager::event('deleted', array('subject' => $this));
+    //    Zupal_Event_Manager::event('deleted', array('subject' => $this));
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
@@ -542,7 +542,7 @@ abstract class Zupal_Model_Domain_Abstract
             }
         }
 
-        return parent::__call($name, $arguments);
+        throw new Exception(__METHOD__ . ': no method ' . $name);
     }
 }
 
