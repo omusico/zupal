@@ -28,7 +28,7 @@ class Zupal_Model_Schema_Item
                 }
                 $my_fields[$field['name']] = $field;
             } elseif (is_string($field)){
-                $my_fields[$name] = array('type' => $field);
+                $my_fields[$name] = array('name' => $name, 'type' => $field);
             }
         }
         $my_fields = array_map(array('Zupal_Model_Schema_Item', 'make_field'), $my_fields);

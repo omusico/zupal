@@ -17,7 +17,7 @@ class Zupal_Model_Data_SubData
         implements Zupal_Model_Data_IF,
         Zupal_Model_Schema_Field_ClassIF {
 
-    public function __construct(Zupal_Model_Data_IF $pData, $pValue, array $pOptions = array()) {
+    public function __construct(Zupal_Model_Data_IF $pData, $pValue = array(), array $pOptions = array()) {
         $this->set_root_data($pData);
 
         $pSchema = array();

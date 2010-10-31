@@ -8,11 +8,11 @@
  * @author bingomanatee
  */
 abstract class Zupal_Model_Domain_Abstract
-        implements Zupal_Model_Data_IF,
-        ArrayAccess,
-        Zend_Paginator_Adapter_Interface,
-        Zupal_Model_Container_IF,
-        Zupal_Event_HandlerIF {
+implements Zupal_Model_Data_IF,
+ArrayAccess,
+Zend_Paginator_Adapter_Interface,
+Zupal_Model_Container_IF,
+Zupal_Event_HandlerIF {
 
     const LOAD_NEW = 'new';
     /**
@@ -60,10 +60,10 @@ abstract class Zupal_Model_Domain_Abstract
             $this->_record = $this->container()->new_data(array());
         }
     }
-    
+
     /* @@@@@@@@@@@@@@@@ EVENT HOOK: POST LOAD @@@@@@@@@@@@@@@@@@@@@ */
 
-    protected function _post_load(){
+    protected function _post_load() {
         // overload for custom finishing actions
     }
 
@@ -77,7 +77,7 @@ abstract class Zupal_Model_Domain_Abstract
 
     public function delete() {
         $this->_record->delete();
-    //    Zupal_Event_Manager::event('deleted', array('subject' => $this));
+        //    Zupal_Event_Manager::event('deleted', array('subject' => $this));
     }
 
     public function delete_data(Zupal_Model_Data_IF $pData) {
@@ -171,14 +171,14 @@ abstract class Zupal_Model_Domain_Abstract
 //        Zupal_Event_Manager::event($key ? 'update' : 'insert', array('subject' => $this));
     }
 
-    public function copy(){
+    public function copy() {
         $data = $this->_record->copy();
         return $this->new_data($data);
     }
 
     public function insert() {
         $this->container()->insert_data($this->_record);
-      //  Zupal_Event_Manager::event('insert', array('subject' => $this));
+        //  Zupal_Event_Manager::event('insert', array('subject' => $this));
     }
 
     /* @@@@@@@@@@@@@@@@ CONATINER_IF METHODS @@@@@@@@@@ */
@@ -245,6 +245,14 @@ abstract class Zupal_Model_Domain_Abstract
         }
     }
 
+    public function mongo_delete($pQuery, $pOptions = array()) {
+        /* @var $container Zupal_Model_Container_MongoCollection */
+        $container = $this->container();
+
+        $container->coll()->remove($pQuery, $pOptions);
+
+    }
+
     /**
      * This is a "fast track" for multi-record saving.
      * @param Zupal_Model_Data_IF $pData
@@ -254,7 +262,7 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     /**
-     * This method should not be called externally - use save() or insert() from items. 
+     * This method should not be called externally - use save() or insert() from items.
      * @param Zupal_Model_Data_IF $pData
      */
     public function insert_data(Zupal_Model_Data_IF $pData) {
@@ -326,14 +334,14 @@ abstract class Zupal_Model_Domain_Abstract
 
     /**
      * adds or updates an object in an array of objects.
-     * Preaumes content is Zupal_Model_Schema_Field_ClassIF elements. 
-     * @TODO: apply a collection to serial fields. 
-     * 
+     * Preaumes content is Zupal_Model_Schema_Field_ClassIF elements.
+     * @TODO: apply a collection to serial fields.
+     *
      * @param string $pField
      * @param array | Zupal_Model_Schema_Field_ClassIF $pData
      * @param string $pClass
      * @param string $pKey
-     * @return Zupal_Model_Schema_Field_ClassIF 
+     * @return Zupal_Model_Schema_Field_ClassIF
      */
     public function add_field_serial_indexed($pField, $pData, $pClass, $pKey = 'id') {
 
@@ -386,12 +394,12 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     /**
-     * Deletes all members of a serial field with a given key/value identity. 
-     * May delete more than one member. 
+     * Deletes all members of a serial field with a given key/value identity.
+     * May delete more than one member.
      *
      * @param string $pField
      * @param scalar | MongoId $pKey
-     * @param string $pKey_field 
+     * @param string $pKey_field
      */
     public function delete_field_serial_indexed($pField, $pKey, $pKey_field) {
         $serial_objects = (array) $this->get_field($pField);
@@ -468,8 +476,8 @@ abstract class Zupal_Model_Domain_Abstract
     public function count() {
         return $this->container()->get_count();
     }
-    
-    public function get_count($pQuery = NULL){
+
+    public function get_count($pQuery = NULL) {
         return $this->container()->get_count($pQuery);
     }
 
@@ -478,7 +486,7 @@ abstract class Zupal_Model_Domain_Abstract
         return $this->find($query, $itemCountPerPage, $this->pagination_sort);
     }
 
-/* @@@@@@@@@@@@@@@@@@@@ CALL MANAGERS @@@@@@@@@@@@@@@@@@@@@@@@ */
+    /* @@@@@@@@@@@@@@@@@@@@ CALL MANAGERS @@@@@@@@@@@@@@@@@@@@@@@@ */
 
     /**
      * Call managers are plug-in functionality that extend a class.
@@ -491,7 +499,7 @@ abstract class Zupal_Model_Domain_Abstract
      *
      * Note 2 - no allowances are made for conflicting method names.
      * Also due to the __call treatment, methods of managers are
-     * only called in the absence of a true method in the target. 
+     * only called in the absence of a true method in the target.
      */
 
     /**
@@ -501,9 +509,9 @@ abstract class Zupal_Model_Domain_Abstract
 
     protected $_call_managers = array();
 
-    protected function _add_call_manager($pManager_name, $pParams = NULL){
-        if (is_string($pManager_name)){
-            if ($pParams && is_array($pParams)){
+    protected function _add_call_manager($pManager_name, $pParams = NULL) {
+        if (is_string($pManager_name)) {
+            if ($pParams && is_array($pParams)) {
                 $manager = $pParams;
                 array_unshift($manager, $pManager_name);
             } else {
@@ -520,11 +528,11 @@ abstract class Zupal_Model_Domain_Abstract
      * They must follow the call manager Zupal_Model_Util_CallManager_IF Interface
      * @return object
      */
-    protected function _get_call_managers(){
+    protected function _get_call_managers() {
         $out = array();
 
-        foreach($this->_call_managers as $k => $v){
-            if (is_string($v)){
+        foreach($this->_call_managers as $k => $v) {
+            if (is_string($v)) {
                 $this->_call_managers[$k] = new $v($this);
             } elseif (is_array($v)) {
                 $name = array_shift($v);
@@ -536,8 +544,8 @@ abstract class Zupal_Model_Domain_Abstract
     }
 
     public function  __call($name, $arguments) {
-        foreach($this->_get_call_managers() as $c){
-            if ($c->manages($name)){
+        foreach($this->_get_call_managers() as $c) {
+            if ($c->manages($name)) {
                 return call_user_func_array(array($c, $name), $arguments);
             }
         }
