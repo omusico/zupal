@@ -48,7 +48,11 @@ class Zupal_Model_Schema_Field_Mongoid
      * not applicable probably
      */
     public function get_default() {
-        return NULL;
+        if (!strcasecmp($this->default, 'now')){
+            return new MongoId();
+        } else {
+        return NULL;            
+        }
     }
 
     /**
