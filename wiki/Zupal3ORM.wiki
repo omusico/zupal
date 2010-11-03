@@ -1,5 +1,5 @@
 #labels ORM,Zupal3
-#The data access layer of Zupal
+The data access layer of Zupal
 
 = Introduction =
 
@@ -9,21 +9,21 @@ The basic principle of the Zupal model layer is that data objects are developed 
 
 While the ultimate aim is a model system that works with any repository the initial primary client of the ORM is Mongo, a JSON based ORM with no intrinsic schema. Because of this, the code level schema is designed to do all the heavy lifting. 
 
-= Interface Driven = 
+== Interface Driven == 
 
 As much as possible I have created interface files for the fundamental building blocks. While much custom repository functionality cannot be reduced to a platonic interface, the interface does provide a common pattern for routine operations. 
 
-= Model Class Families =
+== Model Class Families ==
 
 There are several families of classes in the Zupal Model system. 
 
-*  *Containers* : these are the repositories - tables, collections, filesystems, whatever. Containers govern the actual I/O of data into persistent states. They have several query oriented methods (find(), find_all(), etc.). 
+  *  *Containers* : these are the repositories - tables, collections, filesystems, whatever. Containers govern the actual I/O of data into persistent states. They have several query oriented methods (find(), find_all(), etc.). 
 
-*  *Data* : These objects represent units of information: records, documents, etc. Their primary methods are delete() and save(). They are equivalent in many ways to an ActiveRecord. 
+  *  *Data* : These objects represent units of information: records, documents, etc. Their primary methods are delete() and save(). They are equivalent in many ways to an ActiveRecord. 
 
-*  *Schema* : These are collections of field definitions. Field definitions themselves may be scalar, or single or serial collections of classes. Typically a single data object is bound internally to a specific schema, and a single container only accepts data that is valid for its schema, but this is not necessarily the case. Many preset field definitions for basic field types like strings, integers, etc. are packaged with Zupal. 
+  *  *Schema* : These are collections of field definitions. Field definitions themselves may be scalar, or single or serial collections of classes. Typically a single data object is bound internally to a specific schema, and a single container only accepts data that is valid for its schema, but this is not necessarily the case. Many preset field definitions for basic field types like strings, integers, etc. are packaged with Zupal. 
 
-* *Queries* : These represent criteria for retrieval methods of containers. Their inteface is a single method - get_data(Collector $c) - but most places that accept queries as objects also accept simple arrays [field: expectedValue, field: expectedValue... ].
+  *  *Queries* : These represent criteria for retrieval methods of containers. Their inteface is a single method - get_data(Collector $c) - but most places that accept queries as objects also accept simple arrays [field: expectedValue, field: expectedValue... ].
 
 == Domains ==
 
@@ -32,3 +32,119 @@ A domain is an object that subsumes both data, an internal container, and a sche
 A domain is not limited to managing a single Repository (table, collection, etc.) It should govern a single unit of information but that unit can be stored in multiple repositories. For instance, a resume might be managed by a single domain, but that domain can subsume several repositories (one for job history, one for education history, one for skill set, etc.) 
 
 Because the Domain is a hybrid of several interfaces (Zupal_Model_Data_IF, Zend_Paginator_Adapter_Interface, Zupal_Model_Container_IF, and others) it does not have a unique interface of its own.
+
+Note - while I find Domains quite useful, they are not an absolutely necessary part of Zupal3's ORM; the Data, Schema and Collection classes work fine on their own. 
+
+= Usage Example =
+
+Here is a basic schema set for a blog with comments and users. The schema are in YAML.
+
+{{{
+fields:
+  
+  _id: 
+    type:      mongoid
+    key:        true
+
+  title: 
+    type:      string
+    required:  true
+
+  author:      mongoid
+
+  intro:       string
+
+  body:  
+    type:      string
+    required:  true
+
+  comments:
+     type:   class
+     class:  Sample_Model_Comment
+     serial: true
+}}}
+
+and the author schema:
+
+{{{
+
+fields:
+   
+    name:         string
+ 
+    alias:
+       type:      string
+       required:  true
+
+    password_md5:
+       type:      string
+       required:  true
+
+    notes:        string
+}}}
+
+and the comment schema:
+
+{{{
+
+field:
+  
+  _id: 
+    type:      mongoid
+    key:        true
+
+  title:        string
+  
+  comment:     
+    type:       string
+    required:   true
+    max:        1000
+
+  author:       mongoid  
+}}}
+
+The class to represent an article is quite simple as the schema does most of the heavy lifting:
+
+{{{
+
+<?php
+
+class Sample_Model_Article
+        extends Zupal_Model_Domain_Abstract {
+
+    public function new_data($pData) {
+        return new self($pData);
+    }
+
+    private static $_container;
+
+    /**
+     *
+     * @return Zupal_Model_Container_MongoCollection
+     */
+    public function get_container() {
+        if (!self::$_container) {
+            self::$_container = new Zupal_Model_Container_MongoCollection(
+                            'cms', 'articles', array('schema' => $this->schema()));
+        }
+        return self::$_container;
+    }
+
+    private static $_schema;
+
+    public function schema() {
+        if (!self::$_schema) {
+            /** note - the Pools_Api_Util_Disk::path_synonym($path, $type)
+             *  is a utility method that digests a YAML file in this directory
+             *  that has the same name as this file, but a 'yml' suffix. 
+             */
+
+            $path = Pools_Api_Util_Disk::path_synonym(__FILE__, 'yml');
+            self::$_schema = Zupal_Model_Schema_Item::make_from_yml($path);
+        }
+        return self::$_schema;
+    }
+
+} // end class
+
+}}}
