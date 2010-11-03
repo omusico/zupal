@@ -192,7 +192,7 @@ $article->body = 'Stunningly powerful prose';
 
 $article->save();
 
-error_log(__FILE__ . ': created article with id " : $article->key());
+error_log(__FILE__ . ': created article with id ' . $article->key());
 
 $comment = new Sample_Model_Article_Comment($article->record());
 $comment->title = 'Stunningly boring, maybe';
@@ -212,8 +212,11 @@ A nice display of field magic, but not as compact as it could be; how about:
 
 $data = array(
   'title' => 'An Article', 'body' => 'Stunningy powerful prose',
-  'comments' => array(array(
-    'title' Stunningly boring, maybe', 'body' => "I'm not going to be more specific" ))
+  'comments' => array(
+     array(
+       'title' => Stunningly boring, maybe', 
+       'body' => "I'm not going to be more specific" )
+   )
 );
 
 /**
