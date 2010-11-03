@@ -37,7 +37,7 @@ Note - while I find Domains quite useful, they are not an absolutely necessary p
 
 = Usage Example =
 
-Here is a basic schema set for a blog with comments and users. The schema are in YAML.
+Here is a basic schema set for a blog with comments and users. The schema are in YAML. Fair warning - this is "off the top of my head" code that hasn't been tested - use with caution. 
 
 {{{
 fields:
@@ -224,9 +224,21 @@ $data = array(
  * upon digestion of the data array
  */
 
-$article = new Sample_Model_Article_Comment($data);
+$article = new Sample_Model_Article($data);
 
 $article->save();
+
+}}}
+
+Once this article has been searched for you can find it thusly:
+
+{{{
+
+$a_stub = new Sample_Model_Article(); 
+
+$article = $a_stub->find_one(array('title' => 'An Article'));
+
+error_log(__FILE__ . ': the article with title "An Article" : ' . print_r($article->toArray(), 1));
 
 }}}
 
