@@ -88,10 +88,6 @@ and the comment schema:
 {{{
 
 field:
-  
-  _id: 
-    type:      mongoid
-    key:        true
 
   title:        string
   
@@ -101,6 +97,10 @@ field:
     max:        1000
 
   author:       mongoid  
+
+  created:
+    type:       date
+    default:    NOW
 }}}
 
 The class to represent an article is quite simple as the schema does most of the heavy lifting:
@@ -148,3 +148,83 @@ class Sample_Model_Article
 } // end class
 
 }}}
+
+Classes that are compositional elements of parent classes (i.e., that represent documents that are parts of larger document but are not intended to be saved and created independantly) are descended from subdata. Commments, in this particular use case, are embedded elements of articles:
+
+{{{
+
+<?php
+
+class Sample_Model_Article_Comment
+        extends Zupal_Model_Data_SubData {
+
+    private static $_schema;
+
+    public function get_schema() {
+        if (!self::$_schema) {
+            $path = Pools_Api_Util_Disk::path_synonym(__FILE__, 'yml');
+            self::$_schema = Zupal_Model_Schema_Item::make_from_yml($path);
+        }
+
+        return self::$_schema;
+    }
+
+...
+
+}
+
+}}}
+
+Given the above we can accomplish quite a lot: 
+
+{{{
+
+/**
+ * The "line by line" approach:
+ */
+
+$article = new Sample_Model_Article();
+
+$article->title = 'An Article';
+$article->body = 'Stunningly powerful prose';
+
+// note - according to the schema that is all we need!
+
+$article->save();
+
+error_log(__FILE__ . ': created article with id " : $article->key());
+
+$comment = new Sample_Model_Article_Comment($article->record());
+$comment->title = 'Stunningly boring, maybe';
+$comment->body  = "I'd be more specific but I don't think I can do so in only 1000 characters.";
+
+$article->comments[] = $comment;
+
+$article->save();
+
+error_log(__FILE__ . ': final unit of information: ' . print_r($article->toArray(), 1));
+
+}}}
+
+A nice display of field magic, but not as compact as it could be; how about: 
+
+{{{
+
+$data = array(
+  'title' => 'An Article', 'body' => 'Stunningy powerful prose',
+  'comments' => array(array(
+    'title' Stunningly boring, maybe', 'body' => "I'm not going to be more specific" ))
+);
+
+/**
+ * note - the nested comment will be converted to a class 
+ * upon digestion of the data array
+ */
+
+$article = new Sample_Model_Article_Comment($data);
+
+$article->save();
+
+}}}
+
+I have found this combination of configuration - driven schema, nested objects and terse class definitions to give me a lot of flexibility in how I construct and use data. Hopefully you find it useful as well. 
