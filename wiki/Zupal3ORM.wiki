@@ -214,7 +214,7 @@ $data = array(
   'title' => 'An Article', 'body' => 'Stunningy powerful prose',
   'comments' => array(
      array(
-       'title' => Stunningly boring, maybe', 
+       'title' => 'Stunningly boring, maybe', 
        'body' => "I'm not going to be more specific" )
    )
 );
