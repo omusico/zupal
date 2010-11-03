@@ -17,11 +17,11 @@ As much as possible I have created interface files for the fundamental building 
 
 There are several families of classes in the Zupal Model system. 
 
-* *Containers* : these are the repositories - tables, collections, filesystems, whatever. Containers govern the actual I/O of data into persistent states. They have several query oriented methods (find(), find_all(), etc.). 
+*  *Containers* : these are the repositories - tables, collections, filesystems, whatever. Containers govern the actual I/O of data into persistent states. They have several query oriented methods (find(), find_all(), etc.). 
 
-* *Data* : These objects represent units of information: records, documents, etc. Their primary methods are delete() and save(). They are equivalent in many ways to an ActiveRecord. 
+*  *Data* : These objects represent units of information: records, documents, etc. Their primary methods are delete() and save(). They are equivalent in many ways to an ActiveRecord. 
 
-* *Schema* : These are collections of field definitions. Field definitions themselves may be scalar, or single or serial collections of classes. Typically a single data object is bound internally to a specific schema, and a single container only accepts data that is valid for its schema, but this is not necessarily the case. Many preset field definitions for basic field types like strings, integers, etc. are packaged with Zupal. 
+*  *Schema* : These are collections of field definitions. Field definitions themselves may be scalar, or single or serial collections of classes. Typically a single data object is bound internally to a specific schema, and a single container only accepts data that is valid for its schema, but this is not necessarily the case. Many preset field definitions for basic field types like strings, integers, etc. are packaged with Zupal. 
 
 * *Queries* : These represent criteria for retrieval methods of containers. Their inteface is a single method - get_data(Collector $c) - but most places that accept queries as objects also accept simple arrays [field: expectedValue, field: expectedValue... ].
 
@@ -32,4 +32,3 @@ A domain is an object that subsumes both data, an internal container, and a sche
 A domain is not limited to managing a single Repository (table, collection, etc.) It should govern a single unit of information but that unit can be stored in multiple repositories. For instance, a resume might be managed by a single domain, but that domain can subsume several repositories (one for job history, one for education history, one for skill set, etc.) 
 
 Because the Domain is a hybrid of several interfaces (Zupal_Model_Data_IF, Zend_Paginator_Adapter_Interface, Zupal_Model_Container_IF, and others) it does not have a unique interface of its own.
-
