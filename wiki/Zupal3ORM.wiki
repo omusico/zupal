@@ -1,0 +1,35 @@
+#labels ORM,Zupal3
+#The data access layer of Zupal
+
+= Introduction =
+
+Of all the components of Zupal, this one has been the one I have used in production and developed in earnest. 
+
+The basic principle of the Zupal model layer is that data objects are developed through schema definitions, in YAML or JSON. These definitions are field lists with settings such as required, default or serial that determine how they behave and what kind of values they can take. 
+
+While the ultimate aim is a model system that works with any repository the initial primary client of the ORM is Mongo, a JSON based ORM with no intrinsic schema. Because of this, the code level schema is designed to do all the heavy lifting. 
+
+= Interface Driven = 
+
+As much as possible I have created interface files for the fundamental building blocks. While much custom repository functionality cannot be reduced to a platonic interface, the interface does provide a common pattern for routine operations. 
+
+= Model Class Families =
+
+There are several families of classes in the Zupal Model system. 
+
+* *Containers* : these are the repositories - tables, collections, filesystems, whatever. Containers govern the actual I/O of data into persistent states. They have several query oriented methods (find(), find_all(), etc.). 
+
+* *Data* : These objects represent units of information: records, documents, etc. Their primary methods are delete() and save(). They are equivalent in many ways to an ActiveRecord. 
+
+* *Schema* : These are collections of field definitions. Field definitions themselves may be scalar, or single or serial collections of classes. Typically a single data object is bound internally to a specific schema, and a single container only accepts data that is valid for its schema, but this is not necessarily the case. Many preset field definitions for basic field types like strings, integers, etc. are packaged with Zupal. 
+
+* *Queries* : These represent criteria for retrieval methods of containers. Their inteface is a single method - get_data(Collector $c) - but most places that accept queries as objects also accept simple arrays [field: expectedValue, field: expectedValue... ].
+
+== Domains ==
+
+A domain is an object that subsumes both data, an internal container, and a schema. A domain has factory behavior in that it can create more domains, and ActiveRecord behavior in that it represents a single clump of data that can be save()d or delete()d. 
+
+A domain is not limited to managing a single Repository (table, collection, etc.) It should govern a single unit of information but that unit can be stored in multiple repositories. For instance, a resume might be managed by a single domain, but that domain can subsume several repositories (one for job history, one for education history, one for skill set, etc.) 
+
+Because the Domain is a hybrid of several interfaces (Zupal_Model_Data_IF, Zend_Paginator_Adapter_Interface, Zupal_Model_Container_IF, and others) it does not have a unique interface of its own.
+
