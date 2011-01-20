@@ -9,10 +9,8 @@ class Zupal_Model_Query_MongoCollection
         implements Zupal_Model_Query_IF {
 
     public function __construct($pProps = array(), $pContainer = NULL, $pLimit = NULL, $pSort = NULL, $pFields = NULL) {
-
-
         $this->container($pContainer);
-        $this->_limit = $pLimit;
+        $this->set_limit($pLimit);
         $this->set_sort($pSort);
         $this->_fields = $pFields;
 
@@ -42,6 +40,20 @@ class Zupal_Model_Query_MongoCollection
     private $_sort = NULL;
     private $_skip = NULL;
 
+    public function set_limit($pLimit){
+        $limit = null;
+        $skip = null;
+        
+        if (is_array($pLimit)){
+            extract($pLimit);
+        } else {
+            $limit = $pLimit;
+        }
+
+        $this->_limit = $limit;
+        $this->_skip  = $skip;
+    }
+
     public function toArray() {
         return $this->_crit;
     }
@@ -63,12 +75,12 @@ class Zupal_Model_Query_MongoCollection
             $cursor = $cursor->limit($this->_limit);
         }
 
-        if ($this->_skip) {
-            $cursor = $cursor->skip((int) $this->_skip);
-        }
-
         if ($sort = $this->get_sort()) {
             $cursor = $cursor->sort($sort);
+        }
+
+        if ($this->_skip) {
+            $cursor = $cursor->skip((int) $this->_skip);
         }
 
         return $cursor;
