@@ -331,7 +331,8 @@ class Zupal_Model_Container_MongoCollection
     }
 
     public function get_count($pQuery = NULL) {
-        return $this->coll()->count($pQuery);
+        $c =  $this->coll();
+        return $c->count($pQuery);
     }
 
 }
